@@ -49,15 +49,27 @@
                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
             </div>
 
-            <!-- Type -->
+            <!-- Main Type -->
             <div>
-                <label for="maintenance_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Type') }} *</label>
-                <select name="maintenance_type" id="maintenance_type" required
+                {% set selected_group = 'engine_oil' if schedule and schedule.maintenance_type == 'oil_change' else ('parts' if schedule and schedule.maintenance_type not in ('full_service', 'custom', 'oil_change') else 'servicing') %}
+                <label for="maintenance_group" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Main Type') }} *</label>
+                <select name="maintenance_group" id="maintenance_group" required
                         class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    {% for type_id, type_name in maintenance_types %}
-                    <option value="{{ type_id }}" {% if schedule and schedule.maintenance_type == type_id %}selected{% endif %}>
-                        {{ type_name }}
+                    {% for group_id, group_name in maintenance_groups %}
+                    <option value="{{ group_id }}" {% if selected_group == group_id %}selected{% endif %}>
+                        {{ group_name }}
                     </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="maintenance-part-field" class="{% if selected_group != 'parts' %}hidden{% endif %}">
+                <label for="maintenance_part_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Part') }}</label>
+                <select name="maintenance_part_type" id="maintenance_part_type"
+                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+                    <option value="custom" {% if schedule and schedule.maintenance_type == 'custom' %}selected{% endif %}>{{ _('Custom part') }}</option>
+                    {% for type_id, type_name in maintenance_part_types %}
+                    <option value="{{ type_id }}" {% if schedule and schedule.maintenance_type == type_id %}selected{% endif %}>{{ type_name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -190,6 +202,16 @@
     // The server has already rendered the right pair; this keeps them in step
     // when the vehicle dropdown changes.
     (function () {
+        var groupSelect = document.getElementById('maintenance_group');
+        var partField = document.getElementById('maintenance-part-field');
+        if (groupSelect && partField) {
+            function applyMaintenanceGroup() {
+                partField.classList.toggle('hidden', groupSelect.value !== 'parts');
+            }
+            groupSelect.addEventListener('change', applyMaintenanceGroup);
+            applyMaintenanceGroup();
+        }
+
         var select = document.getElementById('vehicle_id');
         if (!select) return;
         var hoursFields = document.querySelectorAll('[data-interval-hours]');

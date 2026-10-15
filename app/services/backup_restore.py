@@ -185,7 +185,7 @@ VEHICLE_SECTION = Section(
     'vehicles', Vehicle,
     {
         'name': 'str', 'vehicle_type': 'str', 'make': 'str', 'model': 'str',
-        'year': 'int', 'registration': 'str', 'vin': 'str',
+        'year': 'int', 'purchase_date': 'date', 'registration': 'str', 'vin': 'str',
         'tracking_unit': 'str', 'odometer_unit': 'str', 'fuel_type': 'str',
         'secondary_fuel_type': 'str', 'tank_capacity': 'float',
         'battery_capacity': 'float', 'is_active': 'bool', 'notes': 'str',
@@ -211,6 +211,7 @@ VEHICLE_SECTIONS = [
             key_fields=('date', 'odometer', 'volume')),
     Section('expenses', Expense,
             {'date': 'date', 'category': 'str', 'description': 'str',
+             'maintenance_group': 'str', 'maintenance_part': 'str',
              'cost': 'float', 'odometer': 'float', 'vendor': 'str',
              'notes': 'str', 'created_at': 'datetime'},
             key_fields=('date', 'category', 'description', 'cost')),

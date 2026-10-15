@@ -97,6 +97,7 @@ def new():
             make=request.form.get('make'),
             model=request.form.get('model'),
             year=int(request.form.get('year')) if request.form.get('year') else None,
+            purchase_date=datetime.strptime(request.form.get('purchase_date'), '%Y-%m-%d').date() if request.form.get('purchase_date') else None,
             registration=request.form.get('registration'),
             vin=request.form.get('vin'),
             fuel_type=request.form.get('fuel_type'),
@@ -284,6 +285,7 @@ def edit(vehicle_id):
         vehicle.make = request.form.get('make')
         vehicle.model = request.form.get('model')
         vehicle.year = int(request.form.get('year')) if request.form.get('year') else None
+        vehicle.purchase_date = datetime.strptime(request.form.get('purchase_date'), '%Y-%m-%d').date() if request.form.get('purchase_date') else None
         vehicle.registration = request.form.get('registration')
         vehicle.vin = request.form.get('vin')
         vehicle.fuel_type = request.form.get('fuel_type')

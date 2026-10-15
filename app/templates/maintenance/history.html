@@ -2,19 +2,39 @@
 {% block title %}{{ _('Maintenance History') }}{% endblock %}
 {% block content %}
 <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ _('Maintenance History') }}</h1>
-<form method="GET" class="mb-6">
+<form method="GET" class="mb-6 flex flex-wrap items-end gap-3">
     <label for="vehicle_id" class="sr-only">{{ _('Vehicle') }}</label>
     <select name="vehicle_id" id="vehicle_id" onchange="this.form.submit()" class="rounded-md border-gray-300 dark:bg-gray-800 dark:text-white">
         <option value="">{{ _('All Vehicles') }}</option>
         {% for vehicle in vehicles %}<option value="{{ vehicle.id }}" {% if selected_vehicle_id == vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
     </select>
-    <button type="submit" class="ml-2 text-primary-600">{{ _('Search') }}</button>
+    <div>
+        <label for="maintenance_group" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Type') }}</label>
+        <select name="maintenance_group" id="maintenance_group" class="rounded-md border-gray-300 dark:bg-gray-800 dark:text-white">
+            <option value="">{{ _('All Types') }}</option>
+            {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if selected_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+    </div>
+    {% if part_names %}
+    <div>
+        <label for="maintenance_part" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Part') }}</label>
+        <select name="maintenance_part" id="maintenance_part" class="rounded-md border-gray-300 dark:bg-gray-800 dark:text-white">
+            <option value="">{{ _('All Parts') }}</option>
+            {% for part in part_names %}<option value="{{ part }}" {% if selected_part == part %}selected{% endif %}>{{ part }}</option>{% endfor %}
+        </select>
+    </div>
+    {% endif %}
+    <button type="submit" class="text-primary-600">{{ _('Filter') }}</button>
 </form>
+{% if total_cost %}<p class="mb-4 text-sm text-gray-600 dark:text-gray-300">{{ _('Filtered total') }}: <strong>{{ total_cost|money }} {{ current_user.currency }}</strong></p>{% endif %}
 <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ _('History includes recorded completions and the latest saved service details. Earlier overwritten details cannot be recovered.') }}</p>
 <div class="space-y-3">
 {% for event in events %}
 <article class="rounded-lg bg-white dark:bg-gray-800 p-4 shadow">
     <h2 class="font-semibold text-gray-900 dark:text-white">{{ event.name }}</h2>
+    {% if event.maintenance_group %}
+    <span class="mt-1 inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-gray-700 dark:text-primary-300">{{ dict(maintenance_groups).get(event.maintenance_group, event.maintenance_group) }}</span>
+    {% endif %}
     <p class="text-sm text-gray-600 dark:text-gray-300">{{ event.vehicle.name }} · {{ event.performed_date|format_date if event.performed_date else _('Unknown') }}{% if event.odometer is not none %} · {{ event.odometer|groupnum }} {{ event.vehicle.get_reading_unit() }}{% endif %}</p>
     {% if event.notes %}<p class="mt-2 text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{{ event.notes }}</p>{% endif %}
 </article>

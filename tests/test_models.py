@@ -107,6 +107,22 @@ class TestUserResetToken:
 # Vehicle model
 # ---------------------------------------------------------------------------
 
+class TestVehicleOwnershipDuration:
+    def test_owned_for_returns_years_and_remaining_days(self, test_user):
+        vehicle = Vehicle(owner_id=test_user.id, name='Bike', vehicle_type='motorbike',
+                          purchase_date=date(2024, 1, 15))
+        assert vehicle.get_owned_for(date(2026, 1, 15)) == (2, 0)
+        assert vehicle.get_owned_for(date(2026, 2, 14)) == (2, 30)
+
+    def test_owned_for_is_empty_without_purchase_date(self, test_user):
+        vehicle = Vehicle(owner_id=test_user.id, name='Bike', vehicle_type='motorbike')
+        assert vehicle.get_owned_for(date(2026, 1, 1)) is None
+
+    def test_owned_for_does_not_go_negative_for_future_date(self, test_user):
+        vehicle = Vehicle(owner_id=test_user.id, name='Bike', vehicle_type='motorbike',
+                          purchase_date=date(2026, 2, 1))
+        assert vehicle.get_owned_for(date(2026, 1, 1)) == (0, 0)
+
 class TestVehicleIsElectric:
     def test_electric_is_electric(self, app, test_user):
         v = Vehicle(owner_id=test_user.id, name='EV', vehicle_type='car', fuel_type='electric')

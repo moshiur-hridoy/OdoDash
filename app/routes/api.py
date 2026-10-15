@@ -379,7 +379,7 @@ def api_create_vehicle():
     Create a new vehicle
 
     Required fields: name, vehicle_type
-    Optional fields: make, model, year, registration, vin, fuel_type, tank_capacity
+    Optional fields: make, model, year, purchase_date, registration, vin, fuel_type, tank_capacity
     """
     user = get_api_user()
     data = request.get_json()
@@ -396,6 +396,11 @@ def api_create_vehicle():
     if data['vehicle_type'] not in ['car', 'van', 'motorbike', 'scooter']:
         return jsonify({'error': 'vehicle_type must be one of: car, van, motorbike, scooter', 'code': 'validation_error'}), 400
 
+    try:
+        purchase_date = _parse_api_date(data['purchase_date']) if data.get('purchase_date') else None
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Invalid purchase_date format. Use YYYY-MM-DD', 'code': 'validation_error'}), 400
+
     vehicle = Vehicle(
         owner_id=user.id,
         name=data['name'],
@@ -403,6 +408,7 @@ def api_create_vehicle():
         make=data.get('make'),
         model=data.get('model'),
         year=data.get('year'),
+        purchase_date=purchase_date,
         registration=data.get('registration'),
         vin=data.get('vin'),
         fuel_type=data.get('fuel_type', 'petrol'),
@@ -445,6 +451,11 @@ def api_update_vehicle(vehicle_id):
         vehicle.model = data['model']
     if 'year' in data:
         vehicle.year = data['year']
+    if 'purchase_date' in data:
+        try:
+            vehicle.purchase_date = _parse_api_date(data['purchase_date']) if data['purchase_date'] else None
+        except (TypeError, ValueError):
+            return jsonify({'error': 'Invalid purchase_date format. Use YYYY-MM-DD', 'code': 'validation_error'}), 400
     if 'registration' in data:
         vehicle.registration = data['registration']
     if 'vin' in data:
@@ -718,7 +729,7 @@ def api_create_expense(vehicle_id):
     Create an expense
 
     Required fields: date, category, description, cost
-    Optional fields: odometer, vendor, notes
+    Optional fields: odometer, vendor, notes, maintenance_group, maintenance_part
     """
     user = get_api_user()
     vehicle = db.get_or_404(Vehicle, vehicle_id)
@@ -756,7 +767,9 @@ def api_create_expense(vehicle_id):
         cost=parse_decimal(data['cost']),
         odometer=parse_decimal(data['odometer']) if data.get('odometer') else None,
         vendor=data.get('vendor'),
-        notes=data.get('notes')
+        notes=data.get('notes'),
+        maintenance_group=(data.get('maintenance_group') if data['category'] == 'maintenance' else None),
+        maintenance_part=(data.get('maintenance_part') if data['category'] == 'maintenance' else None)
     )
 
     db.session.add(expense)
@@ -817,6 +830,10 @@ def api_update_expense(expense_id):
         expense.vendor = data['vendor']
     if 'notes' in data:
         expense.notes = data['notes']
+    if 'maintenance_group' in data:
+        expense.maintenance_group = data['maintenance_group'] if expense.category == 'maintenance' else None
+    if 'maintenance_part' in data:
+        expense.maintenance_part = data['maintenance_part'] if expense.category == 'maintenance' else None
 
     db.session.commit()
     return jsonify(expense.to_dict())
@@ -856,6 +873,13 @@ def _parse_api_time(value):
         except ValueError:
             continue
     raise ValueError(f'Invalid time format: {value}')
+
+
+def _parse_api_date(value):
+    """Parse an ISO date string from an API request."""
+    if not isinstance(value, str):
+        raise ValueError(f'Invalid date format: {value}')
+    return datetime.strptime(value, '%Y-%m-%d').date()
 
 
 @bp.route('/v1/vehicles/<int:vehicle_id>/trips', methods=['GET'])
@@ -1607,7 +1631,7 @@ def export_csv():
         vehicles_csv = io.StringIO()
         writer = csv.writer(vehicles_csv)
         writer.writerow([
-            'id', 'name', 'vehicle_type', 'make', 'model', 'year',
+            'id', 'name', 'vehicle_type', 'make', 'model', 'year', 'purchase_date',
             'registration', 'vin', 'fuel_type', 'tank_capacity',
             'odometer_unit', 'is_active', 'notes', 'created_at'
         ])
@@ -1615,6 +1639,7 @@ def export_csv():
             writer.writerow([
                 vehicle.id, vehicle.name, vehicle.vehicle_type,
                 vehicle.make, vehicle.model, vehicle.year,
+                vehicle.purchase_date.isoformat() if vehicle.purchase_date else '',
                 vehicle.registration, vehicle.vin, vehicle.fuel_type,
                 vehicle.tank_capacity,
                 vehicle.get_reading_unit(),
@@ -1664,14 +1689,16 @@ def export_csv():
         writer = csv.writer(expenses_csv)
         writer.writerow([
             'id', 'vehicle_id', 'vehicle_name', 'date', 'category',
-            'description', 'cost', 'odometer', 'odometer_unit', 'vendor', 'notes', 'created_at'
+            'maintenance_group', 'maintenance_part', 'description', 'cost', 'odometer',
+            'odometer_unit', 'vendor', 'notes', 'created_at'
         ])
         for vehicle in current_user.get_all_vehicles():
             odometer_unit = vehicle.get_reading_unit()
             for expense in vehicle.expenses.order_by(Expense.date.desc()).all():
                 writer.writerow([
                     expense.id, vehicle.id, vehicle.name, expense.date.isoformat(),
-                    expense.category, expense.description, expense.cost,
+                    expense.category, expense.maintenance_group, expense.maintenance_part,
+                    expense.description, expense.cost,
                     expense.odometer, odometer_unit if expense.odometer is not None else '',
                     expense.vendor, expense.notes,
                     expense.created_at.isoformat() if expense.created_at else ''

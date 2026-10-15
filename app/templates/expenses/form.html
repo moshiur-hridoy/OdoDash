@@ -57,6 +57,29 @@
                     </select>
                 </div>
 
+                <div id="maintenance-classification" class="sm:col-span-2 {% if not expense or expense.category != 'maintenance' %}hidden{% endif %}">
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                            <label for="maintenance_group" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Maintenance Type') }}</label>
+                            <select name="maintenance_group" id="maintenance_group"
+                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                                <option value="">{{ _('Uncategorized') }}</option>
+                                {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if expense and expense.maintenance_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="maintenance_part" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Part Name') }}</label>
+                            <input type="text" name="maintenance_part" id="maintenance_part" list="maintenance-part-suggestions"
+                                   value="{{ expense.maintenance_part if expense and expense.maintenance_part else '' }}"
+                                   placeholder="{{ _('Optional for parts') }}"
+                                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                            <datalist id="maintenance-part-suggestions">
+                                {% for value, label in maintenance_part_types %}<option value="{{ label }}"></option>{% endfor %}
+                            </datalist>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="sm:col-span-2">
                     <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }} *</label>
                     <input type="text" name="description" id="description" required
@@ -215,5 +238,17 @@
             syncReminderLink();
         }
     })();
+</script>
+<script>
+(function () {
+    const category = document.getElementById('category');
+    const classification = document.getElementById('maintenance-classification');
+    if (!category || !classification) return;
+    function toggleClassification() {
+        classification.classList.toggle('hidden', category.value !== 'maintenance');
+    }
+    category.addEventListener('change', toggleClassification);
+    toggleClassification();
+})();
 </script>
 {% endblock %}

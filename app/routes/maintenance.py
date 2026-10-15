@@ -6,10 +6,36 @@ from flask_babel import gettext as _
 from app import db
 from app.utils import parse_decimal
 from app.models import (
-    Vehicle, MaintenanceSchedule, MaintenanceEvent, Expense, MAINTENANCE_TYPES, EXPENSE_CATEGORIES
+    Vehicle, MaintenanceSchedule, MaintenanceEvent, Expense, MAINTENANCE_TYPES,
+    MAINTENANCE_GROUPS, MAINTENANCE_PART_TYPES, maintenance_group_for_type,
+    EXPENSE_CATEGORIES
 )
 
 bp = Blueprint('maintenance', __name__, url_prefix='/maintenance')
+
+
+def _expense_group(expense):
+    if expense.maintenance_group:
+        return expense.maintenance_group
+    description = (expense.description or '').lower()
+    if any(term in description for term in ('engine oil', 'oil change', 'synthetic oil', 'motor oil')):
+        return 'engine_oil'
+    if any(term in description for term in ('brake', 'filter', 'spark plug', 'battery', 'tyre', 'tire', 'chain', 'coolant')):
+        return 'parts'
+    if any(term in description for term in ('service', 'servicing', 'workshop', 'maintenance')):
+        return 'servicing'
+    return None
+
+
+def _maintenance_type_from_form(form):
+    group = form.get('maintenance_group')
+    if group == 'engine_oil':
+        return 'oil_change'
+    if group == 'servicing':
+        return 'full_service'
+    if group == 'parts':
+        return form.get('maintenance_part_type') or 'custom'
+    return form.get('maintenance_type') or 'custom'
 
 
 def _record_completion(schedule):
@@ -37,6 +63,8 @@ def _record_completion(schedule):
 def history():
     vehicles = current_user.get_all_vehicles()
     vehicle_id = request.args.get('vehicle_id', type=int)
+    group_filter = request.args.get('maintenance_group') or None
+    part_filter = request.args.get('maintenance_part') or None
     ids = [v.id for v in vehicles]
     if vehicle_id is not None:
         if vehicle_id not in ids:
@@ -46,18 +74,51 @@ def history():
     events = MaintenanceEvent.query.filter(MaintenanceEvent.vehicle_id.in_(ids)).order_by(
         MaintenanceEvent.performed_date.desc(), MaintenanceEvent.id.desc()).all()
     # Existing maintenance expenses are also historical service records.
+    maintenance_expenses = Expense.query.filter(
+        Expense.vehicle_id.in_(ids), Expense.category == 'maintenance'
+    ).all()
+    expense_by_key = {
+        (expense.vehicle_id, expense.description, expense.date, expense.odometer): expense
+        for expense in maintenance_expenses
+    }
     known = {(e.vehicle_id, e.name, e.performed_date, e.odometer) for e in events}
-    for expense in Expense.query.filter(Expense.vehicle_id.in_(ids), Expense.category == 'maintenance').all():
+    filtered_events = []
+    for event in events:
+        event.maintenance_group = maintenance_group_for_type(event.maintenance_type)
+        event.maintenance_part = event.name if event.maintenance_group == 'parts' else None
+        linked_expense = expense_by_key.get((event.vehicle_id, event.name, event.performed_date, event.odometer))
+        event.cost = linked_expense.cost if linked_expense else 0
+        if (not group_filter or event.maintenance_group == group_filter) and (
+                not part_filter or event.maintenance_part == part_filter):
+            filtered_events.append(event)
+    events = filtered_events
+    for expense in maintenance_expenses:
         key = (expense.vehicle_id, expense.description, expense.date, expense.odometer)
         if key not in known:
-            events.append(SimpleNamespace(
+            event = SimpleNamespace(
                 id=None, vehicle=expense.vehicle, name=expense.description or _('Maintenance'),
                 maintenance_type='custom', performed_date=expense.date,
                 odometer=expense.odometer, notes=expense.notes,
-            ))
+                maintenance_group=_expense_group(expense),
+                maintenance_part=expense.maintenance_part or (
+                    expense.description if _expense_group(expense) == 'parts' else None),
+                cost=expense.cost,
+            )
+            if (not group_filter or event.maintenance_group == group_filter) and (
+                    not part_filter or event.maintenance_part == part_filter):
+                events.append(event)
+    if part_filter:
+        events = [event for event in events if getattr(event, 'maintenance_part', None) == part_filter]
     events.sort(key=lambda e: (e.performed_date or date.min, e.id or 0), reverse=True)
+    total_cost = sum(float(getattr(event, 'cost', 0) or 0) for event in events)
+    part_names = sorted({event.maintenance_part for event in events if getattr(event, 'maintenance_part', None)})
     return render_template('maintenance/history.html', events=events, vehicles=vehicles,
-                           selected_vehicle_id=vehicle_id)
+                           selected_vehicle_id=vehicle_id,
+                           maintenance_groups=MAINTENANCE_GROUPS,
+                           selected_group=group_filter,
+                           part_names=part_names,
+                           selected_part=part_filter,
+                           total_cost=total_cost)
 
 
 @bp.route('/')
@@ -102,7 +163,7 @@ def new():
             vehicle_id=vehicle_id,
             user_id=current_user.id,
             name=request.form.get('name'),
-            maintenance_type=request.form.get('maintenance_type'),
+            maintenance_type=_maintenance_type_from_form(request.form),
             description=request.form.get('description'),
             interval_km=int(request.form.get('interval_km')) if request.form.get('interval_km') else None,
             interval_miles=int(request.form.get('interval_miles')) if request.form.get('interval_miles') else None,
@@ -143,7 +204,9 @@ def new():
                            schedule=None,
                            vehicles=vehicles,
                            selected_vehicle=selected_vehicle,
-                           maintenance_types=MAINTENANCE_TYPES)
+                           maintenance_types=MAINTENANCE_TYPES,
+                           maintenance_groups=MAINTENANCE_GROUPS,
+                           maintenance_part_types=MAINTENANCE_PART_TYPES)
 
 
 @bp.route('/<int:schedule_id>/edit', methods=['GET', 'POST'])
@@ -160,7 +223,7 @@ def edit(schedule_id):
     if request.method == 'POST':
         _record_completion(schedule)
         schedule.name = request.form.get('name')
-        schedule.maintenance_type = request.form.get('maintenance_type')
+        schedule.maintenance_type = _maintenance_type_from_form(request.form)
         schedule.description = request.form.get('description')
         schedule.interval_km = int(request.form.get('interval_km')) if request.form.get('interval_km') else None
         schedule.interval_miles = int(request.form.get('interval_miles')) if request.form.get('interval_miles') else None
@@ -188,7 +251,9 @@ def edit(schedule_id):
                            schedule=schedule,
                            vehicles=vehicles,
                            selected_vehicle=schedule.vehicle_id,
-                           maintenance_types=MAINTENANCE_TYPES)
+                           maintenance_types=MAINTENANCE_TYPES,
+                           maintenance_groups=MAINTENANCE_GROUPS,
+                           maintenance_part_types=MAINTENANCE_PART_TYPES)
 
 
 @bp.route('/<int:schedule_id>/complete', methods=['POST'])
@@ -234,6 +299,8 @@ def complete(schedule_id):
             user_id=current_user.id,
             date=performed_date,
             category='maintenance',
+            maintenance_group=maintenance_group_for_type(schedule.maintenance_type),
+            maintenance_part=(schedule.name if maintenance_group_for_type(schedule.maintenance_type) == 'parts' else None),
             description=schedule.name,
             cost=cost,
             odometer=schedule.last_performed_odometer,

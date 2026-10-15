@@ -8,7 +8,8 @@ from flask_babel import gettext as _
 from sqlalchemy import func
 from app import db
 from app.utils import parse_decimal
-from app.models import Vehicle, Expense, Attachment, MaintenanceSchedule, Reminder, EXPENSE_CATEGORIES
+from app.models import (Vehicle, Expense, Attachment, MaintenanceSchedule, Reminder,
+                        EXPENSE_CATEGORIES, MAINTENANCE_GROUPS, MAINTENANCE_PART_TYPES)
 from app.routes.reminders import complete_reminder
 
 bp = Blueprint('expenses', __name__, url_prefix='/expenses')
@@ -176,7 +177,11 @@ def new():
             cost=parse_decimal(request.form.get('cost')),
             odometer=parse_optional_float(request.form.get('odometer')),
             vendor=request.form.get('vendor'),
-            notes=request.form.get('notes')
+            notes=request.form.get('notes'),
+            maintenance_group=(request.form.get('maintenance_group')
+                               if request.form.get('category') == 'maintenance' else None),
+            maintenance_part=(request.form.get('maintenance_part')
+                              if request.form.get('category') == 'maintenance' else None)
         )
 
         db.session.add(expense)
@@ -233,6 +238,8 @@ def new():
                            categories=EXPENSE_CATEGORIES,
                            known_vendors=_known_vendors(vehicle_ids),
                            maintenance_schedules=_active_schedules(vehicle_ids),
+                           maintenance_groups=MAINTENANCE_GROUPS,
+                           maintenance_part_types=MAINTENANCE_PART_TYPES,
                            reminder=reminder,
                            selected_vehicle_id=selected_vehicle_id)
 
@@ -258,6 +265,10 @@ def edit(expense_id):
             expense.odometer = parse_optional_float(request.form.get('odometer'))
             expense.vendor = request.form.get('vendor')
             expense.notes = request.form.get('notes')
+            expense.maintenance_group = (request.form.get('maintenance_group')
+                                         if expense.category == 'maintenance' else None)
+            expense.maintenance_part = (request.form.get('maintenance_part')
+                                        if expense.category == 'maintenance' else None)
         except (ValueError, TypeError):
             flash(_('Invalid data submitted. Please check the date and cost fields.'), 'error')
             return render_template('expenses/form.html',
@@ -283,6 +294,8 @@ def edit(expense_id):
                            expense=expense,
                            vehicles=vehicles,
                            categories=EXPENSE_CATEGORIES,
+                           maintenance_groups=MAINTENANCE_GROUPS,
+                           maintenance_part_types=MAINTENANCE_PART_TYPES,
                            selected_vehicle_id=expense.vehicle_id)
 
 

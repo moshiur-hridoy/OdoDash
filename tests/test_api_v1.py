@@ -79,6 +79,25 @@ class TestV1Vehicles:
         assert data['vehicle_type'] == 'car'
         assert 'id' in data
 
+    def test_create_vehicle_with_purchase_date(self, client, api_headers):
+        resp = client.post(
+            '/api/v1/vehicles',
+            json={'name': 'Purchased Car', 'vehicle_type': 'car',
+                  'purchase_date': '2024-01-15'},
+            headers=api_headers
+        )
+        assert resp.status_code == 201
+        assert resp.get_json()['purchase_date'] == '2024-01-15'
+
+    def test_update_vehicle_rejects_invalid_purchase_date(self, client, api_headers, sample_vehicle):
+        resp = client.patch(
+            f'/api/v1/vehicles/{sample_vehicle.id}',
+            json={'purchase_date': '15/01/2024'},
+            headers=api_headers
+        )
+        assert resp.status_code == 400
+        assert resp.get_json()['code'] == 'validation_error'
+
     def test_create_vehicle_missing_name(self, client, api_headers):
         resp = client.post(
             '/api/v1/vehicles',

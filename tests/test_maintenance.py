@@ -62,6 +62,17 @@ class TestMaintenanceNew:
         assert schedule is not None
         assert schedule.user_id == test_user.id
 
+    def test_create_parts_schedule_uses_part_type(self, auth_client, sample_vehicle):
+        auth_client.post('/maintenance/new', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'name': 'Front Brake Pads',
+            'maintenance_group': 'parts',
+            'maintenance_part_type': 'brake_pads',
+            'interval_km': '12000',
+        })
+        schedule = MaintenanceSchedule.query.filter_by(name='Front Brake Pads').one()
+        assert schedule.maintenance_type == 'brake_pads'
+
 
 class TestMaintenanceEdit:
     def test_edit_requires_auth(self, client, sample_schedule):
@@ -201,6 +212,17 @@ class TestMaintenanceHistory:
         response = auth_client.get('/maintenance/history')
         assert response.status_code == 200
         assert b'Previous workshop service' in response.data
+
+    def test_history_filters_classified_expenses(self, auth_client, sample_expense):
+        sample_expense.category = 'maintenance'
+        sample_expense.description = 'Engine oil synthetic'
+        sample_expense.maintenance_group = 'engine_oil'
+        sample_expense.cost = 1350
+        db.session.commit()
+        response = auth_client.get('/maintenance/history?maintenance_group=engine_oil')
+        assert response.status_code == 200
+        assert b'Engine oil synthetic' in response.data
+        assert b'1,350' in response.data
 
 
 def test_matching_service_details_on_different_vehicles_are_not_hidden(auth_client, sample_vehicle, test_user):

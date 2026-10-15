@@ -104,6 +104,14 @@
                 </div>
 
                 <div>
+                    <label for="purchase_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Purchase Date') }}</label>
+                    <input type="text" name="purchase_date" id="purchase_date" data-datepicker
+                           value="{{ vehicle.purchase_date.strftime('%Y-%m-%d') if vehicle and vehicle.purchase_date else '' }}"
+                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('The date you bought this vehicle.') }}</p>
+                </div>
+
+                <div>
                     <label for="tank_capacity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Tank Capacity (L)') }}</label>
                     <input type="number" name="tank_capacity" id="tank_capacity" step="0.1"
                            value="{{ vehicle.tank_capacity if vehicle else '' }}"

@@ -264,6 +264,7 @@ class Vehicle(db.Model):
     make = db.Column(db.String(50))
     model = db.Column(db.String(50))
     year = db.Column(db.Integer)
+    purchase_date = db.Column(db.Date)
 
     # Identification
     registration = db.Column(db.String(20))
@@ -954,6 +955,7 @@ class Vehicle(db.Model):
             'make': self.make,
             'model': self.model,
             'year': self.year,
+            'purchase_date': self.purchase_date.isoformat() if self.purchase_date else None,
             'registration': self.registration,
             'vin': self.vin,
             'fuel_type': self.fuel_type,
@@ -969,6 +971,28 @@ class Vehicle(db.Model):
                 'last_odometer': self.get_last_odometer()
             }
         }
+
+    def get_owned_for(self, as_of=None):
+        """Return the elapsed whole years and remaining days since purchase."""
+        if not self.purchase_date:
+            return None
+        as_of = as_of or date.today()
+        if as_of < self.purchase_date:
+            return (0, 0)
+        years = as_of.year - self.purchase_date.year
+        try:
+            anniversary = self.purchase_date.replace(year=self.purchase_date.year + years)
+        except ValueError:
+            # A 29 February purchase anniversary falls on 28 February in a
+            # non-leap year.
+            anniversary = self.purchase_date.replace(year=self.purchase_date.year + years, day=28)
+        if anniversary > as_of:
+            years -= 1
+            try:
+                anniversary = self.purchase_date.replace(year=self.purchase_date.year + years)
+            except ValueError:
+                anniversary = self.purchase_date.replace(year=self.purchase_date.year + years, day=28)
+        return (years, (as_of - anniversary).days)
 
 
 # Tailpipe CO2 emitted per litre of fuel burned, in kg — standard UK
@@ -1206,6 +1230,8 @@ class Expense(db.Model):
 
     date = db.Column(db.Date, nullable=False, default=utcnow)
     category = db.Column(db.String(50), nullable=False)  # maintenance, insurance, repairs, tax, parking, tolls, other
+    maintenance_group = db.Column(db.String(20), nullable=True)
+    maintenance_part = db.Column(db.String(100), nullable=True)
     description = db.Column(db.String(200), nullable=False)
     cost = db.Column(db.Float, nullable=False)
     odometer = db.Column(db.Float)  # optional
@@ -1226,6 +1252,8 @@ class Expense(db.Model):
             'vehicle_id': self.vehicle_id,
             'date': self.date.isoformat() if self.date else None,
             'category': self.category,
+            'maintenance_group': self.maintenance_group,
+            'maintenance_part': self.maintenance_part,
             'description': self.description,
             'cost': self.cost,
             'odometer': self.odometer,
@@ -1401,6 +1429,30 @@ VEHICLE_SPEC_TYPES = [
     ('transmission_fluid', _l('Transmission Fluid')),
     ('custom', _l('Custom')),
 ]
+
+MAINTENANCE_GROUPS = [
+    ('engine_oil', _l('Engine Oil')),
+    ('servicing', _l('Servicing')),
+    ('parts', _l('Parts')),
+]
+
+MAINTENANCE_PART_TYPES = [
+    item for item in MAINTENANCE_TYPES
+    if item[0] not in {'oil_change', 'full_service', 'custom'}
+]
+
+_PART_MAINTENANCE_TYPES = {item[0] for item in MAINTENANCE_PART_TYPES}
+
+
+def maintenance_group_for_type(maintenance_type):
+    """Map legacy detailed maintenance types to the new display groups."""
+    if maintenance_type == 'oil_change':
+        return 'engine_oil'
+    if maintenance_type in {'full_service', 'custom'}:
+        return 'servicing'
+    if maintenance_type in _PART_MAINTENANCE_TYPES:
+        return 'parts'
+    return None
 
 # Expense categories
 EXPENSE_CATEGORIES = [
