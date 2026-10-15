@@ -1,4 +1,4 @@
-"""Calendar integration for May.
+"""Calendar integration for OdoDash.
 
 Provides iCalendar feeds that can be subscribed to by calendar apps like:
 - Apple Calendar
@@ -134,10 +134,10 @@ def calendar_feed(user):
         ical = '\r\n'.join([
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//May Vehicle Management//EN',
+            'PRODID:-//OdoDash Vehicle Management//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
-            f'X-WR-CALNAME:May - {user.username}',
+            f'X-WR-CALNAME:OdoDash - {user.username}',
             'END:VCALENDAR'
         ])
         return Response(ical, mimetype='text/calendar')
@@ -251,10 +251,10 @@ def calendar_feed(user):
     ical_lines = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//May Vehicle Management//EN',
+        'PRODID:-//OdoDash Vehicle Management//EN',
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
-        f'X-WR-CALNAME:May - {user.username}',
+        f'X-WR-CALNAME:OdoDash - {user.username}',
         'X-WR-CALDESC:Vehicle reminders, maintenance, and document expiry dates',
     ]
 

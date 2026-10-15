@@ -737,6 +737,9 @@ class TestAboutPageVersionRefresh:
         html = response.data.decode('utf-8')
         # The "Current Version" value needs an id so JS can update it in place.
         assert 'id="current-version-value"' in html
+        assert 'About OdoDash' in html
+        assert 'https://github.com/moshiur-hridoy/OdoDash' in html
+        assert 'dannymcc/may' not in html
 
     def test_check_for_updates_script_refreshes_current_version_display(self, auth_client):
         response = auth_client.get('/auth/settings')

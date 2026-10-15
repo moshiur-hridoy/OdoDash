@@ -1397,7 +1397,7 @@ class AppSettings(db.Model):
     def get_all_branding():
         """Get all branding settings as a dictionary"""
         defaults = {
-            'app_name': 'May',
+            'app_name': 'OdoDash',
             'app_tagline': 'Vehicle Management',
             'primary_color': '#0284c7',
             'logo_filename': None,

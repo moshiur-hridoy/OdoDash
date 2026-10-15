@@ -14,7 +14,7 @@ load_dotenv(basedir / '.env')
 APP_VERSION = '0.44.2'
 RELEASE_CHANNEL = os.environ.get('RELEASE_CHANNEL', 'stable')
 GIT_SHA = os.environ.get('GIT_SHA', '')[:7]  # Short SHA
-GITHUB_REPO = 'dannymcc/may'
+GITHUB_REPO = 'moshiur-hridoy/OdoDash'
 TAILWIND_ASSET_URL = os.environ.get('TAILWIND_ASSET_URL', '/static/vendor/tailwindcss.js')
 TAILWIND_CDN_URL = os.environ.get('TAILWIND_CDN_URL', 'https://cdn.tailwindcss.com')
 HTMX_ASSET_URL = os.environ.get('HTMX_ASSET_URL', '/static/vendor/htmx.min.js')

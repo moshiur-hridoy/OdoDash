@@ -21,7 +21,7 @@ class NotificationService:
             'username': AppSettings.get('smtp_username'),
             'password': AppSettings.get('smtp_password'),
             'sender': AppSettings.get('smtp_sender'),
-            'sender_name': AppSettings.get('smtp_sender_name', 'May'),
+            'sender_name': AppSettings.get('smtp_sender_name', 'OdoDash'),
             'use_tls': AppSettings.get('smtp_tls', 'true') == 'true',
             'use_ssl': AppSettings.get('smtp_ssl', 'false') == 'true',
         }
@@ -73,7 +73,7 @@ class NotificationService:
             data = json.dumps(payload).encode('utf-8')
             req = Request(webhook_url, data=data, headers={
                 'Content-Type': 'application/json',
-                'User-Agent': 'May-Vehicle-Manager/1.0'
+                'User-Agent': 'OdoDash/1.0'
             })
             with urlopen(req, timeout=10) as response:
                 return True, None
@@ -110,7 +110,7 @@ class NotificationService:
                 'Title': title,
                 'Priority': priority,
                 'Tags': 'car',
-                'User-Agent': 'May-Vehicle-Manager/1.0',
+                'User-Agent': 'OdoDash/1.0',
             }
             if token:
                 headers['Authorization'] = f'Bearer {token}'
@@ -195,7 +195,7 @@ class NotificationService:
                 {"<p><strong>Vehicle:</strong> " + reminder.vehicle.name + "</p>" if reminder and reminder.vehicle else ""}
                 {"<p><strong>Due Date:</strong> " + reminder.due_date.strftime('%B %d, %Y') + "</p>" if reminder and reminder.due_date else ""}
                 <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-                <p style="color: #6b7280; font-size: 12px;">This notification was sent by May Vehicle Manager.</p>
+                <p style="color: #6b7280; font-size: 12px;">This notification was sent by OdoDash.</p>
             </body>
             </html>
             """
@@ -218,7 +218,7 @@ class NotificationService:
         """Send a test notification to verify user's settings."""
         return NotificationService.send_notification(
             user,
-            "Test Notification from May",
+            "Test Notification from OdoDash",
             "This is a test notification to verify your notification settings are working correctly.",
         )
 

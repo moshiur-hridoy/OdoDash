@@ -213,7 +213,7 @@ class UKFuelPriceService:
                 response = requests.get(
                     url,
                     timeout=timeout or cls.REQUEST_TIMEOUT,
-                    headers={'User-Agent': 'May Vehicle Management'},
+                    headers={'User-Agent': 'OdoDash'},
                 )
                 if response.status_code != 200:
                     errors.append(f"{retailer}: HTTP {response.status_code}")

@@ -5,8 +5,8 @@
 <div class="max-w-2xl mx-auto">
     <div class="mb-6">
         <a href="{{ url_for('auth.settings') }}#integrations" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">&larr; Back to settings</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ _('Restore a May Backup') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Restore a JSON export or a full backup ZIP produced by May.') }}</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ _('Restore a May Backup').replace('May', APP_NAME) }}</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Restore a JSON export or a full backup ZIP produced by May.').replace('May', APP_NAME) }}</p>
     </div>
 
     <div class="bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 rounded-lg p-4 mb-6">

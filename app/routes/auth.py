@@ -72,7 +72,7 @@ def forgot_password():
 
             reset_url = url_for('auth.reset_password', token=token, _external=True)
             branding = AppSettings.get_all_branding()
-            app_name = branding.get('app_name', 'May')
+            app_name = branding.get('app_name', 'OdoDash')
 
             body = f"You requested a password reset for your {app_name} account.\n\nClick the link below to reset your password:\n{reset_url}\n\nThis link expires in 1 hour.\n\nIf you did not request this, you can safely ignore this email."
             html_body = f"""
@@ -414,7 +414,7 @@ def smtp_settings():
 def branding():
 
     # Save branding settings
-    AppSettings.set('app_name', request.form.get('app_name', 'May'))
+    AppSettings.set('app_name', request.form.get('app_name', 'OdoDash'))
     AppSettings.set('app_tagline', request.form.get('app_tagline', 'Vehicle Management'))
     AppSettings.set('primary_color', request.form.get('primary_color', '#0284c7'))
 
@@ -660,7 +660,7 @@ def check_updates():
             timeout=10,
             headers={
                 'Accept': 'application/vnd.github.v3+json',
-                'User-Agent': f'May/{APP_VERSION}'
+                'User-Agent': f'OdoDash/{APP_VERSION}'
             }
         )
         if response.status_code == 200:

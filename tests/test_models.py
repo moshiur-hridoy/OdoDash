@@ -911,7 +911,7 @@ class TestAppSettings:
     def test_get_all_branding_returns_defaults(self, app):
         branding = AppSettings.get_all_branding()
         assert 'app_name' in branding
-        assert branding['app_name'] == 'May'
+        assert branding['app_name'] == 'OdoDash'
         assert 'primary_color' in branding
 
     def test_get_all_branding_reflects_overrides(self, app):

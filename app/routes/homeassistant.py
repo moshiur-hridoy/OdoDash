@@ -7,11 +7,11 @@ Example Home Assistant configuration (configuration.yaml):
 
 ```yaml
 rest:
-  - resource: http://your-may-server:5000/api/ha/vehicles
+  - resource: http://your-ododash-server:5050/api/ha/vehicles
     headers:
       Authorization: Bearer YOUR_API_TOKEN
     sensor:
-      - name: "May Vehicles Count"
+      - name: "OdoDash Vehicles Count"
         value_template: "{{ value_json.count }}"
 
 sensor:

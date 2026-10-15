@@ -151,7 +151,7 @@ def _log_startup_banner(app):
     except Exception as e:
         alembic_rev = f'error: {e}'
 
-    app.logger.warning(f'May {version} starting (alembic_version={alembic_rev})')
+    app.logger.warning(f'OdoDash {version} starting (alembic_version={alembic_rev})')
 
 
 def _scalar_default_sql(column):
@@ -356,7 +356,7 @@ def create_app(config_class=Config):
             'LANGUAGES': LANGUAGES,
             'CURRENT_LOCALE': current_locale,
             'FIRST_DAY_OF_WEEK': first_day_of_week(current_locale),
-            'APP_NAME': branding.get('app_name', 'May'),
+            'APP_NAME': branding.get('app_name', 'OdoDash'),
             'APP_TAGLINE': branding.get('app_tagline', 'Vehicle Management'),
             'APP_LOGO': branding.get('logo_filename'),
             'PRIMARY_COLOR': branding.get('primary_color', '#0284c7'),
