@@ -22,7 +22,7 @@ OdoDash is a modern, self-hosted vehicle management application for tracking fue
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="screenshots/dashboard.png" alt="Dashboard" width="45%">
+  <img src="screenshots/ododash-dashboard.png" alt="OdoDash Dashboard" width="45%">
   <img src="screenshots/vehicles.png" alt="Vehicles" width="45%">
 </p>
 <p align="center">
