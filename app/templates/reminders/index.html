@@ -21,7 +21,7 @@
 </div>
 
 <!-- Filters -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 p-4 mb-6">
     <form method="GET" class="flex flex-wrap gap-4 items-end">
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Vehicle') }}</label>
@@ -64,7 +64,7 @@
         </svg>
         {{ _('Overdue') }} ({{ overdue|length }})
     </h2>
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700 border-l-4 border-red-500">
+    <div class="surface-card reminder-overdue-surface bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
         {% for reminder in overdue %}
         {% include "reminders/_reminder_row.html" %}
         {% endfor %}
@@ -81,7 +81,7 @@
         </svg>
         {{ _('Upcoming') }} ({{ upcoming|length }})
     </h2>
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700 border-l-4 border-amber-500">
+    <div class="surface-card reminder-upcoming-surface bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
         {% for reminder in upcoming %}
         {% include "reminders/_reminder_row.html" %}
         {% endfor %}
@@ -98,7 +98,7 @@
         </svg>
         {{ _('Later') }} ({{ later|length }})
     </h2>
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
+    <div class="surface-card bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
         {% for reminder in later %}
         {% include "reminders/_reminder_row.html" %}
         {% endfor %}
@@ -115,7 +115,7 @@
         </svg>
         {{ _('Completed') }} ({{ completed|length }})
     </h2>
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700 opacity-75">
+    <div class="surface-card bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 opacity-75">
         {% for reminder in completed %}
         {% include "reminders/_reminder_row.html" %}
         {% endfor %}
@@ -125,7 +125,7 @@
 
 <!-- Empty State -->
 {% if not overdue and not upcoming and not later and not completed %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
     </svg>

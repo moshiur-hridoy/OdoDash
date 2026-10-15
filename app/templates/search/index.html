@@ -7,7 +7,7 @@
     <p class="text-gray-500 dark:text-gray-400">{{ _('Find expenses, fuel logs, documents, notes, trips, and charging sessions') }}</p>
 </div>
 
-<form method="GET" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-8">
+<form method="GET" class="surface-card bg-white dark:bg-gray-800 p-6 mb-8">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
         <div class="sm:col-span-2">
             <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Search term') }}</label>
@@ -38,7 +38,7 @@
 <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">{{ _('%(count)s results', count=total) }}</p>
 
 {% if results.expenses %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-6">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Expenses') }} ({{ results.expenses|length }}{% if results.expenses|length == result_limit %}+{% endif %})</h2>
     </div>
@@ -61,7 +61,7 @@
 {% endif %}
 
 {% if results.fuel_logs %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-6">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Fuel Logs') }} ({{ results.fuel_logs|length }}{% if results.fuel_logs|length == result_limit %}+{% endif %})</h2>
     </div>
@@ -84,7 +84,7 @@
 {% endif %}
 
 {% if results.documents %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-6">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Documents') }} ({{ results.documents|length }}{% if results.documents|length == result_limit %}+{% endif %})</h2>
     </div>
@@ -105,7 +105,7 @@
 {% endif %}
 
 {% if results.notes %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-6">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Notes') }} ({{ results.notes|length }}{% if results.notes|length == result_limit %}+{% endif %})</h2>
     </div>
@@ -125,7 +125,7 @@
 {% endif %}
 
 {% if results.trips %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-6">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Trips') }} ({{ results.trips|length }}{% if results.trips|length == result_limit %}+{% endif %})</h2>
     </div>
@@ -147,7 +147,7 @@
 {% endif %}
 
 {% if results.charging %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-6">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Charging Sessions') }} ({{ results.charging|length }}{% if results.charging|length == result_limit %}+{% endif %})</h2>
     </div>
@@ -170,7 +170,7 @@
 {% endif %}
 
 {% if total == 0 %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
     </svg>

@@ -127,24 +127,47 @@ def _open_reminder(reminder_id, vehicle_ids, vehicle_id=None):
 def index():
     vehicles = current_user.get_all_vehicles()
     vehicle_ids = [v.id for v in vehicles]
+    maintenance_group = request.args.get('maintenance_group') or None
+    maintenance_part = request.args.get('maintenance_part') or None
 
     # Get all expenses for user's vehicles
-    expenses = Expense.query.filter(
-        Expense.vehicle_id.in_(vehicle_ids)
-    ).order_by(Expense.date.desc()).all()
+    expense_query = Expense.query.filter(Expense.vehicle_id.in_(vehicle_ids))
+    if maintenance_group:
+        expense_query = expense_query.filter(
+            Expense.category == 'maintenance',
+            Expense.maintenance_group == maintenance_group,
+        )
+    if maintenance_part:
+        expense_query = expense_query.filter(
+            Expense.category == 'maintenance',
+            Expense.maintenance_part == maintenance_part,
+        )
+    expenses = expense_query.order_by(Expense.date.desc()).all()
+
+    part_names = [name for (name,) in db.session.query(Expense.maintenance_part).filter(
+        Expense.vehicle_id.in_(vehicle_ids),
+        Expense.category == 'maintenance',
+        Expense.maintenance_part.isnot(None),
+        Expense.maintenance_part != '',
+    ).distinct().order_by(Expense.maintenance_part).all()]
 
     # Spend per vendor (#213)
     vendor_rows = db.session.query(
         Expense.vendor, func.sum(Expense.cost), func.count(Expense.id)
     ).filter(
-        Expense.vehicle_id.in_(vehicle_ids),
+        Expense.id.in_([expense.id for expense in expenses]),
         Expense.vendor.isnot(None),
         Expense.vendor != '',
     ).group_by(Expense.vendor).order_by(func.sum(Expense.cost).desc()).all()
 
     return render_template('expenses/index.html', expenses=expenses, vehicles=vehicles,
                            vendor_totals=vendor_rows,
-                           expense_attachments=_attachments_by_expense([e.id for e in expenses]))
+                           expense_attachments=_attachments_by_expense([e.id for e in expenses]),
+                           maintenance_groups=MAINTENANCE_GROUPS,
+                           selected_maintenance_group=maintenance_group,
+                           part_names=part_names,
+                           selected_maintenance_part=maintenance_part,
+                           filtered_total=sum(float(expense.cost or 0) for expense in expenses))
 
 
 @bp.route('/new', methods=['GET', 'POST'])

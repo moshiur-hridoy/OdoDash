@@ -1430,30 +1430,6 @@ VEHICLE_SPEC_TYPES = [
     ('custom', _l('Custom')),
 ]
 
-MAINTENANCE_GROUPS = [
-    ('engine_oil', _l('Engine Oil')),
-    ('servicing', _l('Servicing')),
-    ('parts', _l('Parts')),
-]
-
-MAINTENANCE_PART_TYPES = [
-    item for item in MAINTENANCE_TYPES
-    if item[0] not in {'oil_change', 'full_service', 'custom'}
-]
-
-_PART_MAINTENANCE_TYPES = {item[0] for item in MAINTENANCE_PART_TYPES}
-
-
-def maintenance_group_for_type(maintenance_type):
-    """Map legacy detailed maintenance types to the new display groups."""
-    if maintenance_type == 'oil_change':
-        return 'engine_oil'
-    if maintenance_type in {'full_service', 'custom'}:
-        return 'servicing'
-    if maintenance_type in _PART_MAINTENANCE_TYPES:
-        return 'parts'
-    return None
-
 # Expense categories
 EXPENSE_CATEGORIES = [
     ('maintenance', _l('Maintenance')),
@@ -1638,6 +1614,30 @@ MAINTENANCE_TYPES = [
     ('full_service', _l('Full Service')),
     ('custom', _l('Custom')),
 ]
+
+MAINTENANCE_GROUPS = [
+    ('engine_oil', _l('Engine Oil')),
+    ('servicing', _l('Servicing')),
+    ('parts', _l('Parts')),
+]
+
+MAINTENANCE_PART_TYPES = [
+    item for item in MAINTENANCE_TYPES
+    if item[0] not in {'oil_change', 'full_service', 'custom'}
+]
+
+_PART_MAINTENANCE_TYPES = {item[0] for item in MAINTENANCE_PART_TYPES}
+
+
+def maintenance_group_for_type(maintenance_type):
+    """Map legacy detailed maintenance types to the new display groups."""
+    if maintenance_type == 'oil_change':
+        return 'engine_oil'
+    if maintenance_type in {'full_service', 'custom'}:
+        return 'servicing'
+    if maintenance_type in _PART_MAINTENANCE_TYPES:
+        return 'parts'
+    return None
 
 # Document types
 DOCUMENT_TYPES = [

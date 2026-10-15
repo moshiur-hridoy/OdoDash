@@ -24,6 +24,30 @@ class TestExpenseIndex:
         resp = auth_client.get('/expenses/')
         assert resp.status_code == 200
 
+    def test_index_shows_maintenance_type_and_filters(self, auth_client, sample_expense):
+        sample_expense.category = 'maintenance'
+        sample_expense.description = 'Synthetic engine oil'
+        sample_expense.maintenance_group = 'engine_oil'
+        sample_expense.cost = 1350
+        db.session.commit()
+        resp = auth_client.get('/expenses/?maintenance_group=engine_oil')
+        assert resp.status_code == 200
+        assert b'Synthetic engine oil' in resp.data
+        assert b'Engine Oil' in resp.data
+
+    def test_index_filters_out_other_maintenance_types(self, auth_client, sample_expense, sample_vehicle, test_user):
+        sample_expense.category = 'maintenance'
+        sample_expense.maintenance_group = 'engine_oil'
+        other = Expense(vehicle_id=sample_vehicle.id, user_id=test_user.id,
+                        date=date(2024, 2, 1), category='maintenance',
+                        description='Brake pad', cost=900,
+                        maintenance_group='parts', maintenance_part='Brake Pads')
+        db.session.add(other)
+        db.session.commit()
+        resp = auth_client.get('/expenses/?maintenance_group=parts')
+        assert b'Brake pad' in resp.data
+        assert b'Engine Oil' not in resp.data
+
 
 class TestExpenseNew:
     def test_new_requires_auth(self, client):

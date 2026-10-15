@@ -27,15 +27,15 @@
 
 <!-- Summary Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+    <div class="surface-card bg-white dark:bg-gray-800 p-5">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Trips') }}</dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{{ trips|length }}</dd>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+    <div class="surface-card bg-white dark:bg-gray-800 p-5">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Distance') }}</dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(total_distance) }} <span class="text-lg font-normal text-gray-500 dark:text-gray-400">{% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</span></dd>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5 border-2 border-green-200 dark:border-green-800">
+    <div class="surface-card business-distance-surface bg-white dark:bg-gray-800 p-5">
         <dt class="text-sm font-medium text-green-600 dark:text-green-400">{{ _('Business Distance') }}</dt>
         <dd class="mt-1 text-3xl font-semibold text-green-600 dark:text-green-400">{{ "%.1f"|format(business_distance) }} <span class="text-lg font-normal text-green-500 dark:text-green-500">{% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</span></dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('Tax deductible') }}</dd>
@@ -43,7 +43,7 @@
 </div>
 
 <!-- Breakdown by Purpose -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-8">
+<div class="surface-card bg-white dark:bg-gray-800 mb-8">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Breakdown by Purpose') }}</h2>
     </div>
@@ -78,7 +78,7 @@
 </div>
 
 <!-- Chart -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-8 p-6">
+<div class="surface-card bg-white dark:bg-gray-800 mb-8 p-6">
     <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Distance by Purpose') }}</h2>
     <div style="height: 300px;">
         <canvas id="purposeChart"></canvas>
@@ -86,7 +86,7 @@
 </div>
 
 <!-- Trip List -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+<div class="table-surface bg-white dark:bg-gray-800">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('All Trips') }} ({{ year }})</h2>
     </div>

@@ -19,7 +19,7 @@
         <input type="hidden" name="data_type" value="{{ data_type }}">
         <input type="hidden" name="vehicle_id" value="{{ vehicle_id }}">
 
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
+        <div class="table-surface bg-white dark:bg-gray-800 p-6 mb-6">
             <div class="mb-4">
                 <label for="date_format" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date Format in CSV</label>
                 <select name="date_format" id="date_format"
@@ -69,7 +69,7 @@
         </div>
 
         {% if preview_rows %}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
+        <div class="table-surface bg-white dark:bg-gray-800 p-6 mb-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Data Preview (first {{ preview_rows|length }} rows)</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">

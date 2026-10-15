@@ -30,7 +30,7 @@
 <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ _('History includes recorded completions and the latest saved service details. Earlier overwritten details cannot be recovered.') }}</p>
 <div class="space-y-3">
 {% for event in events %}
-<article class="rounded-lg bg-white dark:bg-gray-800 p-4 shadow">
+<article class="surface-card bg-white dark:bg-gray-800 p-4">
     <h2 class="font-semibold text-gray-900 dark:text-white">{{ event.name }}</h2>
     {% if event.maintenance_group %}
     <span class="mt-1 inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-gray-700 dark:text-primary-300">{{ dict(maintenance_groups).get(event.maintenance_group, event.maintenance_group) }}</span>

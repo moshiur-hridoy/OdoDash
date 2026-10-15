@@ -36,18 +36,18 @@
 
 <!-- Summary Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="surface-card bg-white dark:bg-gray-800 p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Distance') }}</dt>
         <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(total_distance) }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="surface-card bg-white dark:bg-gray-800 p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Business Distance') }}</dt>
         <dd class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">{{ "%.1f"|format(business_distance) }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
     </div>
 </div>
 
 <!-- Filters -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 p-4 mb-6">
     <form method="GET" class="flex flex-wrap gap-4 items-end">
         <div>
             <label for="vehicle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }}</label>
@@ -89,7 +89,7 @@
 
 <!-- Trips List -->
 {% if trips %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+<div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
     <ul class="divide-y divide-gray-200 dark:divide-gray-700">
         {% for trip in trips %}
         <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -155,7 +155,7 @@
     </ul>
 </div>
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
     </svg>

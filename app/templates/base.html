@@ -168,16 +168,162 @@
     <style>
         /* Critical dark mode styles - renders before Tailwind JS compiles */
         html.dark { color-scheme: dark; }
-        html.dark body { background-color: #111827; color: #f9fafb; }
-        html:not(.dark) body { background-color: #f9fafb; }
-        html.dark nav { background-color: #1f2937; border-color: #374151; }
-        html.dark .dark\:bg-gray-800 { background-color: #1f2937; }
+
+        /* May design tokens: dashboard is the visual source of truth. Keep
+           these semantic values stable so individual pages can migrate to
+           the same system without changing their markup first. */
+        :root {
+            --color-background: #f8f8f8;
+            --color-surface: #ffffff;
+            --color-surface-muted: #fafafa;
+            --color-border: #e5e5e5;
+            --color-border-strong: #d4d4d8;
+            --color-text: #18181b;
+            --color-text-muted: #71717a;
+            --color-text-subtle: #a1a1aa;
+            --color-focus: var(--primary-500);
+            --color-focus-soft: var(--primary-100);
+
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-pill: 9999px;
+
+            --shadow-none: none;
+            --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+            --shadow-popover: 0 10px 24px rgb(0 0 0 / 0.08);
+            --shadow-focus: 0 0 0 3px var(--color-focus-soft);
+
+            --control-bg: var(--color-surface);
+            --control-border: var(--color-border-strong);
+            --control-text: var(--color-text);
+            --control-placeholder: var(--color-text-subtle);
+        }
+        html.dark {
+            --color-background: #111827;
+            --color-surface: #1f2937;
+            --color-surface-muted: #374151;
+            --color-border: #374151;
+            --color-border-strong: #4b5563;
+            --color-text: #f9fafb;
+            --color-text-muted: #9ca3af;
+            --color-text-subtle: #6b7280;
+            --shadow-popover: 0 10px 24px rgb(0 0 0 / 0.3);
+        }
+
+        html.dark body { background-color: var(--color-background); color: var(--color-text); }
+        html:not(.dark) body { background-color: var(--color-background); }
+        html.dark nav { background-color: var(--color-surface); border-color: var(--color-border); }
+        html.dark .dark\:bg-gray-800 { background-color: var(--color-surface); }
         html.dark .dark\:bg-gray-700 { background-color: #374151; }
         html.dark .dark\:text-white { color: #fff; }
         html.dark .dark\:text-gray-300 { color: #d1d5db; }
         html.dark .dark\:text-gray-400 { color: #9ca3af; }
         html.dark .dark\:border-gray-700 { border-color: #374151; }
         html.dark .dark\:border-gray-600 { border-color: #4b5563; }
+
+        /* Shared table surfaces: match the dashboard card treatment while
+           leaving table rows, dividers, and status badges page-specific. */
+        .surface-card,
+        .table-surface {
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-none);
+        }
+
+        .reminder-overdue-surface {
+            border-left: 4px solid #ef4444;
+        }
+
+        .reminder-upcoming-surface {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .business-distance-surface {
+            border: 2px solid #bbf7d0;
+        }
+
+        html.dark .business-distance-surface {
+            border-color: #166534;
+        }
+
+        /* Shared form controls: keep native HTML semantics, but give every
+           page the same compact, modern treatment. Checkbox/radio controls
+           stay native so their existing behaviour and accessibility remain
+           unchanged. */
+        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+        form select,
+        form textarea,
+        .app-input,
+        .app-select,
+        .app-textarea {
+            border: 1px solid var(--control-border);
+            border-radius: var(--radius-md);
+            background-color: var(--control-bg);
+            color: var(--control-text);
+            box-shadow: var(--shadow-none);
+            transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+        }
+        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+        form select,
+        .app-input,
+        .app-select {
+            min-height: 36px;
+            padding: 0 10px;
+        }
+        form select,
+        .app-select {
+            appearance: none;
+            padding: 0 36px 0 10px !important;
+            background-image: linear-gradient(45deg, transparent 50%, var(--control-text) 50%),
+                              linear-gradient(135deg, var(--control-text) 50%, transparent 50%);
+            background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+            background-repeat: no-repeat;
+            background-size: 5px 5px, 5px 5px;
+        }
+        form textarea,
+        .app-textarea {
+            min-height: 88px;
+            padding: 10px 12px;
+        }
+        form input::placeholder,
+        form textarea::placeholder,
+        .app-input::placeholder,
+        .app-textarea::placeholder {
+            color: var(--control-placeholder);
+        }
+        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):focus,
+        form select:focus,
+        form textarea:focus,
+        .app-input:focus,
+        .app-select:focus,
+        .app-textarea:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: var(--shadow-focus);
+        }
+        form input:disabled,
+        form select:disabled,
+        form textarea:disabled,
+        .app-input:disabled,
+        .app-select:disabled,
+        .app-textarea:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+        form input[type="file"] {
+            color: var(--control-text);
+        }
+        form input[type="file"]::file-selector-button {
+            margin-right: 10px;
+            border: 0;
+            border-right: 1px solid var(--control-border);
+            background: transparent;
+            color: var(--control-text);
+            padding: 9px 12px 9px 0;
+            cursor: pointer;
+        }
 
         [x-cloak] { display: none !important; }
         .text-primary-400 { color: var(--primary-400); }
@@ -266,7 +412,7 @@
                                 {% endif %}
                             </a>
                         </div>
-                        <div class="hidden sm:ml-8 sm:flex sm:space-x-4">
+                        <div class="hidden lg:ml-8 lg:flex lg:space-x-4">
                             <a href="{{ url_for('main.dashboard') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium {% if request.endpoint == 'main.dashboard' %}text-primary-600 border-b-2 border-primary-600{% else %}text-gray-500 dark:text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white{% endif %}">
                                 {{ _('Dashboard') }}
                             </a>
@@ -347,7 +493,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-2">
+                    <div class="hidden lg:ml-6 lg:flex lg:items-center space-x-2">
                         <!-- Quick Entry Button -->
                         {% if current_user.show_quick_entry %}
                         {% if can_write('fuel') %}
@@ -377,7 +523,7 @@
                             </svg>
                         </a>
                     </div>
-                    <div class="flex items-center sm:hidden">
+                    <div class="flex items-center lg:hidden">
                         <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-500 dark:text-gray-400">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -386,7 +532,7 @@
                     </div>
                 </div>
             </div>
-            <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="lg:hidden hidden" id="mobile-menu">
                 <div class="space-y-1 pb-3 pt-2">
                     <a href="{{ url_for('main.dashboard') }}" class="block px-4 py-2 text-base font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">{{ _('Dashboard') }}</a>
                     {% if current_user.show_menu_vehicles is not defined or current_user.show_menu_vehicles %}

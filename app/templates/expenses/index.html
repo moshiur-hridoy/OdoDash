@@ -18,8 +18,30 @@
     {% endif %}
 </div>
 
+<form method="GET" class="mb-6 flex flex-wrap items-end gap-3 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+    <div>
+        <label for="maintenance_group" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Maintenance Type') }}</label>
+        <select name="maintenance_group" id="maintenance_group" class="mt-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+            <option value="">{{ _('All Types') }}</option>
+            {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if selected_maintenance_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="maintenance_part" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Part Name') }}</label>
+        <select name="maintenance_part" id="maintenance_part" class="mt-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+            <option value="">{{ _('All Parts') }}</option>
+            {% for part in part_names %}<option value="{{ part }}" {% if selected_maintenance_part == part %}selected{% endif %}>{{ part }}</option>{% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="mt-1 rounded-md bg-primary-600 px-3 py-2 text-sm font-medium text-white hover:bg-primary-700">{{ _('Filter') }}</button>
+    {% if selected_maintenance_group or selected_maintenance_part %}
+    <a href="{{ url_for('expenses.index') }}" class="mt-1 px-2 py-2 text-sm text-primary-600 hover:underline">{{ _('Clear') }}</a>
+    {% endif %}
+</form>
+<p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ _('Showing %(count)s expenses', count=expenses|length) }}{% if selected_maintenance_group or selected_maintenance_part %} · {{ _('Filtered total') }}: <strong class="text-gray-900 dark:text-white">{{ filtered_total|money }} {{ current_user.currency }}</strong>{% endif %}</p>
+
 {% if expenses %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+<div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-700">
@@ -28,6 +50,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Date') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vehicle') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Category') }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Type') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Description') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Odometer') }}</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Cost') }}</th>
@@ -54,6 +77,14 @@
                         </a>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ expense.category|category_label }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        {% if expense.category == 'maintenance' and expense.maintenance_group %}
+                        <span class="inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-gray-700 dark:text-primary-300">{{ dict(maintenance_groups).get(expense.maintenance_group, expense.maintenance_group) }}</span>
+                        {% if expense.maintenance_part %}<span class="ml-1 text-xs text-gray-500 dark:text-gray-400">{{ expense.maintenance_part }}</span>{% endif %}
+                        {% elif expense.category == 'maintenance' %}
+                        <span class="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ _('Uncategorized') }}</span>
+                        {% else %}-{% endif %}
+                    </td>
                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ expense.description }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {% if expense.odometer %}{{ expense.odometer|int }} {{ expense.vehicle.get_reading_unit() }}{% else %}-{% endif %}
@@ -75,7 +106,7 @@
                 {% if has_details %}
                 <tr id="detail-{{ expense.id }}" class="hidden bg-gray-50 dark:bg-gray-700/50">
                     <td></td>
-                    <td colspan="7" class="px-6 py-3">
+                    <td colspan="8" class="px-6 py-3">
                         <div class="flex flex-wrap gap-6 text-sm">
                             {% if expense.vendor %}
                             <div>
@@ -131,7 +162,7 @@
 
 {% if vendor_totals %}
 <!-- Spend by vendor (#213) -->
-<div class="mt-8 bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+<div class="table-surface mt-8 bg-white dark:bg-gray-800 overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Spend by Vendor') }}</h2>
     </div>

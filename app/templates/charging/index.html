@@ -20,11 +20,11 @@
 
 <!-- Summary Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="surface-card bg-white dark:bg-gray-800 p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Energy') }}</dt>
         <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(total_kwh) }} kWh</dd>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div class="surface-card bg-white dark:bg-gray-800 p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Cost') }}</dt>
         <dd class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">{{ total_cost|money }} {{ current_user.currency }}</dd>
     </div>
@@ -32,7 +32,7 @@
 
 <!-- Filters -->
 {% if vehicles|length > 1 %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+<div class="surface-card bg-white dark:bg-gray-800 p-4 mb-6">
     <form method="GET" class="flex flex-wrap gap-4 items-end">
         <div>
             <label for="vehicle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }}</label>
@@ -57,7 +57,7 @@
 
 <!-- Sessions List -->
 {% if sessions %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+<div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
     <ul class="divide-y divide-gray-200 dark:divide-gray-700">
         {% for session in sessions %}
         <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -138,7 +138,7 @@
     </ul>
 </div>
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
     </svg>
