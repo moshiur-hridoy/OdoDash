@@ -1,0 +1,23 @@
+services:
+  may:
+    # Built by .github/workflows/docker.yml whenever the dev branch is pushed.
+    image: ghcr.io/moshiur-hridoy/may:dev
+    container_name: may-dev
+    restart: unless-stopped
+
+    ports:
+      - "5052:5050"
+
+    volumes:
+      # Keep this separate from the production /DATA/AppData/may folder.
+      - /DATA/AppData/may-dev:/app/data
+
+    environment:
+      # Define these two values in Portainer's stack environment variables.
+      SECRET_KEY: "${MAY_DEV_SECRET_KEY}"
+      ADMIN_PASSWORD: "${MAY_DEV_ADMIN_PASSWORD}"
+      DATABASE_URL: "sqlite:////app/data/may.db"
+      UPLOAD_FOLDER: "/app/data/uploads"
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+      RELEASE_CHANNEL: "dev"

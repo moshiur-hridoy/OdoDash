@@ -4,17 +4,67 @@
 {% block extra_scripts %}
 <!-- Chart.js - Only needed on dashboard -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<style>
+    /* Dashboard-only surface and card treatment. */
+    html:not(.dark) body:has(.dashboard-shell),
+    html:not(.dark) .dashboard-shell {
+        background-color: #F8F8F8;
+    }
+
+    .dashboard-shell .shadow,
+    .dashboard-shell .hover\:shadow-md:hover {
+        box-shadow: none;
+    }
+
+    .dashboard-shell .rounded-lg {
+        border-radius: 12px;
+    }
+
+    html:not(.dark) .dashboard-shell .bg-white {
+        border: 1px solid #E5E5E5;
+    }
+
+    .dashboard-stat-grid > div > .p-5 > .flex {
+        justify-content: space-between;
+    }
+
+    .dashboard-stat-grid > div > .p-5 > .flex > .flex-shrink-0 {
+        margin-left: 1.25rem;
+        order: 2;
+    }
+
+    .dashboard-stat-grid > div > .p-5 > .flex > .ml-5 {
+        margin-left: 0;
+        order: 1;
+    }
+
+    .dashboard-stat-card--vehicles { order: 1; }
+    .dashboard-stat-card--distance { order: 2; }
+    .dashboard-stat-card--cost-per-distance { order: 3; }
+    .dashboard-stat-card--fuel { order: 4; }
+    .dashboard-stat-card--charging { order: 5; }
+    .dashboard-stat-card--expenses { order: 6; }
+    .dashboard-stat-card--total-cost { order: 7; }
+    .dashboard-stat-card--allowance { order: 8; }
+    .dashboard-stat-card--net-cost { order: 9; }
+
+    html:not(.dark) .dashboard-stat-card--cost-per-distance {
+        background: linear-gradient(102deg, var(--primary-100) 0%, var(--primary-50) 50%, #FFFFFF 100%);
+        border-color: var(--primary-200);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="mb-8">
+<div class="dashboard-shell">
+<div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Dashboard') }}</h1>
     <p class="text-gray-500 dark:text-gray-400">{{ _('Overview of your vehicles and expenses') }}</p>
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5 mb-8">
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+<div class="dashboard-stat-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+    <div class="dashboard-stat-card dashboard-stat-card--vehicles bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
@@ -32,12 +82,12 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--fuel bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M17 6L20 9V16C20 16.3978 19.842 16.7794 19.5607 17.0607C19.2794 17.342 18.8978 17.5 18.5 17.5C18.1022 17.5 17.7206 17.342 17.4393 17.0607C17.158 16.7794 17 16.3978 17 16V13C17 12.4696 16.7893 11.9609 16.4142 11.5858C16.0391 11.2107 15.5304 11 15 11H4M20 9H19C18.7348 9 18.4804 8.89464 18.2929 8.70711C18.1054 8.51957 18 8.26522 18 8V7M4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H12C12.5304 4 13.0391 4.21071 13.4142 4.58579C13.7893 4.96086 14 5.46957 14 6V20M3 20H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <div class="ml-5 w-0 flex-1">
@@ -51,11 +101,11 @@
     </div>
 
     {% if total_charging_cost and total_charging_cost > 0 %}
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--charging bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                     </svg>
                 </div>
@@ -70,12 +120,12 @@
     </div>
     {% endif %}
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--expenses bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path d="M3 10H21M7 15H7.01M11 15H13M3 8C3 7.20435 3.31607 6.44129 3.87868 5.87868C4.44129 5.31607 5.20435 5 6 5H18C18.7956 5 19.5587 5.31607 20.1213 5.87868C20.6839 6.44129 21 7.20435 21 8V16C21 16.7956 20.6839 17.5587 20.1213 18.1213C19.5587 18.6839 18.7956 19 18 19H6C5.20435 19 4.44129 18.6839 3.87868 18.1213C3.31607 17.5587 3 16.7956 3 16V8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <div class="ml-5 w-0 flex-1">
@@ -88,12 +138,12 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--distance bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path d="M15 7L9 4L3 7V20L9 17M9 4V17M9 17L15 20L21 17V4L15 7M15 7V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <div class="ml-5 w-0 flex-1">
@@ -106,12 +156,12 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border-2 border-primary-200 dark:border-primary-800">
+    <div class="dashboard-stat-card dashboard-stat-card--cost-per-distance bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border-2 border-primary-200 dark:border-primary-800">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path d="M13.0201 21.206C12.6381 21.4323 12.1917 21.525 11.7512 21.4696C11.3107 21.4142 10.9011 21.2138 10.5871 20.9L6.34306 16.657C5.43989 15.7536 4.7662 14.647 4.37835 13.4298C3.9905 12.2127 3.89978 10.9203 4.11377 9.66088C4.32776 8.40146 4.84025 7.2116 5.60835 6.19084C6.37645 5.17008 7.37783 4.34811 8.52871 3.79368C9.6796 3.23926 10.9465 2.96851 12.2235 3.00408C13.5005 3.03965 14.7504 3.38051 15.8686 3.99814C16.9868 4.61578 17.9409 5.49222 18.651 6.55416C19.3611 7.6161 19.8065 8.83264 19.9501 10.102M21 15H18.5C18.1022 15 17.7206 15.158 17.4393 15.4393C17.158 15.7206 17 16.1022 17 16.5C17 16.8978 17.158 17.2794 17.4393 17.5607C17.7206 17.842 18.1022 18 18.5 18H19.5C19.8978 18 20.2794 18.158 20.5607 18.4393C20.842 18.7206 21 19.1022 21 19.5C21 19.8978 20.842 20.2794 20.5607 20.5607C20.2794 20.842 19.8978 21 19.5 21H17M19 21V22M19 14V15M9 11C9 11.7956 9.31607 12.5587 9.87868 13.1213C10.4413 13.6839 11.2044 14 12 14C12.7956 14 13.5587 13.6839 14.1213 13.1213C14.6839 12.5587 15 11.7956 15 11C15 10.2044 14.6839 9.44129 14.1213 8.87868C13.5587 8.31607 12.7956 8 12 8C11.2044 8 10.4413 8.31607 9.87868 8.87868C9.31607 9.44129 9 10.2044 9 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <div class="ml-5 w-0 flex-1">
@@ -126,12 +176,12 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--total-cost bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path d="M17 9V7C17 6.46957 16.7893 5.96086 16.4142 5.58579C16.0391 5.21071 15.5304 5 15 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V13C3 13.5304 3.21071 14.0391 3.58579 14.4142C3.96086 14.7893 4.46957 15 5 15H7M7 11C7 10.4696 7.21071 9.96086 7.58579 9.58579C7.96086 9.21071 8.46957 9 9 9H19C19.5304 9 20.0391 9.21071 20.4142 9.58579C20.7893 9.96086 21 10.4696 21 11V17C21 17.5304 20.7893 18.0391 20.4142 18.4142C20.0391 18.7893 19.5304 19 19 19H9C8.46957 19 7.96086 18.7893 7.58579 18.4142C7.21071 18.0391 7 17.5304 7 17V11ZM12 14C12 14.5304 12.2107 15.0391 12.5858 15.4142C12.9609 15.7893 13.4696 16 14 16C14.5304 16 15.0391 15.7893 15.4142 15.4142C15.7893 15.0391 16 14.5304 16 14C16 13.4696 15.7893 12.9609 15.4142 12.5858C15.0391 12.2107 14.5304 12 14 12C13.4696 12 12.9609 12.2107 12.5858 12.5858C12.2107 12.9609 12 13.4696 12 14Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <div class="ml-5 w-0 flex-1">
@@ -145,11 +195,11 @@
     </div>
 
     {% if total_allowance and total_allowance > 0 %}
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--allowance bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 </div>
@@ -163,11 +213,11 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <div class="dashboard-stat-card dashboard-stat-card--net-cost bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
         <div class="p-5">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
                     </svg>
                 </div>
@@ -183,7 +233,7 @@
     {% endif %}
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Monthly Spending Chart -->
     <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Monthly Spending') }}</h2>
@@ -236,7 +286,7 @@
 </div>
 
 <!-- Your Vehicles -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-8">
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Your Vehicles') }}</h2>
         {% if can_write('vehicles') %}
@@ -283,7 +333,7 @@
 </div>
 
 <!-- Recent Activity -->
-<div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Recent Fuel Logs') }}</h2>
@@ -331,6 +381,7 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No expenses yet.') }}</p>
         {% endif %}
     </div>
+</div>
 </div>
 
 <script>
