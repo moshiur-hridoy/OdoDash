@@ -1,12 +1,23 @@
-# May
+# OdoDash 🚗💨
+
+*A gorgeous, self-hosted vehicle management dashboard optimized for the ultimate user experience. Track fuel, expenses, maintenance, and trips without the clutter.*
+
+> 💡 **Notice:** OdoDash is an actively maintained, designer-led friendly fork of the wonderful [May](https://github.com/dannymcc/may) project by [Danny McClelland](https://github.com/dannymcc). We are deeply grateful for the foundational codebase. This fork is dedicated to continuous UX/UI enhancements, active bug fixes, and community-driven features.
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/d3hkz6gwle)
 
-A modern, self-hosted vehicle management application for tracking fuel consumption, expenses, reminders, and maintenance across your entire fleet.
+![Flask](https://img.shields.io/badge/Flask-Python-blue) ![GitHub Release](https://img.shields.io/github/v/release/moshiur-hridoy/OdoDash) ![License](https://img.shields.io/badge/license-MIT-green) ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED) ![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8)
 
-![Flask](https://img.shields.io/badge/Flask-Python-blue) ![GitHub Release](https://img.shields.io/github/v/release/dannymcc/may) ![License](https://img.shields.io/badge/license-MIT-green) ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED) ![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8)
+## What is OdoDash & Why It Exists
 
-Named after James May, completing the trio of Top Gear presenters (alongside [Clarkson](https://github.com/linuxserver/Clarkson) and [Hammond](https://github.com/AlfHou/hammond)).
+OdoDash is a modern, self-hosted vehicle management application for tracking fuel consumption, expenses, reminders, and maintenance across your entire fleet. The original May project provides an excellent backend for tracking cars, bikes, and scooters — fuel, costs, and servicing. But a great self-hosted app also needs a simple, modern, and friendly interface. **OdoDash** exists to make complex data entry easier and to make the dashboard screens more visually rich and responsive.
+
+## Key Differences (OdoDash vs May)
+
+- **Designer-Led UX/UI:** Modernized interface gaps, typography, and color palette using modern Tailwind tokens.
+- **Streamlined Logging Flow:** Fuel and expense entry forms designed for fewer clicks.
+- **Enhanced Mobile/PWA Experience:** App-like smooth navigation and responsiveness on mobile.
+- **Active Maintenance:** Upstream bugs and useful PRs are merged here quickly.
 
 ## 📸 Screenshots
 
@@ -60,11 +71,22 @@ Named after James May, completing the trio of Top Gear presenters (alongside [Cl
 ### Quick Start with Docker
 
 ```bash
-# Create a directory for May
-mkdir may && cd may
+# Clone your OdoDash fork
+git clone https://github.com/moshiur-hridoy/OdoDash.git
+cd OdoDash
+
+# Run via Docker Compose
+docker compose up -d
+```
+
+Or download the compose file directly:
+
+```bash
+# Create a directory for OdoDash
+mkdir ododash && cd ododash
 
 # Download docker-compose.yml
-curl -O https://raw.githubusercontent.com/dannymcc/may/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/main/docker-compose.yml
 
 # Start the container
 docker compose up -d
@@ -74,16 +96,16 @@ Or run directly with Docker:
 
 ```bash
 docker run -d \
-  --name may \
+  --name ododash \
   -p 5050:5050 \
-  -v may_data:/app/data \
+  -v ododash_data:/app/data \
   -e SECRET_KEY=your-secret-key \
   -e PUID=1000 \
   -e PGID=1000 \
   ghcr.io/dannymcc/may:latest
 ```
 
-> **Running as a specific user (PUID/PGID):** May follows the [linuxserver.io](https://docs.linuxserver.io/general/understanding-puid-and-pgid/) convention. Set the optional `PUID` and `PGID` environment variables to make the container run as a specific host user/group so bind-mounted data is owned correctly. They default to `1000:1000`. On Unraid, set `PUID=99` and `PGID=100`.
+> **Running as a specific user (PUID/PGID):** OdoDash follows the [linuxserver.io](https://docs.linuxserver.io/general/understanding-puid-and-pgid/) convention. Set the optional `PUID` and `PGID` environment variables to make the container run as a specific host user/group so bind-mounted data is owned correctly. They default to `1000:1000`. On Unraid, set `PUID=99` and `PGID=100`.
 
 Access the application at `http://localhost:5050`
 
@@ -91,7 +113,7 @@ Access the application at `http://localhost:5050`
 - Username: `admin`
 - Password: Check your container logs for the auto-generated password
 
-On first run, if no `ADMIN_PASSWORD` environment variable is set, May generates a secure random password and prints it to the console:
+On first run, if no `ADMIN_PASSWORD` environment variable is set, OdoDash generates a secure random password and prints it to the console:
 
 ```
 ============================================================
@@ -105,7 +127,7 @@ Set ADMIN_PASSWORD environment variable to avoid this message.
 
 To view the password, run:
 ```bash
-docker logs may
+docker logs ododash
 ```
 
 💡 **Tip:** Set `ADMIN_PASSWORD` in your docker-compose.yml or environment to use a fixed password.
@@ -140,25 +162,25 @@ SECRET_KEY=your-secure-random-string
 # Note the slashes: sqlite:///path is relative, sqlite:////path is absolute.
 DATABASE_URL=sqlite:////srv/may/data/may.db
 # PostgreSQL is also supported:
-# DATABASE_URL=postgresql://user:password@host:5432/may
+# DATABASE_URL=******host:5432/may
 
 # Upload folder for attachments (optional)
 UPLOAD_FOLDER=/srv/may/data/uploads
 ```
 
-If you don't set `SECRET_KEY`, May generates one on first start and saves it to
+If you don't set `SECRET_KEY`, OdoDash generates one on first start and saves it to
 `.secret_key` in its data folder, so logins survive restarts. Set it yourself if
 you'd rather manage the key, or if you run more than one instance behind a load
 balancer and want them to share sessions.
 
 The supplied `docker-compose.yml` passes a placeholder `SECRET_KEY` when you
-haven't set one of your own, so under Compose May signs sessions with that
+haven't set one of your own, so under Compose OdoDash signs sessions with that
 rather than generating a key. Set `SECRET_KEY` in `.env` next to
-`docker-compose.yml`, or remove the line from the compose file to let May
+`docker-compose.yml`, or remove the line from the compose file to let OdoDash
 generate and keep its own.
 
 The `.env` file must sit next to `config.py` in the application directory, and
-it is read when May starts. Variables set in the real environment take
+it is read when OdoDash starts. Variables set in the real environment take
 precedence over `.env`.
 
 Under Docker Compose, `.env` is only used for `${VAR}` substitution in
@@ -220,18 +242,18 @@ Saving a fuel log returns you to the fuel log list, unless you started from a ve
 
 #### Dual-fuel vehicles (petrol + LPG)
 Give the vehicle a secondary fuel type and each fill-up gets a **Fuel Type**
-selector. May then keeps the two fuels apart: each fuel gets its own average on
-the vehicle page, built only from fill-ups of that fuel, because a combined
+selector. OdoDash then keeps the two fuels apart: each fuel gets its own average on the
+vehicle page, built only from fill-ups of that fuel, because a combined
 figure would describe neither.
 
 The odometer cannot say which kilometres were run on LPG and which on petrol,
 so a fill-up of a dual-fuel vehicle also asks for **Distance on this fuel** —
-how far the car ran on that fuel since your last fill-up of it. This is only
-needed where it is genuinely ambiguous: a stretch in which you filled with one
-fuel only is worked out from the odometer as usual, so a car converted to LPG
-keeps its earlier petrol figures. Where the two fuels are mixed and that
-distance is missing, the page says the figure cannot be worked out without it
-rather than showing one derived from the wrong distance.
+how far was driven on the fuel being logged. It is only asked for where it is
+genuinely ambiguous: a stretch in which you filled with one fuel only is worked
+out from the odometer as usual, so a car converted to LPG keeps its earlier
+petrol figures. Where the two fuels are mixed and that distance is missing, the
+page says the figure cannot be worked out without it rather than showing one
+derived from the wrong distance.
 
 The distance is entered in the vehicle's own unit, the one its odometer reads
 in. Both the fuel type and the distance attributed to it appear in the CSV and
@@ -329,7 +351,7 @@ Configure your preferred notification method:
 
 ### Import & Restore
 **Settings → Integrations → Import Data** holds the import options, including
-**Restore May Backup** for moving data from another May instance:
+**Restore May Backup** for moving data from another May or OdoDash instance:
 
 - It takes either file the export page produces — the JSON export (`.json`) or
   the full backup (`.zip`). A full backup also brings across documents,
@@ -359,7 +381,7 @@ or from Settings → Users → Edit:
 
 | Role | What the account can do |
 | --- | --- |
-| **Editor** | Full control of the vehicles and data the account can see. This is the default, and matches how May behaved before roles existed. |
+| **Editor** | Full control of the vehicles and data the account can see. This is the default, and matches how OdoDash behaved before roles existed. |
 | **Contributor** | Record fuel fill-ups and charging sessions. Everything else — expenses, maintenance, trips, reminders, vehicles — is read-only. Suited to drivers. |
 | **Viewer** | See everything the account has access to, but change nothing. Suited to a vehicle owner who only wants the figures. |
 
@@ -375,11 +397,11 @@ settings, password, notifications and API key.
 
 ## 🔌 API
 
-May includes a REST API for automation and integrations:
+OdoDash includes a REST API for automation and integrations:
 
 ```bash
 # Generate an API key in Settings > API
-curl -H "Authorization: Bearer may_your_api_key" \
+curl -H "Authorization: ******" \
   http://localhost:5050/api/v1/vehicles
 ```
 
@@ -392,7 +414,7 @@ created through the API. See the API documentation at `/api/docs` when logged in
 
 UK retailers publish their forecourt prices as open JSON feeds under the
 government [fuel price transparency scheme](https://www.gov.uk/guidance/access-the-latest-fuel-prices-and-forecourt-data-via-api-or-email).
-May can read those feeds and record the prices against your saved stations, so
+OdoDash can read those feeds and record the prices against your saved stations, so
 price history and Cheapest Fuel stay current without manual entry. No API key is
 needed.
 
@@ -402,7 +424,7 @@ To use it:
 2. Give each saved station its postcode — that is what stations are matched on
    the first time. Where a postcode covers more than one forecourt, coordinates
    (if set) and then brand break the tie.
-3. Once a station has been matched, May remembers which forecourt it stands for
+3. Once a station has been matched, OdoDash remembers which forecourt it stands for
    and goes straight to it on later refreshes, so a station keeps reporting the
    same forecourt even if its postcode is edited. A remembered forecourt that
    drops out of the feed is reported as unmatched rather than quietly resolving
@@ -426,10 +448,10 @@ Create vehicle sensors in Home Assistant:
 ```yaml
 sensor:
   - platform: rest
-    name: "May Vehicle Stats"
-    resource: http://your-may-instance/api/ha/summary
+    name: "OdoDash Vehicle Stats"
+    resource: http://your-ododash-instance/api/ha/summary
     headers:
-      Authorization: Bearer may_your_api_key
+      Authorization: ******
     value_template: "{{ value_json.alerts_count }}"
     json_attributes:
       - total_vehicles
@@ -453,7 +475,7 @@ The calendar includes:
 
 ## 🌍 Supported Languages
 
-May is available in the following languages:
+OdoDash is available in the following languages:
 
 | Language | Code | Language | Code |
 |----------|------|----------|------|
@@ -540,7 +562,7 @@ A new catalogue is not offered until the language is registered:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! OdoDash is a designer-led project, so UI/UX improvements, animations, logo design, and feedback are just as valuable as code. Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md) before submitting a Pull Request.
 
 ### Development Setup
 1. Clone this repository
@@ -552,20 +574,21 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. The original May project is Copyright (c) 2026 Danny McClelland.
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/dannymcc/may/issues)
+- **Issues**: [GitHub Issues](https://github.com/moshiur-hridoy/OdoDash/issues)
 - **Documentation**: This README and in-app help
 
 ## 🙏 Acknowledgments
 
+- Original project: [May](https://github.com/dannymcc/may) by [Danny McClelland](https://github.com/dannymcc)
 - App icon design by [@lancetm714](https://github.com/lancetm714)
 
 ---
 
-**Made with ❤️ by [Danny McClelland](https://github.com/dannymcc)**
+**Made with ❤️ by [Danny McClelland](https://github.com/dannymcc) — rebranded and maintained as OdoDash by [moshiur-hridoy](https://github.com/moshiur-hridoy)**
 
 
 ### Historical readings, maintenance and tire axles
