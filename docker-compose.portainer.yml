@@ -1,0 +1,24 @@
+services:
+  may:
+    # Built from this repository by Portainer (Stacks > Repository), so no
+    # registry image is needed. Rebuilds on every "Pull and redeploy".
+    build: .
+    image: ododash:local
+    container_name: ododash
+    restart: unless-stopped
+
+    ports:
+      - "${ODODASH_PORT:-5050}:5050"
+
+    volumes:
+      # Absolute host path, set in Portainer's stack environment variables.
+      - ${ODODASH_DATA_PATH:-/opt/ododash/data}:/app/data
+
+    environment:
+      # Define these in Portainer's stack environment variables.
+      SECRET_KEY: "${ODODASH_SECRET_KEY}"
+      ADMIN_PASSWORD: "${ODODASH_ADMIN_PASSWORD}"
+      DATABASE_URL: "sqlite:////app/data/may.db"
+      UPLOAD_FOLDER: "/app/data/uploads"
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"

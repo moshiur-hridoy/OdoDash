@@ -37,3 +37,15 @@ Thumbs.db
 # Compiled translation catalogues -- build artefacts, produced from the
 # tracked .po files by "pybabel compile -d app/translations" (#344)
 app/translations/*/LC_MESSAGES/messages.mo
+
+# Personal / local-only files (never commit)
+.env.*
+!.env.example
+*.local.yml
+docker-compose.override.yml
+.claude/
+.codex/
+*.pem
+*.key
+backups/
+uploads/
