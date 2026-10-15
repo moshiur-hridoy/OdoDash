@@ -1,9 +1,9 @@
 services:
   may:
     # Built from this repository by Portainer (Stacks > Repository), so no
-    # registry image is needed. Rebuilds on every "Pull and redeploy".
+    # registry image is needed. No image: line, so the pre-deploy pull skips
+    # this service and it is built on every redeploy.
     build: .
-    image: ododash:local
     container_name: ododash
     restart: unless-stopped
 
