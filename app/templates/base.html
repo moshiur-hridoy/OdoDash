@@ -201,27 +201,32 @@
             --control-placeholder: var(--color-text-subtle);
         }
         html.dark {
-            --color-background: #111827;
-            --color-surface: #1f2937;
-            --color-surface-muted: #374151;
-            --color-border: #374151;
-            --color-border-strong: #4b5563;
-            --color-text: #f9fafb;
-            --color-text-muted: #9ca3af;
-            --color-text-subtle: #6b7280;
-            --shadow-popover: 0 10px 24px rgb(0 0 0 / 0.3);
+            --color-background: #0b0d12;
+            --color-surface: #12151c;
+            --color-surface-muted: #1a1e27;
+            --color-border: #232834;
+            --color-border-strong: #2e3441;
+            --color-text: #f1f3f7;
+            --color-text-muted: #9aa3b2;
+            --color-text-subtle: #6b7482;
+            --shadow-popover: 0 10px 24px rgb(0 0 0 / 0.5);
         }
 
         html.dark body { background-color: var(--color-background); color: var(--color-text); }
         html:not(.dark) body { background-color: var(--color-background); }
-        html.dark nav { background-color: var(--color-surface); border-color: var(--color-border); }
+        html.dark aside, html.dark header.lg\:hidden { background-color: var(--color-surface); border-color: var(--color-border); }
+        html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after { transition: none !important; }
+        html.dark .dark\:bg-gray-900 { background-color: var(--color-background); }
         html.dark .dark\:bg-gray-800 { background-color: var(--color-surface); }
-        html.dark .dark\:bg-gray-700 { background-color: #374151; }
+        html.dark .dark\:bg-gray-700, html.dark .dark\:bg-gray-700\/50 { background-color: var(--color-surface-muted); }
+        html.dark .dark\:bg-gray-600 { background-color: var(--color-border-strong); }
+        html.dark .dark\:hover\:bg-gray-700:hover { background-color: var(--color-surface-muted); }
+        html.dark .dark\:hover\:bg-gray-600:hover { background-color: var(--color-border-strong); }
+        html.dark .dark\:border-gray-700, html.dark .dark\:divide-gray-700 > :not([hidden]) ~ :not([hidden]) { border-color: var(--color-border); }
+        html.dark .dark\:border-gray-600 { border-color: var(--color-border-strong); }
         html.dark .dark\:text-white { color: #fff; }
         html.dark .dark\:text-gray-300 { color: #d1d5db; }
         html.dark .dark\:text-gray-400 { color: #9ca3af; }
-        html.dark .dark\:border-gray-700 { border-color: #374151; }
-        html.dark .dark\:border-gray-600 { border-color: #4b5563; }
 
         /* Shared table surfaces: match the dashboard card treatment while
            leaving table rows, dividers, and status badges page-specific. */
@@ -354,8 +359,8 @@
 
         /* Flatpickr dark mode overrides */
         html.dark .flatpickr-calendar {
-            background: #1f2937;
-            border-color: #374151;
+            background: #12151c;
+            border-color: #232834;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
         }
         html.dark .flatpickr-months .flatpickr-month,
@@ -367,7 +372,7 @@
             fill: #f9fafb;
         }
         html.dark .flatpickr-current-month .flatpickr-monthDropdown-months {
-            background: #1f2937;
+            background: #12151c;
         }
         html.dark .flatpickr-current-month input.cur-year {
             color: #f9fafb;
@@ -376,8 +381,8 @@
             color: #d1d5db;
         }
         html.dark .flatpickr-day:hover {
-            background: #374151;
-            border-color: #374151;
+            background: #232834;
+            border-color: #232834;
         }
         html.dark .flatpickr-day.today {
             border-color: #6b7280;
@@ -392,7 +397,7 @@
             color: #6b7280;
         }
         html.dark .flatpickr-calendar .flatpickr-innerContainer {
-            border-bottom-color: #374151;
+            border-bottom-color: #232834;
         }
     </style>
 </head>
@@ -486,6 +491,10 @@
                 <div class="flex items-center justify-between">
                     <span class="truncate px-2 text-sm text-gray-500 dark:text-gray-400">{{ current_user.username }}</span>
                     <div class="flex items-center">
+                        <button type="button" id="theme-toggle" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white" title="{{ _('Toggle dark mode') }}" aria-label="{{ _('Toggle dark mode') }}">
+                            <svg class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <svg class="h-5 w-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.002 9.002 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        </button>
                         <a href="{{ url_for('search.index') }}" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white" title="{{ _('Search') }}">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </a>
@@ -859,6 +868,20 @@
             wireFormNormalisation();
         });
     })();
+    </script>
+    <script>
+        document.getElementById('theme-toggle')?.addEventListener('click', function () {
+            const root = document.documentElement;
+            root.classList.add('theme-switching');
+            const isDark = root.classList.toggle('dark');
+            void root.offsetHeight;
+            setTimeout(() => root.classList.remove('theme-switching'), 50);
+            localStorage.setItem('may-theme', isDark ? 'dark' : 'light');
+            fetch('{{ url_for("api.toggle_dark_mode") }}', {
+                method: 'POST',
+                headers: {'X-CSRFToken': '{{ csrf_token() }}'}
+            });
+        });
     </script>
 </body>
 </html>
