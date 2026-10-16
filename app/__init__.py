@@ -154,7 +154,14 @@ def _log_startup_banner(app):
     app.logger.warning(f'OdoDash {version} starting (alembic_version={alembic_rev})')
 
 
-def _scalar_default_sql(column):
+def _bool_sql(value, dialect):
+    """Boolean literal for DDL: PostgreSQL rejects ``DEFAULT 1`` on BOOLEAN (#410)."""
+    if dialect is None or dialect.name == 'sqlite':
+        return '1' if value else '0'
+    return 'TRUE' if value else 'FALSE'
+
+
+def _scalar_default_sql(column, dialect=None):
     """Render a SQLAlchemy column's Python-side default as a SQL literal.
 
     Returns None when no scalar default is set, when the default is callable
@@ -164,13 +171,13 @@ def _scalar_default_sql(column):
     would be misleading anyway.
     """
     if 'legacy_default' in column.info:
-        return '1' if column.info['legacy_default'] else '0'
+        return _bool_sql(column.info['legacy_default'], dialect)
     default = column.default
     if default is None or not getattr(default, 'is_scalar', False):
         return None
     arg = default.arg
     if isinstance(arg, bool):
-        return '1' if arg else '0'
+        return _bool_sql(arg, dialect)
     if isinstance(arg, (int, float)):
         return str(arg)
     if isinstance(arg, str):
@@ -187,7 +194,7 @@ def _add_column_clause(column, dialect):
     instantly violate the constraint.
     """
     parts = [column.name, column.type.compile(dialect=dialect)]
-    default_sql = _scalar_default_sql(column)
+    default_sql = _scalar_default_sql(column, dialect)
     if default_sql is not None:
         parts.append(f'DEFAULT {default_sql}')
         if not column.nullable:

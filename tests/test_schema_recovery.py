@@ -216,3 +216,17 @@ def test_fresh_db_stamps_head_and_replay_survives(tmp_path):
         assert rev == head
         db.session.remove()
         db.engine.dispose()
+
+
+def test_boolean_default_is_portable_to_postgresql():
+    """PostgreSQL rejects ``BOOLEAN DEFAULT 1``; SQLite keeps the 1/0 form (#410)."""
+    from sqlalchemy.dialects import postgresql, sqlite
+
+    col = db.Column('show_menu_tires', db.Boolean, default=True)
+    assert _scalar_default_sql(col, postgresql.dialect()) == 'TRUE'
+    assert _scalar_default_sql(col, sqlite.dialect()) == '1'
+    assert _add_column_clause(col, postgresql.dialect()) == 'show_menu_tires BOOLEAN DEFAULT TRUE'
+    assert _add_column_clause(col, sqlite.dialect()) == 'show_menu_tires BOOLEAN DEFAULT 1'
+
+    legacy = db.Column('c', db.Boolean, default=True, info={'legacy_default': False})
+    assert _scalar_default_sql(legacy, postgresql.dialect()) == 'FALSE'
