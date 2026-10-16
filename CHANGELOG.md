@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [0.45.1] - 2026-10-16
+
+### Added
+
+- Dark/light theme toggle in the sidebar footer, saved to the user's account.
+
+### Changed
+
+- Darker, more modern dark-mode palette.
+
+### Fixed
+
+- The Settings sub-menu no longer gets a stray panel background in dark mode.
+- Theme switching no longer flickers.
+- Updated two stale expense and maintenance filter tests so CI passes.
+
 ## [0.45.0] - 2026-10-16
 
 ### Added
