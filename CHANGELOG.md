@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [0.45.0] - 2026-10-16
+
+### Added
+
+- Left sidebar navigation replaces the top bar on desktop, with a hamburger
+  menu on mobile.
+- OdoDash logo that follows the theme colour chosen in Settings, shown in the
+  sidebar and on the sign-in pages.
+- Favicon that is black in light mode and white in dark mode.
+
+### Fixed
+
+- PostgreSQL upgrade no longer fails when startup schema recovery adds boolean
+  columns such as `show_menu_tires`. (#410)
+- Fuel unit prices above 1,000 are accepted, so high-denomination currencies
+  work. The new cap is 1,000,000. (#393, #396)
+
 ## [0.44.2] - 2026-09-12
 
 ### Fixed
