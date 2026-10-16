@@ -222,7 +222,8 @@ class TestMaintenanceHistory:
         response = auth_client.get('/maintenance/history?maintenance_group=engine_oil')
         assert response.status_code == 200
         assert b'Engine oil synthetic' in response.data
-        assert b'1,350' in response.data
+        # Default thousand-separator preference is 'none' (money filter)
+        assert b'1350.00' in response.data
 
 
 def test_matching_service_details_on_different_vehicles_are_not_hidden(auth_client, sample_vehicle, test_user):

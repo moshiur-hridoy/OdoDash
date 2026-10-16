@@ -1,3 +1,4 @@
+import re
 import io
 import pytest
 from datetime import date
@@ -46,7 +47,9 @@ class TestExpenseIndex:
         db.session.commit()
         resp = auth_client.get('/expenses/?maintenance_group=parts')
         assert b'Brake pad' in resp.data
-        assert b'Engine Oil' not in resp.data
+        # The filter dropdown legitimately lists 'Engine Oil'; only check the rows.
+        body = re.sub(r'<option.*?</option>', '', resp.get_data(as_text=True), flags=re.S)
+        assert 'Engine Oil' not in body
 
 
 class TestExpenseNew:
