@@ -51,6 +51,30 @@ class TestFuelNew:
         assert log.volume == 45.0
         assert log.user_id == test_user.id
 
+    def test_high_denomination_unit_price_accepted(self, auth_client, sample_vehicle):
+        # Prices above 1,000 (IDR, KRW, ...) must not be rejected (#393, #396)
+        auth_client.post('/fuel/new', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'date': '2024-03-03',
+            'odometer': '15200',
+            'volume': '10.0',
+            'price_per_unit': '12500',
+            'is_full_tank': 'on',
+        }, follow_redirects=True)
+        log = FuelLog.query.filter_by(vehicle_id=sample_vehicle.id, odometer=15200.0).first()
+        assert log is not None
+        assert log.price_per_unit == 12500
+
+    def test_absurd_unit_price_rejected(self, auth_client, sample_vehicle):
+        auth_client.post('/fuel/new', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'date': '2024-03-04',
+            'odometer': '15300',
+            'volume': '10.0',
+            'price_per_unit': '99999999',
+        }, follow_redirects=True)
+        assert FuelLog.query.filter_by(vehicle_id=sample_vehicle.id, odometer=15300.0).first() is None
+
     def test_discount_applied_to_calculated_total(self, auth_client, sample_vehicle):
         # No total_cost given: server computes volume * (price - discount) (#209)
         resp = auth_client.post('/fuel/new', data={
@@ -119,8 +143,8 @@ class TestFuelNew:
             'vehicle_id': str(sample_vehicle.id),
             'date': '2024-03-05',
             'odometer': '15401',
-            'volume': '1',
-            'total_cost': '2000',
+            'volume': '0.05',
+            'total_cost': '100000',
             'station_id': str(sample_station.id),
         }, follow_redirects=True)
         assert resp.status_code == 200
@@ -1521,8 +1545,8 @@ class TestDerivedPriceEditing:
         old_volume = sample_fuel_log.volume
         old_price = sample_fuel_log.price_per_unit
         response = auth_client.post(f'/fuel/{sample_fuel_log.id}/edit', data={
-            'date': '2024-03-05', 'odometer': '15400', 'volume': '1',
-            'total_cost': '2000',
+            'date': '2024-03-05', 'odometer': '15400', 'volume': '0.05',
+            'total_cost': '100000',
         })
         assert response.status_code == 302
         db.session.refresh(sample_fuel_log)

@@ -19,6 +19,9 @@ from app.services.tessie import TessieService
 
 bp = Blueprint('fuel', __name__, url_prefix='/fuel')
 
+# Generous cap so high-denomination currencies (IDR, KRW, ...) work (#393, #396).
+MAX_UNIT_PRICE = 1_000_000
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'}
 
 
@@ -96,14 +99,14 @@ def new():
             flash(err, 'error')
             return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
 
-        price_per_unit, err = validate_positive_number(request.form.get('price_per_unit'), 'Price per unit', max_value=1000)
+        price_per_unit, err = validate_positive_number(request.form.get('price_per_unit'), 'Price per unit', max_value=MAX_UNIT_PRICE)
         if err:
             flash(err, 'error')
             return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
 
         discount_per_unit = None
         if request.form.get('discount_per_unit'):
-            discount_per_unit, err = validate_positive_number(request.form.get('discount_per_unit'), 'Discount per unit', max_value=1000)
+            discount_per_unit, err = validate_positive_number(request.form.get('discount_per_unit'), 'Discount per unit', max_value=MAX_UNIT_PRICE)
             if err:
                 flash(err, 'error')
                 return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
@@ -136,7 +139,7 @@ def new():
         if price_per_unit is None and volume and total_cost is not None:
             price_per_unit = round(total_cost / volume + (discount_per_unit or 0), 3)
             price_per_unit, err = validate_positive_number(
-                price_per_unit, 'Price per unit', max_value=1000
+                price_per_unit, 'Price per unit', max_value=MAX_UNIT_PRICE
             )
             if err:
                 flash(err, 'error')
@@ -259,7 +262,7 @@ def edit(log_id):
                 derived_price, err = validate_positive_number(
                     round(values['total_cost'] / values['volume']
                           + (values['discount_per_unit'] or 0), 3),
-                    'Price per unit', max_value=1000)
+                    'Price per unit', max_value=MAX_UNIT_PRICE)
                 if err:
                     flash(err, 'error')
                     return redirect(url_for('fuel.edit', log_id=log.id))
@@ -482,7 +485,7 @@ def get_last_fuel_price(vehicle, user_id):
         FuelLog.user_id == user_id,
         FuelLog.effective_fuel_type_filter(vehicle.get_primary_fuel_type(), vehicle.fuel_type),
         FuelLog.price_per_unit >= 0,
-        FuelLog.price_per_unit <= 1000
+        FuelLog.price_per_unit <= MAX_UNIT_PRICE
     ).order_by(FuelLog.date.desc(), FuelLog.id.desc()).first()
     return last_log.price_per_unit if last_log else None
 
