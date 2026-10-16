@@ -51,7 +51,7 @@
     <link rel="icon" href="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}">
     <link rel="apple-touch-icon" href="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}">
     {% else %}
-    <link rel="icon" href="{{ url_for('static', filename='icons/icon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ url_for('static', filename='icons/favicon.svg') }}" type="image/svg+xml">
     <link rel="icon" href="{{ url_for('static', filename='icons/icon-96x96.png') }}" sizes="96x96" type="image/png">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon.svg') }}">
     {% endif %}
@@ -397,6 +397,7 @@
     </style>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900">
+    {% from 'partials/logo.html' import logo_mark %}
     {% if current_user.is_authenticated %}
     <div class="min-h-full">
         {% macro nav_item(href, label, active, icon) -%}
@@ -414,7 +415,8 @@
                     {% if APP_LOGO %}
                     <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="h-8 w-auto">
                     {% else %}
-                    <span class="text-2xl font-bold text-primary-600">{{ APP_NAME }}</span>
+                    {{ logo_mark('h-8 w-8 flex-shrink-0 text-primary-600') }}
+                    <span class="ml-2 text-2xl font-bold text-primary-600">{{ APP_NAME }}</span>
                     {% endif %}
                 </a>
             </div>
@@ -505,7 +507,8 @@
                     {% if APP_LOGO %}
                     <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="h-8 w-auto">
                     {% else %}
-                    <span class="text-2xl font-bold text-primary-600">{{ APP_NAME }}</span>
+                    {{ logo_mark('h-8 w-8 flex-shrink-0 text-primary-600') }}
+                    <span class="ml-2 text-2xl font-bold text-primary-600">{{ APP_NAME }}</span>
                     {% endif %}
                 </a>
                 <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-500 dark:text-gray-400">
