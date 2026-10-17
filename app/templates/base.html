@@ -232,6 +232,15 @@
         html.dark .dark\:text-gray-300 { color: #d1d5db; }
         html.dark .dark\:text-gray-400 { color: #9ca3af; }
 
+        /* Large numbers (#381): tabular figures give every digit the same width
+           and a touch of tracking keeps thousands separators from cramping. */
+        body { font-variant-numeric: tabular-nums; }
+        .dashboard-stat-card, .vehicle-details-card, td, th,
+        .text-xl, .text-2xl, .text-3xl, .text-4xl, strong {
+            font-variant-numeric: tabular-nums lining-nums;
+            letter-spacing: 0.015em;
+        }
+
         /* Shared table surfaces: match the dashboard card treatment while
            leaving table rows, dividers, and status badges page-specific. */
         .surface-card,
