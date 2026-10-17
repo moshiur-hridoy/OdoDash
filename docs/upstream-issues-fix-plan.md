@@ -108,12 +108,12 @@ Issue status and upstream code may change; recheck both before starting work.
   - [ ] Test that reusing a location/session does not duplicate the old
         charge's date, energy, cost, or odometer unintentionally.
 
-- [x] **[dannymcc/may#381](https://github.com/dannymcc/may/issues/381) — Improve readability of large numbers**
+- [ ] **[dannymcc/may#381](https://github.com/dannymcc/may/issues/381) — Improve readability of large numbers**
   - [x] Review large metrics and odometer/cost values in the dashboard, vehicle
         pages, lists, charts, and generated reports.
   - [x] Apply a consistent, legible numeric style and locale-aware grouping
         without changing stored values or number formatting semantics.
-  - [x] Verify representative locales, dark mode, mobile layouts, and PDFs.
+  - [ ] Verify representative locales, dark mode, mobile layouts, and PDFs.
 
 - [x] **[dannymcc/may#395](https://github.com/dannymcc/may/issues/395) — Link to externally stored documents**
   - [x] Confirm which note fields should support links and whether plain URLs
