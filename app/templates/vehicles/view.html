@@ -777,7 +777,7 @@
             <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Notes') }}</h2>
         </div>
         <div class="px-6 py-4">
-            <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ vehicle.notes }}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ vehicle.notes|linkify }}</p>
         </div>
     </div>
     {% endif %}

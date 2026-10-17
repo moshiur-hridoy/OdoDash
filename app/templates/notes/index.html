@@ -67,7 +67,7 @@
                     <td></td>
                     <td colspan="5" class="px-6 py-3">
                         {% if note.title %}<p class="text-sm font-medium text-gray-900 dark:text-white mb-1">{{ note.title }}</p>{% endif %}
-                        <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ note.content }}</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ note.content|linkify }}</p>
                     </td>
                 </tr>
                 {% endfor %}

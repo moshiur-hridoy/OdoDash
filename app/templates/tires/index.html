@@ -75,7 +75,7 @@
         </dl>
 
         {% if tire_set.notes %}
-        <p class="mt-4 text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{{ tire_set.notes }}</p>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{{ tire_set.notes|linkify }}</p>
         {% endif %}
 
         {% if can_write('tires') %}
