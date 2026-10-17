@@ -1646,3 +1646,13 @@ def test_unknown_adblue_reading_does_not_invalidate_diesel_consumption(sample_ve
     db.session.commit()
     assert logs[-1].get_consumption() == pytest.approx(8)
     assert sample_vehicle.get_average_consumption() == pytest.approx(8)
+
+
+def test_bdt_currency_symbol():
+    from app.models import get_currency_symbol
+    assert get_currency_symbol('bdt') == '৳'
+
+
+def test_fuel_form_enforces_limits_inline(auth_client, sample_vehicle):
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert 'max="1000000"' in html and 'max="10000"' in html
