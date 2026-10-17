@@ -204,8 +204,8 @@
             --color-background: #0b0d12;
             --color-surface: #12151c;
             --color-surface-muted: #1a1e27;
-            --color-border: #232834;
-            --color-border-strong: #2e3441;
+            --color-border: #2a303c;
+            --color-border-strong: #384050;
             --color-text: #f1f3f7;
             --color-text-muted: #9aa3b2;
             --color-text-subtle: #6b7482;
@@ -224,9 +224,22 @@
         html.dark .dark\:hover\:bg-gray-600:hover { background-color: var(--color-border-strong); }
         html.dark .dark\:border-gray-700, html.dark .dark\:divide-gray-700 > :not([hidden]) ~ :not([hidden]) { border-color: var(--color-border); }
         html.dark .dark\:border-gray-600 { border-color: var(--color-border-strong); }
+        /* Cards: give every dark surface the same visible edge as the sidebar. */
+        html.dark .dark\:bg-gray-800:is(.rounded-lg, .rounded-xl, .rounded-2xl, .surface-card, .table-surface):not(.border):not(.border-0):not(.border-t):not(.border-b):not(.border-l):not(.border-r) {
+            border: 1px solid var(--color-border);
+        }
         html.dark .dark\:text-white { color: #fff; }
         html.dark .dark\:text-gray-300 { color: #d1d5db; }
         html.dark .dark\:text-gray-400 { color: #9ca3af; }
+
+        /* Large numbers (#381): tabular figures give every digit the same width
+           and a touch of tracking keeps thousands separators from cramping. */
+        body { font-variant-numeric: tabular-nums; }
+        .dashboard-stat-card, .vehicle-details-card, td, th,
+        .text-xl, .text-2xl, .text-3xl, .text-4xl, strong {
+            font-variant-numeric: tabular-nums lining-nums;
+            letter-spacing: 0.015em;
+        }
 
         /* Shared table surfaces: match the dashboard card treatment while
            leaving table rows, dividers, and status badges page-specific. */

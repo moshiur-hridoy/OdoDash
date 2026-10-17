@@ -21,6 +21,7 @@ bp = Blueprint('fuel', __name__, url_prefix='/fuel')
 
 # Generous cap so high-denomination currencies (IDR, KRW, ...) work (#393, #396).
 MAX_UNIT_PRICE = 1_000_000
+MAX_AMOUNT = 1_000_000_000  # total cost / sales tax
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'}
 
@@ -111,7 +112,7 @@ def new():
                 flash(err, 'error')
                 return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
 
-        total_cost, err = validate_positive_number(request.form.get('total_cost'), 'Total cost', max_value=100000)
+        total_cost, err = validate_positive_number(request.form.get('total_cost'), 'Total cost', max_value=MAX_AMOUNT)
         if err:
             flash(err, 'error')
             return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
@@ -119,7 +120,7 @@ def new():
         # Sales tax paid on the fill-up, already included in the total cost (#225)
         sales_tax = None
         if request.form.get('sales_tax'):
-            sales_tax, err = validate_positive_number(request.form.get('sales_tax'), 'Sales tax', max_value=100000)
+            sales_tax, err = validate_positive_number(request.form.get('sales_tax'), 'Sales tax', max_value=MAX_AMOUNT)
             if err:
                 flash(err, 'error')
                 return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
@@ -250,7 +251,7 @@ def edit(log_id):
             values = {}
             for field, label, maximum in (
                 ('volume', 'Volume', 10000),
-                ('total_cost', 'Total cost', 100000),
+                ('total_cost', 'Total cost', MAX_AMOUNT),
                 ('discount_per_unit', 'Discount per unit', 1000),
             ):
                 values[field], err = validate_positive_number(

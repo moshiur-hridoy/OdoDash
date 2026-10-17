@@ -7,6 +7,7 @@ from flask_babel import Babel, gettext as _
 from config import Config
 from app.i18n import ensure_catalogues_compiled
 from app.utils import first_day_of_week
+import re
 import os
 import secrets
 
@@ -401,6 +402,35 @@ def create_app(config_class=Config):
             if label:
                 return label
         return spec.label
+
+    @app.template_filter('linkify')
+    def linkify_filter(value):
+        """Escape text and turn plain http(s) URLs into safe links (#395).
+
+        Only http/https are linked; everything else stays escaped plain text.
+        """
+        from markupsafe import Markup, escape
+        if not value:
+            return ''
+        pattern = re.compile(r'https?://[^\s<>"\']+')
+
+        def _link(match):
+            url = match.group(0)
+            trail = ''
+            while url and url[-1] in '.,;:!?)]}':
+                trail = url[-1] + trail
+                url = url[:-1]
+            safe = escape(url)
+            return Markup(
+                f'<a href="{safe}" target="_blank" rel="noopener noreferrer nofollow" '
+                f'class="text-primary-600 dark:text-primary-400 underline break-all">{safe}</a>'
+            ) + escape(trail)
+
+        out, last = Markup(''), 0
+        for m in pattern.finditer(str(value)):
+            out += escape(str(value)[last:m.start()]) + _link(m)
+            last = m.end()
+        return out + escape(str(value)[last:])
 
     @app.template_filter('money')
     def money_filter(value):

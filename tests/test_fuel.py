@@ -65,6 +65,21 @@ class TestFuelNew:
         assert log is not None
         assert log.price_per_unit == 12500
 
+    def test_total_cost_above_100000_accepted(self, auth_client, sample_vehicle):
+        # (#2) high-denomination currencies routinely exceed 100,000 per fill
+        auth_client.post('/fuel/new', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'date': '2024-03-07',
+            'odometer': '15250',
+            'volume': '40.0',
+            'price_per_unit': '12500',
+            'total_cost': '500000',
+            'is_full_tank': 'on',
+        }, follow_redirects=True)
+        log = FuelLog.query.filter_by(vehicle_id=sample_vehicle.id, odometer=15250.0).first()
+        assert log is not None
+        assert log.total_cost == 500000
+
     def test_absurd_unit_price_rejected(self, auth_client, sample_vehicle):
         auth_client.post('/fuel/new', data={
             'vehicle_id': str(sample_vehicle.id),
@@ -1631,3 +1646,13 @@ def test_unknown_adblue_reading_does_not_invalidate_diesel_consumption(sample_ve
     db.session.commit()
     assert logs[-1].get_consumption() == pytest.approx(8)
     assert sample_vehicle.get_average_consumption() == pytest.approx(8)
+
+
+def test_bdt_currency_symbol():
+    from app.models import get_currency_symbol
+    assert get_currency_symbol('bdt') == '৳'
+
+
+def test_fuel_form_enforces_limits_inline(auth_client, sample_vehicle):
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert 'max="1000000"' in html and 'max="10000"' in html

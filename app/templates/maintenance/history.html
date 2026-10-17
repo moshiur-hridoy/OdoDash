@@ -36,7 +36,7 @@
     <span class="mt-1 inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-gray-700 dark:text-primary-300">{{ dict(maintenance_groups).get(event.maintenance_group, event.maintenance_group) }}</span>
     {% endif %}
     <p class="text-sm text-gray-600 dark:text-gray-300">{{ event.vehicle.name }} · {{ event.performed_date|format_date if event.performed_date else _('Unknown') }}{% if event.odometer is not none %} · {{ event.odometer|groupnum }} {{ event.vehicle.get_reading_unit() }}{% endif %}</p>
-    {% if event.notes %}<p class="mt-2 text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{{ event.notes }}</p>{% endif %}
+    {% if event.notes %}<p class="mt-2 text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{{ event.notes|linkify }}</p>{% endif %}
 </article>
 {% else %}<p class="text-gray-500 dark:text-gray-400">{{ _('No maintenance history yet.') }}</p>{% endfor %}
 </div>

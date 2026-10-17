@@ -117,7 +117,7 @@
                             {% if expense.notes %}
                             <div>
                                 <span class="font-medium text-gray-500 dark:text-gray-400">{{ _('Notes:') }} </span>
-                                <span class="text-gray-900 dark:text-white">{{ expense.notes }}</span>
+                                <span class="text-gray-900 dark:text-white">{{ expense.notes|linkify }}</span>
                             </div>
                             {% endif %}
                             {% if attachments %}

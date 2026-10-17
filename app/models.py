@@ -24,6 +24,7 @@ CURRENCY_SYMBOLS = {
     'BRL': 'R$',
     'MXN': '$',
     'ZAR': 'R',
+    'BDT': '\u09f3',
 }
 
 

@@ -56,7 +56,7 @@
                             {{ _('From Tessie') }}
                         </span>
                     </label>
-                    <input type="number" name="odometer" id="odometer" step="0.1"
+                    <input type="number" name="odometer" id="odometer" step="0.1" min="0" max="9999999"
                            value="{{ log.odometer if log and log.has_recorded_odometer else '' }}"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Leave blank if the reading was not recorded. Enter 0 to confirm a genuine zero reading.') }}</p>
@@ -67,7 +67,7 @@
 
                 <div>
                     <label for="volume" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Volume') }} ({{ current_user.volume_unit }})</label>
-                    <input type="number" name="volume" id="volume" step="0.001"
+                    <input type="number" name="volume" id="volume" step="0.001" min="0" max="10000"
                            value="{{ log.volume if log else '' }}"
                            onchange="calculateFuelAmounts()"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
@@ -75,7 +75,7 @@
 
                 <div>
                     <label for="price_per_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Price per') }} {{ current_user.volume_unit }} ({{ current_user.currency }})</label>
-                    <input type="number" name="price_per_unit" id="price_per_unit" step="0.001"
+                    <input type="number" name="price_per_unit" id="price_per_unit" step="0.001" min="0" max="1000000"
                            oninput="pricePerUnitWasDerived = false"
                            value="{{ log.price_per_unit if log else '' }}"
                            onchange="calculateFuelAmounts()"
@@ -84,7 +84,7 @@
 
                 <div>
                     <label for="discount_per_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Discount per') }} {{ current_user.volume_unit }} ({{ current_user.currency }})</label>
-                    <input type="number" name="discount_per_unit" id="discount_per_unit" step="0.001" min="0"
+                    <input type="number" name="discount_per_unit" id="discount_per_unit" step="0.001" min="0" max="1000000"
                            value="{{ log.discount_per_unit if log and log.discount_per_unit is not none else '' }}"
                            onchange="calculateFuelAmounts()"
                            placeholder="0.000"
@@ -94,7 +94,7 @@
 
                 <div>
                     <label for="total_cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Total Cost') }} ({{ current_user.currency }})</label>
-                    <input type="number" name="total_cost" id="total_cost" step="0.01"
+                    <input type="number" name="total_cost" id="total_cost" step="0.01" min="0" max="1000000000"
                            value="{{ log.total_cost if log else '' }}"
                            onchange="calculateFuelAmounts()"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
@@ -102,7 +102,7 @@
 
                 <div>
                     <label for="sales_tax" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Sales Tax') }} ({{ current_user.currency }})</label>
-                    <input type="number" name="sales_tax" id="sales_tax" step="0.01" min="0"
+                    <input type="number" name="sales_tax" id="sales_tax" step="0.01" min="0" max="1000000000"
                            value="{{ log.sales_tax if log and log.sales_tax is not none else '' }}"
                            placeholder="0.00"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">

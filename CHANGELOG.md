@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [0.45.2] - 2026-10-17
+
+### Added
+
+- Bangladeshi taka (BDT, ৳) in the currency list.
+- URLs in notes are clickable links. (#395)
+- Tabular figures and slightly wider spacing for numbers. (#381)
+
+### Fixed
+
+- Fuel total cost and sales tax accept values above 100,000. (#2)
+- Fuel form inputs enforce their limits before saving, so a rejected value no
+  longer needs to be retyped after submit.
+- Charging SOC rejects decimal or out-of-range values with a visible message
+  instead of failing silently. (#390)
+- Dark mode cards have a visible border, and the import file inputs no longer
+  show a stray grey background.
+
 ## [0.45.1] - 2026-10-16
 
 ### Added

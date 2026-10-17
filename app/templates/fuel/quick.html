@@ -42,7 +42,7 @@
                 </span>
             </label>
             <div class="mt-1 relative">
-                <input type="number" name="odometer" id="odometer" required step="0.1"
+                <input type="number" name="odometer" id="odometer" required step="0.1" min="0" max="9999999"
                        placeholder="{{ last_odometer or '0' }}"
                        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white pl-3 pr-12 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                 <span id="odometer-unit-badge" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">{{ current_user.distance_unit }}</span>
@@ -57,7 +57,7 @@
             <div>
                 <label for="volume" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Volume') }}</label>
                 <div class="mt-1 relative">
-                    <input type="number" name="volume" id="volume" step="0.001"
+                    <input type="number" name="volume" id="volume" step="0.001" min="0" max="10000"
                            oninput="calcQuickFuel('volume')"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white pl-3 pr-12 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">{{ current_user.volume_unit }}</span>
@@ -66,7 +66,7 @@
             <div>
                 <label for="price_per_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Price per') }} {{ current_user.volume_unit }}</label>
                 <div class="mt-1 relative">
-                    <input type="number" name="price_per_unit" id="price_per_unit" step="0.001"
+                    <input type="number" name="price_per_unit" id="price_per_unit" step="0.001" min="0" max="1000000"
                            oninput="calcQuickFuel('price')"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white pl-3 pr-12 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                            value="{{ last_price if last_price is not none else '' }}">
@@ -77,7 +77,7 @@
         <div>
             <label for="total_cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Total Cost') }}</label>
             <div class="mt-1 relative">
-                <input type="number" name="total_cost" id="total_cost" step="0.01"
+                <input type="number" name="total_cost" id="total_cost" step="0.01" min="0" max="1000000000"
                        oninput="calcQuickFuel('total')"
                        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white pl-3 pr-12 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">{{ current_user.currency }}</span>
