@@ -9,6 +9,29 @@ from app.models import Vehicle, ChargingSession, CHARGER_TYPES
 bp = Blueprint('charging', __name__, url_prefix='/charging')
 
 
+def parse_soc(raw):
+    """Parse a state-of-charge percentage into an int (#390).
+
+    Returns ``(value, error)``. Blank is valid (``None``). Decimals are
+    rejected with a message instead of crashing or failing silently, because
+    some mobile browsers skip native form validation.
+    """
+    raw = (raw or '').strip()
+    if not raw:
+        return None, None
+    try:
+        number = parse_decimal(raw)
+    except (ValueError, TypeError):
+        number = None
+    error = _('State of charge must be a whole number between 0 and 100')
+    try:
+        if number is None or number != int(number) or not 0 <= int(number) <= 100:
+            return None, error
+    except (ValueError, OverflowError):
+        return None, error
+    return int(number), None
+
+
 @bp.route('/')
 @login_required
 def index():
@@ -73,6 +96,13 @@ def new():
         if request.form.get('end_time'):
             end_time = datetime.strptime(request.form.get('end_time'), '%H:%M').time()
 
+        start_soc, err = parse_soc(request.form.get('start_soc'))
+        if err is None:
+            end_soc, err = parse_soc(request.form.get('end_soc'))
+        if err:
+            flash(err, 'error')
+            return redirect(url_for('charging.new'))
+
         session = ChargingSession(
             vehicle_id=vehicle_id,
             user_id=current_user.id,
@@ -81,8 +111,8 @@ def new():
             end_time=end_time,
             odometer=parse_decimal(request.form.get('odometer')) if request.form.get('odometer') else None,
             kwh_added=parse_decimal(request.form.get('kwh_added')) if request.form.get('kwh_added') else None,
-            start_soc=int(request.form.get('start_soc')) if request.form.get('start_soc') else None,
-            end_soc=int(request.form.get('end_soc')) if request.form.get('end_soc') else None,
+            start_soc=start_soc,
+            end_soc=end_soc,
             cost_per_kwh=parse_decimal(request.form.get('cost_per_kwh')) if request.form.get('cost_per_kwh') else None,
             total_cost=parse_decimal(request.form.get('total_cost')) if request.form.get('total_cost') else None,
             charger_type=request.form.get('charger_type'),
@@ -124,6 +154,13 @@ def edit(session_id):
         return redirect(url_for('charging.index'))
 
     if request.method == 'POST':
+        start_soc, err = parse_soc(request.form.get('start_soc'))
+        if err is None:
+            end_soc, err = parse_soc(request.form.get('end_soc'))
+        if err:
+            flash(err, 'error')
+            return redirect(url_for('charging.edit', session_id=session.id))
+
         date_str = request.form.get('date')
         session.date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else session.date
 
@@ -138,8 +175,8 @@ def edit(session_id):
 
         session.odometer = parse_decimal(request.form.get('odometer')) if request.form.get('odometer') else None
         session.kwh_added = parse_decimal(request.form.get('kwh_added')) if request.form.get('kwh_added') else None
-        session.start_soc = int(request.form.get('start_soc')) if request.form.get('start_soc') else None
-        session.end_soc = int(request.form.get('end_soc')) if request.form.get('end_soc') else None
+        session.start_soc = start_soc
+        session.end_soc = end_soc
         session.cost_per_kwh = parse_decimal(request.form.get('cost_per_kwh')) if request.form.get('cost_per_kwh') else None
         session.total_cost = parse_decimal(request.form.get('total_cost')) if request.form.get('total_cost') else None
         session.charger_type = request.form.get('charger_type')

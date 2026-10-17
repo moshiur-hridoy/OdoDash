@@ -210,6 +210,37 @@ class TestChargingNew:
         assert session.user_id == test_user.id
 
 
+class TestChargingSocValidation:
+    def _post(self, client, vehicle, **soc):
+        data = {
+            'vehicle_id': str(vehicle.id), 'date': '2024-04-02',
+            'kwh_added': '12.5', 'charger_type': 'ac_home',
+        }
+        data.update(soc)
+        return client.post('/charging/new', data=data, follow_redirects=True)
+
+    def test_integer_and_blank_soc_saved(self, auth_client, ev_vehicle):
+        self._post(auth_client, ev_vehicle, start_soc='20', end_soc='')
+        s = ChargingSession.query.filter_by(vehicle_id=ev_vehicle.id, kwh_added=12.5).first()
+        assert s.start_soc == 20 and s.end_soc is None
+
+    @pytest.mark.parametrize('bad', ['74.5', 'abc', '101', '-1', 'inf'])
+    def test_invalid_soc_rejected_with_message(self, auth_client, ev_vehicle, bad):
+        resp = self._post(auth_client, ev_vehicle, end_soc=bad)
+        assert resp.status_code == 200
+        assert b'whole number between 0 and 100' in resp.data
+        assert ChargingSession.query.filter_by(vehicle_id=ev_vehicle.id, kwh_added=12.5).first() is None
+
+    def test_edit_rejects_decimal_soc(self, auth_client, sample_session):
+        old = sample_session.end_soc
+        resp = auth_client.post(f'/charging/{sample_session.id}/edit', data={
+            'date': '2024-04-02', 'end_soc': '80.5', 'charger_type': 'ac_home',
+        }, follow_redirects=True)
+        assert b'whole number between 0 and 100' in resp.data
+        db.session.refresh(sample_session)
+        assert sample_session.end_soc == old
+
+
 class TestChargingEdit:
     def test_edit_requires_auth(self, client, sample_session):
         resp = client.get(f'/charging/{sample_session.id}/edit', follow_redirects=False)
