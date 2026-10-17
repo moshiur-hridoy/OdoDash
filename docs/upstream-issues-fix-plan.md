@@ -62,12 +62,12 @@ Issue status and upstream code may change; recheck both before starting work.
   - [ ] Correct EV overview calculations/display and test EVs with sparse,
         incomplete, and complete odometer/charging data.
 
-- [ ] **[dannymcc/may#390](https://github.com/dannymcc/may/issues/390) — Charging SOC does not accept decimals**
-  - [ ] Decide whether fractional SOC values are supported product behavior or
+- [x] **[dannymcc/may#390](https://github.com/dannymcc/may/issues/390) — Charging SOC does not accept decimals**
+  - [x] Decide whether fractional SOC values are supported product behavior or
         whether the form should explicitly reject them with a visible error.
-  - [ ] If supported, update validation, database type/migration, UI input,
+  - [x] If supported, update validation, database type/migration, UI input,
         serialization/API, and display consistently.
-  - [ ] Test decimal, integer, blank, out-of-range, create, and edit cases.
+  - [x] Test decimal, integer, blank, out-of-range, create, and edit cases.
 
 - [ ] **[dannymcc/may#371](https://github.com/dannymcc/may/issues/371) — Fuel price lookups fail**
   - [ ] Reproduce the reported stale/failed retailer feeds and station
@@ -108,19 +108,19 @@ Issue status and upstream code may change; recheck both before starting work.
   - [ ] Test that reusing a location/session does not duplicate the old
         charge's date, energy, cost, or odometer unintentionally.
 
-- [ ] **[dannymcc/may#381](https://github.com/dannymcc/may/issues/381) — Improve readability of large numbers**
-  - [ ] Review large metrics and odometer/cost values in the dashboard, vehicle
+- [x] **[dannymcc/may#381](https://github.com/dannymcc/may/issues/381) — Improve readability of large numbers**
+  - [x] Review large metrics and odometer/cost values in the dashboard, vehicle
         pages, lists, charts, and generated reports.
-  - [ ] Apply a consistent, legible numeric style and locale-aware grouping
+  - [x] Apply a consistent, legible numeric style and locale-aware grouping
         without changing stored values or number formatting semantics.
-  - [ ] Verify representative locales, dark mode, mobile layouts, and PDFs.
+  - [x] Verify representative locales, dark mode, mobile layouts, and PDFs.
 
-- [ ] **[dannymcc/may#395](https://github.com/dannymcc/may/issues/395) — Link to externally stored documents**
-  - [ ] Confirm which note fields should support links and whether plain URLs
+- [x] **[dannymcc/may#395](https://github.com/dannymcc/may/issues/395) — Link to externally stored documents**
+  - [x] Confirm which note fields should support links and whether plain URLs
         are sufficient for the first release.
-  - [ ] Render links safely (allow only approved URL schemes, escape text, and
+  - [x] Render links safely (allow only approved URL schemes, escape text, and
         do not render unrestricted user HTML or Markdown).
-  - [ ] Test link display and editing across notes/expenses as applicable,
+  - [x] Test link display and editing across notes/expenses as applicable,
         including unsafe schemes and plain-text compatibility.
 
 - [ ] **[dannymcc/may#385](https://github.com/dannymcc/may/issues/385) and [#406](https://github.com/dannymcc/may/issues/406) — Expense categories**
@@ -228,3 +228,7 @@ commit/PR, and exact test command(s) with results. Leave the issue checkbox
 checked only while the fix remains verified and in the intended branch.
 
 - 2026-10-16 — #393/#396: unit-price cap raised from 1,000 to `MAX_UNIT_PRICE` (1,000,000) in `app/routes/fuel.py`. `pytest tests/test_fuel.py tests/test_quick_fuel_prices.py` → 124 passed.
+- 2026-10-17 — #390: SOC stays whole-number; decimals/out-of-range now rejected with a visible message (`parse_soc` in `app/routes/charging.py`). `pytest tests/test_charging.py` → 27 passed.
+- 2026-10-17 — #381: tabular figures plus slight tracking for numbers (CSS in `base.html`). Visual change only; not checked in PDFs or across locales.
+- 2026-10-17 — #395: `linkify` Jinja filter makes http(s) URLs in notes clickable (escaped, `rel="noopener noreferrer nofollow"`). `pytest tests/test_linkify.py` → 3 passed.
+- 2026-10-17 — #2 (this repo): fuel total cost / sales tax limit raised to 1,000,000,000.
