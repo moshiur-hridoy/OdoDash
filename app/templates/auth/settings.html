@@ -590,7 +590,7 @@
                                 <form method="POST" action="{{ url_for('api.import_hammond') }}" enctype="multipart/form-data" class="flex items-center gap-2">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="file" name="file" accept=".db,.sqlite,.sqlite3" required
-                                           class="text-sm text-gray-500 dark:text-gray-400 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 dark:file:bg-gray-600 file:text-gray-700 dark:text-gray-300 dark:file:text-gray-200 hover:file:bg-gray-200 dark:hover:file:bg-gray-50 dark:bg-gray-7000">
+                                           class="text-sm text-gray-500 dark:text-gray-400">
                                     <button type="submit"
                                             class="w-24 text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600">
                                         {{ _('Import') }}
@@ -606,7 +606,7 @@
                                 <form method="POST" action="{{ url_for('api.import_clarkson') }}" enctype="multipart/form-data" class="flex items-center gap-2">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="file" name="file" accept=".sql" required
-                                           class="text-sm text-gray-500 dark:text-gray-400 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 dark:file:bg-gray-600 file:text-gray-700 dark:text-gray-300 dark:file:text-gray-200 hover:file:bg-gray-200 dark:hover:file:bg-gray-50 dark:bg-gray-7000">
+                                           class="text-sm text-gray-500 dark:text-gray-400">
                                     <button type="submit"
                                             class="w-24 text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600">
                                         {{ _('Import') }}
@@ -622,7 +622,7 @@
                                 <form method="POST" action="{{ url_for('api.import_fuelly') }}" enctype="multipart/form-data" class="flex items-center gap-2">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="file" name="file" accept=".csv" required
-                                           class="text-sm text-gray-500 dark:text-gray-400 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 dark:file:bg-gray-600 file:text-gray-700 dark:text-gray-300 dark:file:text-gray-200 hover:file:bg-gray-200 dark:hover:file:bg-gray-50 dark:bg-gray-7000">
+                                           class="text-sm text-gray-500 dark:text-gray-400">
                                     <button type="submit"
                                             class="w-24 text-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600">
                                         {{ _('Import') }}
@@ -1709,6 +1709,13 @@
                                                value="{{ branding.primary_color or '#0284c7' }}"
                                                class="flex-1 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm font-mono">
                                     </div>
+                                    <div class="mt-3 flex flex-wrap gap-2" id="primary_color_presets" role="group">
+                                        {% for name, hex in [('Sky', '#0284c7'), ('Blue', '#2563eb'), ('Indigo', '#4f46e5'), ('Violet', '#7c3aed'), ('Purple', '#9333ea'), ('Pink', '#db2777'), ('Rose', '#e11d48'), ('Red', '#dc2626'), ('Orange', '#ea580c'), ('Amber', '#d97706'), ('Lime', '#65a30d'), ('Green', '#16a34a'), ('Emerald', '#059669'), ('Teal', '#0d9488'), ('Cyan', '#0891b2'), ('Slate', '#475569')] %}
+                                        <button type="button" data-color="{{ hex }}" title="{{ name }}" aria-label="{{ name }}"
+                                                class="h-7 w-7 rounded-full border border-black/10 dark:border-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                                style="background-color: {{ hex }}"></button>
+                                        {% endfor %}
+                                    </div>
                                 </div>
 
                                 <div>
@@ -1721,7 +1728,7 @@
                                     </div>
                                     {% endif %}
                                     <input type="file" name="logo" accept="image/*"
-                                           class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                                           class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
                                     {% if branding.logo_filename %}
                                     <div class="mt-2">
                                         <button type="button" onclick="removeLogo()"
@@ -1964,6 +1971,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (colorPicker && colorHex) {
         colorPicker.addEventListener('input', function() {
             colorHex.value = this.value;
+        });
+        document.querySelectorAll('#primary_color_presets [data-color]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                colorPicker.value = btn.dataset.color;
+                colorHex.value = btn.dataset.color;
+            });
         });
     }
 
