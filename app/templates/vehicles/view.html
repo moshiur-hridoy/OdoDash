@@ -16,6 +16,34 @@
         box-shadow: var(--shadow-none);
     }
 
+    /* Stat cards share the dashboard's card language: quiet uppercase label,
+       large figure with its unit on the same baseline. */
+    .vehicle-stat-grid > div {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        column-gap: 0.4rem;
+        padding: 1.1rem 1.25rem;
+        transition: border-color 140ms ease;
+    }
+    .vehicle-stat-grid > div:hover { border-color: var(--color-border-strong); }
+    .vehicle-stat-grid > div dt {
+        width: 100%;
+        margin-bottom: 0.35rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    .vehicle-stat-grid > div dd:not(.text-xs) { margin-top: 0; }
+    .vehicle-stat-grid > div dd.text-xl {
+        font-size: 1.5rem;
+        line-height: 1.9rem;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+    }
+    .vehicle-stat-grid > div dd.text-xs { width: 100%; margin-top: 0.25rem; }
+
     .vehicle-meta dt {
         font-size: 0.72rem;
         font-weight: 600;
@@ -166,7 +194,7 @@
 {% endif %}
 
 <!-- Stats Cards -->
-<div class="vehicle-stat-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+<div class="vehicle-stat-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
     {% if vehicle.uses_fuel() %}
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Fuel Cost') }}</dt>
