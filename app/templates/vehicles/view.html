@@ -372,7 +372,7 @@
               enctype="multipart/form-data" class="flex items-center gap-2">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="file" name="photo" accept="image/*" multiple
-                   class="text-sm text-gray-500 dark:text-gray-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:bg-gray-100 dark:file:bg-gray-700 file:text-gray-700 dark:file:text-gray-300">
+                   class="text-sm text-gray-500 dark:text-gray-400
             <button type="submit"
                     class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
                 {{ _('Upload') }}
