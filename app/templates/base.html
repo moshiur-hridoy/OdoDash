@@ -109,6 +109,34 @@
             rootStyle.setProperty(`--primary-${key}`, value);
         });
         window.__primaryPalette = primaryPalette;
+
+        // Any accent has to stay legible: derive the text colour that sits on a
+        // filled accent surface, and accent-coloured text for light/dark pages.
+        function relLuminance(hex) {
+            const c = hex.replace('#', '').match(/../g).map(v => {
+                v = parseInt(v, 16) / 255;
+                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+            });
+            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        }
+        function contrast(a, b) {
+            const la = relLuminance(a), lb = relLuminance(b);
+            return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+        }
+        // Move lightness toward `dir` until `bg` contrast reaches 4.5:1.
+        function readableOn(bg, dir) {
+            let lt = l;
+            let out = hslToHex(h, s, lt);
+            while (contrast(out, bg) < 4.5 && lt > 0 && lt < 100) {
+                lt += dir;
+                out = hslToHex(h, s, lt);
+            }
+            return out;
+        }
+        const onPrimary = contrast('#ffffff', baseColor) >= contrast('#111827', baseColor) ? '#ffffff' : '#111827';
+        rootStyle.setProperty('--on-primary', onPrimary);
+        rootStyle.setProperty('--primary-ink', readableOn('#ffffff', -1));
+        rootStyle.setProperty('--primary-ink-dark', readableOn('#12151c', 1));
     </script>
     <script>
         window.__loadTailwindFallback = function() {
@@ -330,27 +358,37 @@
             cursor: not-allowed;
             opacity: 0.65;
         }
-        form input[type="file"] {
-            color: var(--control-text);
+        input[type="file"] {
+            color: var(--color-text-muted);
         }
-        form input[type="file"]::file-selector-button {
-            margin-right: 10px;
-            border: 0;
-            border-right: 1px solid var(--control-border);
-            background: transparent;
-            color: var(--control-text);
-            padding: 9px 12px 9px 0;
+        input[type="file"]::file-selector-button {
+            margin-right: 12px;
+            padding: 7px 14px;
+            border: 1px solid var(--control-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface-muted);
+            color: var(--color-text);
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: background-color 140ms ease, border-color 140ms ease;
+        }
+        input[type="file"]:hover::file-selector-button {
+            background: var(--color-surface);
+            border-color: var(--primary-500);
         }
 
         [x-cloak] { display: none !important; }
         .text-primary-400 { color: var(--primary-400); }
         .text-primary-500 { color: var(--primary-500); }
-        .text-primary-600 { color: var(--primary-600); }
-        .text-primary-700 { color: var(--primary-700); }
+        .text-primary-600 { color: var(--primary-ink, var(--primary-600)); }
+        .text-primary-700 { color: var(--primary-ink, var(--primary-700)); }
         .bg-primary-50 { background-color: var(--primary-50); }
         .bg-primary-100 { background-color: var(--primary-100); }
         .bg-primary-600 { background-color: var(--primary-600); }
+        /* Text on a filled accent follows the accent's brightness. */
+        .bg-primary-600.text-white, .hover\:bg-primary-700.text-white,
+        .dark\:bg-primary-600.text-white { color: var(--on-primary, #fff); }
         .bg-primary-700 { background-color: var(--primary-700); }
         .border-primary-200 { border-color: var(--primary-200); }
         .border-primary-300 { border-color: var(--primary-300); }
@@ -364,9 +402,9 @@
         .ring-primary-500 { --tw-ring-color: var(--primary-500); }
         .hover\:bg-primary-700:hover { background-color: var(--primary-700); }
         .hover\:text-primary-500:hover { color: var(--primary-500); }
-        .hover\:text-primary-600:hover { color: var(--primary-600); }
-        .hover\:text-primary-700:hover { color: var(--primary-700); }
-        .dark .dark\:text-primary-400 { color: var(--primary-400); }
+        .hover\:text-primary-600:hover { color: var(--primary-ink, var(--primary-600)); }
+        .hover\:text-primary-700:hover { color: var(--primary-ink, var(--primary-700)); }
+        .dark .dark\:text-primary-400 { color: var(--primary-ink-dark, var(--primary-400)); }
         .dark .dark\:bg-primary-600 { background-color: var(--primary-600); }
         .dark .dark\:border-primary-800 { border-color: var(--primary-800); }
 
