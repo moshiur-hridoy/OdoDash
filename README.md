@@ -10,14 +10,58 @@
 
 OdoDash tracks fuel, expenses, reminders and maintenance across your whole fleet. The original May project is an excellent backend; OdoDash adds a simpler, more modern and more responsive interface on top.
 
-- **Designer-led UX/UI:** refreshed spacing, typography and a modern dark and light palette.
+- **Designer-led UX/UI:** flat, hairline-bordered cards, refined typography and a shared chart theme in light and dark.
+- **Your colour:** pick an accent from a suggested palette (or any colour) and text stays readable on it.
 - **Streamlined logging:** fuel and expense forms need fewer clicks, with limits checked as you type.
 - **Mobile and PWA:** app-like navigation on phones.
 - **Active maintenance:** upstream bugs and useful PRs are merged here quickly.
 
 <p align="center">
-  <img src="screenshots/ododash-dashboard.png" alt="OdoDash Dashboard" width="45%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="screenshots/dashboard-dark.png">
+    <img src="screenshots/dashboard-light.png" alt="OdoDash dashboard" width="100%">
+  </picture>
 </p>
+
+## A quick look
+
+### Light and dark, your way
+
+Both themes share one design system, so nothing looks bolted on.
+
+<table>
+  <tr>
+    <td width="50%"><img src="screenshots/dashboard-light.png" alt="Dashboard in light mode"><br><sub><b>Light.</b> Quiet surfaces with hairline borders.</sub></td>
+    <td width="50%"><img src="screenshots/dashboard-dark.png" alt="Dashboard in dark mode"><br><sub><b>Dark.</b> Soft depth that is easy on the eyes at night.</sub></td>
+  </tr>
+</table>
+
+### Make it yours
+
+Choose an accent colour once and the whole interface follows: buttons, charts, highlights and the ambient glow. Admins can also set the app name, tagline and logo.
+
+<table>
+  <tr>
+    <td width="50%"><img src="screenshots/accent-color.png" alt="Dashboard with an orange accent colour"><br><sub><b>Any accent.</b> The same dashboard in orange.</sub></td>
+    <td width="50%"><img src="screenshots/branding.png" alt="Branding settings with a colour palette"><br><sub><b>Branding.</b> A suggested palette, or a custom colour.</sub></td>
+  </tr>
+</table>
+
+### Every vehicle at a glance
+
+<p align="center">
+  <img src="screenshots/vehicle-page.png" alt="Vehicle page with stats and quick actions" width="100%">
+</p>
+
+Costs, distance, consumption and CO&#8322; sit in one place, with quick actions to log fuel, trips, expenses and reminders, and shortcuts to maintenance history, parts and the timeline.
+
+### Settings that stay out of the way
+
+<p align="center">
+  <img src="screenshots/settings.png" alt="Units and values settings in dark mode" width="100%">
+</p>
+
+Units, currency, date format and language are per user, so a household can mix kilometres and miles, litres and gallons.
 
 ## Features
 
