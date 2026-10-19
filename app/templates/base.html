@@ -413,6 +413,9 @@
             border-bottom-color: #232834;
         }
     </style>
+    <!-- Premium visual layer and shared chart theme (presentation only) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+    <script src="{{ url_for('static', filename='js/charts-theme.js') }}" defer></script>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900">
     {% from 'partials/logo.html' import logo_mark %}

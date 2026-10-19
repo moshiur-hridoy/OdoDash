@@ -1,0 +1,238 @@
+/* ==========================================================================
+   Premium visual layer.
+   Purely presentational: it refines the tokens declared in base.html and adds
+   depth, motion and typography on top of the existing markup. No selector here
+   depends on page logic, and every rule degrades to the previous look if this
+   file is removed. The user's accent (--primary-*) is reused, never replaced.
+   ========================================================================== */
+
+:root {
+    --font-sans: "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 140ms;
+    --dur-base: 220ms;
+
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+
+    /* Light mode: flat surfaces separated by a hairline border, no shadow. */
+    --card-shadow: 0 0 #0000;
+    --card-shadow-hover: 0 0 #0000;
+    --card-highlight: 0 0 #0000;
+    --card-border-hover: var(--color-border-strong);
+    --accent-glow: 0 0 0 1px var(--primary-200);
+}
+
+html.dark {
+    --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px rgb(0 0 0 / 0.25);
+    --card-shadow-hover: 0 6px 10px -4px rgb(0 0 0 / 0.5), 0 18px 40px -10px rgb(0 0 0 / 0.65);
+    --card-highlight: inset 0 1px 0 rgb(255 255 255 / 0.04);
+    --card-border-hover: var(--color-border-strong);
+    --accent-glow: 0 0 0 1px var(--primary-700), 0 10px 30px -10px var(--primary-600);
+}
+
+body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Soft ambient light behind the page so surfaces read as layered. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(900px 480px at 85% -10%, color-mix(in srgb, var(--primary-400) 14%, transparent), transparent 70%),
+        radial-gradient(700px 420px at -5% 105%, color-mix(in srgb, var(--primary-600) 9%, transparent), transparent 70%);
+}
+html.dark body::before {
+    background:
+        radial-gradient(900px 480px at 85% -10%, color-mix(in srgb, var(--primary-500) 16%, transparent), transparent 70%),
+        radial-gradient(700px 420px at -5% 105%, color-mix(in srgb, var(--primary-700) 14%, transparent), transparent 70%);
+}
+
+/* ---- Headings ---------------------------------------------------------- */
+main h1 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+main h2, main h3 {
+    letter-spacing: -0.012em;
+}
+
+/* ---- Cards ------------------------------------------------------------- */
+.surface-card,
+.table-surface,
+.dashboard-stat-card,
+.dashboard-shell .rounded-lg.bg-white,
+.vehicle-details-card {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow), var(--card-highlight);
+    transition:
+        transform var(--dur-base) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out);
+}
+
+.dashboard-shell .shadow,
+.dashboard-shell .rounded-lg.bg-white,
+html.dark .dashboard-shell .dark\:bg-gray-800 {
+    box-shadow: var(--card-shadow), var(--card-highlight);
+}
+
+@media (hover: hover) {
+    .dashboard-stat-card:hover,
+    .dashboard-shell .rounded-lg.bg-white:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--card-shadow-hover), var(--card-highlight);
+        border-color: var(--card-border-hover);
+    }
+    .dashboard-shell .hover\:shadow-md:hover {
+        box-shadow: var(--card-shadow-hover), var(--card-highlight);
+    }
+}
+
+html:not(.dark) .dashboard-stat-card,
+html:not(.dark) .dashboard-shell .rounded-lg.bg-white,
+html:not(.dark) .vehicle-details-card {
+    border: 1px solid var(--color-border);
+}
+
+/* Legacy "white card + Tailwind shadow" panels on every other page: same
+   hairline-border treatment as the dashboard, so no page drifts off-system. */
+.bg-white.shadow:is(.rounded, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl),
+.dark\:bg-gray-800.shadow:is(.rounded, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl) {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow), var(--card-highlight);
+}
+
+/* Stat cards: bigger, tighter figures and an accent-tinted icon chip. */
+.dashboard-stat-card dd {
+    font-size: 1.5rem;
+    line-height: 1.9rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+}
+.dashboard-stat-card dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.dashboard-stat-card .flex-shrink-0 svg {
+    box-sizing: content-box;
+    padding: 0.55rem;
+    border-radius: 12px;
+    color: var(--primary-600);
+    background: linear-gradient(135deg, var(--primary-100), var(--primary-50));
+    box-shadow: inset 0 0 0 1px var(--primary-200);
+}
+html.dark .dashboard-stat-card .flex-shrink-0 svg {
+    color: var(--primary-300);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary-600) 28%, transparent), color-mix(in srgb, var(--primary-700) 14%, transparent));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-500) 35%, transparent);
+}
+
+/* Highlight card keeps its accent wash, now with a soft glow. */
+.dashboard-stat-card--cost-per-distance {
+    box-shadow: var(--accent-glow), var(--card-highlight);
+}
+html.dark .dashboard-stat-card--cost-per-distance {
+    background: linear-gradient(102deg, color-mix(in srgb, var(--primary-700) 40%, var(--color-surface)) 0%, var(--color-surface) 70%);
+    border-color: color-mix(in srgb, var(--primary-500) 40%, transparent);
+}
+
+/* ---- Chart canvases ---------------------------------------------------- */
+canvas {
+    max-width: 100%;
+}
+
+/* ---- Sidebar & navigation --------------------------------------------- */
+aside {
+    backdrop-filter: saturate(1.4) blur(14px);
+}
+aside nav a {
+    border-radius: 10px;
+    transition:
+        background-color var(--dur-fast) ease,
+        color var(--dur-fast) ease,
+        transform var(--dur-fast) var(--ease-out);
+}
+@media (hover: hover) {
+    aside nav a:hover {
+        transform: translateX(2px);
+    }
+}
+
+/* ---- Buttons ----------------------------------------------------------- */
+button,
+a.rounded-md,
+a.rounded-lg {
+    transition:
+        background-color var(--dur-fast) ease,
+        border-color var(--dur-fast) ease,
+        box-shadow var(--dur-fast) ease,
+        transform var(--dur-fast) var(--ease-out);
+}
+button:active:not(:disabled),
+a.rounded-md:active,
+a.rounded-lg:active {
+    transform: scale(0.98);
+}
+.bg-primary-600 {
+    background-image: linear-gradient(180deg, var(--primary-500), var(--primary-600));
+    box-shadow: 0 1px 2px rgb(16 24 40 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.18);
+}
+.bg-primary-600:hover {
+    background-image: linear-gradient(180deg, var(--primary-600), var(--primary-700));
+}
+
+/* ---- Tables ------------------------------------------------------------ */
+table thead th {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+table tbody tr {
+    transition: background-color var(--dur-fast) ease;
+}
+
+/* ---- Entrance motion --------------------------------------------------- */
+@keyframes odo-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.dashboard-stat-grid > *,
+.dashboard-shell > .grid > * {
+    animation: odo-rise 480ms var(--ease-out) both;
+}
+.dashboard-stat-grid > *:nth-child(1) { animation-delay: 0ms; }
+.dashboard-stat-grid > *:nth-child(2) { animation-delay: 40ms; }
+.dashboard-stat-grid > *:nth-child(3) { animation-delay: 80ms; }
+.dashboard-stat-grid > *:nth-child(4) { animation-delay: 120ms; }
+.dashboard-stat-grid > *:nth-child(5) { animation-delay: 160ms; }
+.dashboard-stat-grid > *:nth-child(6) { animation-delay: 200ms; }
+.dashboard-stat-grid > *:nth-child(n+7) { animation-delay: 240ms; }
+
+/* ---- Scrollbars -------------------------------------------------------- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
