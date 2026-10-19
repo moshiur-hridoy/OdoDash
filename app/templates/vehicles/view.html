@@ -289,12 +289,15 @@
     {% endif %}
 </div>
 
-<!-- Quick Actions -->
-<div class="flex flex-wrap gap-3 mb-8">
+<!-- Quick Actions: create actions on the left (one primary, the rest outlined),
+     navigation shortcuts on the right. -->
+{% set btn_base = 'inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors' %}
+{% set btn_primary = btn_base ~ ' border border-transparent shadow-sm text-white bg-primary-600 hover:bg-primary-700' %}
+{% set btn_outline = btn_base ~ ' border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700' %}
+<div class="flex flex-wrap items-center gap-3 mb-8">
     {% if vehicle.uses_fuel() and not vehicle.uses_tessie_odometer() %}
     {% if can_write('fuel') %}
-    <a href="{{ url_for('fuel.new', vehicle_id=vehicle.id, return_to='vehicle') }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600">
+    <a href="{{ url_for('fuel.new', vehicle_id=vehicle.id, return_to='vehicle') }}" class="{{ btn_primary }}">
         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -304,8 +307,7 @@
     {% endif %}
     {% if vehicle.uses_charging() %}
     {% if can_write('charging') %}
-    <a href="{{ url_for('charging.new', vehicle_id=vehicle.id) }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600">
+    <a href="{{ url_for('charging.new', vehicle_id=vehicle.id) }}" class="{{ btn_primary if not (vehicle.uses_fuel() and not vehicle.uses_tessie_odometer() and can_write('fuel')) else btn_outline }}">
         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
         </svg>
@@ -314,8 +316,7 @@
     {% endif %}
     {% endif %}
     {% if can_write('trips') %}
-    <a href="{{ url_for('trips.new', vehicle_id=vehicle.id) }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600">
+    <a href="{{ url_for('trips.new', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
         </svg>
@@ -323,8 +324,7 @@
     </a>
     {% endif %}
     {% if can_write('expenses') %}
-    <a href="{{ url_for('expenses.new', vehicle_id=vehicle.id, return_to='vehicle') }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600">
+    <a href="{{ url_for('expenses.new', vehicle_id=vehicle.id, return_to='vehicle') }}" class="{{ btn_outline }}">
         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -332,28 +332,34 @@
     </a>
     {% endif %}
     {% if can_write('reminders') %}
-    <a href="{{ url_for('reminders.new', vehicle_id=vehicle.id) }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-500 hover:bg-purple-600">
+    <a href="{{ url_for('reminders.new', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
         {{ _('Add Reminder') }}
     </a>
     {% endif %}
-    <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}"
-       class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-        </svg>
-        {{ _('Parts') }}
-    </a>
-    <a href="{{ url_for('main.timeline', vehicle_id=vehicle.id) }}"
-       class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        {{ _('Timeline') }}
-    </a>
+
+    <div class="flex flex-wrap items-center gap-3 lg:ml-auto">
+        <a href="{{ url_for('maintenance.history', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"/>
+            </svg>
+            {{ _('Maintenance History') }}
+        </a>
+        <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+            </svg>
+            {{ _('Parts') }}
+        </a>
+        <a href="{{ url_for('main.timeline', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            {{ _('Timeline') }}
+        </a>
+    </div>
 </div>
 
 <!-- Photos (#147) -->
