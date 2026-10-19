@@ -535,6 +535,46 @@
                 {% endif %}
             </nav>
 
+            <div class="flex-shrink-0 px-5 pb-3 text-xs">
+                <a href="https://github.com/{{ GITHUB_REPO }}/releases/tag/v{{ APP_VERSION }}" target="_blank" rel="noopener"
+                   class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" title="{{ _("What's new") }}">v{{ DISPLAY_VERSION }}</a>
+                {% if current_user.is_admin and CHECK_FOR_UPDATES %}
+                <details id="update-notice" hidden class="mt-2 rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-gray-700/50 px-3 py-2">
+                    <summary class="cursor-pointer font-medium text-primary-700 dark:text-primary-400">{{ _('Update available') }} <span id="update-version"></span></summary>
+                    <div class="mt-2 space-y-2 text-gray-600 dark:text-gray-300">
+                        <a id="update-link" href="https://github.com/{{ GITHUB_REPO }}/releases" target="_blank" rel="noopener" class="font-medium text-primary-700 dark:text-primary-400 hover:underline">{{ _("What's new") }} &rarr;</a>
+                        <p class="text-gray-500 dark:text-gray-400">{{ _('How to update') }}</p>
+                        <code class="block select-all rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2 py-1.5 font-mono text-[11px] leading-snug break-all">docker compose pull &amp;&amp; docker compose up -d</code>
+                    </div>
+                </details>
+                <script>
+                (function () {
+                    var notice = document.getElementById('update-notice');
+                    if (!notice) return;
+                    var KEY = 'may-update-check', TTL = 12 * 60 * 60 * 1000, current = {{ APP_VERSION|tojson }};
+                    function show(d) {
+                        if (!d || !d.update_available) return;
+                        document.getElementById('update-version').textContent = 'v' + d.latest_version;
+                        if (d.release_url) document.getElementById('update-link').href = d.release_url;
+                        notice.hidden = false;
+                    }
+                    var cached = null;
+                    try { cached = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+                    if (cached && cached.current === current && Date.now() - cached.at < TTL) { show(cached.data); return; }
+                    fetch({{ url_for('auth.check_updates')|tojson }}, { credentials: 'same-origin' })
+                        .then(function (r) { return r.json(); })
+                        .then(function (d) {
+                            if (!d || !d.success) return;
+                            var data = { update_available: d.update_available, latest_version: d.latest_version, release_url: d.release_url };
+                            try { localStorage.setItem(KEY, JSON.stringify({ at: Date.now(), current: current, data: data })); } catch (e) {}
+                            show(data);
+                        })
+                        .catch(function () {});
+                })();
+                </script>
+                {% endif %}
+            </div>
+
             <div class="flex-shrink-0 space-y-3 border-t border-gray-200 dark:border-gray-700 p-3">
                 {% if current_user.show_quick_entry and can_write('fuel') %}
                 <a href="{{ url_for('fuel.quick') }}" class="flex items-center justify-center gap-1.5 rounded-lg bg-primary-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700" title="{{ _('Quick Fuel Entry') }}">

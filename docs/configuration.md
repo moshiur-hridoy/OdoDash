@@ -47,6 +47,7 @@ in `.env` has no effect — edit `docker-compose.yml` instead.
 | `UPLOAD_FOLDER` | Path for file uploads | `data/uploads` inside the application directory (`/app/data/uploads` in Docker) |
 | `PUID` | User ID the container runs as (linuxserver.io convention) | `1000` |
 | `PGID` | Group ID the container runs as (linuxserver.io convention) | `1000` |
+| `CHECK_FOR_UPDATES` | Let the sidebar ask GitHub for a newer release and show admins an update notice. Set to `false` to stop that request | `true` |
 | `TAILWIND_ASSET_URL` | Local Tailwind Play CDN JS path | `/static/vendor/tailwindcss.js` |
 | `TAILWIND_CDN_URL` | Tailwind CDN fallback URL | `https://cdn.tailwindcss.com` |
 | `HTMX_CDN_URL` | HTMX CDN URL | `https://unpkg.com/htmx.org@1.9.10` |
