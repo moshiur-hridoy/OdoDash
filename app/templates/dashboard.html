@@ -52,6 +52,10 @@
         background: linear-gradient(102deg, var(--primary-100) 0%, var(--primary-50) 50%, var(--color-surface) 100%);
         border-color: var(--primary-200);
     }
+
+    /* Reminders / Notes tabs */
+    .rn-tab { color: var(--color-text-muted); transition: background-color 140ms ease, color 140ms ease; }
+    .rn-tab[aria-selected="true"] { background: var(--color-surface); color: var(--color-text); box-shadow: 0 0 0 1px var(--color-border); }
 </style>
 {% endblock %}
 
@@ -233,6 +237,11 @@
     {% endif %}
 </div>
 
+{% set show_reminders_tab = current_user.show_menu_reminders is not defined or current_user.show_menu_reminders %}
+{% set show_notes_tab = current_user.show_menu_notes is not defined or current_user.show_menu_notes %}
+{% set show_rn_card = show_reminders_tab or show_notes_tab %}
+{% set default_tab = 'reminders' if show_reminders_tab else 'notes' %}
+
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <!-- Monthly Spending Chart -->
     <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
@@ -240,6 +249,95 @@
         <div style="height: 250px;">
             <canvas id="spendingChart"></canvas>
         </div>
+    </div>
+
+    {% if show_rn_card %}
+    <!-- Reminders & Notes (tabbed) -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col" id="rn-card" data-default-tab="{{ default_tab }}">
+        <div class="flex items-center justify-between mb-4">
+            <div class="rn-tabs inline-flex rounded-lg p-0.5 bg-gray-100 dark:bg-gray-700" role="tablist">
+                {% if show_reminders_tab %}
+                <button type="button" role="tab" id="rn-tab-reminders" data-rn-tab="reminders" aria-controls="rn-panel-reminders"
+                        class="rn-tab px-3 py-1 text-sm font-medium rounded-md">
+                    {{ _('Reminders') }}{% if dashboard_reminders_total %} <span class="ml-1 text-xs opacity-70">{{ dashboard_reminders_total }}</span>{% endif %}
+                </button>
+                {% endif %}
+                {% if show_notes_tab %}
+                <button type="button" role="tab" id="rn-tab-notes" data-rn-tab="notes" aria-controls="rn-panel-notes"
+                        class="rn-tab px-3 py-1 text-sm font-medium rounded-md">
+                    {{ _('Notes') }}
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if show_reminders_tab %}
+        <div id="rn-panel-reminders" role="tabpanel" aria-labelledby="rn-tab-reminders" class="flex-1 flex flex-col" {% if default_tab != 'reminders' %}hidden{% endif %}>
+            {% if dashboard_reminders %}
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700 flex-1">
+                {% for reminder in dashboard_reminders %}
+                {% set days = reminder.days_until_due() %}
+                <li class="py-2.5 flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ reminder.title }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ reminder.vehicle.name }}</p>
+                    </div>
+                    <span class="shrink-0 text-xs font-medium {% if days < 0 %}text-red-600 dark:text-red-400{% elif days <= 7 %}text-amber-600 dark:text-amber-400{% else %}text-gray-500 dark:text-gray-400{% endif %}">
+                        {% if days < 0 %}{{ _('%(num)d days overdue', num=days|abs) }}
+                        {% elif days == 0 %}{{ _('Due today') }}
+                        {% elif days == 1 %}{{ _('Due tomorrow') }}
+                        {% else %}{{ _('In %(num)d days', num=days) }}{% endif %}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 flex-1">{{ _('No reminders') }}</p>
+            {% endif %}
+            <div class="flex items-center justify-between pt-3 mt-2 border-t border-gray-200 dark:border-gray-700">
+                {% if can_write('reminders') %}
+                <a href="{{ url_for('reminders.new') }}" class="text-sm text-primary-600 hover:text-primary-500">+ {{ _('Add Reminder') }}</a>
+                {% else %}<span></span>{% endif %}
+                <a href="{{ url_for('reminders.index') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if show_notes_tab %}
+        <div id="rn-panel-notes" role="tabpanel" aria-labelledby="rn-tab-notes" class="flex-1 flex flex-col" {% if default_tab != 'notes' %}hidden{% endif %}>
+            {% if dashboard_notes %}
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700 flex-1">
+                {% for note in dashboard_notes %}
+                <li class="py-2.5">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ note.title or (note.content[:60] ~ ('…' if note.content|length > 60 else '')) }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ note.vehicle.name }} - {{ note.date|format_date }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 flex-1">{{ _('No notes') }}</p>
+            {% endif %}
+            <div class="flex items-center justify-between pt-3 mt-2 border-t border-gray-200 dark:border-gray-700">
+                {% if can_write('notes') %}
+                <a href="{{ url_for('notes.new') }}" class="text-sm text-primary-600 hover:text-primary-500">+ {{ _('Add Note') }}</a>
+                {% else %}<span></span>{% endif %}
+                <a href="{{ url_for('notes.index') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Expenses by Category (#145): always shown, with an empty state -->
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Expenses by Category') }}</h2>
+        {% if expenses_by_category %}
+        <div style="height: 250px;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No expenses yet.') }}</p>
+        {% endif %}
     </div>
 
     <!-- Cheapest Stations Widget -->
@@ -273,16 +371,6 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No price data yet. Add fuel stations and log fuel to track prices.') }}</p>
         {% endif %}
     </div>
-
-    {% if expenses_by_category %}
-    <!-- Expenses by Category (#145) -->
-    <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Expenses by Category') }}</h2>
-        <div style="height: 250px;">
-            <canvas id="categoryChart"></canvas>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <!-- Your Vehicles -->
@@ -387,6 +475,26 @@
 <script>
 {% include 'partials/expense_chart.js' %}
 document.addEventListener('DOMContentLoaded', function() {
+    const rnCard = document.getElementById('rn-card');
+    if (rnCard) {
+        const tabs = rnCard.querySelectorAll('[data-rn-tab]');
+        const select = function(name) {
+            tabs.forEach(function(t) {
+                const on = t.dataset.rnTab === name;
+                t.setAttribute('aria-selected', on ? 'true' : 'false');
+                t.tabIndex = on ? 0 : -1;
+                const panel = document.getElementById('rn-panel-' + t.dataset.rnTab);
+                if (panel) panel.hidden = !on;
+            });
+            try { localStorage.setItem('may-dash-rn-tab', name); } catch (e) {}
+        };
+        tabs.forEach(function(t) { t.addEventListener('click', function() { select(t.dataset.rnTab); }); });
+        let saved = null;
+        try { saved = localStorage.getItem('may-dash-rn-tab'); } catch (e) {}
+        const known = Array.from(tabs).map(function(t) { return t.dataset.rnTab; });
+        select(known.indexOf(saved) !== -1 ? saved : rnCard.dataset.defaultTab);
+    }
+
     const currency = {{ (current_user.currency or '')|tojson }};
     const categoryEl = document.getElementById('categoryChart');
     if (categoryEl) {
