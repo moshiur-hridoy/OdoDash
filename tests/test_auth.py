@@ -774,3 +774,23 @@ class TestAboutPageVersionRefresh:
         data = response.get_json()
         assert data['success'] is True
         assert data['display_version'] == DISPLAY_VERSION
+
+
+class TestSidebarVersion:
+    def test_sidebar_shows_current_version(self, auth_client):
+        from config import DISPLAY_VERSION
+        body = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'v%s' % DISPLAY_VERSION in body
+
+    def test_update_notice_hidden_from_non_admins(self, auth_client):
+        assert 'id="update-notice"' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_update_notice_present_for_admins(self, admin_client):
+        assert 'id="update-notice"' in admin_client.get('/dashboard').get_data(as_text=True)
+
+    def test_update_check_can_be_switched_off(self, app, admin_client):
+        app.config['CHECK_FOR_UPDATES'] = False
+        try:
+            assert 'id="update-notice"' not in admin_client.get('/dashboard').get_data(as_text=True)
+        finally:
+            app.config['CHECK_FOR_UPDATES'] = True

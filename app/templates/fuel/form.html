@@ -188,7 +188,7 @@
                     {% endfor %}
                     {% endif %}
                     <input type="file" name="attachment" accept="image/*,.pdf"
-                           class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                           class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400">
                 </div>
             </div>
         </div>
@@ -278,9 +278,12 @@ function updateFuelTypeSelector(selectedOption) {
     // Petrol comes first as the common case; diesel hybrid owners pick diesel
     // and the station price charts then show the right series.
     const propulsionFuels = {
-        'hybrid': ['petrol', 'diesel'],
-        'plugin_hybrid': ['petrol', 'diesel']
+        'hybrid': ['petrol', 'petrol_premium', 'diesel'],
+        'plugin_hybrid': ['petrol', 'petrol_premium', 'diesel']
     };
+    // Petrol is sold in grades at different prices, so a petrol vehicle can
+    // pick the grade per fill-up. Consumption still treats them as one fuel.
+    const petrolGrades = ['petrol', 'petrol_premium'];
 
     let choices = [];
 
@@ -295,7 +298,20 @@ function updateFuelTypeSelector(selectedOption) {
         choices = [primaryFuel, secondaryFuel];
     } else if (propulsionFuels[primaryFuel]) {
         choices = propulsionFuels[primaryFuel];
+    } else if (petrolGrades.indexOf(primaryFuel) !== -1) {
+        choices = [primaryFuel];
     }
+
+    // A bi-fuel vehicle that burns petrol can still choose the grade; the
+    // chosen one stays first, its sibling follows it.
+    const withGrades = [];
+    choices.forEach(function(value) {
+        const group = petrolGrades.indexOf(value) !== -1
+            ? [value].concat(petrolGrades.filter(function(g) { return g !== value; }))
+            : [value];
+        group.forEach(function(g) { if (withGrades.indexOf(g) === -1) withGrades.push(g); });
+    });
+    choices = withGrades;
 
     fuelTypeSelect.innerHTML = '';
     if (choices.length) {

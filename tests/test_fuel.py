@@ -1392,6 +1392,35 @@ class TestDualFuelConsumption:
         assert vehicle.runs_on_two_fuels() is False
         assert abs(vehicle.get_average_consumption() - 8.0) < 0.01
 
+    def test_premium_and_regular_petrol_share_one_consumption_series(
+            self, sample_vehicle, test_user):
+        """Grades are priced apart but burned as petrol: a car that alternates
+        petrol and premium keeps one average and is not bi-fuel."""
+        self._log(test_user, sample_vehicle, 10000, 40, 'petrol')
+        self._log(test_user, sample_vehicle, 10500, 40, 'petrol_premium')
+        self._log(test_user, sample_vehicle, 11000, 40, 'petrol')
+
+        assert sample_vehicle.get_propulsion_fuel_types() == ['petrol']
+        assert sample_vehicle.runs_on_two_fuels() is False
+        assert abs(sample_vehicle.get_average_consumption() - 8.0) < 0.01
+
+    def test_premium_petrol_vehicle_mixes_with_regular_logs(self, app, test_user):
+        vehicle = Vehicle(owner_id=test_user.id, name='Octane Bike', vehicle_type='motorcycle',
+                          fuel_type='petrol_premium', odometer_unit='km')
+        db.session.add(vehicle)
+        db.session.commit()
+        self._log(test_user, vehicle, 10000, 10, None)
+        self._log(test_user, vehicle, 10200, 10, 'petrol')
+        self._log(test_user, vehicle, 10400, 10, 'petrol_premium')
+
+        assert vehicle.get_propulsion_fuel_types() == ['petrol']
+        assert vehicle.runs_on_two_fuels() is False
+        assert abs(vehicle.get_average_consumption() - 5.0) < 0.01
+
+    def test_premium_petrol_keeps_its_own_price_series(self):
+        assert resolve_price_fuel_type('petrol_premium', 'petrol') == 'petrol_premium'
+        assert resolve_price_fuel_type(None, 'petrol_premium') == 'petrol_premium'
+
     def test_adblue_is_not_a_second_propulsion_fuel(self, adblue_vehicle, test_user):
         """AdBlue is an auxiliary fluid (#319): a diesel that tracks it is not
         bi-fuel and must never be asked to attribute distance to it."""

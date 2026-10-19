@@ -1,8 +1,8 @@
 import pytest
-from datetime import date
+from datetime import date, timedelta
 
 from app import db
-from app.models import Attachment, ChargingSession, Vehicle
+from app.models import Attachment, ChargingSession, Note, Reminder, Vehicle
 
 
 class TestDashboard:
@@ -213,3 +213,31 @@ class TestTimeline:
         resp = auth_client.get(f'/timeline/{other_vehicle.id}')
         assert resp.status_code == 200
         assert b'other-receipt.pdf' not in resp.data
+
+
+class TestDashboardReminderNoteCard:
+    def test_category_card_shows_empty_state_without_data(self, auth_client):
+        resp = auth_client.get('/dashboard')
+        assert b'Expenses by Category' in resp.data
+        assert b'id="categoryChart"' not in resp.data
+
+    def test_card_lists_open_reminders_and_notes(self, auth_client, test_user, sample_vehicle):
+        db.session.add(Reminder(
+            vehicle_id=sample_vehicle.id, user_id=test_user.id,
+            title='Renew insurance', reminder_type='insurance',
+            due_date=date.today() - timedelta(days=3)))
+        db.session.add(Reminder(
+            vehicle_id=sample_vehicle.id, user_id=test_user.id,
+            title='Already done', reminder_type='custom',
+            due_date=date.today(), is_completed=True))
+        db.session.add(Note(
+            vehicle_id=sample_vehicle.id, user_id=test_user.id,
+            title='DPF regen', content='Ran a regeneration'))
+        db.session.commit()
+
+        resp = auth_client.get('/dashboard')
+        assert resp.status_code == 200
+        assert b'id="rn-card"' in resp.data
+        assert b'Renew insurance' in resp.data
+        assert b'Already done' not in resp.data
+        assert b'DPF regen' in resp.data

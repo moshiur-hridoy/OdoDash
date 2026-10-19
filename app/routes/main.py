@@ -4,7 +4,7 @@ from flask_babel import gettext
 from datetime import datetime, timedelta
 from sqlalchemy import func
 from app import db
-from app.models import Vehicle, FuelLog, Expense, ChargingSession, FuelPriceHistory, FuelStation, MileageAllowance, Attachment, EXPENSE_CATEGORIES
+from app.models import Vehicle, FuelLog, Expense, ChargingSession, FuelPriceHistory, FuelStation, MileageAllowance, Attachment, Reminder, Note, EXPENSE_CATEGORIES
 from app.utils import shared_reading_unit
 
 bp = Blueprint('main', __name__)
@@ -153,6 +153,22 @@ def dashboard():
             )
         ).order_by(FuelPriceHistory.price_per_unit.asc()).limit(3).all()
 
+    # Open reminders (soonest first, overdue ahead of the rest) and the latest
+    # notes for the dashboard's reminders/notes card.
+    dashboard_reminders = []
+    dashboard_reminders_total = 0
+    dashboard_notes = []
+    if vehicle_ids:
+        open_reminders = Reminder.query.filter(
+            Reminder.vehicle_id.in_(vehicle_ids),
+            Reminder.is_completed.is_(False)
+        )
+        dashboard_reminders_total = open_reminders.count()
+        dashboard_reminders = open_reminders.order_by(Reminder.due_date).limit(5).all()
+        dashboard_notes = Note.query.filter(
+            Note.vehicle_id.in_(vehicle_ids)
+        ).order_by(Note.date.desc(), Note.id.desc()).limit(5).all()
+
     # A fleet total is only honest while every vehicle meters the same way.
     # One hours-metered machine among the cars and the sum mixes engine hours
     # with distance, so the template says so rather than labelling it with a
@@ -175,7 +191,10 @@ def dashboard():
                            recent_logs=recent_logs,
                            recent_expenses=recent_expenses,
                            monthly_data=monthly_data,
-                           cheapest_stations=cheapest_stations)
+                           cheapest_stations=cheapest_stations,
+                           dashboard_reminders=dashboard_reminders,
+                           dashboard_reminders_total=dashboard_reminders_total,
+                           dashboard_notes=dashboard_notes)
 
 
 def get_monthly_spending(vehicle_ids):

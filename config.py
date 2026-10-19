@@ -11,10 +11,13 @@ basedir = Path(__file__).parent.absolute()
 load_dotenv(basedir / '.env')
 
 
-APP_VERSION = '0.45.2'
+APP_VERSION = '0.46.0'
 RELEASE_CHANNEL = os.environ.get('RELEASE_CHANNEL', 'stable')
 GIT_SHA = os.environ.get('GIT_SHA', '')[:7]  # Short SHA
 GITHUB_REPO = 'moshiur-hridoy/OdoDash'
+# The sidebar asks GitHub whether a newer release exists. Set to false to keep
+# the instance from making that outbound request.
+CHECK_FOR_UPDATES = os.environ.get('CHECK_FOR_UPDATES', 'true').strip().lower() not in ('0', 'false', 'no', 'off')
 TAILWIND_ASSET_URL = os.environ.get('TAILWIND_ASSET_URL', '/static/vendor/tailwindcss.js')
 TAILWIND_CDN_URL = os.environ.get('TAILWIND_CDN_URL', 'https://cdn.tailwindcss.com')
 HTMX_ASSET_URL = os.environ.get('HTMX_ASSET_URL', '/static/vendor/htmx.min.js')
@@ -147,6 +150,7 @@ class Config:
     RELEASE_CHANNEL = RELEASE_CHANNEL
     GIT_SHA = GIT_SHA
     GITHUB_REPO = GITHUB_REPO
+    CHECK_FOR_UPDATES = CHECK_FOR_UPDATES
     TAILWIND_ASSET_URL = TAILWIND_ASSET_URL
     TAILWIND_CDN_URL = TAILWIND_CDN_URL
     HTMX_ASSET_URL = HTMX_ASSET_URL

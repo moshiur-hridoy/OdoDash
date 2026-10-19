@@ -495,8 +495,12 @@ class Vehicle(db.Model):
         return raw_distance
 
     def get_primary_fuel_type(self):
-        """The fuel this vehicle burns by default, propulsion resolved (#221)."""
-        return resolve_price_fuel_type(None, self.fuel_type)
+        """The fuel this vehicle burns by default, propulsion resolved (#221).
+
+        Fuel grades are folded into their family, so premium petrol reads as
+        petrol here: this is the consumption series, not the price series.
+        """
+        return fuel_family(resolve_price_fuel_type(None, self.fuel_type))
 
     def get_propulsion_fuel_types(self):
         """Distinct fuels the fill-ups say this vehicle actually burns (#221).
@@ -1001,6 +1005,7 @@ class Vehicle(db.Model):
 # explicitly so unknown/custom types can fall back to the petrol factor.
 FUEL_CO2_KG_PER_LITRE = {
     'petrol': 2.31,
+    'petrol_premium': 2.31,  # same hydrocarbon; octane rating does not change tailpipe CO2
     'diesel': 2.68,
     'lpg': 1.51,
     'cng': 2.75,  # approximation: CNG is normally metered by kg, not litres
@@ -1100,10 +1105,12 @@ class FuelLog(db.Model):
         counts as the fuel it burns, and a NULL fuel type counts as the
         vehicle's own.
         """
-        stored = {fuel_type} | {propulsion for propulsion, fuel in PROPULSION_TO_FUEL.items()
-                                if fuel == fuel_type}
+        family = fuel_family(fuel_type)
+        known = {slug for slug, _label in FUEL_TYPES} | set(PROPULSION_TO_FUEL) | set(FUEL_FAMILY)
+        stored = {slug for slug in known
+                  if fuel_family(PROPULSION_TO_FUEL.get(slug, slug)) == family} | {family}
         criterion = cls.fuel_type.in_(stored)
-        if resolve_price_fuel_type(None, vehicle_fuel_type) == fuel_type:
+        if fuel_family(resolve_price_fuel_type(None, vehicle_fuel_type)) == family:
             criterion = db.or_(criterion, cls.fuel_type.is_(None))
         return criterion
 
@@ -1478,6 +1485,10 @@ ODOMETER_UNITS = [
 # Fuel types
 FUEL_TYPES = [
     ('petrol', _l('Petrol/Gasoline')),
+    # A premium grade sold at its own price (Octane in Bangladesh, Super
+    # unleaded in the UK, Premium in the US). Priced separately, but burned
+    # as petrol for consumption purposes (see FUEL_FAMILY).
+    ('petrol_premium', _l('Premium petrol (Octane)')),
     ('diesel', _l('Diesel')),
     ('electric', _l('Electric')),
     ('hybrid', _l('Hybrid')),
@@ -1501,6 +1512,21 @@ PROPULSION_TO_FUEL = {
     'hybrid': 'petrol',
     'plugin_hybrid': 'petrol',
 }
+
+
+# Grades sold as separate products with separate prices that are still the same
+# fuel in the tank. Prices and station history keep them apart, but consumption
+# and bi-fuel detection treat a family as one fuel: the odometer cannot say
+# which grade a mixed tank ran on, so splitting them would leave a vehicle that
+# alternates grades with no consumption figure at all.
+FUEL_FAMILY = {
+    'petrol_premium': 'petrol',
+}
+
+
+def fuel_family(fuel_type):
+    """The fuel a stored type belongs to for consumption purposes."""
+    return FUEL_FAMILY.get(fuel_type, fuel_type)
 
 
 def resolve_price_fuel_type(log_fuel_type, vehicle_fuel_type):
@@ -1530,7 +1556,7 @@ def _propulsion_fuel_type(fuel_type):
     """
     if not fuel_type or fuel_type in AUXILIARY_FLUID_TYPES:
         return None
-    return resolve_price_fuel_type(fuel_type, fuel_type)
+    return fuel_family(resolve_price_fuel_type(fuel_type, fuel_type))
 
 
 def fuel_type_label(fuel_type):

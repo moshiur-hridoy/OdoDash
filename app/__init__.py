@@ -358,6 +358,7 @@ def create_app(config_class=Config):
     # Make languages and branding available in templates
     @app.context_processor
     def inject_globals():
+        import config as release
         branding = AppSettings.get_all_branding()
         current_locale = str(get_locale() or 'en')
         return {
@@ -368,6 +369,10 @@ def create_app(config_class=Config):
             'APP_TAGLINE': branding.get('app_tagline', 'Vehicle Management'),
             'APP_LOGO': branding.get('logo_filename'),
             'PRIMARY_COLOR': branding.get('primary_color', '#0284c7'),
+            'APP_VERSION': app.config.get('APP_VERSION', release.APP_VERSION),
+            'DISPLAY_VERSION': app.config.get('DISPLAY_VERSION', release.DISPLAY_VERSION),
+            'GITHUB_REPO': app.config.get('GITHUB_REPO', release.GITHUB_REPO),
+            'CHECK_FOR_UPDATES': app.config.get('CHECK_FOR_UPDATES', release.CHECK_FOR_UPDATES),
             'TAILWIND_ASSET_URL': app.config.get('TAILWIND_ASSET_URL', '/static/vendor/tailwindcss.js'),
             'TAILWIND_CDN_URL': app.config.get('TAILWIND_CDN_URL', 'https://cdn.tailwindcss.com'),
             'HTMX_ASSET_URL': app.config.get('HTMX_ASSET_URL', '/static/vendor/htmx.min.js'),

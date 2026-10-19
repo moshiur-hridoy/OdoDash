@@ -24,16 +24,37 @@ Issue status and upstream code may change; recheck both before starting work.
 - Preserve existing OdoDash behavior and branding. Do not copy upstream changes
   blindly; adapt them to this repository.
 
+## Status at a glance
+
+Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
+
+| Issue | Status | Release |
+| --- | --- | --- |
+| #410 PostgreSQL upgrade | Fixed, needs live PostgreSQL check | v0.45.0 |
+| #393 / #396 unit-price limit | Done | v0.45.0 |
+| #390 SOC decimals | Done (whole numbers, clear error) | v0.45.2 |
+| #395 document links | Done | v0.45.2 |
+| #381 large numbers | Partly done; locale/mobile/PDF check open | v0.45.2 |
+| #2 (this repo) total cost limit | Done, closed | v0.45.2 |
+| #403, #384, #412, #371 | Not started | |
+| #380, #382, #385/#406 | Not started | |
+| #387, #413, #411, #360, #398, #386, #373, #268/#392 | Not started | |
+| #397, #355 | Not started (outside the app) | |
+
 ## Phase 1 — Production bugs and data correctness
 
 - [ ] **[dannymcc/may#410](https://github.com/dannymcc/may/issues/410) — PostgreSQL upgrade fails**
-  - [ ] Reproduce the upgrade from the reported database revision on PostgreSQL
+  _Status: fixed in v0.45.0, still open here until it is run on a real PostgreSQL._
+  - [x] Reproduce the upgrade from the reported database revision on PostgreSQL
         and identify whether the failing `show_menu_tires` addition comes from
         the migration, startup schema recovery, or both.
-  - [ ] Make the boolean default portable to PostgreSQL without breaking SQLite
+        _Cause found by code analysis: startup schema recovery only; not
+        reproduced on a live server._
+  - [x] Make the boolean default portable to PostgreSQL without breaking SQLite
         or existing databases.
   - [ ] Add regression coverage for the relevant migration/startup path and
         verify upgrades on both supported database backends.
+        _Unit test for the generated SQL exists; live PostgreSQL run pending._
 
 - [ ] **[dannymcc/may#403](https://github.com/dannymcc/may/issues/403) — Recurring expenses create duplicates**
   - [ ] Reproduce using the latest issue details and inspect the recurring

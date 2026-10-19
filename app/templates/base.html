@@ -109,6 +109,34 @@
             rootStyle.setProperty(`--primary-${key}`, value);
         });
         window.__primaryPalette = primaryPalette;
+
+        // Any accent has to stay legible: derive the text colour that sits on a
+        // filled accent surface, and accent-coloured text for light/dark pages.
+        function relLuminance(hex) {
+            const c = hex.replace('#', '').match(/../g).map(v => {
+                v = parseInt(v, 16) / 255;
+                return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+            });
+            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        }
+        function contrast(a, b) {
+            const la = relLuminance(a), lb = relLuminance(b);
+            return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+        }
+        // Move lightness toward `dir` until `bg` contrast reaches 4.5:1.
+        function readableOn(bg, dir) {
+            let lt = l;
+            let out = hslToHex(h, s, lt);
+            while (contrast(out, bg) < 4.5 && lt > 0 && lt < 100) {
+                lt += dir;
+                out = hslToHex(h, s, lt);
+            }
+            return out;
+        }
+        const onPrimary = contrast('#ffffff', baseColor) >= contrast('#111827', baseColor) ? '#ffffff' : '#111827';
+        rootStyle.setProperty('--on-primary', onPrimary);
+        rootStyle.setProperty('--primary-ink', readableOn('#ffffff', -1));
+        rootStyle.setProperty('--primary-ink-dark', readableOn('#12151c', 1));
     </script>
     <script>
         window.__loadTailwindFallback = function() {
@@ -330,27 +358,37 @@
             cursor: not-allowed;
             opacity: 0.65;
         }
-        form input[type="file"] {
-            color: var(--control-text);
+        input[type="file"] {
+            color: var(--color-text-muted);
         }
-        form input[type="file"]::file-selector-button {
-            margin-right: 10px;
-            border: 0;
-            border-right: 1px solid var(--control-border);
-            background: transparent;
-            color: var(--control-text);
-            padding: 9px 12px 9px 0;
+        input[type="file"]::file-selector-button {
+            margin-right: 12px;
+            padding: 7px 14px;
+            border: 1px solid var(--control-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface-muted);
+            color: var(--color-text);
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: background-color 140ms ease, border-color 140ms ease;
+        }
+        input[type="file"]:hover::file-selector-button {
+            background: var(--color-surface);
+            border-color: var(--primary-500);
         }
 
         [x-cloak] { display: none !important; }
         .text-primary-400 { color: var(--primary-400); }
         .text-primary-500 { color: var(--primary-500); }
-        .text-primary-600 { color: var(--primary-600); }
-        .text-primary-700 { color: var(--primary-700); }
+        .text-primary-600 { color: var(--primary-ink, var(--primary-600)); }
+        .text-primary-700 { color: var(--primary-ink, var(--primary-700)); }
         .bg-primary-50 { background-color: var(--primary-50); }
         .bg-primary-100 { background-color: var(--primary-100); }
         .bg-primary-600 { background-color: var(--primary-600); }
+        /* Text on a filled accent follows the accent's brightness. */
+        .bg-primary-600.text-white, .hover\:bg-primary-700.text-white,
+        .dark\:bg-primary-600.text-white { color: var(--on-primary, #fff); }
         .bg-primary-700 { background-color: var(--primary-700); }
         .border-primary-200 { border-color: var(--primary-200); }
         .border-primary-300 { border-color: var(--primary-300); }
@@ -364,9 +402,9 @@
         .ring-primary-500 { --tw-ring-color: var(--primary-500); }
         .hover\:bg-primary-700:hover { background-color: var(--primary-700); }
         .hover\:text-primary-500:hover { color: var(--primary-500); }
-        .hover\:text-primary-600:hover { color: var(--primary-600); }
-        .hover\:text-primary-700:hover { color: var(--primary-700); }
-        .dark .dark\:text-primary-400 { color: var(--primary-400); }
+        .hover\:text-primary-600:hover { color: var(--primary-ink, var(--primary-600)); }
+        .hover\:text-primary-700:hover { color: var(--primary-ink, var(--primary-700)); }
+        .dark .dark\:text-primary-400 { color: var(--primary-ink-dark, var(--primary-400)); }
         .dark .dark\:bg-primary-600 { background-color: var(--primary-600); }
         .dark .dark\:border-primary-800 { border-color: var(--primary-800); }
 
@@ -413,6 +451,9 @@
             border-bottom-color: #232834;
         }
     </style>
+    <!-- Premium visual layer and shared chart theme (presentation only) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+    <script src="{{ url_for('static', filename='js/charts-theme.js') }}" defer></script>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900">
     {% from 'partials/logo.html' import logo_mark %}
@@ -493,6 +534,46 @@
                 {{ nav_item(url_for('notes.index'), _('Notes'), 'notes' in ep, 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10') }}
                 {% endif %}
             </nav>
+
+            <div class="flex-shrink-0 px-5 pb-3 text-xs">
+                <a href="https://github.com/{{ GITHUB_REPO }}/releases/tag/v{{ APP_VERSION }}" target="_blank" rel="noopener"
+                   class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" title="{{ _("What's new") }}">v{{ DISPLAY_VERSION }}</a>
+                {% if current_user.is_admin and CHECK_FOR_UPDATES %}
+                <details id="update-notice" hidden class="mt-2 rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-gray-700/50 px-3 py-2">
+                    <summary class="cursor-pointer font-medium text-primary-700 dark:text-primary-400">{{ _('Update available') }} <span id="update-version"></span></summary>
+                    <div class="mt-2 space-y-2 text-gray-600 dark:text-gray-300">
+                        <a id="update-link" href="https://github.com/{{ GITHUB_REPO }}/releases" target="_blank" rel="noopener" class="font-medium text-primary-700 dark:text-primary-400 hover:underline">{{ _("What's new") }} &rarr;</a>
+                        <p class="text-gray-500 dark:text-gray-400">{{ _('How to update') }}</p>
+                        <code class="block select-all rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2 py-1.5 font-mono text-[11px] leading-snug break-all">docker compose pull &amp;&amp; docker compose up -d</code>
+                    </div>
+                </details>
+                <script>
+                (function () {
+                    var notice = document.getElementById('update-notice');
+                    if (!notice) return;
+                    var KEY = 'may-update-check', TTL = 12 * 60 * 60 * 1000, current = {{ APP_VERSION|tojson }};
+                    function show(d) {
+                        if (!d || !d.update_available) return;
+                        document.getElementById('update-version').textContent = 'v' + d.latest_version;
+                        if (d.release_url) document.getElementById('update-link').href = d.release_url;
+                        notice.hidden = false;
+                    }
+                    var cached = null;
+                    try { cached = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+                    if (cached && cached.current === current && Date.now() - cached.at < TTL) { show(cached.data); return; }
+                    fetch({{ url_for('auth.check_updates')|tojson }}, { credentials: 'same-origin' })
+                        .then(function (r) { return r.json(); })
+                        .then(function (d) {
+                            if (!d || !d.success) return;
+                            var data = { update_available: d.update_available, latest_version: d.latest_version, release_url: d.release_url };
+                            try { localStorage.setItem(KEY, JSON.stringify({ at: Date.now(), current: current, data: data })); } catch (e) {}
+                            show(data);
+                        })
+                        .catch(function () {});
+                })();
+                </script>
+                {% endif %}
+            </div>
 
             <div class="flex-shrink-0 space-y-3 border-t border-gray-200 dark:border-gray-700 p-3">
                 {% if current_user.show_quick_entry and can_write('fuel') %}
