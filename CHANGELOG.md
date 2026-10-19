@@ -8,6 +8,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [0.46.0] - 2026-10-19
+
+### Added
+
+- Premium petrol (Octane) fuel type, priced separately from regular petrol.
+  Station price history and the fuel form treat the two as separate fuels,
+  while consumption and bi-fuel detection count them as one, so a vehicle that
+  alternates grades keeps a single average. Existing logs are unchanged.
+- The current version is shown in the sidebar and links to its release notes.
+  Admins see an update notice with a link to what's new and the command to
+  update. The check is cached for 12 hours and can be disabled with
+  `CHECK_FOR_UPDATES=false`.
+- A suggested Tailwind colour palette for the accent colour in Settings.
+- Reminders and Notes tabs on the dashboard, beside Monthly Spending. Expenses
+  by Category is always shown, with Cheapest Fuel beside it.
+
+### Changed
+
+- A new visual layer across the app: hairline-bordered cards in light mode,
+  softer depth in dark mode, refined typography, motion, and a shared Chart.js
+  theme with gradient fills and rounded bars.
+- The vehicle page has a rebuilt header, quick actions, stat cards and a
+  two-row details grid.
+- Fuel and Expenses pages use the accent colour for their add buttons.
+- Cost per km comes first on the dashboard's top row.
+
+### Fixed
+
+- Text on buttons and accent-coloured text stay readable on light accent
+  colours.
+- File chooser buttons share one style, with correct padding and a readable
+  hover state in dark mode.
+
 ## [0.45.2] - 2026-10-17
 
 ### Added
