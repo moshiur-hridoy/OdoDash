@@ -1,4 +1,4 @@
-"""Shared utility helpers for May."""
+"""Shared utility helpers for OdoDash."""
 
 import re
 from datetime import datetime, timezone

@@ -78,7 +78,7 @@ DATE_FORMATS = {
 def _bootstrap_alembic_version(app):
     """Stamp alembic_version for databases that predate Flask-Migrate.
 
-    Early versions of May created tables via db.create_all() without
+    Early versions of OdoDash created tables via db.create_all() without
     Flask-Migrate. When those users upgrade, `alembic_version` is either
     missing or empty, so `flask db upgrade` tries to replay migrations
     from scratch and fails on `duplicate column` errors. Columns that
