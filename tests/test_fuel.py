@@ -728,6 +728,45 @@ class TestFuelQuick:
         ).first()
         assert log is not None
 
+    def test_quick_fragment_is_the_bare_form(self, auth_client, sample_vehicle):
+        """The quick-fuel sheet loads only the form, with ids that cannot clash."""
+        html = auth_client.get('/fuel/quick?fragment=1').get_data(as_text=True)
+        assert '<html' not in html
+        assert 'data-quick-fuel-form' in html
+        assert 'id="qf-odometer"' in html
+        assert 'id="odometer"' not in html
+
+    def test_quick_fragment_without_vehicles_points_to_add_vehicle(self, auth_client):
+        resp = auth_client.get('/fuel/quick?fragment=1')
+        assert resp.status_code == 200
+        assert '/vehicles/new' in resp.get_data(as_text=True)
+
+    def test_quick_json_post_creates_log_without_flash(self, auth_client, sample_vehicle):
+        resp = auth_client.post('/fuel/quick', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'odometer': '21000',
+            'volume': '40.0',
+            'total_cost': '64.0',
+            'add_another': '1',
+        }, headers={'Accept': 'application/json'})
+        assert resp.status_code == 200
+        assert resp.get_json() == {'ok': True, 'message': 'Fuel log added!', 'add_another': True}
+        assert FuelLog.query.filter_by(vehicle_id=sample_vehicle.id, odometer=21000.0).first()
+        with auth_client.session_transaction() as session:
+            assert not session.get('_flashes')
+
+    def test_quick_json_post_rejects_foreign_vehicle(self, auth_client, sample_vehicle, admin_user):
+        foreign = Vehicle(owner_id=admin_user.id, name='Admin Car', vehicle_type='car',
+                          make='BMW', model='M3', fuel_type='petrol', odometer_unit='km')
+        db.session.add(foreign)
+        db.session.commit()
+        resp = auth_client.post('/fuel/quick', data={
+            'vehicle_id': str(foreign.id),
+            'odometer': '100',
+        }, headers={'Accept': 'application/json'})
+        assert resp.status_code == 403
+        assert resp.get_json()['ok'] is False
+
     @staticmethod
     def _selected_vehicle_id(html):
         """Return the vehicle id of the pre-selected <option>, or None."""

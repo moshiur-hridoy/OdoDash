@@ -24,6 +24,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
   follows the menu-visibility settings and account role, so a viewer gets no +
   button and a contributor can only add fuel and charging. The installed app
   now pads for the status bar and home indicator.
+- Quick Fuel Entry opens in a bottom sheet on phones (a centred dialog on
+  desktop) from the + button or the sidebar, instead of leaving the page. Save
+  closes it and refreshes the page; Save & Add Another keeps it open for the
+  next fill-up. The full fuel form is still a page, linked from the sheet.
 
 ## [0.46.1] - 2026-10-23
 

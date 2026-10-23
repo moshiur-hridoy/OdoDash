@@ -1,7 +1,7 @@
 import os
 import uuid
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from app import db
@@ -498,8 +498,14 @@ def quick():
     from app.models import FuelStation
 
     vehicles = current_user.get_all_vehicles()
+    # The quick-fuel sheet loads the bare form (?fragment=1) and saves over
+    # fetch, asking for JSON so it can stay on the page it was opened from.
+    in_sheet = request.args.get('fragment') == '1'
+    wants_json = request.accept_mimetypes.best == 'application/json'
 
     if not vehicles:
+        if in_sheet:
+            return render_template('fuel/_quick_no_vehicle.html')
         flash(_('Please add a vehicle first'), 'info')
         return redirect(url_for('vehicles.new'))
 
@@ -514,6 +520,8 @@ def quick():
         vehicle = db.get_or_404(Vehicle, vehicle_id)
 
         if vehicle not in vehicles:
+            if wants_json:
+                return jsonify(ok=False, message=_('Access denied')), 403
             flash(_('Access denied'), 'error')
             return redirect(url_for('fuel.quick'))
 
@@ -571,6 +579,10 @@ def quick():
             station.increment_usage()
             db.session.commit()
 
+        if wants_json:
+            return jsonify(ok=True, message=_('Fuel log added!'),
+                           add_another=bool(request.form.get('add_another')))
+
         flash(_('Fuel log added!'), 'success')
 
         # Return to quick entry or vehicle page based on preference
@@ -593,7 +605,9 @@ def quick():
     last_prices = {v.id: get_last_fuel_price(v, current_user.id) for v in vehicles}
     last_price = last_prices[vehicle.id]
 
-    return render_template('fuel/quick.html',
+    return render_template('fuel/_quick_form.html' if in_sheet else 'fuel/quick.html',
+                           p='qf-' if in_sheet else '',
+                           in_sheet=in_sheet,
                            vehicles=vehicles,
                            stations=stations,
                            selected_vehicle_id=selected_vehicle_id,

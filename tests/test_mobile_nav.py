@@ -8,8 +8,8 @@ from app.models import ROLE_CONTRIBUTOR, ROLE_VIEWER
 def _section(html, element_id):
     """Return the markup of the sheet with the given id."""
     start = html.index(f'id="{element_id}"')
-    end = html.find('<div class="sheet"', start + 1)
-    return html[start:end if end != -1 else len(html)]
+    following = re.compile(r'<div class="sheet[ "]').search(html, start + 1)
+    return html[start:following.start() if following else len(html)]
 
 
 def _tabbar(html):
@@ -62,8 +62,9 @@ class TestMobileNav:
         test_user.role = ROLE_VIEWER
         db.session.commit()
         html = auth_client.get('/dashboard').get_data(as_text=True)
-        assert 'data-sheet-open="sheet-add"' not in html
+        assert 'tabbar__add' not in _tabbar(html)
         assert 'id="sheet-add"' not in html
+        assert 'id="sheet-quick-fuel"' not in html
 
     def test_more_tab_is_active_on_a_more_section(self, auth_client):
         tabbar = _tabbar(auth_client.get('/maintenance/').get_data(as_text=True))
