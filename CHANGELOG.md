@@ -17,6 +17,13 @@ This file starts at 0.28.0. Notes for earlier releases are on the
   sit alone) spanning the full width, figures are smaller with a lighter
   currency or unit, and the icon moves to the corner. Panels below use tighter
   padding, and Your Vehicles shows each vehicle as a compact row.
+- On phones and tablets the hamburger menu is replaced by a bottom tab bar:
+  Dashboard, the two most-used sections, a centre + button that opens a
+  quick-add sheet (fuel, expense, trip, charging, reminder, note) and a More
+  sheet with every other section, dark mode, search, settings and log out. It
+  follows the menu-visibility settings and account role, so a viewer gets no +
+  button and a contributor can only add fuel and charging. The installed app
+  now pads for the status bar and home indicator.
 
 ## [0.46.1] - 2026-10-23
 

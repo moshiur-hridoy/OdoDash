@@ -4,7 +4,7 @@
     .toast-region {
         position: fixed;
         z-index: 60;
-        top: 1rem;
+        top: calc(1rem + env(safe-area-inset-top));
         right: 1rem;
         display: flex;
         flex-direction: column;

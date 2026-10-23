@@ -1,0 +1,356 @@
+{#- Phone and tablet navigation: a bottom tab bar with a quick-add button
+    and a "More" sheet. Below the lg breakpoint it replaces the sidebar, and it
+    follows the same menu-visibility settings and write permissions. -#}
+{% set nav_icons = {
+    'vehicles': 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12',
+    'fuel': 'M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z',
+    'expenses': 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    'reminders': 'M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0',
+    'trips': 'M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z',
+    'maintenance': 'M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437',
+    'recurring': 'M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99',
+    'documents': 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
+    'stations': 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z',
+    'charging': 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z',
+    'allowance': 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z',
+    'tires': 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+    'notes': 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10',
+    'dashboard': 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z'
+} %}
+{% set nav_links = [
+    ('vehicles', 'vehicles.index', _('Vehicles'), 'vehicles' in ep),
+    ('fuel', 'fuel.index', _('Fuel'), ep.startswith('fuel.')),
+    ('expenses', 'expenses.index', _('Expenses'), 'expenses' in ep),
+    ('reminders', 'reminders.index', _('Reminders'), 'reminders' in ep),
+    ('trips', 'trips.index', _('Trips'), 'trips' in ep),
+    ('maintenance', 'maintenance.index', _('Maintenance'), 'maintenance' in ep),
+    ('recurring', 'recurring.index', _('Recurring'), 'recurring' in ep),
+    ('documents', 'documents.index', _('Documents'), 'documents' in ep),
+    ('stations', 'stations.index', _('Fuel Stations'), 'stations' in ep),
+    ('charging', 'charging.index', _('EV Charging'), 'charging' in ep),
+    ('allowance', 'allowance.index', _('Mileage Allowance'), 'allowance' in ep),
+    ('tires', 'tires.index', _('Tires'), 'tires' in ep),
+    ('notes', 'notes.index', _('Notes'), 'notes' in ep),
+] %}
+{% set visible = [] %}
+{% for key, endpoint, label, active in nav_links %}
+    {% set flag = current_user|attr('show_menu_' ~ key) %}
+    {% if flag is not defined or flag %}{% if visible.append((key, endpoint, label, active)) %}{% endif %}{% endif %}
+{% endfor %}
+{#- The two tabs beside Dashboard: the first visible of these, in order. -#}
+{% set tab_keys = [] %}
+{% set enabled_keys = visible|map(attribute=0)|list %}
+{% for key in ('fuel', 'expenses', 'vehicles', 'reminders', 'trips') %}
+    {% if key in enabled_keys and tab_keys|length < 2 and tab_keys.append(key) %}{% endif %}
+{% endfor %}
+{% set tabs = [] %}
+{% for key in tab_keys %}{% for item in visible if item[0] == key %}{% if tabs.append(item) %}{% endif %}{% endfor %}{% endfor %}
+{% set more_links = visible|rejectattr(0, 'in', tab_keys)|list %}
+{% set more_active = more_links|selectattr(3)|list|length > 0 or ep.startswith('search.') or ep == 'auth.settings' %}
+{% set add_actions = [] %}
+{% if can_write('fuel') and 'fuel' in enabled_keys %}
+    {% if add_actions.append((url_for('fuel.quick'), _('Quick Fuel Entry'), 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z')) %}{% endif %}
+    {% if add_actions.append((url_for('fuel.new'), _('Add Fuel Log'), nav_icons['fuel'])) %}{% endif %}
+{% endif %}
+{% if can_write('expenses') and 'expenses' in enabled_keys %}{% if add_actions.append((url_for('expenses.new'), _('Add Expense'), nav_icons['expenses'])) %}{% endif %}{% endif %}
+{% if can_write('trips') and 'trips' in enabled_keys %}{% if add_actions.append((url_for('trips.new'), _('Log Trip'), nav_icons['trips'])) %}{% endif %}{% endif %}
+{% if can_write('charging') and 'charging' in enabled_keys %}{% if add_actions.append((url_for('charging.new'), _('Add Charging Session'), nav_icons['charging'])) %}{% endif %}{% endif %}
+{% if can_write('reminders') and 'reminders' in enabled_keys %}{% if add_actions.append((url_for('reminders.new'), _('Add Reminder'), nav_icons['reminders'])) %}{% endif %}{% endif %}
+{% if can_write('notes') and 'notes' in enabled_keys %}{% if add_actions.append((url_for('notes.new'), _('Add Note'), nav_icons['notes'])) %}{% endif %}{% endif %}
+
+{% macro tab_icon(path) -%}
+<svg class="tabbar__icon" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="{{ path }}"/></svg>
+{%- endmacro %}
+{% macro sheet_link(href, label, path, active=false, danger=false) -%}
+<a href="{{ href }}" class="sheet__item{% if active %} is-active{% endif %}{% if danger %} sheet__item--danger{% endif %}"{% if active %} aria-current="page"{% endif %}>
+    <span class="sheet__item-icon"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="{{ path }}"/></svg></span>
+    <span class="sheet__item-label">{{ label }}</span>
+</a>
+{%- endmacro %}
+
+<nav class="tabbar lg:hidden" aria-label="{{ _('Main navigation') }}">
+    <a href="{{ url_for('main.dashboard') }}" class="tabbar__tab{% if ep in ('main.dashboard', 'main.index') %} is-active{% endif %}"{% if ep in ('main.dashboard', 'main.index') %} aria-current="page"{% endif %}>
+        {{ tab_icon(nav_icons['dashboard']) }}<span>{{ _('Dashboard') }}</span>
+    </a>
+    {% for key, endpoint, label, active in tabs[:1] %}
+    <a href="{{ url_for(endpoint) }}" class="tabbar__tab{% if active %} is-active{% endif %}"{% if active %} aria-current="page"{% endif %}>
+        {{ tab_icon(nav_icons[key]) }}<span>{{ label }}</span>
+    </a>
+    {% endfor %}
+    {% if add_actions %}
+    <button type="button" class="tabbar__add" data-sheet-open="sheet-add" aria-haspopup="dialog" aria-label="{{ _('Add') }}">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/></svg>
+    </button>
+    {% endif %}
+    {% for key, endpoint, label, active in tabs[1:] %}
+    <a href="{{ url_for(endpoint) }}" class="tabbar__tab{% if active %} is-active{% endif %}"{% if active %} aria-current="page"{% endif %}>
+        {{ tab_icon(nav_icons[key]) }}<span>{{ label }}</span>
+    </a>
+    {% endfor %}
+    <button type="button" class="tabbar__tab{% if more_active %} is-active{% endif %}" data-sheet-open="sheet-more" aria-haspopup="dialog">
+        <svg class="tabbar__icon" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg><span>{{ _('More') }}</span>
+    </button>
+</nav>
+
+{% if add_actions %}
+<div class="sheet" id="sheet-add" role="dialog" aria-modal="true" aria-labelledby="sheet-add-title" hidden>
+    <div class="sheet__backdrop" data-sheet-close></div>
+    <div class="sheet__panel">
+        <div class="sheet__handle" aria-hidden="true"></div>
+        <h2 class="sheet__title" id="sheet-add-title">{{ _('Add') }}</h2>
+        <div class="sheet__grid">
+            {% for href, label, path in add_actions %}{{ sheet_link(href, label, path) }}{% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="sheet" id="sheet-more" role="dialog" aria-modal="true" aria-labelledby="sheet-more-title" hidden>
+    <div class="sheet__backdrop" data-sheet-close></div>
+    <div class="sheet__panel">
+        <div class="sheet__handle" aria-hidden="true"></div>
+        <h2 class="sheet__title" id="sheet-more-title">{{ _('More') }}</h2>
+        <div class="sheet__grid">
+            {% for key, endpoint, label, active in more_links %}{{ sheet_link(url_for(endpoint), label, nav_icons[key], active) }}{% endfor %}
+        </div>
+        <div class="sheet__footer">
+            <span class="sheet__user">{{ current_user.username }}</span>
+            <div class="sheet__actions">
+                <button type="button" class="sheet__action" data-theme-toggle aria-label="{{ _('Toggle dark mode') }}">
+                    <svg class="hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <svg class="dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.002 9.002 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+                <a href="{{ url_for('search.index') }}" class="sheet__action" aria-label="{{ _('Search') }}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </a>
+                <a href="{{ url_for('auth.settings') }}" class="sheet__action{% if ep == 'auth.settings' %} is-active{% endif %}" aria-label="{{ _('Settings') }}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </a>
+                <a href="{{ url_for('auth.logout') }}" class="sheet__action sheet__action--danger" aria-label="{{ _('Logout') }}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root { --tabbar-height: 4rem; }
+    /* The installed app draws under the status bar (viewport-fit=cover with a
+       translucent status bar), so the top bar pads itself below it. */
+    .mobile-topbar { padding-top: env(safe-area-inset-top); }
+    @media (max-width: 1023px) {
+        /* Keep page content and toasts clear of the tab bar and home indicator. */
+        body:has(.tabbar) main { padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 1.5rem); }
+    }
+    .tabbar {
+        position: fixed;
+        z-index: 50;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: stretch;
+        height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+        padding: 0 0.25rem env(safe-area-inset-bottom);
+        background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+        border-top: 1px solid var(--color-border);
+        backdrop-filter: saturate(1.6) blur(16px);
+        -webkit-backdrop-filter: saturate(1.6) blur(16px);
+    }
+    @media (min-width: 1024px) { .tabbar { display: none; } }
+    .tabbar__tab {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        padding: 0.375rem 0.125rem 0.25rem;
+        border: 0;
+        background: transparent;
+        color: var(--color-text-muted);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        line-height: 1;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+    }
+    .tabbar__tab span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tabbar__icon { width: 1.5rem; height: 1.5rem; transition: transform 160ms ease; }
+    .tabbar__tab:active .tabbar__icon { transform: scale(0.9); }
+    .tabbar__tab.is-active { color: var(--primary-600); font-weight: 600; }
+    html.dark .tabbar__tab.is-active { color: var(--primary-400); }
+    .tabbar__add {
+        flex: none;
+        align-self: center;
+        display: grid;
+        place-items: center;
+        width: 3.25rem;
+        height: 3.25rem;
+        margin: -1.25rem 0.375rem 0;
+        border: 0;
+        border-radius: 1.125rem;
+        color: #fff;
+        background: linear-gradient(145deg, var(--primary-500), var(--primary-700));
+        box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-600) 40%, transparent), 0 0 0 4px var(--color-background);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: transform 160ms ease;
+    }
+    .tabbar__add:active { transform: scale(0.94); }
+    .tabbar__add svg { width: 1.5rem; height: 1.5rem; }
+    .tabbar__tab:focus-visible, .tabbar__add:focus-visible, .sheet__item:focus-visible, .sheet__action:focus-visible {
+        outline: none;
+        box-shadow: var(--shadow-focus);
+        border-radius: var(--radius-md);
+    }
+
+    .sheet { position: fixed; inset: 0; z-index: 70; }
+    .sheet[hidden] { display: none; }
+    .sheet__backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgb(0 0 0 / 0.4);
+        animation: sheet-fade 200ms ease both;
+    }
+    .sheet__panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 0.5rem 1rem calc(1rem + env(safe-area-inset-bottom));
+        border-radius: 1.25rem 1.25rem 0 0;
+        background: var(--color-surface);
+        box-shadow: 0 -12px 40px rgb(0 0 0 / 0.18);
+        animation: sheet-up 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    .sheet.is-closing .sheet__panel { animation: sheet-down 200ms ease both; }
+    .sheet.is-closing .sheet__backdrop { animation: sheet-fade 200ms ease reverse both; }
+    .sheet__handle {
+        width: 2.5rem;
+        height: 0.3rem;
+        margin: 0 auto 0.75rem;
+        border-radius: var(--radius-pill);
+        background: var(--color-border-strong);
+    }
+    .sheet__title {
+        margin: 0 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+    .sheet__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    .sheet__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 0.375rem 0.75rem;
+        border-radius: var(--radius-lg);
+        background: var(--color-surface-muted);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.15;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .sheet__item:active { transform: scale(0.97); }
+    .sheet__item.is-active { border-color: var(--primary-300); color: var(--primary-700); }
+    html.dark .sheet__item.is-active { border-color: color-mix(in srgb, var(--primary-500) 50%, transparent); color: var(--primary-300); }
+    .sheet__item-icon {
+        display: grid;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.875rem;
+        color: var(--primary-600);
+        background: linear-gradient(135deg, var(--primary-100), var(--primary-50));
+        box-shadow: inset 0 0 0 1px var(--primary-200);
+    }
+    html.dark .sheet__item-icon {
+        color: var(--primary-300);
+        background: color-mix(in srgb, var(--primary-600) 22%, transparent);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary-500) 35%, transparent);
+    }
+    .sheet__item-icon svg { width: 1.375rem; height: 1.375rem; }
+    .sheet__item-label { overflow-wrap: anywhere; }
+    .sheet__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        padding-top: 0.875rem;
+        border-top: 1px solid var(--color-border);
+    }
+    .sheet__user { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; color: var(--color-text-muted); }
+    .sheet__actions { display: flex; gap: 0.25rem; }
+    .sheet__action {
+        display: grid;
+        place-items: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border: 0;
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: var(--color-text-muted);
+        cursor: pointer;
+    }
+    .sheet__action svg { width: 1.375rem; height: 1.375rem; }
+    .sheet__action.is-active { color: var(--primary-600); }
+    .sheet__action--danger { color: #dc2626; }
+    html.dark .sheet__action--danger { color: #f87171; }
+    @keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+    @keyframes sheet-down { from { transform: none; } to { transform: translateY(100%); } }
+    @keyframes sheet-fade { from { opacity: 0; } to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+        .sheet__panel, .sheet__backdrop, .sheet.is-closing .sheet__panel, .sheet.is-closing .sheet__backdrop { animation: none; }
+    }
+</style>
+<script>
+    (function () {
+        var lastTrigger = null;
+        function open(sheet, trigger) {
+            lastTrigger = trigger;
+            sheet.hidden = false;
+            document.documentElement.style.overflow = 'hidden';
+            var first = sheet.querySelector('a, button:not([data-sheet-close])');
+            if (first) first.focus({ preventScroll: true });
+        }
+        function close(sheet) {
+            if (sheet.hidden || sheet.classList.contains('is-closing')) return;
+            sheet.classList.add('is-closing');
+            setTimeout(function () {
+                sheet.classList.remove('is-closing');
+                sheet.hidden = true;
+                document.documentElement.style.overflow = '';
+                if (lastTrigger) lastTrigger.focus({ preventScroll: true });
+            }, 190);
+        }
+        document.querySelectorAll('[data-sheet-open]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                open(document.getElementById(btn.dataset.sheetOpen), btn);
+            });
+        });
+        document.querySelectorAll('.sheet').forEach(function (sheet) {
+            sheet.querySelector('[data-sheet-close]').addEventListener('click', function () { close(sheet); });
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'Escape') return;
+            document.querySelectorAll('.sheet:not([hidden])').forEach(close);
+        });
+        // Returning to a page from the back/forward cache must not leave a sheet open.
+        window.addEventListener('pageshow', function () {
+            document.querySelectorAll('.sheet').forEach(function (sheet) { sheet.hidden = true; });
+            document.documentElement.style.overflow = '';
+        });
+    })();
+</script>
