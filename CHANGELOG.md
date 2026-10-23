@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [0.46.1] - 2026-10-23
+
+### Changed
+
+- `docker-compose.yml`, `docker-compose.staging.yml` and the install guide now
+  pull the OdoDash image (`ghcr.io/moshiur-hridoy/ododash`) instead of the
+  upstream May image.
+- The service worker cache is renamed so installed clients drop the old cache
+  and pick up the current interface.
+- Leftover "May" wording in code comments and docstrings now says OdoDash.
+
 ## [0.46.0] - 2026-10-19
 
 ### Added
