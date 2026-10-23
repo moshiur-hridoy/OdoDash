@@ -108,11 +108,23 @@ class TestUserResetToken:
 # ---------------------------------------------------------------------------
 
 class TestVehicleOwnershipDuration:
-    def test_owned_for_returns_years_and_remaining_days(self, test_user):
+    def test_owned_for_returns_years_months_and_remaining_days(self, test_user):
         vehicle = Vehicle(owner_id=test_user.id, name='Bike', vehicle_type='motorbike',
                           purchase_date=date(2024, 1, 15))
-        assert vehicle.get_owned_for(date(2026, 1, 15)) == (2, 0)
-        assert vehicle.get_owned_for(date(2026, 2, 14)) == (2, 30)
+        assert vehicle.get_owned_for(date(2026, 1, 15)) == (2, 0, 0)
+        assert vehicle.get_owned_for(date(2026, 2, 14)) == (2, 0, 30)
+        assert vehicle.get_owned_for(date(2026, 4, 20)) == (2, 3, 5)
+
+    def test_owned_for_splits_a_long_day_count_into_months(self, test_user):
+        vehicle = Vehicle(owner_id=test_user.id, name='Car', vehicle_type='car',
+                          purchase_date=date(2025, 7, 3))
+        assert vehicle.get_owned_for(date(2026, 10, 23)) == (1, 3, 20)
+
+    def test_owned_for_clamps_month_end_purchase_dates(self, test_user):
+        vehicle = Vehicle(owner_id=test_user.id, name='Car', vehicle_type='car',
+                          purchase_date=date(2026, 1, 31))
+        assert vehicle.get_owned_for(date(2026, 2, 28)) == (0, 1, 0)
+        assert vehicle.get_owned_for(date(2026, 3, 30)) == (0, 1, 30)
 
     def test_owned_for_is_empty_without_purchase_date(self, test_user):
         vehicle = Vehicle(owner_id=test_user.id, name='Bike', vehicle_type='motorbike')
@@ -121,7 +133,7 @@ class TestVehicleOwnershipDuration:
     def test_owned_for_does_not_go_negative_for_future_date(self, test_user):
         vehicle = Vehicle(owner_id=test_user.id, name='Bike', vehicle_type='motorbike',
                           purchase_date=date(2026, 2, 1))
-        assert vehicle.get_owned_for(date(2026, 1, 1)) == (0, 0)
+        assert vehicle.get_owned_for(date(2026, 1, 1)) == (0, 0, 0)
 
 class TestVehicleIsElectric:
     def test_electric_is_electric(self, app, test_user):

@@ -17,6 +17,8 @@ This file starts at 0.28.0. Notes for earlier releases are on the
   upstream May image.
 - The service worker cache is renamed so installed clients drop the old cache
   and pick up the current interface.
+- "Owned for" on the vehicle page now shows years, months and days (for
+  example 1 year, 3 months, 20 days) instead of years and a raw day count.
 - Leftover "May" wording in code comments and docstrings now says OdoDash.
 
 ## [0.46.0] - 2026-10-19
