@@ -1,3 +1,4 @@
+import calendar
 import secrets
 from datetime import date, datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -978,26 +979,26 @@ class Vehicle(db.Model):
         }
 
     def get_owned_for(self, as_of=None):
-        """Return the elapsed whole years and remaining days since purchase."""
+        """Return elapsed whole years, whole months and remaining days since purchase."""
         if not self.purchase_date:
             return None
         as_of = as_of or date.today()
-        if as_of < self.purchase_date:
-            return (0, 0)
-        years = as_of.year - self.purchase_date.year
-        try:
-            anniversary = self.purchase_date.replace(year=self.purchase_date.year + years)
-        except ValueError:
-            # A 29 February purchase anniversary falls on 28 February in a
-            # non-leap year.
-            anniversary = self.purchase_date.replace(year=self.purchase_date.year + years, day=28)
-        if anniversary > as_of:
-            years -= 1
-            try:
-                anniversary = self.purchase_date.replace(year=self.purchase_date.year + years)
-            except ValueError:
-                anniversary = self.purchase_date.replace(year=self.purchase_date.year + years, day=28)
-        return (years, (as_of - anniversary).days)
+        purchased = self.purchase_date
+        if as_of < purchased:
+            return (0, 0, 0)
+
+        def months_after(months):
+            # A purchase on the 29th-31st lands on the last day of a shorter month.
+            year, month0 = divmod(purchased.month - 1 + months, 12)
+            year += purchased.year
+            day = min(purchased.day, calendar.monthrange(year, month0 + 1)[1])
+            return date(year, month0 + 1, day)
+
+        total_months = (as_of.year - purchased.year) * 12 + as_of.month - purchased.month
+        if months_after(total_months) > as_of:
+            total_months -= 1
+        years, months = divmod(total_months, 12)
+        return (years, months, (as_of - months_after(total_months)).days)
 
 
 # Tailpipe CO2 emitted per litre of fuel burned, in kg — standard UK
