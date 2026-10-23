@@ -36,7 +36,7 @@ docker run -d \
   -e SECRET_KEY=your-secret-key \
   -e PUID=1000 \
   -e PGID=1000 \
-  ghcr.io/dannymcc/may:latest
+  ghcr.io/moshiur-hridoy/ododash:latest
 ```
 
 > **Running as a specific user (PUID/PGID):** OdoDash follows the [linuxserver.io](https://docs.linuxserver.io/general/understanding-puid-and-pgid/) convention. Set the optional `PUID` and `PGID` environment variables to make the container run as a specific host user/group so bind-mounted data is owned correctly. They default to `1000:1000`. On Unraid, set `PUID=99` and `PGID=100`.

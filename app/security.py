@@ -1,5 +1,5 @@
 """
-Security utilities for the May application.
+Security utilities for the OdoDash application.
 """
 import re
 import ipaddress

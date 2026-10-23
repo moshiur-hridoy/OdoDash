@@ -1,5 +1,5 @@
 // OdoDash - Service Worker
-const CACHE_NAME = 'may-v2';
+const CACHE_NAME = 'ododash-v1';
 const OFFLINE_URL = '/offline';
 
 // Assets to cache on install

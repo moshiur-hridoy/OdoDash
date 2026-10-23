@@ -14,14 +14,14 @@
 
 ## Development Workflow
 
-- **`main` branch**: Production - only receives changes via pull requests from `dev`
+- **`ododash-release` branch** (default): Production - only receives changes via pull requests from `dev`
 - **`dev` branch**: Testing/development - all new features and changes go here first
 
 ### Process
 
 1. All new features and changes are committed and pushed to the `dev` branch
 2. Test changes thoroughly on `dev`
-3. When ready for production, create a pull request from `dev` to `main`
+3. When ready for production, create a pull request from `dev` to `ododash-release`
 4. Include a comprehensive changelog in the PR description listing all changes
 5. After merge, the GitHub Actions workflow builds and pushes the production Docker image
 
@@ -153,21 +153,21 @@ Migrations run automatically on container startup via the entrypoint script.
 
 The project uses GitHub Actions (`.github/workflows/docker.yml`) to automatically build and push Docker images:
 
-1. On push to `main`, `dev`, or new tags, the workflow triggers
+1. On push to `dev` or new version tags, the workflow triggers
 2. Builds a multi-platform Docker image (linux/amd64, linux/arm64)
-3. Pushes to GitHub Container Registry: `ghcr.io/dannymcc/may`
-4. Tags: `latest` for main branch, `dev` for dev branch, version tags (e.g., `v0.3.0`) for releases
+3. Pushes to GitHub Container Registry: `ghcr.io/moshiur-hridoy/ododash`
+4. Tags: `dev` for the dev branch, version tags (e.g., `v0.3.0`) and `latest` for releases
 
 ### Creating a Release
 
 1. Update `APP_VERSION` in `config.py` and add the release section to `CHANGELOG.md`
 2. Commit the version bump to `dev`
-3. Create a pull request from `dev` to `main` with comprehensive changelog
-4. Merge the PR to `main`
+3. Create a pull request from `dev` to `ododash-release` with comprehensive changelog
+4. Merge the PR to `ododash-release`
 5. Create and push a version tag:
    ```bash
-   git checkout main
-   git pull origin main
+   git checkout ododash-release
+   git pull origin ododash-release
    git tag v0.X.0
    git push origin v0.X.0
    ```
@@ -185,10 +185,10 @@ The project uses GitHub Actions (`.github/workflows/docker.yml`) to automaticall
    - Change description"
    ```
 7. GitHub Actions automatically builds and pushes the Docker image with version tag
-8. Sync `dev` with `main` after release:
+8. Sync `dev` with `ododash-release` after release:
    ```bash
    git checkout dev
-   git reset --hard origin/main
+   git reset --hard origin/ododash-release
    git push origin dev --force
    ```
 
@@ -204,7 +204,7 @@ Example docker-compose.yml for deployment:
 ```yaml
 services:
   may:
-    image: ghcr.io/dannymcc/may:latest
+    image: ghcr.io/moshiur-hridoy/ododash:latest
     container_name: may
     restart: unless-stopped
     ports:
