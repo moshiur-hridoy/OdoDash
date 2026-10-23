@@ -19,6 +19,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
   and pick up the current interface.
 - "Owned for" on the vehicle page now shows years, months and days (for
   example 1 year, 3 months, 20 days) instead of years and a raw day count.
+- Flash messages (saved, error, warning, info) now appear as dismissible toast
+  notifications in the top-right corner with an icon and a countdown bar,
+  instead of a banner above the page content. They pause on hover and
+  respect reduced-motion settings.
 - Leftover "May" wording in code comments and docstrings now says OdoDash.
 
 ## [0.46.0] - 2026-10-19
