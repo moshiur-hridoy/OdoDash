@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [Unreleased]
+
+### Changed
+
+- The dashboard is redesigned for phones and the installed app: stat cards sit
+  in two columns with the cost-per-distance card (and Total Cost when it would
+  sit alone) spanning the full width, figures are smaller with a lighter
+  currency or unit, and the icon moves to the corner. Panels below use tighter
+  padding, and Your Vehicles shows each vehicle as a compact row.
+
 ## [0.46.1] - 2026-10-23
 
 ### Changed
