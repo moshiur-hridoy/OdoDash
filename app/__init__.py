@@ -515,6 +515,10 @@ def create_app(config_class=Config):
     from app.permissions import register_permission_hooks
     register_permission_hooks(app)
 
+    if app.config.get('DEMO_MODE'):
+        from app.demo import register_demo_hooks
+        register_demo_hooks(app)
+
     # Health check endpoint for container orchestration
     @app.route('/health')
     def health_check():
@@ -562,7 +566,10 @@ def create_app(config_class=Config):
         # Run schema migrations for new columns on existing tables
         _run_schema_migrations(app)
         # Create default admin user if no users exist
-        if User.query.count() == 0:
+        if app.config.get('DEMO_MODE'):
+            from app.demo import seed_demo_data
+            seed_demo_data(app)
+        elif User.query.count() == 0:
             admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
             admin_email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
             admin_password = os.environ.get('ADMIN_PASSWORD')
