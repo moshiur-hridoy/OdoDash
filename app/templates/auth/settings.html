@@ -841,6 +841,31 @@
                             {% endif %}
                         </button>
 
+                        {% if current_user.is_admin or telegram.enabled %}
+                        <!-- Telegram Card -->
+                        <button type="button" onclick="showIntegration('telegram')"
+                                class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 text-left hover:shadow-md hover:border-primary-300 border-2 border-transparent transition-all">
+                            <div class="flex items-center mb-3">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-900 flex items-center justify-center">
+                                    <svg class="h-6 w-6 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 3L3 10.5l6.75 2.25M21 3l-4.5 18-6.75-8.25M21 3L9.75 12.75m0 0V18l3-3"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900 dark:text-white">{{ _('Telegram') }}</h3>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Log fill-ups by messaging a bot') }}</p>
+                            {% if telegram.linked %}
+                            <span class="mt-3 inline-flex items-center px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded">{{ _('Connected') }}</span>
+                            {% elif telegram.enabled %}
+                            <span class="mt-3 inline-flex items-center px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 rounded">{{ _('Not connected') }}</span>
+                            {% else %}
+                            <span class="mt-3 inline-flex items-center px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 rounded">{{ _('Not configured') }}</span>
+                            {% endif %}
+                        </button>
+                        {% endif %}
+
                         {% if current_user.is_admin %}
                         <!-- DVLA Card (Admin Only) -->
                         <button type="button" onclick="showIntegration('dvla')"
@@ -1090,6 +1115,78 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Telegram Integration Detail -->
+                {% if current_user.is_admin or telegram.enabled %}
+                <div id="integration-telegram" class="integration-detail hidden">
+                    <div class="mb-6">
+                        <button type="button" onclick="hideIntegration()" class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-4">
+                            <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            {{ _('Back to Integrations') }}
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="p-6">
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Telegram') }}</h2>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and it is saved as a fuel log.') }}</p>
+                        </div>
+
+                        {% if telegram.enabled %}
+                        <div class="p-6 space-y-4" id="telegram-link">
+                            {% if telegram.linked %}
+                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ _('Your account is connected to Telegram.') }}
+                                {% if telegram.bot_username %}<a href="https://t.me/{{ telegram.bot_username }}" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 underline">@{{ telegram.bot_username }}</a>{% endif %}</p>
+                            <form method="POST" action="{{ url_for('auth.telegram_unlink') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">{{ _('Disconnect Telegram') }}</button>
+                            </form>
+                            {% elif telegram.link_code %}
+                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ _('Send this to the bot within 15 minutes:') }}</p>
+                            <p class="font-mono text-lg tracking-wider text-gray-900 dark:text-white select-all">/start {{ telegram.link_code }}</p>
+                            {% if telegram.bot_username %}
+                            <a href="https://t.me/{{ telegram.bot_username }}?start={{ telegram.link_code }}" target="_blank" rel="noopener"
+                               class="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">{{ _('Open in Telegram') }}</a>
+                            {% endif %}
+                            {% else %}
+                            <form method="POST" action="{{ url_for('auth.telegram_link') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">{{ _('Connect Telegram') }}</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        {% if current_user.is_admin %}
+                        <div class="p-6 space-y-4">
+                            <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                                <h4 class="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">{{ _('Set up the bot (admin)') }}</h4>
+                                <ol class="text-sm text-blue-700 dark:text-blue-400 list-decimal list-inside space-y-1">
+                                    <li>{{ _('In Telegram, message @BotFather and send /newbot') }}</li>
+                                    <li>{{ _('Copy the token it gives you and paste it below') }}</li>
+                                    <li>{{ _('Each user then connects their own chat from this page') }}</li>
+                                </ol>
+                            </div>
+                            <form method="POST" action="{{ url_for('auth.telegram_settings') }}" class="space-y-4">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div>
+                                    <label for="telegram_bot_token" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Bot token') }}</label>
+                                    <input type="password" name="telegram_bot_token" id="telegram_bot_token" autocomplete="off"
+                                           value="{{ telegram.token or '' }}"
+                                           class="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Leave empty and save to disconnect the bot.') }}</p>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">{{ _('Save Telegram Settings') }}</button>
+                                </div>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
 
                 <!-- DVLA Integration Detail (Admin Only) -->
                 {% if current_user.is_admin %}
