@@ -20,6 +20,9 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ### Fixed
 
+- An admin entering mismatched or too-weak new passwords, or an email already
+  in use, on the Settings page got a server error instead of the message. The
+  rejected form is now discarded and the page reloads with the error (#414).
 - Editing a fuel log no longer rejects a discount per unit above 1000, which
   blocked high-denomination currencies. New logs already allowed it
   (#393, #396).

@@ -203,6 +203,18 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
+def _settings_error_redirect():
+    """Discard a rejected settings form and send the user back to the page.
+
+    Rendering the template from the POST branch skipped the admin-only context
+    (``dvla_settings`` and the rest), so a mismatched or weak password from an
+    admin raised a 500 (#414). Rolling back also keeps the other fields of the
+    rejected form from being half-applied.
+    """
+    db.session.rollback()
+    return redirect(url_for('auth.settings'))
+
+
 @bp.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
@@ -228,8 +240,7 @@ def settings():
             existing = User.query.filter(User.email == new_email, User.id != current_user.id).first()
             if existing:
                 flash(_('Email already in use by another account'), 'error')
-                branding = AppSettings.get_all_branding() if current_user.is_admin else {}
-                return render_template('auth/settings.html', branding=branding)
+                return _settings_error_redirect()
             current_user.email = new_email
 
         # Update password if provided
@@ -238,14 +249,12 @@ def settings():
             confirm_password = request.form.get('confirm_new_password')
             if new_password != confirm_password:
                 flash(_('Passwords do not match'), 'error')
-                branding = AppSettings.get_all_branding() if current_user.is_admin else {}
-                return render_template('auth/settings.html', branding=branding)
+                return _settings_error_redirect()
             # Validate password strength
             is_valid, error_msg = validate_password_strength(new_password)
             if not is_valid:
                 flash(error_msg, 'error')
-                branding = AppSettings.get_all_branding() if current_user.is_admin else {}
-                return render_template('auth/settings.html', branding=branding)
+                return _settings_error_redirect()
             current_user.set_password(new_password)
 
         db.session.commit()
