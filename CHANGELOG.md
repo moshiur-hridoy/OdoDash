@@ -10,6 +10,8 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+## [0.47.0] - 2026-11-12
+
 ### Added
 
 - Demo mode: setting `DEMO_MODE=1` seeds a year of sample history under a
@@ -51,6 +53,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
   desktop) from the + button or the sidebar, instead of leaving the page. Save
   closes it and refreshes the page; Save & Add Another keeps it open for the
   next fill-up. The full fuel form is still a page, linked from the sheet.
+- App icons use the OdoDash logo.
 
 ## [0.46.1] - 2026-10-23
 
