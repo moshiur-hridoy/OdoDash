@@ -252,7 +252,7 @@ def edit(log_id):
             for field, label, maximum in (
                 ('volume', 'Volume', 10000),
                 ('total_cost', 'Total cost', MAX_AMOUNT),
-                ('discount_per_unit', 'Discount per unit', 1000),
+                ('discount_per_unit', 'Discount per unit', MAX_UNIT_PRICE),
             ):
                 values[field], err = validate_positive_number(
                     request.form.get(field), label, max_value=maximum)

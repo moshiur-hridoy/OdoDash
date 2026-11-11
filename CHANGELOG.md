@@ -10,6 +10,26 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Added
+
+- Demo mode: setting `DEMO_MODE=1` seeds a year of sample history under a
+  shared `demo` / `demo` login on an empty database and shows the credentials
+  on the login page. Uploads are capped at 5MB, and account, admin and
+  outbound-integration changes are refused so one visitor cannot lock out the
+  next.
+
+### Fixed
+
+- Editing a fuel log no longer rejects a discount per unit above 1000, which
+  blocked high-denomination currencies. New logs already allowed it
+  (#393, #396).
+
+### Security
+
+- Pillow is raised to 13.0.0 or later and certifi to 2026.10.23 or later, and
+  the Docker image now upgrades the base image's OS packages at build time
+  (#419).
+
 ### Changed
 
 - The dashboard is redesigned for phones and the installed app: stat cards sit
