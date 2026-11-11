@@ -203,3 +203,69 @@ class TestGenerateExpenseForPeriodHelper:
         expense = Expense.query.filter_by(vehicle_id=recurring.vehicle_id).first()
         assert expense.vendor == 'Acme Insurers'
         assert expense.notes == 'Policy AB123'
+
+
+class TestConcurrentWorkers:
+    """Two Gunicorn workers must not both generate the same period (#403)."""
+
+    def _advance_row_behind_session(self, recurring, next_due, last_generated):
+        # What a second worker leaves behind after generating the period: the
+        # row has moved on, but this worker's loaded object still shows the
+        # old next_due.
+        from sqlalchemy import update
+        db.session.execute(
+            update(RecurringExpense)
+            .where(RecurringExpense.id == recurring.id)
+            .values(next_due=next_due, last_generated=last_generated)
+            .execution_options(synchronize_session=False)
+        )
+
+    def test_claim_fails_once_another_worker_advanced_the_row(
+            self, app, test_user, sample_vehicle):
+        from app.services.recurring_processor import _claim_period
+        today = date.today()
+        recurring = _make_recurring(test_user, sample_vehicle, next_due=today)
+
+        assert _claim_period(recurring, today) is True
+        self._advance_row_behind_session(
+            recurring, today + relativedelta(months=1), today)
+        assert _claim_period(recurring, today) is False
+
+    def test_stale_worker_generates_nothing(
+            self, app, test_user, sample_vehicle, monkeypatch):
+        from app.services import recurring_processor
+        today = date.today()
+        recurring = _make_recurring(test_user, sample_vehicle, next_due=today)
+
+        # This worker loaded the due list before the other worker committed.
+        stale = recurring_processor._due_recurring_expenses(today)
+        assert stale == [recurring]
+        self._advance_row_behind_session(
+            recurring, today + relativedelta(months=1), today)
+        monkeypatch.setattr(recurring_processor, '_due_recurring_expenses',
+                            lambda _today: stale)
+
+        stats = process_due_recurring_expenses()
+
+        assert stats['generated'] == 0
+        assert stats['errors'] == []
+        assert _expense_count(recurring) == 0
+
+
+class TestSchedulerLock:
+    def test_only_one_holder(self, tmp_path, monkeypatch):
+        import app as app_module
+        monkeypatch.setattr(app_module, '_scheduler_lock_file', None)
+        lock_path = str(tmp_path / 'scheduler.lock')
+
+        assert app_module._acquire_scheduler_lock(lock_path) is True
+        holder = app_module._scheduler_lock_file
+        try:
+            # The same process asking again does not start a second loop.
+            assert app_module._acquire_scheduler_lock(lock_path) is False
+            # Another process (simulated by a fresh module state) is refused
+            # while the first still holds the lock.
+            monkeypatch.setattr(app_module, '_scheduler_lock_file', None)
+            assert app_module._acquire_scheduler_lock(lock_path) is False
+        finally:
+            holder.close()

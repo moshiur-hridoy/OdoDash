@@ -10,7 +10,7 @@ the whole list.
 
 ## Block A: data correctness (target 0.47.1)
 
-- [ ] **#403 Recurring expenses duplicate.** Root cause: Gunicorn runs two
+- [x] **#403 Recurring expenses duplicate.** Root cause: Gunicorn runs two
       workers and each starts its own hourly scheduler thread, so both
       generate the same due period. Fix at two levels: only one process runs
       the scheduler (file lock), and each period is claimed with a conditional

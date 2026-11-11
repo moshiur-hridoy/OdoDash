@@ -597,13 +597,53 @@ def create_app(config_class=Config):
     return app
 
 
+_scheduler_lock_file = None
+
+
+def _acquire_scheduler_lock(lock_path):
+    """Return True if this process should run the background scheduler.
+
+    Gunicorn starts several workers and each one builds the app, so without
+    this every worker ran its own hourly loop: recurring expenses were
+    generated once per worker (#403) and reminders could be sent twice. An
+    exclusive, non-blocking ``flock`` lets exactly one process win. The file
+    stays open for the life of the process; the OS drops the lock when the
+    process exits, so a restarted worker can take over.
+
+    Where ``fcntl`` is unavailable (Windows) every process runs the loop, as
+    before; the recurring processor's per-period claim still prevents
+    duplicate expenses there.
+    """
+    global _scheduler_lock_file
+    if _scheduler_lock_file is not None:
+        return False  # this process already runs a scheduler
+    try:
+        import fcntl
+    except ImportError:
+        return True
+    lock_file = open(lock_path, 'a')
+    try:
+        fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        lock_file.close()
+        return False
+    _scheduler_lock_file = lock_file
+    return True
+
+
 def _start_reminder_scheduler(app):
     """Start a background thread that processes reminders daily."""
+    import tempfile
     import threading
     import time
     import logging
 
     logger = logging.getLogger(__name__)
+
+    lock_path = os.path.join(tempfile.gettempdir(), 'ododash-scheduler.lock')
+    if not _acquire_scheduler_lock(lock_path):
+        app.logger.info("Background scheduler already running in another process")
+        return
 
     def reminder_loop():
         """Check reminders every hour."""

@@ -10,6 +10,14 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Fixed
+
+- Recurring expenses are no longer generated twice. Each Gunicorn worker ran
+  its own hourly scheduler, so two workers could create the same due period;
+  now one process runs the scheduler, and each period is claimed before it is
+  generated so a second worker or container skips it. The same change stops
+  reminders being sent twice (#403).
+
 ## [0.47.0] - 2026-11-12
 
 ### Added

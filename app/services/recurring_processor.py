@@ -1,6 +1,7 @@
 """Background processor that auto-generates expenses from due recurring expenses."""
 import logging
 from datetime import date
+from sqlalchemy import update
 from app import db
 from app.models import RecurringExpense, Expense
 
@@ -51,6 +52,41 @@ def generate_expense_for_period(recurring, on_date=None):
     return expense
 
 
+def _due_recurring_expenses(today):
+    """Active auto-create recurring expenses whose next period is due."""
+    return RecurringExpense.query.filter(
+        RecurringExpense.is_active.is_(True),
+        RecurringExpense.auto_create.is_(True),
+        RecurringExpense.next_due.isnot(None),
+        RecurringExpense.next_due <= today,
+    ).all()
+
+
+def _claim_period(recurring, period_date):
+    """Claim one period of a recurring expense before generating it.
+
+    Gunicorn runs several workers, and a deployment may run several
+    containers, so two processes can load the same due recurring expense at
+    once and each generate it (#403). This conditional update only matches
+    while the row's ``next_due`` is still ``period_date``. The first process
+    takes the row's write lock; once it commits the advanced ``next_due``, the
+    other's update matches nothing and it skips the period. On SQLite the
+    loser may instead fail with "database is locked", which the caller's
+    per-item error handling rolls back; either way the period is generated
+    once.
+
+    Returns True if this process now owns the period.
+    """
+    result = db.session.execute(
+        update(RecurringExpense)
+        .where(RecurringExpense.id == recurring.id,
+               RecurringExpense.next_due == period_date)
+        .values(next_due=period_date)
+        .execution_options(synchronize_session=False)
+    )
+    return result.rowcount == 1
+
+
 def process_due_recurring_expenses():
     """Generate expenses for every due, active, auto-create recurring expense.
 
@@ -68,14 +104,7 @@ def process_due_recurring_expenses():
     stats = {'checked': 0, 'generated': 0, 'skipped': 0, 'errors': []}
     today = date.today()
 
-    recurring_expenses = RecurringExpense.query.filter(
-        RecurringExpense.is_active.is_(True),
-        RecurringExpense.auto_create.is_(True),
-        RecurringExpense.next_due.isnot(None),
-        RecurringExpense.next_due <= today,
-    ).all()
-
-    for recurring in recurring_expenses:
+    for recurring in _due_recurring_expenses(today):
         stats['checked'] += 1
         try:
             count = 0
@@ -84,6 +113,10 @@ def process_due_recurring_expenses():
                    and recurring.next_due <= today
                    and count < MAX_CATCHUP_PERIODS):
                 previous_due = recurring.next_due
+                if not _claim_period(recurring, previous_due):
+                    # Another worker or container already generated this
+                    # period and moved the schedule on (#403).
+                    break
                 generate_expense_for_period(recurring, on_date=previous_due)
                 count += 1
 
@@ -106,6 +139,7 @@ def process_due_recurring_expenses():
                     count, recurring.id, recurring.name,
                 )
             else:
+                db.session.rollback()
                 stats['skipped'] += 1
         except Exception as e:  # noqa: BLE001 - isolate per-item failures
             db.session.rollback()
