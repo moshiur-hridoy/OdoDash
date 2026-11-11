@@ -8,6 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This file starts at 0.28.0. Notes for earlier releases are on the
 [GitHub releases page](https://github.com/dannymcc/may/releases).
 
+## [Unreleased]
+
+## [0.47.0] - 2026-11-12
+
+### Added
+
+- Demo mode: setting `DEMO_MODE=1` seeds a year of sample history under a
+  shared `demo` / `demo` login on an empty database and shows the credentials
+  on the login page. Uploads are capped at 5MB, and account, admin and
+  outbound-integration changes are refused so one visitor cannot lock out the
+  next.
+
+### Fixed
+
+- An admin entering mismatched or too-weak new passwords, or an email already
+  in use, on the Settings page got a server error instead of the message. The
+  rejected form is now discarded and the page reloads with the error (#414).
+- Editing a fuel log no longer rejects a discount per unit above 1000, which
+  blocked high-denomination currencies. New logs already allowed it
+  (#393, #396).
+
+### Security
+
+- Pillow is raised to 13.0.0 or later and certifi to 2026.10.23 or later, and
+  the Docker image now upgrades the base image's OS packages at build time
+  (#419).
+
+### Changed
+
+- The dashboard is redesigned for phones and the installed app: stat cards sit
+  in two columns with the cost-per-distance card (and Total Cost when it would
+  sit alone) spanning the full width, figures are smaller with a lighter
+  currency or unit, and the icon moves to the corner. Panels below use tighter
+  padding, and Your Vehicles shows each vehicle as a compact row.
+- On phones and tablets the hamburger menu is replaced by a bottom tab bar:
+  Dashboard, the two most-used sections, a centre + button that opens a
+  quick-add sheet (fuel, expense, trip, charging, reminder, note) and a More
+  sheet with every other section, dark mode, search, settings and log out. It
+  follows the menu-visibility settings and account role, so a viewer gets no +
+  button and a contributor can only add fuel and charging. The installed app
+  now pads for the status bar and home indicator.
+- Quick Fuel Entry opens in a bottom sheet on phones (a centred dialog on
+  desktop) from the + button or the sidebar, instead of leaving the page. Save
+  closes it and refreshes the page; Save & Add Another keeps it open for the
+  next fill-up. The full fuel form is still a page, linked from the sheet.
+- App icons use the OdoDash logo.
+
 ## [0.46.1] - 2026-10-23
 
 ### Changed

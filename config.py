@@ -11,7 +11,7 @@ basedir = Path(__file__).parent.absolute()
 load_dotenv(basedir / '.env')
 
 
-APP_VERSION = '0.46.1'
+APP_VERSION = '0.47.0'
 RELEASE_CHANNEL = os.environ.get('RELEASE_CHANNEL', 'stable')
 GIT_SHA = os.environ.get('GIT_SHA', '')[:7]  # Short SHA
 GITHUB_REPO = 'moshiur-hridoy/OdoDash'
@@ -169,3 +169,6 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or str(basedir / 'data' / 'uploads')
     MAX_CONTENT_LENGTH = 300 * 1024 * 1024  # 300MB max upload
+    # Public demo instance: seeds sample data under a shared demo/demo login
+    # and refuses account, admin and outbound-integration changes (app/demo.py).
+    DEMO_MODE = os.environ.get('DEMO_MODE', '').strip().lower() in ('1', 'true', 'yes', 'on')

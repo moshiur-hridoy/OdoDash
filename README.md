@@ -124,7 +124,6 @@ Contributions are welcome. OdoDash is a designer-led project, so UI/UX ideas, an
 MIT License, see [LICENSE](LICENSE). The original May project is Copyright (c) 2026 Danny McClelland.
 
 - Original project: [May](https://github.com/dannymcc/may) by [Danny McClelland](https://github.com/dannymcc)
-- App icon design by [@lancetm714](https://github.com/lancetm714)
 
 ---
 

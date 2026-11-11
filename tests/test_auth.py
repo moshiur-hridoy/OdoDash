@@ -221,6 +221,32 @@ class TestSettingsRoute:
         assert response.status_code == 200
         assert b'Passwords do not match' in response.data
 
+    @pytest.mark.parametrize('new_password, confirm, message', [
+        ('NewPass123!', 'DifferentPass456!', b'Passwords do not match'),
+        ('short', 'short', b'Password must be'),
+    ])
+    def test_admin_rejected_password_does_not_500(self, admin_client, app,
+                                                  new_password, confirm, message):
+        # An admin's settings page needs admin-only context (DVLA, SMTP, ...);
+        # rendering it from the rejected POST without that context was a 500 (#414).
+        response = admin_client.post('/auth/settings', data={
+            'distance_unit': 'mi',
+            'volume_unit': 'L',
+            'consumption_unit': 'L/100km',
+            'currency': 'JPY',
+            'language': 'en',
+            'date_format': 'DD/MM/YYYY',
+            'new_password': new_password,
+            'confirm_new_password': confirm,
+        }, follow_redirects=True)
+        assert response.status_code == 200
+        assert message in response.data
+        with app.app_context():
+            admin = User.query.filter_by(is_admin=True).first()
+            # The rejected form is discarded as a whole.
+            assert admin.currency != 'JPY'
+            assert admin.distance_unit != 'mi'
+
 
 class TestNotificationsRoute:
     def test_post_notifications_updates_prefs(self, auth_client, test_user, app):

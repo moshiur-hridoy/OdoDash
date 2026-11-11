@@ -15,17 +15,26 @@
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ APP_TAGLINE }}</p>
         </div>
 
+        {% if DEMO_MODE %}
+        <div class="mb-6 rounded-md border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/30 px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+            <p class="font-medium text-primary-700 dark:text-primary-300">Live demo</p>
+            <p class="mt-1">Sign in with <code class="font-mono font-semibold">{{ DEMO_USERNAME }}</code> / <code class="font-mono font-semibold">{{ DEMO_PASSWORD }}</code>. Feel free to add and edit anything; the data resets regularly.</p>
+        </div>
+        {% endif %}
+
         <form method="POST" class="space-y-6">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Username') }}</label>
                 <input type="text" name="username" id="username" required autofocus
+                       {% if DEMO_MODE %}value="{{ DEMO_USERNAME }}"{% endif %}
                        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
             </div>
 
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Password') }}</label>
                 <input type="password" name="password" id="password" required
+                       {% if DEMO_MODE %}value="{{ DEMO_PASSWORD }}"{% endif %}
                        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
             </div>
 
