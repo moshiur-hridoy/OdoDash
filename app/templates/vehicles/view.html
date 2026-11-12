@@ -235,7 +235,7 @@
     {% endif %}
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{% if vehicle.tracks_hours() %}{{ _('Total Hours') }}{% else %}{{ _('Total Distance') }}{% endif %}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.0f"|format(stats.total_distance) }}</dd>
+        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_distance|groupnum }}</dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.get_reading_unit() }}</dd>
     </div>
     {% if vehicle.uses_fuel() %}
@@ -289,7 +289,7 @@
         <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.2f"|format(stats.total_co2_kg / 1000) }}</dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('tonnes (estimated)') }}</dd>
         {% else %}
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.0f"|format(stats.total_co2_kg) }}</dd>
+        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_co2_kg|groupnum }}</dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('kg (estimated)') }}</dd>
         {% endif %}
     </div>
@@ -566,9 +566,9 @@
                 <dd class="mt-1 text-sm text-gray-900 dark:text-white">
                     {% if vehicle.tessie_last_odometer %}
                     {% if vehicle.get_effective_odometer_unit() == 'mi' %}
-                    {{ "%.0f"|format(vehicle.tessie_last_odometer * 0.621371) }} mi
+                    {{ (vehicle.tessie_last_odometer * 0.621371)|groupnum }} mi
                     {% else %}
-                    {{ "%.0f"|format(vehicle.tessie_last_odometer) }} km
+                    {{ vehicle.tessie_last_odometer|groupnum }} km
                     {% endif %}
                     {% else %}
                     -
@@ -596,9 +596,9 @@
                 <dd class="mt-1 text-sm text-gray-900 dark:text-white">
                     {% if vehicle.tessie_battery_range %}
                     {% if vehicle.get_effective_odometer_unit() == 'mi' %}
-                    {{ "%.0f"|format(vehicle.tessie_battery_range * 0.621371) }} mi
+                    {{ (vehicle.tessie_battery_range * 0.621371)|groupnum }} mi
                     {% else %}
-                    {{ "%.0f"|format(vehicle.tessie_battery_range) }} km
+                    {{ vehicle.tessie_battery_range|groupnum }} km
                     {% endif %}
                     {% else %}
                     -
@@ -866,7 +866,7 @@
                         <span>{{ schedule.next_due_date|format_date }}</span>
                         {% endif %}
                         {% if schedule.next_due_odometer %}
-                        <span>{{ schedule.next_due_odometer|int }} {{ vehicle.get_reading_unit() }}</span>
+                        <span>{{ schedule.next_due_odometer|groupnum }} {{ vehicle.get_reading_unit() }}</span>
                         {% endif %}
                     </div>
                 </div>
@@ -1036,7 +1036,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-900 dark:text-white">{{ log.date|format_date }}</p>
                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ "%.0f"|format(log.odometer) if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }} &middot;
+                            {{ log.odometer|groupnum if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }} &middot;
                             {{ "%.1f"|format(log.volume or 0) }} {{ current_user.volume_unit }}
                             {% if log.price_per_unit %}&middot; {{ "%.3f"|format(log.price_per_unit) }}/{{ current_user.volume_unit }}{% endif %}
                             {% if log.is_full_tank %}<span class="text-green-600">{{ _('(Full)') }}</span>{% endif %}

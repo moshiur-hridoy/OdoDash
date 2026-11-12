@@ -221,7 +221,7 @@
                 <div class="ml-5 w-0 flex-1">
                     <dl>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Total Distance') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ "%.0f"|format(total_distance) }} {% if total_distance_unit %}<span class="stat-unit">{{ total_distance_unit }}</span>{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
+                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total_distance|groupnum }} {% if total_distance_unit %}<span class="stat-unit">{{ total_distance_unit }}</span>{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
                     </dl>
                 </div>
             </div>
