@@ -63,6 +63,18 @@ Costs, distance, consumption and CO&#8322; sit in one place, with quick actions 
 
 Units, currency, date format and language are per user, so a household can mix kilometres and miles, litres and gallons.
 
+## How it relates to May
+
+OdoDash started as a fork of [May](https://github.com/dannymcc/may) and keeps its data model, REST API and import format, so May backups restore directly. On top of that foundation OdoDash adds:
+
+- A redesigned interface: hairline cards, a shared chart theme, light and dark.
+- A custom accent colour with readable text on it.
+- Logging forms with fewer clicks and limits checked as you type.
+- A built-in public demo mode with seeded data (see the [demo guide](docs/demo.md)).
+- Upstream bug fixes and useful PRs merged quickly.
+
+Looking at other self-hosted options? [LubeLogger](https://github.com/hargata/lubelog) and [Hammond](https://github.com/AlfHou/hammond) are worth a look too. Pick the one whose interface and feature set suit you.
+
 ## Features
 
 - 🚗 **Multi-vehicle:** cars, vans, motorbikes and scooters, shared between users with roles
