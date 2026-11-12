@@ -92,6 +92,24 @@
 </nav>
 {%- endmacro %}
 
+{#- A small column chart of a few periods, labelled underneath.
+    bars: [{'label': 'Oct', 'value': 238.5, 'display': '238.50 USD', 'current': False}, ...]
+    label: what the chart shows, for screen readers.
+    Each column is focusable, so a tap on a phone shows its amount the way a
+    hover does on a desktop; the current period is drawn in the accent. -#}
+{%- macro month_bars(bars, label) -%}
+{%- set top = (bars | map(attribute='value') | max) or 1 -%}
+<div class="ds-bars" role="group" aria-label="{{ label }}">
+    {%- for b in bars %}
+    <div class="ds-bars__col{% if b.current %} ds-bars__col--current{% endif %}" tabindex="0" aria-label="{{ b.label }}: {{ b.display }}">
+        <span class="ds-bars__value" aria-hidden="true">{{ b.display }}</span>
+        <span class="ds-bars__track" aria-hidden="true"><span class="ds-bars__bar{% if not b.value %} ds-bars__bar--empty{% endif %}" style="height: {{ (b.value / top * 100) | round(1) }}%"></span></span>
+        <span class="ds-bars__label" aria-hidden="true">{{ b.label }}</span>
+    </div>
+    {%- endfor %}
+</div>
+{%- endmacro %}
+
 {#- Proportions of a whole, with a legend.
     segments: [{'label': ..., 'value': 58, 'display': '58%', 'series': 'accent'|'charging'|'other'}, ...]
     label: what the bar shows, for screen readers. -#}

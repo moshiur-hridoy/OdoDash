@@ -11,6 +11,9 @@ bp = Blueprint('main', __name__)
 
 #: "Needs attention" lists reminders overdue or due within this many days.
 ATTENTION_DAYS = 30
+#: How many of them the card lists; the count and "View all" cover the rest.
+#: Four keeps the card about as tall as the hero beside it.
+ATTENTION_SHOWN = 4
 #: Station prices older than this do not count towards "Cheapest Fuel".
 PRICE_WINDOW_DAYS = 60
 
@@ -99,6 +102,15 @@ def dashboard():
     if previous_total > 0:
         period_change = round((period_total - previous_total) / previous_total * 100)
 
+    # Month by month under the hero figure: the last six months, or this
+    # year's months so far. Whole months, so the current one is partial.
+    if period == 'year':
+        bar_months = [datetime(now.year, m, 1) for m in range(1, now.month + 1)]
+    else:
+        bar_months = [_add_months(current_start, -i) for i in range(5, -1, -1)]
+    month_totals = [(m, sum(_spending_between(vehicle_ids, m, _add_months(m, 1)).values()))
+                    for m in bar_months]
+
     # Year to date, and where it is heading at the same pace.
     year_start = datetime(now.year, 1, 1)
     year_to_date = (period_total if period == 'year'
@@ -148,7 +160,7 @@ def dashboard():
         open_reminders_total = len(open_reminders)
         attention_due = [r for r in open_reminders if r.days_until_due() <= ATTENTION_DAYS]
         dashboard_reminders_total = len(attention_due)
-        dashboard_reminders = attention_due[:5]
+        dashboard_reminders = attention_due[:ATTENTION_SHOWN]
         for reminder in open_reminders:
             soonest_due.setdefault(reminder.vehicle_id, reminder.days_until_due())
         dashboard_notes = Note.query.filter(
@@ -192,6 +204,7 @@ def dashboard():
                            period_split=current_split,
                            period_change=period_change,
                            previous_total=previous_total,
+                           month_totals=month_totals,
                            year_to_date=year_to_date,
                            year_projection=year_projection,
                            month_average=month_average,

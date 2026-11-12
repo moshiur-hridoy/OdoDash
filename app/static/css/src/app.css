@@ -462,6 +462,33 @@ textarea.ds-control { height: auto; min-height: 96px; padding: 10px 12px; resize
 .ds-row > .ds-grow-even { flex: 1 1 220px; }
 @media (max-width: 640px) { .ds-stack, .ds-row { gap: 12px; } }
 
+/* ---- Month bars ------------------------------------------------------ */
+/* Columns rise from a shared baseline; the amount sits above a column while
+   it is hovered or focused (tapped, on a phone). Past periods are a tint of
+   the accent and the current one the accent itself. */
+.ds-bars { display: flex; align-items: stretch; gap: 8px; height: 140px; margin-top: 20px; }
+.ds-bars__col {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center;
+  border-radius: var(--ds-radius-sm); outline: none; cursor: default;
+}
+.ds-bars__value {
+  height: 18px; font-size: var(--ds-text-xs); color: var(--ds-text-muted); white-space: nowrap;
+  font-variant-numeric: tabular-nums; opacity: 0; transition: opacity var(--ds-duration-fast) ease;
+}
+.ds-bars__col:hover .ds-bars__value, .ds-bars__col:focus .ds-bars__value { opacity: 1; }
+.ds-bars__track { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.ds-bars__bar {
+  display: block; width: 100%; max-width: 48px; min-height: 3px; border-radius: 6px 6px 2px 2px;
+  background: color-mix(in srgb, var(--ds-accent) 30%, var(--ds-surface));
+  transition: background var(--ds-duration-fast) ease;
+}
+.ds-bars__bar--empty { background: var(--ds-border-soft); }
+.ds-bars__col:hover .ds-bars__bar:not(.ds-bars__bar--empty) { background: color-mix(in srgb, var(--ds-accent) 55%, var(--ds-surface)); }
+.ds-bars__col--current .ds-bars__bar, .ds-bars__col--current:hover .ds-bars__bar { background: var(--ds-accent); }
+.ds-bars__col:focus-visible .ds-bars__bar { box-shadow: var(--ds-focus-ring); }
+.ds-bars__label { margin-top: 6px; font-size: var(--ds-text-xs); color: var(--ds-text-muted); white-space: nowrap; }
+.ds-bars__col--current .ds-bars__label { color: var(--ds-text); font-weight: 600; }
+
 /* ---- Facts, charging badge (phase 4) --------------------------------- */
 .ds-badge--charging {
   background: color-mix(in srgb, var(--ds-series-charging) 20%, var(--ds-surface)); color: var(--ds-text);

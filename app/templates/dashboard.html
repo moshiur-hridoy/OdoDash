@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, attention, empty_state %}
+{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, month_bars, attention, empty_state %}
 {% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Dashboard') }}{% endblock %}
 
@@ -53,6 +53,17 @@
                 {% set hero_note = _('%(amount)s by this point last month', amount=(previous_total|money) ~ ' ' ~ currency) %}
             {% endif %}
             {{ stat(hero_label, period_total|money, unit=currency, note=hero_note, hero=True, badge_label=change_label, badge_tone=change_tone) }}
+
+            {#- With a single month (January, in year view) the one column
+                would only repeat the figure above. -#}
+            {% if month_totals|length > 1 %}
+            {% set bars = [] %}
+            {% for month, total in month_totals %}
+                {% set _appended = bars.append({'label': month|dateformat('LLL'), 'value': total,
+                                        'display': (total|money) ~ ' ' ~ currency, 'current': loop.last}) %}
+            {% endfor %}
+            {{ month_bars(bars, _('Monthly Spending')) }}
+            {% endif %}
 
             {% if period_total > 0 %}
             {% set share = namespace(fuel=0, charging=0) %}

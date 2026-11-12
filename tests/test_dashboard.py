@@ -334,6 +334,28 @@ class TestDashboardHero:
         assert 'ds-sparkline' not in html
         assert 'On track for ' in html
 
+    def test_month_bars_cover_the_last_six_months(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, _month_start(), fuel=50)
+        _spend(sample_vehicle, test_user, _month_start(-2), fuel=100)
+        _spend(sample_vehicle, test_user, _month_start(-6), fuel=999)  # seven months back: left out
+        hero = _hero(auth_client.get('/dashboard').get_data(as_text=True))
+        columns = re.findall(r'class="ds-bars__col([^"]*)"[^>]*aria-label="([^"]+)"', hero)
+        assert len(columns) == 6
+        assert [c[1].split(': ')[1] for c in columns] == [
+            '0.00 GBP', '0.00 GBP', '0.00 GBP', '100.00 GBP', '0.00 GBP', '50.00 GBP']
+        assert columns[-1][0] == ' ds-bars__col--current'
+        assert 'style="height: 100.0%"' in hero and 'style="height: 50.0%"' in hero
+        assert 'aria-label="Monthly Spending"' in hero
+
+    def test_year_bars_run_from_january(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, _month_start(), fuel=50)
+        hero = _hero(auth_client.get('/dashboard?period=year').get_data(as_text=True))
+        months = date.today().month
+        if months == 1:
+            assert 'ds-bars' not in hero  # one column would only repeat the figure
+        else:
+            assert hero.count('ds-bars__col') - hero.count('ds-bars__col--current') == months
+
     def test_empty_account(self, auth_client):
         html = auth_client.get('/dashboard').get_data(as_text=True)
         assert '0.00<span class="ds-stat__unit">GBP</span>' in _hero(html)
@@ -382,6 +404,17 @@ class TestDashboardLists:
         assert 'Tyres' in card and 'Insurance' in card
         assert 'Inspection' not in card and 'Licence' not in card
         assert '>2</span>' in card  # the count follows the list, not every open reminder
+
+    def test_the_card_lists_four_and_counts_them_all(self, auth_client, test_user, sample_vehicle):
+        for day in range(6):
+            db.session.add(Reminder(vehicle_id=sample_vehicle.id, user_id=test_user.id, title=f'Task {day}',
+                                    reminder_type='custom', due_date=date.today() + timedelta(days=day)))
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        card = html[html.index('id="rn-card"'):html.index('</section>', html.index('id="rn-card"'))]
+        assert card.count('<li class="ds-attention') == 4
+        assert 'Task 3' in card and 'Task 4' not in card
+        assert '>6</span>' in card
 
     def test_only_far_off_reminders_say_nothing_is_due_soon(self, auth_client, test_user, sample_vehicle):
         db.session.add(Reminder(vehicle_id=sample_vehicle.id, user_id=test_user.id, title='Inspection',
