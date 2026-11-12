@@ -1724,3 +1724,50 @@ def test_bdt_currency_symbol():
 def test_fuel_form_enforces_limits_inline(auth_client, sample_vehicle):
     html = auth_client.get('/fuel/new').get_data(as_text=True)
     assert 'max="1000000"' in html and 'max="10000"' in html
+
+
+class TestFuelIndexPagination:
+    def _add_logs(self, vehicle, user, count, tax=None):
+        from datetime import timedelta
+        start = date(2020, 1, 1)
+        for i in range(count):
+            db.session.add(FuelLog(
+                vehicle_id=vehicle.id, user_id=user.id,
+                date=start + timedelta(days=7 * i), odometer=10000 + 500 * i,
+                volume=40.0, price_per_unit=1.5, total_cost=60.0,
+                is_full_tank=True, sales_tax=tax))
+        db.session.commit()
+
+    def test_first_page_holds_fifty_newest(self, auth_client, sample_vehicle, test_user):
+        self._add_logs(sample_vehicle, test_user, 60)
+        body = auth_client.get('/fuel/').data.decode()
+        assert body.count('/edit"') == 50
+        assert 'Page 1 of 2' in body
+        assert '?page=2' in body
+
+    def test_second_page_has_the_rest(self, auth_client, sample_vehicle, test_user):
+        self._add_logs(sample_vehicle, test_user, 60)
+        body = auth_client.get('/fuel/?page=2').data.decode()
+        assert body.count('/edit"') == 10
+
+    def test_no_pager_for_one_page(self, auth_client, sample_vehicle, test_user):
+        self._add_logs(sample_vehicle, test_user, 3)
+        assert 'Page 1 of' not in auth_client.get('/fuel/').data.decode()
+
+    def test_out_of_range_page_is_empty_not_an_error(self, auth_client, sample_vehicle, test_user):
+        self._add_logs(sample_vehicle, test_user, 3)
+        assert auth_client.get('/fuel/?page=99').status_code == 200
+
+    def test_sales_tax_totals_cover_every_page(self, auth_client, sample_vehicle, test_user):
+        # 60 logs in 2020-2021 at 1.00 tax each; the yearly totals must
+        # include the logs on page 2 too.
+        self._add_logs(sample_vehicle, test_user, 60, tax=1.0)
+        body = auth_client.get('/fuel/').data.decode()
+        assert '53.00' in body  # 2020: Jan 1 + 52 more weeks
+        assert '7.00' in body   # 2021: the remaining 7
+
+    def test_consumption_still_shown(self, auth_client, sample_vehicle, test_user):
+        self._add_logs(sample_vehicle, test_user, 3)
+        body = auth_client.get('/fuel/').data.decode()
+        # 40 L per 500 km = 8.0 L/100km
+        assert '8.0 L/100km' in body

@@ -29,6 +29,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 - Generating an API key works on PostgreSQL. New keys are 64 characters to
   fit their column (they were 68, which PostgreSQL refused); existing keys
   keep working, and new ones start with `odo_`.
+- The Fuel Logs page shows 50 fill-ups per page with Newer and Older links,
+  instead of every log at once. With ~500 logs it went from 1,571 database
+  queries, 430 ms and 1.4 MB to 157 queries, 60 ms and 290 KB. The yearly
+  sales-tax totals still cover every log.
 - Log messages from the app after startup are no longer lost. Running the
   database migrations at startup disabled every existing logger, so scheduler
   output and errors written through the app's logger never appeared.

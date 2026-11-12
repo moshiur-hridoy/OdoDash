@@ -4,6 +4,8 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from sqlalchemy import extract, func
+from sqlalchemy.orm import joinedload
 from app import db
 from app.utils import parse_decimal
 from app.models import (
@@ -22,6 +24,7 @@ bp = Blueprint('fuel', __name__, url_prefix='/fuel')
 # Generous cap so high-denomination currencies (IDR, KRW, ...) work (#393, #396).
 MAX_UNIT_PRICE = 1_000_000
 MAX_AMOUNT = 1_000_000_000  # total cost / sales tax
+FUEL_LOGS_PER_PAGE = 50
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'}
 
@@ -37,10 +40,17 @@ def index():
     vehicles = current_user.get_all_vehicles()
     vehicle_ids = [v.id for v in vehicles]
 
-    # Get all fuel logs for user's vehicles
-    logs = FuelLog.query.filter(
+    # One page of fuel logs. Each row's consumption figure costs a few
+    # queries, so rendering every log made the page grow without bound
+    # (1,500+ queries and 1.4 MB of HTML at ~500 logs).
+    pagination = FuelLog.query.options(joinedload(FuelLog.vehicle)).filter(
         FuelLog.vehicle_id.in_(vehicle_ids)
-    ).order_by(FuelLog.date.desc(), FuelLog.odometer.desc()).all()
+    ).order_by(FuelLog.date.desc(), FuelLog.odometer.desc(), FuelLog.id.desc()).paginate(
+        page=request.args.get('page', 1, type=int),
+        per_page=FUEL_LOGS_PER_PAGE,
+        error_out=False,
+    )
+    logs = pagination.items
 
     # #175 — also surface charging sessions on this page when the user has EVs
     from app.models import ChargingSession
@@ -52,16 +62,21 @@ def index():
     # so the yearly total is what the page needs to show. Only years with tax
     # recorded appear, newest first, and the block is hidden entirely for users
     # who never log it.
-    sales_tax_by_year = {}
-    for log in logs:
-        if log.sales_tax and log.date:
-            year = log.date.year
-            sales_tax_by_year[year] = sales_tax_by_year.get(year, 0) + log.sales_tax
-    sales_tax_by_year = [(year, round(total, 2))
-                         for year, total in sorted(sales_tax_by_year.items(), reverse=True)]
+    # Summed in the database over every log, not just the page shown.
+    year = extract('year', FuelLog.date)
+    sales_tax_by_year = [
+        (int(row_year), round(total, 2))
+        for row_year, total in db.session.query(year, func.sum(FuelLog.sales_tax))
+        .filter(FuelLog.vehicle_id.in_(vehicle_ids),
+                FuelLog.sales_tax.isnot(None), FuelLog.sales_tax != 0,
+                FuelLog.date.isnot(None))
+        .group_by(year).order_by(year.desc()).all()
+        if total
+    ]
 
     return render_template('fuel/index.html',
                            logs=logs,
+                           pagination=pagination,
                            vehicles=vehicles,
                            sales_tax_by_year=sales_tax_by_year,
                            charging_sessions=charging_sessions)
