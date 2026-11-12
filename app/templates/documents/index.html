@@ -42,7 +42,7 @@
         </div>
         <ul class="divide-y divide-gray-200 dark:divide-gray-700">
             {% for doc in type_docs %}
-            <li class="p-4 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-700 {% if doc.is_expired() %}bg-red-50 dark:bg-red-900/20{% elif doc.is_expiring_soon() %}bg-amber-50 dark:bg-amber-900/20{% endif %}">
+            <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 {% if doc.is_expired() %}bg-red-50 dark:bg-red-900/20{% elif doc.is_expiring_soon() %}bg-amber-50 dark:bg-amber-900/20{% endif %}">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center min-w-0">
                         <div class="flex-shrink-0">

@@ -51,7 +51,7 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {% for log in logs %}
-                <tr class="hover:bg-gray-50 dark:bg-gray-700">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ log.date|format_date }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         <a href="{{ url_for('vehicles.view', vehicle_id=log.vehicle_id) }}" class="text-primary-600 hover:text-primary-500">
@@ -165,7 +165,7 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {% for session in charging_sessions %}
-                <tr class="hover:bg-gray-50 dark:bg-gray-700">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ session.date|format_date }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         <a href="{{ url_for('vehicles.view', vehicle_id=session.vehicle_id) }}" class="text-primary-600 hover:text-primary-500">
