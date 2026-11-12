@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: May\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 23:24+0600\n"
+"POT-Creation-Date: 2026-11-12 23:47+0600\n"
 "PO-Revision-Date: 2026-03-08 17:23+0000\n"
 "Last-Translator: javlk <jv.vlk83@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/may/may-0-15-0/cs/>\n"
@@ -867,25 +867,25 @@ msgstr "Nastavení Tessie bylo aktualizováno"
 
 #: app/routes/auth.py:553
 msgid "Telegram bot disconnected"
-msgstr ""
+msgstr "Telegram bot odpojen"
 
 #: app/routes/auth.py:558
 #, python-format
 msgid "Telegram rejected that token: %(error)s"
-msgstr ""
+msgstr "Telegram odmítl tento token: %(error)s"
 
 #: app/routes/auth.py:564
 #, python-format
 msgid "Telegram bot @%(username)s connected"
-msgstr ""
+msgstr "Telegram bot @%(username)s připojen"
 
 #: app/routes/auth.py:575
 msgid "The Telegram bot is not set up on this instance."
-msgstr ""
+msgstr "Telegram bot není v této instanci nastaven."
 
 #: app/routes/auth.py:587
 msgid "Telegram disconnected"
-msgstr ""
+msgstr "Telegram odpojen"
 
 #: app/routes/auth.py:600
 msgid "Registration settings updated"
@@ -1393,95 +1393,108 @@ msgid ""
 "\n"
 "Add a vehicle name if you have more than one. /undo removes the last entry, /unlink disconnects this chat."
 msgstr ""
+"Pošlete tankování na jednom řádku, například:\n"
+"40L 4800tk 45230km\n"
+"35.5 l @120 odo 45230 partial\n"
+"\n"
+"Pokud máte více vozidel, přidejte jeho název. /undo odstraní poslední záznam, /unlink odpojí tento chat."
 
 #: app/services/telegram_bot.py:144
 msgid "full tank"
-msgstr ""
+msgstr "plná nádrž"
 
 #: app/services/telegram_bot.py:144
 msgid "partial fill"
-msgstr ""
+msgstr "částečné tankování"
 
 #: app/services/telegram_bot.py:145
 #, python-format
 msgid "Saved for %(vehicle)s: %(details)s"
-msgstr ""
+msgstr "Uloženo pro %(vehicle)s: %(details)s"
 
 #: app/services/telegram_bot.py:148
 msgid ""
 "No odometer reading, so this fill-up will not count towards consumption."
 msgstr ""
+"Chybí stav tachometru, takže se toto tankování nezapočítá do spotřeby."
 
 #: app/services/telegram_bot.py:150
 msgid ""
 "The odometer is lower than the last reading for this vehicle. Check it, or "
 "/undo."
 msgstr ""
+"Stav tachometru je nižší než poslední údaj tohoto vozidla. Zkontrolujte ho, "
+"nebo /undo."
 
 #: app/services/telegram_bot.py:152
 msgid "Some numbers were not understood and were left out."
-msgstr ""
+msgstr "Některým číslům nebylo rozumět, a byla vynechána."
 
 #: app/services/telegram_bot.py:153
 msgid "/undo to remove it."
-msgstr ""
+msgstr "/undo pro odstranění."
 
 #: app/services/telegram_bot.py:159
 msgid "Your account cannot add fuel logs."
-msgstr ""
+msgstr "Váš účet nemůže přidávat tankování."
 
 #: app/services/telegram_bot.py:162
 #, python-format
 msgid "Which vehicle? Send the message again with one of: %(names)s"
-msgstr ""
+msgstr "Které vozidlo? Pošlete zprávu znovu s jedním z: %(names)s"
 
 #: app/services/telegram_bot.py:164
 msgid "There is no vehicle on your account to log this against."
-msgstr ""
+msgstr "Ve vašem účtu není žádné vozidlo, ke kterému by se to dalo zapsat."
 
 #: app/services/telegram_bot.py:166
 msgid "One of those numbers is too large. Nothing was saved."
-msgstr ""
+msgstr "Jedno z těch čísel je příliš velké. Nic nebylo uloženo."
 
 #: app/services/telegram_bot.py:167
 msgid "I could not find a volume or a cost in that message."
-msgstr ""
+msgstr "V té zprávě jsem nenašel objem ani cenu."
 
 #: app/services/telegram_bot.py:178
 msgid "Nothing to undo from the last 30 minutes."
-msgstr ""
+msgstr "Za posledních 30 minut není co vrátit."
 
 #: app/services/telegram_bot.py:182
 #, python-format
 msgid "Removed the last fill-up for %(vehicle)s."
-msgstr ""
+msgstr "Poslední tankování pro %(vehicle)s bylo odstraněno."
 
 #: app/services/telegram_bot.py:210
 msgid ""
 "That code is not valid or has expired. Get a new one from Settings in "
 "OdoDash."
 msgstr ""
+"Tento kód je neplatný nebo vypršel. Získejte nový v Nastavení v OdoDash."
 
 #: app/services/telegram_bot.py:213
 #, python-format
 msgid "Linked to %(username)s."
-msgstr ""
+msgstr "Propojeno s %(username)s."
 
 #: app/services/telegram_bot.py:219
 msgid ""
 "This chat is not linked to an OdoDash account yet. Open Settings in OdoDash,"
 " choose Connect Telegram, and send the code it shows here."
 msgstr ""
+"Tento chat ještě není propojen s účtem OdoDash. Otevřete Nastavení v "
+"OdoDash, zvolte Připojit Telegram a pošlete sem zobrazený kód."
 
 #: app/services/telegram_bot.py:230
 msgid "This chat is no longer linked. You can link it again from Settings."
-msgstr ""
+msgstr "Tento chat už není propojen. Znovu ho můžete propojit v Nastavení."
 
 #: app/services/telegram_bot.py:232
 msgid ""
 "Photos are not read yet. Send the fill-up as text, for example: 40L 4800tk "
 "45230km"
 msgstr ""
+"Fotky se zatím nečtou. Pošlete tankování jako text, například: 40L 4800tk "
+"45230km"
 
 #: app/templates/_toasts.html:114
 msgid "Dismiss"
@@ -2676,19 +2689,19 @@ msgstr "Vytvořte senzory a automatizace pro vaše vozidla"
 
 #: app/templates/auth/settings.html:858 app/templates/auth/settings.html:1136
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: app/templates/auth/settings.html:861
 msgid "Log fill-ups by messaging a bot"
-msgstr ""
+msgstr "Zapisujte tankování zprávou botovi"
 
 #: app/templates/auth/settings.html:863
 msgid "Connected"
-msgstr ""
+msgstr "Připojeno"
 
 #: app/templates/auth/settings.html:865
 msgid "Not connected"
-msgstr ""
+msgstr "Nepřipojeno"
 
 #: app/templates/auth/settings.html:867 app/templates/auth/settings.html:891
 #: app/templates/auth/settings.html:913
@@ -2862,54 +2875,56 @@ msgid ""
 "Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
 "it is saved as a fuel log."
 msgstr ""
+"Pošlete botovi tankování na jednom řádku, například 40L 4800tk 45230km, a "
+"uloží se jako záznam o palivu."
 
 #: app/templates/auth/settings.html:1143
 msgid "Your account is connected to Telegram."
-msgstr ""
+msgstr "Váš účet je připojen k Telegramu."
 
 #: app/templates/auth/settings.html:1147
 msgid "Disconnect Telegram"
-msgstr ""
+msgstr "Odpojit Telegram"
 
 #: app/templates/auth/settings.html:1150
 msgid "Send this to the bot within 15 minutes:"
-msgstr ""
+msgstr "Pošlete toto botovi do 15 minut:"
 
 #: app/templates/auth/settings.html:1154
 msgid "Open in Telegram"
-msgstr ""
+msgstr "Otevřít v Telegramu"
 
 #: app/templates/auth/settings.html:1159
 msgid "Connect Telegram"
-msgstr ""
+msgstr "Připojit Telegram"
 
 #: app/templates/auth/settings.html:1168
 msgid "Set up the bot (admin)"
-msgstr ""
+msgstr "Nastavit bota (správce)"
 
 #: app/templates/auth/settings.html:1170
 msgid "In Telegram, message @BotFather and send /newbot"
-msgstr ""
+msgstr "V Telegramu napište @BotFather a pošlete /newbot"
 
 #: app/templates/auth/settings.html:1171
 msgid "Copy the token it gives you and paste it below"
-msgstr ""
+msgstr "Zkopírujte token, který dostanete, a vložte ho níže"
 
 #: app/templates/auth/settings.html:1172
 msgid "Each user then connects their own chat from this page"
-msgstr ""
+msgstr "Každý uživatel pak připojí svůj vlastní chat na této stránce"
 
 #: app/templates/auth/settings.html:1178
 msgid "Bot token"
-msgstr ""
+msgstr "Token bota"
 
 #: app/templates/auth/settings.html:1182
 msgid "Leave empty and save to disconnect the bot."
-msgstr ""
+msgstr "Ponechte prázdné a uložte, chcete-li bota odpojit."
 
 #: app/templates/auth/settings.html:1185
 msgid "Save Telegram Settings"
-msgstr ""
+msgstr "Uložit nastavení Telegramu"
 
 #: app/templates/auth/settings.html:1215
 msgid "DVLA Vehicle Lookup"

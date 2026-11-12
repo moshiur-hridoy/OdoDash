@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-12 23:24+0600\n"
+"POT-Creation-Date: 2026-11-12 23:47+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh <LL@li.org>\n"
@@ -848,25 +848,25 @@ msgstr "Tessie设置已更新"
 
 #: app/routes/auth.py:553
 msgid "Telegram bot disconnected"
-msgstr ""
+msgstr "Telegram 机器人已断开"
 
 #: app/routes/auth.py:558
 #, python-format
 msgid "Telegram rejected that token: %(error)s"
-msgstr ""
+msgstr "Telegram 拒绝了该令牌：%(error)s"
 
 #: app/routes/auth.py:564
 #, python-format
 msgid "Telegram bot @%(username)s connected"
-msgstr ""
+msgstr "Telegram 机器人 @%(username)s 已连接"
 
 #: app/routes/auth.py:575
 msgid "The Telegram bot is not set up on this instance."
-msgstr ""
+msgstr "此实例尚未设置 Telegram 机器人。"
 
 #: app/routes/auth.py:587
 msgid "Telegram disconnected"
-msgstr ""
+msgstr "Telegram 已断开"
 
 #: app/routes/auth.py:600
 msgid "Registration settings updated"
@@ -1361,95 +1361,100 @@ msgid ""
 "\n"
 "Add a vehicle name if you have more than one. /undo removes the last entry, /unlink disconnects this chat."
 msgstr ""
+"请用一行发送加油记录，例如：\n"
+"40L 4800tk 45230km\n"
+"35.5 l @120 odo 45230 partial\n"
+"\n"
+"如果有多辆车，请加上车辆名称。/undo 删除最后一条记录，/unlink 断开此聊天。"
 
 #: app/services/telegram_bot.py:144
 msgid "full tank"
-msgstr ""
+msgstr "加满"
 
 #: app/services/telegram_bot.py:144
 msgid "partial fill"
-msgstr ""
+msgstr "部分加油"
 
 #: app/services/telegram_bot.py:145
 #, python-format
 msgid "Saved for %(vehicle)s: %(details)s"
-msgstr ""
+msgstr "已为 %(vehicle)s 保存：%(details)s"
 
 #: app/services/telegram_bot.py:148
 msgid ""
 "No odometer reading, so this fill-up will not count towards consumption."
-msgstr ""
+msgstr "没有里程读数，因此这次加油不会计入油耗。"
 
 #: app/services/telegram_bot.py:150
 msgid ""
 "The odometer is lower than the last reading for this vehicle. Check it, or "
 "/undo."
-msgstr ""
+msgstr "里程低于该车辆上一次的读数。请检查，或使用 /undo。"
 
 #: app/services/telegram_bot.py:152
 msgid "Some numbers were not understood and were left out."
-msgstr ""
+msgstr "部分数字无法识别，已忽略。"
 
 #: app/services/telegram_bot.py:153
 msgid "/undo to remove it."
-msgstr ""
+msgstr "使用 /undo 删除。"
 
 #: app/services/telegram_bot.py:159
 msgid "Your account cannot add fuel logs."
-msgstr ""
+msgstr "您的账户无法添加加油记录。"
 
 #: app/services/telegram_bot.py:162
 #, python-format
 msgid "Which vehicle? Send the message again with one of: %(names)s"
-msgstr ""
+msgstr "哪辆车？请带上以下之一重新发送：%(names)s"
 
 #: app/services/telegram_bot.py:164
 msgid "There is no vehicle on your account to log this against."
-msgstr ""
+msgstr "您的账户中没有可记录的车辆。"
 
 #: app/services/telegram_bot.py:166
 msgid "One of those numbers is too large. Nothing was saved."
-msgstr ""
+msgstr "其中一个数字过大。未保存任何内容。"
 
 #: app/services/telegram_bot.py:167
 msgid "I could not find a volume or a cost in that message."
-msgstr ""
+msgstr "在该消息中找不到加油量或金额。"
 
 #: app/services/telegram_bot.py:178
 msgid "Nothing to undo from the last 30 minutes."
-msgstr ""
+msgstr "过去 30 分钟内没有可撤销的记录。"
 
 #: app/services/telegram_bot.py:182
 #, python-format
 msgid "Removed the last fill-up for %(vehicle)s."
-msgstr ""
+msgstr "已删除 %(vehicle)s 的最后一次加油。"
 
 #: app/services/telegram_bot.py:210
 msgid ""
 "That code is not valid or has expired. Get a new one from Settings in "
 "OdoDash."
-msgstr ""
+msgstr "该代码无效或已过期。请在 OdoDash 的设置中获取新代码。"
 
 #: app/services/telegram_bot.py:213
 #, python-format
 msgid "Linked to %(username)s."
-msgstr ""
+msgstr "已关联到 %(username)s。"
 
 #: app/services/telegram_bot.py:219
 msgid ""
 "This chat is not linked to an OdoDash account yet. Open Settings in OdoDash,"
 " choose Connect Telegram, and send the code it shows here."
-msgstr ""
+msgstr "此聊天尚未关联 OdoDash 账户。请在 OdoDash 中打开设置，选择连接 Telegram，然后将显示的代码发送到这里。"
 
 #: app/services/telegram_bot.py:230
 msgid "This chat is no longer linked. You can link it again from Settings."
-msgstr ""
+msgstr "此聊天已不再关联。您可以在设置中重新关联。"
 
 #: app/services/telegram_bot.py:232
 msgid ""
 "Photos are not read yet. Send the fill-up as text, for example: 40L 4800tk "
 "45230km"
-msgstr ""
+msgstr "暂不支持读取照片。请以文字发送加油记录，例如：40L 4800tk 45230km"
 
 #: app/templates/_toasts.html:114
 msgid "Dismiss"
@@ -2616,19 +2621,19 @@ msgstr "为您的车辆创建传感器和自动化"
 
 #: app/templates/auth/settings.html:858 app/templates/auth/settings.html:1136
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: app/templates/auth/settings.html:861
 msgid "Log fill-ups by messaging a bot"
-msgstr ""
+msgstr "通过给机器人发消息记录加油"
 
 #: app/templates/auth/settings.html:863
 msgid "Connected"
-msgstr ""
+msgstr "已连接"
 
 #: app/templates/auth/settings.html:865
 msgid "Not connected"
-msgstr ""
+msgstr "未连接"
 
 #: app/templates/auth/settings.html:867 app/templates/auth/settings.html:891
 #: app/templates/auth/settings.html:913
@@ -2791,55 +2796,55 @@ msgstr "请在API部分生成API密钥以启用Home Assistant集成。"
 msgid ""
 "Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
 "it is saved as a fuel log."
-msgstr ""
+msgstr "用一行向机器人发送加油记录，例如 40L 4800tk 45230km，即可保存为加油记录。"
 
 #: app/templates/auth/settings.html:1143
 msgid "Your account is connected to Telegram."
-msgstr ""
+msgstr "您的账户已连接到 Telegram。"
 
 #: app/templates/auth/settings.html:1147
 msgid "Disconnect Telegram"
-msgstr ""
+msgstr "断开 Telegram"
 
 #: app/templates/auth/settings.html:1150
 msgid "Send this to the bot within 15 minutes:"
-msgstr ""
+msgstr "请在 15 分钟内将此内容发送给机器人："
 
 #: app/templates/auth/settings.html:1154
 msgid "Open in Telegram"
-msgstr ""
+msgstr "在 Telegram 中打开"
 
 #: app/templates/auth/settings.html:1159
 msgid "Connect Telegram"
-msgstr ""
+msgstr "连接 Telegram"
 
 #: app/templates/auth/settings.html:1168
 msgid "Set up the bot (admin)"
-msgstr ""
+msgstr "设置机器人（管理员）"
 
 #: app/templates/auth/settings.html:1170
 msgid "In Telegram, message @BotFather and send /newbot"
-msgstr ""
+msgstr "在 Telegram 中向 @BotFather 发消息并发送 /newbot"
 
 #: app/templates/auth/settings.html:1171
 msgid "Copy the token it gives you and paste it below"
-msgstr ""
+msgstr "复制它提供的令牌并粘贴到下方"
 
 #: app/templates/auth/settings.html:1172
 msgid "Each user then connects their own chat from this page"
-msgstr ""
+msgstr "之后每位用户在此页面连接自己的聊天"
 
 #: app/templates/auth/settings.html:1178
 msgid "Bot token"
-msgstr ""
+msgstr "机器人令牌"
 
 #: app/templates/auth/settings.html:1182
 msgid "Leave empty and save to disconnect the bot."
-msgstr ""
+msgstr "留空并保存即可断开机器人。"
 
 #: app/templates/auth/settings.html:1185
 msgid "Save Telegram Settings"
-msgstr ""
+msgstr "保存 Telegram 设置"
 
 #: app/templates/auth/settings.html:1215
 msgid "DVLA Vehicle Lookup"

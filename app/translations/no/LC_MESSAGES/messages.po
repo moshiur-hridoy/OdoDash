@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-12 23:24+0600\n"
+"POT-Creation-Date: 2026-11-12 23:47+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: no <LL@li.org>\n"
@@ -867,25 +867,25 @@ msgstr "Tessie-innstillinger oppdatert"
 
 #: app/routes/auth.py:553
 msgid "Telegram bot disconnected"
-msgstr ""
+msgstr "Telegram-boten frakoblet"
 
 #: app/routes/auth.py:558
 #, python-format
 msgid "Telegram rejected that token: %(error)s"
-msgstr ""
+msgstr "Telegram avviste det tokenet: %(error)s"
 
 #: app/routes/auth.py:564
 #, python-format
 msgid "Telegram bot @%(username)s connected"
-msgstr ""
+msgstr "Telegram-boten @%(username)s tilkoblet"
 
 #: app/routes/auth.py:575
 msgid "The Telegram bot is not set up on this instance."
-msgstr ""
+msgstr "Telegram-boten er ikke satt opp på denne instansen."
 
 #: app/routes/auth.py:587
 msgid "Telegram disconnected"
-msgstr ""
+msgstr "Telegram frakoblet"
 
 #: app/routes/auth.py:600
 msgid "Registration settings updated"
@@ -1390,95 +1390,109 @@ msgid ""
 "\n"
 "Add a vehicle name if you have more than one. /undo removes the last entry, /unlink disconnects this chat."
 msgstr ""
+"Send en fylling som én linje, for eksempel:\n"
+"40L 4800tk 45230km\n"
+"35.5 l @120 odo 45230 partial\n"
+"\n"
+"Legg til kjøretøyets navn hvis du har mer enn ett. /undo fjerner den siste oppføringen, /unlink kobler fra denne chatten."
 
 #: app/services/telegram_bot.py:144
 msgid "full tank"
-msgstr ""
+msgstr "full tank"
 
 #: app/services/telegram_bot.py:144
 msgid "partial fill"
-msgstr ""
+msgstr "delvis fylling"
 
 #: app/services/telegram_bot.py:145
 #, python-format
 msgid "Saved for %(vehicle)s: %(details)s"
-msgstr ""
+msgstr "Lagret for %(vehicle)s: %(details)s"
 
 #: app/services/telegram_bot.py:148
 msgid ""
 "No odometer reading, so this fill-up will not count towards consumption."
-msgstr ""
+msgstr "Ingen kilometerstand, så denne fyllingen teller ikke med i forbruket."
 
 #: app/services/telegram_bot.py:150
 msgid ""
 "The odometer is lower than the last reading for this vehicle. Check it, or "
 "/undo."
 msgstr ""
+"Kilometerstanden er lavere enn den siste for dette kjøretøyet. Sjekk den, "
+"eller /undo."
 
 #: app/services/telegram_bot.py:152
 msgid "Some numbers were not understood and were left out."
-msgstr ""
+msgstr "Noen tall ble ikke forstått og ble utelatt."
 
 #: app/services/telegram_bot.py:153
 msgid "/undo to remove it."
-msgstr ""
+msgstr "/undo for å fjerne den."
 
 #: app/services/telegram_bot.py:159
 msgid "Your account cannot add fuel logs."
-msgstr ""
+msgstr "Kontoen din kan ikke legge til fyllinger."
 
 #: app/services/telegram_bot.py:162
 #, python-format
 msgid "Which vehicle? Send the message again with one of: %(names)s"
-msgstr ""
+msgstr "Hvilket kjøretøy? Send meldingen på nytt med ett av: %(names)s"
 
 #: app/services/telegram_bot.py:164
 msgid "There is no vehicle on your account to log this against."
-msgstr ""
+msgstr "Det finnes ikke noe kjøretøy på kontoen din å registrere dette på."
 
 #: app/services/telegram_bot.py:166
 msgid "One of those numbers is too large. Nothing was saved."
-msgstr ""
+msgstr "Ett av tallene er for stort. Ingenting ble lagret."
 
 #: app/services/telegram_bot.py:167
 msgid "I could not find a volume or a cost in that message."
-msgstr ""
+msgstr "Jeg fant verken volum eller beløp i den meldingen."
 
 #: app/services/telegram_bot.py:178
 msgid "Nothing to undo from the last 30 minutes."
-msgstr ""
+msgstr "Ingenting å angre fra de siste 30 minuttene."
 
 #: app/services/telegram_bot.py:182
 #, python-format
 msgid "Removed the last fill-up for %(vehicle)s."
-msgstr ""
+msgstr "Fjernet den siste fyllingen for %(vehicle)s."
 
 #: app/services/telegram_bot.py:210
 msgid ""
 "That code is not valid or has expired. Get a new one from Settings in "
 "OdoDash."
 msgstr ""
+"Koden er ugyldig eller utløpt. Hent en ny under Innstillinger i OdoDash."
 
 #: app/services/telegram_bot.py:213
 #, python-format
 msgid "Linked to %(username)s."
-msgstr ""
+msgstr "Koblet til %(username)s."
 
 #: app/services/telegram_bot.py:219
 msgid ""
 "This chat is not linked to an OdoDash account yet. Open Settings in OdoDash,"
 " choose Connect Telegram, and send the code it shows here."
 msgstr ""
+"Denne chatten er ikke koblet til en OdoDash-konto ennå. Åpne Innstillinger i"
+" OdoDash, velg Koble til Telegram, og send koden som vises hit."
 
 #: app/services/telegram_bot.py:230
 msgid "This chat is no longer linked. You can link it again from Settings."
 msgstr ""
+"Denne chatten er ikke lenger koblet. Du kan koble den på nytt fra "
+"Innstillinger."
 
 #: app/services/telegram_bot.py:232
 msgid ""
 "Photos are not read yet. Send the fill-up as text, for example: 40L 4800tk "
 "45230km"
 msgstr ""
+"Bilder leses ikke ennå. Send fyllingen som tekst, for eksempel: 40L 4800tk "
+"45230km"
 
 #: app/templates/_toasts.html:114
 msgid "Dismiss"
@@ -2671,19 +2685,19 @@ msgstr "Opprett sensorer og automatiseringer for kjøretøyene dine"
 
 #: app/templates/auth/settings.html:858 app/templates/auth/settings.html:1136
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: app/templates/auth/settings.html:861
 msgid "Log fill-ups by messaging a bot"
-msgstr ""
+msgstr "Registrer fyllinger ved å skrive til en bot"
 
 #: app/templates/auth/settings.html:863
 msgid "Connected"
-msgstr ""
+msgstr "Tilkoblet"
 
 #: app/templates/auth/settings.html:865
 msgid "Not connected"
-msgstr ""
+msgstr "Ikke tilkoblet"
 
 #: app/templates/auth/settings.html:867 app/templates/auth/settings.html:891
 #: app/templates/auth/settings.html:913
@@ -2853,54 +2867,56 @@ msgid ""
 "Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
 "it is saved as a fuel log."
 msgstr ""
+"Send en fylling til boten som én linje, for eksempel 40L 4800tk 45230km, så "
+"lagres den som en fylling."
 
 #: app/templates/auth/settings.html:1143
 msgid "Your account is connected to Telegram."
-msgstr ""
+msgstr "Kontoen din er koblet til Telegram."
 
 #: app/templates/auth/settings.html:1147
 msgid "Disconnect Telegram"
-msgstr ""
+msgstr "Koble fra Telegram"
 
 #: app/templates/auth/settings.html:1150
 msgid "Send this to the bot within 15 minutes:"
-msgstr ""
+msgstr "Send dette til boten innen 15 minutter:"
 
 #: app/templates/auth/settings.html:1154
 msgid "Open in Telegram"
-msgstr ""
+msgstr "Åpne i Telegram"
 
 #: app/templates/auth/settings.html:1159
 msgid "Connect Telegram"
-msgstr ""
+msgstr "Koble til Telegram"
 
 #: app/templates/auth/settings.html:1168
 msgid "Set up the bot (admin)"
-msgstr ""
+msgstr "Sett opp boten (admin)"
 
 #: app/templates/auth/settings.html:1170
 msgid "In Telegram, message @BotFather and send /newbot"
-msgstr ""
+msgstr "Skriv til @BotFather i Telegram og send /newbot"
 
 #: app/templates/auth/settings.html:1171
 msgid "Copy the token it gives you and paste it below"
-msgstr ""
+msgstr "Kopier tokenet du får, og lim det inn nedenfor"
 
 #: app/templates/auth/settings.html:1172
 msgid "Each user then connects their own chat from this page"
-msgstr ""
+msgstr "Hver bruker kobler deretter til sin egen chat fra denne siden"
 
 #: app/templates/auth/settings.html:1178
 msgid "Bot token"
-msgstr ""
+msgstr "Bot-token"
 
 #: app/templates/auth/settings.html:1182
 msgid "Leave empty and save to disconnect the bot."
-msgstr ""
+msgstr "La feltet stå tomt og lagre for å koble fra boten."
 
 #: app/templates/auth/settings.html:1185
 msgid "Save Telegram Settings"
-msgstr ""
+msgstr "Lagre Telegram-innstillinger"
 
 #: app/templates/auth/settings.html:1215
 msgid "DVLA Vehicle Lookup"
