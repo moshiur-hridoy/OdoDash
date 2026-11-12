@@ -1,8 +1,11 @@
+import re
+from pathlib import Path
+
 import pytest
 from datetime import date, timedelta
 
 from app import db
-from app.models import Attachment, ChargingSession, Note, Reminder, Vehicle
+from app.models import Attachment, ChargingSession, Expense, FuelLog, Note, Reminder, Vehicle
 
 
 class TestDashboard:
@@ -33,15 +36,15 @@ class TestDashboard:
         assert resp.status_code == 200
 
     def test_dashboard_charts_label_currency(self, auth_client, sample_expense):
-        """Both dashboard charts must say what their money axis is in (#289)."""
+        """The category chart must say what its money axis is in (#289)."""
         resp = auth_client.get('/dashboard')
         assert resp.status_code == 200
         body = resp.get_data(as_text=True)
         assert 'const currency = "GBP";' in body
-        # The category chart's value axis (x, because indexAxis is 'y') and the
-        # monthly spending chart's y axis both carry the currency as a title.
-        assert body.count('text: currency') == 2
-        assert body.count("' ' + currency") == 2
+        # The category chart's value axis is x, because indexAxis is 'y'. The
+        # monthly bar chart gave way to the hero's sparkline.
+        assert body.count('text: currency') == 1
+        assert body.count("' ' + currency") == 1
 
     def test_dashboard_chart_currency_is_escaped(self, app, auth_client, test_user):
         """A custom currency is free text, so it must not break out of the JS."""
@@ -241,3 +244,123 @@ class TestDashboardReminderNoteCard:
         assert b'Renew insurance' in resp.data
         assert b'Already done' not in resp.data
         assert b'DPF regen' in resp.data
+
+
+def _spend(vehicle, user, day, fuel=0, charging=0, other=0):
+    if fuel:
+        db.session.add(FuelLog(vehicle_id=vehicle.id, user_id=user.id, date=day, odometer=1000.0,
+                               volume=10.0, price_per_unit=fuel / 10, total_cost=fuel, is_full_tank=True))
+    if charging:
+        db.session.add(ChargingSession(vehicle_id=vehicle.id, user_id=user.id, date=day,
+                                       kwh_added=20.0, total_cost=charging))
+    if other:
+        db.session.add(Expense(vehicle_id=vehicle.id, user_id=user.id, date=day,
+                               category='maintenance', description='Wipers', cost=other))
+    db.session.commit()
+
+
+def _month_start(offset=0):
+    today = date.today()
+    index = today.year * 12 + today.month - 1 + offset
+    return date(index // 12, index % 12 + 1, 1)
+
+
+def _hero(html):
+    start = html.index('dashboard-hero')
+    return html[start:html.index('</section>', start)]
+
+
+class TestDashboardHero:
+    def test_this_month_against_last_month(self, auth_client, test_user, sample_vehicle):
+        # The first of the month counts: the date column is a plain date.
+        _spend(sample_vehicle, test_user, _month_start(), fuel=60, charging=20, other=20)
+        _spend(sample_vehicle, test_user, _month_start(-1), fuel=200)
+        hero = _hero(auth_client.get('/dashboard').get_data(as_text=True))
+        assert 'Spent in ' in hero
+        assert '100.00<span class="ds-stat__unit">GBP</span>' in hero
+        assert 'ds-badge--success">↓ 50%' in hero
+        assert 'Last month: 200.00 GBP' in hero
+        assert 'aria-label="Spending by type: Fuel 60%, Charging 20%, Other Expenses 20%"' in hero
+
+    def test_spending_more_is_flagged(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, _month_start(), other=150)
+        _spend(sample_vehicle, test_user, _month_start(-1), other=100)
+        assert 'ds-badge--danger">↑ 50%' in _hero(auth_client.get('/dashboard').get_data(as_text=True))
+
+    def test_no_change_badge_without_last_month(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, _month_start(), fuel=40)
+        assert 'ds-badge' not in _hero(auth_client.get('/dashboard').get_data(as_text=True))
+
+    def test_year_view(self, auth_client, test_user, sample_vehicle):
+        this_year = date(date.today().year, 1, 1)
+        _spend(sample_vehicle, test_user, this_year, fuel=300)
+        _spend(sample_vehicle, test_user, date(this_year.year - 1, 6, 1), fuel=100)
+        html = auth_client.get('/dashboard?period=year').get_data(as_text=True)
+        hero = _hero(html)
+        assert f'Spent in {this_year.year}' in hero
+        assert 'ds-badge--danger">↑ 200%' in hero
+        assert 'Last year: 100.00 GBP' in hero
+        assert 'href="/dashboard?period=year" aria-current="page"' in html
+        assert 'Average per month' in html
+
+    def test_sparkline_and_projection(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, _month_start(), fuel=50)
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert '<svg class="ds-sparkline"' in html
+        assert 'On track for ' in html
+
+    def test_empty_account(self, auth_client):
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert '0.00<span class="ds-stat__unit">GBP</span>' in _hero(html)
+        assert 'ds-split' not in _hero(html)
+
+
+class TestDashboardLists:
+    def test_recent_activity_mixes_every_kind_newest_first(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, date.today() - timedelta(days=3), fuel=30)
+        _spend(sample_vehicle, test_user, date.today() - timedelta(days=2), charging=9)
+        _spend(sample_vehicle, test_user, date.today() - timedelta(days=1), other=12)
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        table = html[html.index('ds-table--stack'):html.index('</table>')]
+        kinds = re.findall(r'ds-badge--(\w+) ds-badge--square">([^<]+)<', table)
+        assert [label for _, label in kinds] == ['Maintenance', 'Charging', 'Fuel']
+
+    def test_vehicle_status_follows_its_reminders(self, auth_client, test_user, sample_vehicle):
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'ds-badge--success">All good' in html
+        db.session.add(Reminder(vehicle_id=sample_vehicle.id, user_id=test_user.id, title='MOT',
+                                reminder_type='custom', due_date=date.today() + timedelta(days=3)))
+        db.session.commit()
+        assert 'ds-badge--warning">Due soon' in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_overdue_reminder_needs_attention(self, auth_client, test_user, sample_vehicle):
+        db.session.add(Reminder(vehicle_id=sample_vehicle.id, user_id=test_user.id, title='Insurance',
+                                reminder_type='insurance', due_date=date.today() - timedelta(days=2)))
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert '<li class="ds-attention ds-attention--danger">' in html
+        assert 'Test Car · 2 days overdue' in html
+        assert 'ds-badge--danger">Overdue' in html
+
+    def test_reminders_hidden_from_the_menu_hide_the_card(self, auth_client, test_user):
+        test_user.show_menu_reminders = False
+        db.session.commit()
+        assert 'Needs attention' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+
+LOCALES = sorted(p.name for p in (Path(__file__).resolve().parent.parent / 'app' / 'translations').iterdir()
+                 if p.is_dir())
+
+
+@pytest.mark.parametrize('locale', LOCALES)
+def test_dashboard_renders_in_every_language(auth_client, test_user, sample_vehicle, locale):
+    """The date line and month name come from Babel's locale data, and the
+    hero's sentences are translated with a placeholder; every catalogue has
+    to render them without error, in month and year view."""
+    test_user.language = locale
+    db.session.commit()
+    _spend(sample_vehicle, test_user, _month_start(), fuel=10)
+    for path in ('/dashboard', '/dashboard?period=year'):
+        resp = auth_client.get(path)
+        assert resp.status_code == 200, (locale, path)
+        assert 'dashboard-hero' in resp.get_data(as_text=True)

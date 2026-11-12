@@ -46,8 +46,10 @@ from app.models import (
 )
 
 
-# Tailwind classes that let a box scroll sideways rather than overflow the page.
-SCROLLABLE = {'overflow-x-auto', 'overflow-x-scroll', 'overflow-auto', 'overflow-scroll'}
+# Classes that let a box scroll sideways rather than overflow the page: the
+# Tailwind utilities, and the design system's table wrapper (.ds-table-wrap is
+# overflow-x: auto in app.css; test_ds_table_wrap_scrolls keeps that true).
+SCROLLABLE = {'overflow-x-auto', 'overflow-x-scroll', 'overflow-auto', 'overflow-scroll', 'ds-table-wrap'}
 
 # A button-shaped link or button: inline-flex with horizontal padding.
 BUTTON_PADDING = re.compile(r'\bpx-\d')
@@ -354,3 +356,10 @@ def test_scanner_spots_a_rigid_button_row():
     assert not scan(row.format(cls='flex flex-wrap gap-2')).rigid_button_rows
     assert not scan(row.format(cls='flex flex-col gap-2')).rigid_button_rows
     assert not scan(row.format(cls='flex gap-2 overflow-x-auto')).rigid_button_rows
+
+
+def test_ds_table_wrap_scrolls():
+    """The scanner trusts .ds-table-wrap to scroll; hold the stylesheet to it."""
+    from pathlib import Path
+    css = (Path(__file__).resolve().parent.parent / 'app' / 'static' / 'css' / 'src' / 'app.css').read_text(encoding='utf-8')
+    assert '.ds-table-wrap { overflow-x: auto; }' in css

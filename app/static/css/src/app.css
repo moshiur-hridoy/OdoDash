@@ -272,7 +272,7 @@
   margin: 0; font-size: var(--ds-text-figure); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
-.ds-stat__unit { margin-left: 2px; font-size: var(--ds-text-sm); font-weight: 400; letter-spacing: 0; color: var(--ds-text-muted); }
+.ds-stat__unit { margin-inline-start: 5px; font-size: var(--ds-text-sm); font-weight: 400; letter-spacing: 0; color: var(--ds-text-muted); }
 .ds-stat__note { margin: 4px 0 0; font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
 .ds-stat__note--success { color: var(--ds-success); }
 .ds-stat__note--warning { color: var(--ds-warning); }
@@ -459,6 +459,46 @@ textarea.ds-control { height: auto; min-height: 96px; padding: 10px 12px; resize
 .ds-row > .ds-grow-1 { flex: 1 1 280px; }
 .ds-row > .ds-grow-even { flex: 1 1 220px; }
 @media (max-width: 640px) { .ds-stack, .ds-row { gap: 12px; } }
+
+/* ---- Sparkline, facts, charging badge (phase 4) ---------------------- */
+.ds-sparkline { display: block; width: 100%; height: 64px; margin-top: 16px; color: var(--ds-accent); overflow: visible; }
+.ds-badge--charging {
+  background: color-mix(in srgb, var(--ds-series-charging) 20%, var(--ds-surface)); color: var(--ds-text);
+}
+.ds-facts {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px 24px; margin: 0;
+}
+.ds-facts dt { font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
+.ds-facts dd {
+  margin: 2px 0 0; font-size: var(--ds-text-lg); font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.ds-facts dd span { font-size: var(--ds-text-sm); font-weight: 500; color: var(--ds-text-muted); }
+.ds-facts__positive { color: var(--ds-success); }
+
+/* ---- Dashboard ------------------------------------------------------ */
+.dashboard-hero__split { margin-top: 20px; }
+.dashboard-attention .ds-card__title { display: flex; align-items: center; gap: 8px; }
+.dashboard-attention { display: flex; flex-direction: column; }
+.dashboard-attention .ds-card__body { flex: 1; display: flex; flex-direction: column; }
+.dashboard-attention .ds-attention-list { flex: 1; }
+.dashboard-card-footer { margin-top: 12px; margin-inline-start: -10px; }
+.dashboard-stat-link { display: inline-block; margin-top: 10px; }
+.dashboard-vehicle-link { color: var(--ds-text); text-decoration: none; }
+.dashboard-vehicle-link:hover { color: var(--ds-accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+.dashboard-consumption { font-size: var(--ds-text-sm); white-space: nowrap; }
+.dashboard-date { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dashboard-chart { position: relative; height: 250px; }
+.dashboard-notes { margin: 0; padding: 0; list-style: none; }
+.dashboard-notes li { padding: 10px 0; border-bottom: 1px solid var(--ds-border-soft); }
+.dashboard-notes li:first-child { padding-top: 0; }
+.dashboard-notes li:last-child { border-bottom: 0; }
+.dashboard-notes__title { margin: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dashboard-notes__meta { margin: 2px 0 0; font-size: var(--ds-text-sm); }
+@media (max-width: 640px) {
+  .dashboard .ds-page-header { align-items: flex-start; }
+  .dashboard .ds-odometer { display: none; }
+}
+
 
 /* ---- App shell (phase 3) -------------------------------------------- */
 /* The sidebar, the phone top bar and the page frame in base.html. The

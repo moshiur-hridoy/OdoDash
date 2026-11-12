@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, send_from_directory, current_app
+from flask import Blueprint, render_template, redirect, request, url_for, send_from_directory, current_app
 from flask_login import login_required, current_user
 from flask_babel import gettext
 from datetime import datetime, timedelta
@@ -55,66 +55,56 @@ def service_worker():
 @login_required
 def dashboard():
     vehicles = current_user.get_all_vehicles()
-
-    # Calculate statistics
-    total_fuel_cost = 0
-    total_expense_cost = 0
-    total_distance = 0
-    recent_logs = []
-    recent_expenses = []
-
     vehicle_ids = [v.id for v in vehicles]
+    period = 'year' if request.args.get('period') == 'year' else 'month'
+    now = datetime.now()
 
-    if vehicle_ids:
-        # Total costs
-        fuel_result = db.session.query(func.sum(FuelLog.total_cost)).filter(
-            FuelLog.vehicle_id.in_(vehicle_ids)
-        ).scalar()
-        total_fuel_cost = fuel_result or 0
-
-        expense_result = db.session.query(func.sum(Expense.cost)).filter(
-            Expense.vehicle_id.in_(vehicle_ids)
-        ).scalar()
-        total_expense_cost = expense_result or 0
-
-        # Total distance (uses user's distance_unit for Tessie conversion; raw logs are in their stored unit)
-        for vehicle in vehicles:
-            total_distance += vehicle.get_total_distance(current_user.distance_unit)
-
-        # Recent activity
-        recent_logs = FuelLog.query.filter(
-            FuelLog.vehicle_id.in_(vehicle_ids)
-        ).order_by(FuelLog.date.desc(), FuelLog.odometer.desc()).limit(5).all()
-
-        recent_expenses = Expense.query.filter(
-            Expense.vehicle_id.in_(vehicle_ids)
-        ).order_by(Expense.date.desc()).limit(5).all()
-
-    # Monthly spending for chart (last 6 months)
-    monthly_data = get_monthly_spending(vehicle_ids)
-
-    # Calculate total charging cost for EVs
-    total_charging_cost = 0
-    if vehicle_ids:
-        charging_result = db.session.query(func.sum(ChargingSession.total_cost)).filter(
-            ChargingSession.vehicle_id.in_(vehicle_ids)
-        ).scalar()
-        total_charging_cost = charging_result or 0
-
+    # All-time totals
+    total_fuel_cost = _sum(FuelLog.total_cost, FuelLog, vehicle_ids)
+    total_expense_cost = _sum(Expense.cost, Expense, vehicle_ids)
+    total_charging_cost = _sum(ChargingSession.total_cost, ChargingSession, vehicle_ids)
     # Total mileage allowance received (#208) — offsets running costs
-    total_allowance = 0
-    if vehicle_ids:
-        allowance_result = db.session.query(func.sum(MileageAllowance.amount)).filter(
-            MileageAllowance.vehicle_id.in_(vehicle_ids)
-        ).scalar()
-        total_allowance = allowance_result or 0
+    total_allowance = _sum(MileageAllowance.amount, MileageAllowance, vehicle_ids)
 
-    # Calculate cost per distance
+    # Total distance (uses user's distance_unit for Tessie conversion; raw logs are in their stored unit)
+    total_distance = sum(v.get_total_distance(current_user.distance_unit) for v in vehicles)
+
     total_cost = total_fuel_cost + total_expense_cost + total_charging_cost
     net_cost = total_cost - total_allowance
-    cost_per_distance = None
-    if total_distance > 0:
-        cost_per_distance = total_cost / total_distance
+    cost_per_distance = total_cost / total_distance if total_distance > 0 else None
+
+    # The hero figure: spending in the current month or year, set against the
+    # one before it, split into fuel, charging and everything else.
+    if period == 'year':
+        current_start = datetime(now.year, 1, 1)
+        current_end = datetime(now.year + 1, 1, 1)
+        previous_start = datetime(now.year - 1, 1, 1)
+    else:
+        current_start = datetime(now.year, now.month, 1)
+        current_end = _add_months(current_start, 1)
+        previous_start = _add_months(current_start, -1)
+    current_split = _spending_between(vehicle_ids, current_start, current_end)
+    previous_total = sum(_spending_between(vehicle_ids, previous_start, current_start).values())
+    period_total = sum(current_split.values())
+    period_change = None
+    if previous_total > 0:
+        period_change = round((period_total - previous_total) / previous_total * 100)
+
+    # Month-by-month totals behind the sparkline: the last six months, or the
+    # months of this year so far.
+    if period == 'year':
+        trend_months = [datetime(now.year, m, 1) for m in range(1, now.month + 1)]
+    else:
+        trend_months = [_add_months(current_start, -i) for i in range(5, -1, -1)]
+    trend = [sum(_spending_between(vehicle_ids, m, _add_months(m, 1)).values()) for m in trend_months]
+
+    # Year to date, and where it is heading at the same pace.
+    year_start = datetime(now.year, 1, 1)
+    year_to_date = (period_total if period == 'year'
+                    else sum(_spending_between(vehicle_ids, year_start, datetime(now.year + 1, 1, 1)).values()))
+    days_in_year = (datetime(now.year + 1, 1, 1) - year_start).days
+    year_projection = year_to_date / now.timetuple().tm_yday * days_in_year if year_to_date else None
+    month_average = year_to_date / now.month
 
     # Expenses grouped by category for the dashboard chart (#145),
     # with labels translated server-side
@@ -153,21 +143,46 @@ def dashboard():
             )
         ).order_by(FuelPriceHistory.price_per_unit.asc()).limit(3).all()
 
-    # Open reminders (soonest first, overdue ahead of the rest) and the latest
-    # notes for the dashboard's reminders/notes card.
+    # Open reminders, overdue first then soonest, for "Needs attention"; the
+    # same reminders give each vehicle its status. Latest notes alongside.
     dashboard_reminders = []
     dashboard_reminders_total = 0
     dashboard_notes = []
+    soonest_due = {}
     if vehicle_ids:
         open_reminders = Reminder.query.filter(
             Reminder.vehicle_id.in_(vehicle_ids),
             Reminder.is_completed.is_(False)
-        )
-        dashboard_reminders_total = open_reminders.count()
-        dashboard_reminders = open_reminders.order_by(Reminder.due_date).limit(5).all()
+        ).order_by(Reminder.due_date).all()
+        dashboard_reminders_total = len(open_reminders)
+        dashboard_reminders = open_reminders[:5]
+        for reminder in open_reminders:
+            soonest_due.setdefault(reminder.vehicle_id, reminder.days_until_due())
         dashboard_notes = Note.query.filter(
             Note.vehicle_id.in_(vehicle_ids)
         ).order_by(Note.date.desc(), Note.id.desc()).limit(5).all()
+
+    vehicle_rows = [_vehicle_row(v, soonest_due.get(v.id)) for v in vehicles]
+
+    # Recent activity: fuel, charging and expenses in one list, newest first.
+    recent_activity = []
+    if vehicle_ids:
+        for log in FuelLog.query.filter(FuelLog.vehicle_id.in_(vehicle_ids)).order_by(
+                FuelLog.date.desc(), FuelLog.odometer.desc()).limit(6):
+            recent_activity.append({'kind': 'fuel', 'date': log.date, 'vehicle': log.vehicle,
+                                    'odometer': log.odometer, 'amount': log.total_cost or 0, 'entry': log})
+        for charge in ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids)).order_by(
+                ChargingSession.date.desc()).limit(6):
+            recent_activity.append({'kind': 'charging', 'date': charge.date, 'vehicle': charge.vehicle,
+                                    'odometer': charge.odometer, 'amount': charge.total_cost or 0, 'entry': charge})
+        for expense in Expense.query.filter(Expense.vehicle_id.in_(vehicle_ids)).order_by(
+                Expense.date.desc()).limit(6):
+            recent_activity.append({'kind': 'expense', 'date': expense.date, 'vehicle': expense.vehicle,
+                                    'odometer': expense.odometer, 'amount': expense.cost or 0, 'entry': expense,
+                                    'label': str(dict(EXPENSE_CATEGORIES).get(
+                                        expense.category, (expense.category or '').capitalize()))})
+        recent_activity.sort(key=lambda row: _as_datetime(row['date']), reverse=True)
+        recent_activity = recent_activity[:6]
 
     # A fleet total is only honest while every vehicle meters the same way.
     # One hours-metered machine among the cars and the sum mixes engine hours
@@ -177,8 +192,21 @@ def dashboard():
                            if vehicles else current_user.distance_unit)
 
     return render_template('dashboard.html',
+                           period=period,
+                           today=now,
+                           period_start=current_start,
+                           period_total=period_total,
+                           period_split=current_split,
+                           period_change=period_change,
+                           previous_total=previous_total,
+                           trend=trend,
+                           trend_points=_sparkline_points(trend),
+                           year_to_date=year_to_date,
+                           year_projection=year_projection,
+                           month_average=month_average,
                            total_distance_unit=total_distance_unit,
                            vehicles=vehicles,
+                           vehicle_rows=vehicle_rows,
                            total_fuel_cost=total_fuel_cost,
                            total_expense_cost=total_expense_cost,
                            total_charging_cost=total_charging_cost,
@@ -188,59 +216,81 @@ def dashboard():
                            expenses_by_category=expenses_by_category,
                            total_distance=total_distance,
                            cost_per_distance=cost_per_distance,
-                           recent_logs=recent_logs,
-                           recent_expenses=recent_expenses,
-                           monthly_data=monthly_data,
+                           recent_activity=recent_activity,
                            cheapest_stations=cheapest_stations,
                            dashboard_reminders=dashboard_reminders,
                            dashboard_reminders_total=dashboard_reminders_total,
                            dashboard_notes=dashboard_notes)
 
 
-def get_monthly_spending(vehicle_ids):
-    """Get monthly fuel and expense spending for the last 6 months"""
-    months = []
-    fuel_costs = []
-    expense_costs = []
+def _sum(column, model, vehicle_ids, start=None, end=None):
+    """Sum ``column`` over the given vehicles, optionally within [start, end)."""
+    if not vehicle_ids:
+        return 0
+    query = db.session.query(func.sum(column)).filter(model.vehicle_id.in_(vehicle_ids))
+    if start is not None:
+        # The date columns are db.Date. SQLite compares them as text, so a
+        # datetime bound ('2026-11-01 00:00:00') would sort after the first
+        # day of the month ('2026-11-01') and drop that day's entries.
+        query = query.filter(model.date >= start.date(), model.date < end.date())
+    return query.scalar() or 0
 
-    now = datetime.now()
-    for i in range(5, -1, -1):
-        month = now.month - i
-        year = now.year
-        while month <= 0:
-            month += 12
-            year -= 1
-        month_start = now.replace(year=year, month=month, day=1, hour=0, minute=0, second=0, microsecond=0)
-        if month == 12:
-            month_end = month_start.replace(year=year + 1, month=1, day=1)
-        else:
-            month_end = month_start.replace(month=month + 1, day=1)
 
-        months.append(month_start.strftime('%b'))
-
-        if vehicle_ids:
-            fuel = db.session.query(func.sum(FuelLog.total_cost)).filter(
-                FuelLog.vehicle_id.in_(vehicle_ids),
-                FuelLog.date >= month_start,
-                FuelLog.date < month_end
-            ).scalar() or 0
-
-            expense = db.session.query(func.sum(Expense.cost)).filter(
-                Expense.vehicle_id.in_(vehicle_ids),
-                Expense.date >= month_start,
-                Expense.date < month_end
-            ).scalar() or 0
-        else:
-            fuel = 0
-            expense = 0
-
-        fuel_costs.append(round(fuel, 2))
-        expense_costs.append(round(expense, 2))
-
+def _spending_between(vehicle_ids, start, end):
+    """Fuel, charging and other spending in [start, end)."""
     return {
-        'labels': months,
-        'fuel': fuel_costs,
-        'expenses': expense_costs
+        'fuel': _sum(FuelLog.total_cost, FuelLog, vehicle_ids, start, end),
+        'charging': _sum(ChargingSession.total_cost, ChargingSession, vehicle_ids, start, end),
+        'other': _sum(Expense.cost, Expense, vehicle_ids, start, end),
+    }
+
+
+def _add_months(moment, months):
+    """The first of the month ``months`` away from ``moment``'s month."""
+    index = moment.year * 12 + moment.month - 1 + months
+    return datetime(index // 12, index % 12 + 1, 1)
+
+
+def _as_datetime(value):
+    """Dates and datetimes, comparable with each other for sorting."""
+    if isinstance(value, datetime):
+        return value
+    return datetime(value.year, value.month, value.day)
+
+
+def _sparkline_points(values, width=600, height=80, pad=6):
+    """SVG polyline points for a small trend line, or '' with under two values."""
+    if len(values) < 2:
+        return ''
+    top = max(values) or 1
+    step = width / (len(values) - 1)
+    return ' '.join(
+        f'{i * step:.1f},{pad + (height - 2 * pad) * (1 - value / top):.1f}'
+        for i, value in enumerate(values)
+    )
+
+
+def _vehicle_row(vehicle, soonest_due):
+    """What the dashboard's vehicle list shows for one vehicle."""
+    if vehicle.fuel_type == 'electric':
+        consumption = vehicle.get_average_charging_consumption()
+        consumption_unit = f'kWh/100 {vehicle.get_reading_unit()}'
+    else:
+        consumption = vehicle.get_average_consumption(current_user.consumption_unit, current_user.volume_unit)
+        consumption_unit = vehicle.get_consumption_unit() or current_user.consumption_unit
+    if soonest_due is None or soonest_due > 7:
+        status = 'ok'
+    elif soonest_due < 0:
+        status = 'overdue'
+    else:
+        status = 'soon'
+    return {
+        'vehicle': vehicle,
+        'odometer': vehicle.get_last_odometer(vehicle.get_effective_odometer_unit()),
+        'reading_unit': vehicle.get_reading_unit(),
+        'consumption': consumption,
+        'consumption_unit': consumption_unit,
+        'status': status,
     }
 
 
