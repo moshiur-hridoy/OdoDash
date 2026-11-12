@@ -17,6 +17,10 @@ OdoDash tracks fuel, expenses, reminders and maintenance across your whole fleet
 - **Active maintenance:** upstream bugs and useful PRs are merged here quickly.
 
 <p align="center">
+  <a href="https://ododashdemo.moshiur.space/"><b>Try the live demo</b></a> (login <code>demo</code> / <code>demo</code>, resets nightly) · <a href="https://moshiur-hridoy.github.io/OdoDash/">Website</a>
+</p>
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="screenshots/dashboard-dark.png">
     <img src="screenshots/dashboard-light.png" alt="OdoDash dashboard" width="100%">
