@@ -1,4 +1,4 @@
-from flask import Flask, request, g
+from flask import Flask, request, g, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
@@ -355,6 +355,20 @@ def create_app(config_class=Config):
     def load_user(user_id):
         return db.session.get(User, int(user_id))
 
+    def compiled_stylesheet_url():
+        """URL of the compiled Tailwind stylesheet, or None when it is absent.
+
+        scripts/build_css.py writes it and the image always ships it; a bare
+        checkout that has not run the build falls back to compiling in the
+        browser (see base.html). The modification time busts browser caches
+        whenever it is rebuilt.
+        """
+        try:
+            mtime = int(os.stat(os.path.join(app.static_folder, 'css', 'app.css')).st_mtime)
+        except OSError:
+            return None
+        return url_for('static', filename='css/app.css', v=mtime)
+
     # Make languages and branding available in templates
     @app.context_processor
     def inject_globals():
@@ -373,6 +387,7 @@ def create_app(config_class=Config):
             'DISPLAY_VERSION': app.config.get('DISPLAY_VERSION', release.DISPLAY_VERSION),
             'GITHUB_REPO': app.config.get('GITHUB_REPO', release.GITHUB_REPO),
             'CHECK_FOR_UPDATES': app.config.get('CHECK_FOR_UPDATES', release.CHECK_FOR_UPDATES),
+            'TAILWIND_CSS_URL': compiled_stylesheet_url(),
             'TAILWIND_ASSET_URL': app.config.get('TAILWIND_ASSET_URL', '/static/vendor/tailwindcss.js'),
             'TAILWIND_CDN_URL': app.config.get('TAILWIND_CDN_URL', 'https://cdn.tailwindcss.com'),
             'HTMX_ASSET_URL': app.config.get('HTMX_ASSET_URL', '/static/vendor/htmx.min.js'),

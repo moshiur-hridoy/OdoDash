@@ -231,8 +231,25 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Compile the stylesheet (add --watch while editing templates)
+python scripts/build_css.py
+
 # Run development server
 python run.py
 ```
 
 Default login: `admin` / `admin`
+
+## Stylesheet
+
+Tailwind is compiled ahead of time by `scripts/build_css.py` (the standalone
+CLI, pinned to v3.4.17 and checksum-verified) from `tailwind.config.js` and
+`app/static/css/src/app.css` into `app/static/css/app.css`. That output is a
+build artefact, ignored by git like the `.mo` catalogues; the Dockerfile builds
+it in its own stage. When it is missing, `base.html` falls back to the
+in-browser runtime in `app/static/vendor/tailwindcss.js`.
+
+The build only sees classes written out in full, so never assemble one from
+template output (`bg-{{ tone }}-100`); choose between complete class names
+instead. `tests/test_css_build.py` enforces this. Design tokens for the
+redesign live in `app/static/css/src/app.css` under the `--ds-` prefix.

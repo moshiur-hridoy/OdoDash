@@ -1,0 +1,114 @@
+/*
+ * OdoDash stylesheet source. scripts/build_css.py compiles this, together with
+ * tailwind.config.js, into app/static/css/app.css (a build artefact, not
+ * tracked).
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens (design-system branch, phase 1).
+ *
+ * The values come from the agreed "Mix" direction: calm light surfaces, with
+ * the Cockpit palette as dark mode. Every component built from phase 2 on
+ * reads these and nothing else, so light and dark differ only here.
+ *
+ * They carry a --ds- prefix while the older tokens in base.html are still in
+ * use; nothing references them yet, so adding them changes no page. Phase 5
+ * retires the old set.
+ */
+@layer base {
+  :root {
+    /* Surfaces and text */
+    --ds-bg: #f7f7f5;
+    --ds-surface: #ffffff;
+    --ds-surface-sunken: #f2f1ed;
+    --ds-border: #e7e6e2;
+    --ds-border-soft: #f0efeb;
+    --ds-text: #1a1a19;
+    --ds-text-muted: #5e5d58;
+    --ds-text-subtle: #6b6a65;
+
+    /* Accent: follows the user's branding colour (--primary-600). */
+    --ds-accent: var(--primary-600);
+    --ds-accent-ink: color-mix(in srgb, var(--ds-accent) 82%, #000000);
+    --ds-accent-soft: color-mix(in srgb, var(--ds-accent) 12%, #ffffff);
+    --ds-on-accent: var(--on-primary, #ffffff);
+
+    /* Data series that sit beside the accent in charts and split bars. */
+    --ds-series-charging: #4fbfa8;
+    --ds-series-other: #cfcdc6;
+
+    /* Status */
+    --ds-success: #1f6b33;
+    --ds-success-soft: #e4f3e7;
+    --ds-warning: #7a4d00;
+    --ds-warning-soft: #fbefd5;
+    --ds-danger: #a12828;
+    --ds-danger-soft: #fbe5e5;
+
+    /* Odometer read-out */
+    --ds-digit-bg: #f2f1ed;
+    --ds-digit-off: #a8a6a0;
+
+    /* Type */
+    --ds-font-sans: "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --ds-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --ds-text-xs: 0.75rem;     /* 12px: chips, table headers */
+    --ds-text-sm: 0.8125rem;   /* 13px: secondary lines */
+    --ds-text-base: 0.875rem;  /* 14px: body */
+    --ds-text-lg: 0.9375rem;   /* 15px: card titles */
+    --ds-text-xl: 1.75rem;     /* 28px: page title */
+    --ds-text-figure: 1.625rem; /* 26px: stat figures */
+    --ds-text-hero: 3.25rem;   /* 52px: the one hero figure per page */
+
+    /* Shape and depth */
+    --ds-radius-sm: 6px;
+    --ds-radius-md: 8px;
+    --ds-radius-lg: 10px;
+    --ds-radius-card: 14px;
+    --ds-radius-pill: 9999px;
+    --ds-shadow-raised: 0 1px 2px rgb(0 0 0 / 0.08);
+    --ds-shadow-popover: 0 10px 24px rgb(0 0 0 / 0.08);
+    --ds-focus-ring: 0 0 0 3px color-mix(in srgb, var(--ds-accent) 30%, transparent);
+
+    /* Motion */
+    --ds-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ds-duration-fast: 140ms;
+    --ds-duration-base: 220ms;
+
+    /* Touch */
+    --ds-touch-target: 44px;
+  }
+
+  html.dark {
+    --ds-bg: #0b0d10;
+    --ds-surface: #14171c;
+    --ds-surface-sunken: #1c2026;
+    --ds-border: #23272e;
+    --ds-border-soft: #1c2026;
+    --ds-text: #e8eaed;
+    --ds-text-muted: #9aa0a8;
+    --ds-text-subtle: #8a9099;
+
+    --ds-accent-ink: color-mix(in srgb, var(--ds-accent) 60%, #ffffff);
+    --ds-accent-soft: color-mix(in srgb, var(--ds-accent) 20%, #14171c);
+
+    --ds-series-charging: #2dd4bf;
+    --ds-series-other: #4a4f57;
+
+    --ds-success: #86dfa0;
+    --ds-success-soft: #12301c;
+    --ds-warning: #f2c46b;
+    --ds-warning-soft: #33270f;
+    --ds-danger: #ff9d9d;
+    --ds-danger-soft: #3a1618;
+
+    --ds-digit-bg: #0b0d10;
+    --ds-digit-off: #4a4f57;
+
+    --ds-shadow-popover: 0 10px 24px rgb(0 0 0 / 0.5);
+  }
+}

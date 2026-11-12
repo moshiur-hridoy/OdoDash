@@ -80,6 +80,11 @@ pip install -r requirements.txt
 # are not in the repository; the app also rebuilds stale ones on startup)
 pybabel compile -d app/translations
 
+# Compile the stylesheet (also a build artefact). It downloads the pinned
+# Tailwind CLI once and checks its checksum; no Node is needed. Without it the
+# pages still render, compiled in the browser instead, just more slowly.
+python scripts/build_css.py
+
 # Run the application
 python run.py
 ```
