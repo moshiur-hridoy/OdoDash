@@ -5,7 +5,8 @@ import pytest
 from datetime import date, timedelta
 
 from app import db
-from app.models import Attachment, ChargingSession, Expense, FuelLog, Note, Reminder, Vehicle
+from app.models import (Attachment, ChargingSession, Expense, FuelLog, FuelPriceHistory, FuelStation,
+                        Note, Reminder, User, Vehicle)
 
 
 class TestDashboard:
@@ -279,8 +280,28 @@ class TestDashboardHero:
         assert 'Spent in ' in hero
         assert '100.00<span class="ds-stat__unit">GBP</span>' in hero
         assert 'ds-badge--success">↓ 50%' in hero
-        assert 'Last month: 200.00 GBP' in hero
+        assert '200.00 GBP by this point last month' in hero
         assert 'aria-label="Spending by type: Fuel 60%, Charging 20%, Other Expenses 20%"' in hero
+
+    def test_last_month_is_cut_off_at_the_same_day(self, auth_client, test_user, sample_vehicle):
+        # Spending later in last month than today's date is not part of the
+        # comparison: twelve days are set against twelve days.
+        last_month = _month_start(-1)
+        days_in_last_month = (_month_start() - last_month).days
+        if date.today().day >= days_in_last_month:
+            pytest.skip('today is past the end of last month, so nothing falls after the cut-off')
+        _spend(sample_vehicle, test_user, _month_start(), fuel=50)
+        _spend(sample_vehicle, test_user, last_month, fuel=100)
+        _spend(sample_vehicle, test_user, last_month + timedelta(days=date.today().day), other=900)
+        hero = _hero(auth_client.get('/dashboard').get_data(as_text=True))
+        assert '100.00 GBP by this point last month' in hero
+        assert 'ds-badge--success">↓ 50%' in hero
+
+    def test_a_type_with_nothing_spent_is_left_out_of_the_split(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, _month_start(), fuel=80, charging=20)
+        hero = _hero(auth_client.get('/dashboard').get_data(as_text=True))
+        assert 'aria-label="Spending by type: Fuel 80%, Charging 20%"' in hero
+        assert 'Other Expenses' not in hero
 
     def test_spending_more_is_flagged(self, auth_client, test_user, sample_vehicle):
         _spend(sample_vehicle, test_user, _month_start(), other=150)
@@ -294,19 +315,23 @@ class TestDashboardHero:
     def test_year_view(self, auth_client, test_user, sample_vehicle):
         this_year = date(date.today().year, 1, 1)
         _spend(sample_vehicle, test_user, this_year, fuel=300)
-        _spend(sample_vehicle, test_user, date(this_year.year - 1, 6, 1), fuel=100)
+        # 1 January last year is always before the cut-off; the last day of
+        # last year never is, so it stays out of the comparison.
+        _spend(sample_vehicle, test_user, date(this_year.year - 1, 1, 1), fuel=100)
+        if date.today() < date(this_year.year, 12, 31):
+            _spend(sample_vehicle, test_user, date(this_year.year - 1, 12, 31), other=500)
         html = auth_client.get('/dashboard?period=year').get_data(as_text=True)
         hero = _hero(html)
         assert f'Spent in {this_year.year}' in hero
         assert 'ds-badge--danger">↑ 200%' in hero
-        assert 'Last year: 100.00 GBP' in hero
+        assert '100.00 GBP by this point last year' in hero
         assert 'href="/dashboard?period=year" aria-current="page"' in html
         assert 'Average per month' in html
 
-    def test_sparkline_and_projection(self, auth_client, test_user, sample_vehicle):
+    def test_projection_without_a_sparkline(self, auth_client, test_user, sample_vehicle):
         _spend(sample_vehicle, test_user, _month_start(), fuel=50)
         html = auth_client.get('/dashboard').get_data(as_text=True)
-        assert '<svg class="ds-sparkline"' in html
+        assert 'ds-sparkline' not in html
         assert 'On track for ' in html
 
     def test_empty_account(self, auth_client):
@@ -346,6 +371,101 @@ class TestDashboardLists:
         test_user.show_menu_reminders = False
         db.session.commit()
         assert 'Needs attention' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_far_off_reminders_do_not_need_attention(self, auth_client, test_user, sample_vehicle):
+        for title, days in (('Tyres', 12), ('Insurance', 30), ('Inspection', 31), ('Licence', 245)):
+            db.session.add(Reminder(vehicle_id=sample_vehicle.id, user_id=test_user.id, title=title,
+                                    reminder_type='custom', due_date=date.today() + timedelta(days=days)))
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        card = html[html.index('id="rn-card"'):html.index('</section>', html.index('id="rn-card"'))]
+        assert 'Tyres' in card and 'Insurance' in card
+        assert 'Inspection' not in card and 'Licence' not in card
+        assert '>2</span>' in card  # the count follows the list, not every open reminder
+
+    def test_only_far_off_reminders_say_nothing_is_due_soon(self, auth_client, test_user, sample_vehicle):
+        db.session.add(Reminder(vehicle_id=sample_vehicle.id, user_id=test_user.id, title='Inspection',
+                                reminder_type='custom', due_date=date.today() + timedelta(days=245)))
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'Nothing due in the next 30 days' in html
+        assert 'ds-badge--success">All good' in html
+
+    def test_vehicle_row_reads_the_odometer_as_text(self, auth_client, test_user, sample_vehicle):
+        _spend(sample_vehicle, test_user, date.today(), fuel=30)
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'class="ds-mono dashboard-odometer"' in html
+        assert 'ds-odometer__digit' not in html
+        assert 'ds-swatch' not in html
+
+
+def _price(user, station_name, price, days_ago=1, fuel_type='petrol'):
+    station = FuelStation.query.filter_by(user_id=user.id, name=station_name).first()
+    if station is None:
+        station = FuelStation(user_id=user.id, name=station_name)
+        db.session.add(station)
+        db.session.flush()
+    db.session.add(FuelPriceHistory(station_id=station.id, user_id=user.id, fuel_type=fuel_type,
+                                    price_per_unit=price, date=date.today() - timedelta(days=days_ago)))
+    db.session.commit()
+
+
+class TestDashboardCheapestFuel:
+    def test_hidden_without_prices(self, auth_client, sample_vehicle):
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'Cheapest Fuel' not in html
+        assert 'No price data yet' not in html
+
+    def test_hidden_with_one_station(self, auth_client, test_user, sample_vehicle):
+        _price(test_user, 'Only One', 1.50)
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_hidden_when_every_station_charges_the_same(self, auth_client, test_user, sample_vehicle):
+        # A state-set price, as in Bangladesh: there is no cheapest station.
+        _price(test_user, 'Padma', 122.0)
+        _price(test_user, 'Meghna', 122.0)
+        _price(test_user, 'Jamuna', 122.0)
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_shown_when_stations_differ(self, auth_client, test_user, sample_vehicle):
+        _price(test_user, 'Dear', 1.60)
+        _price(test_user, 'Cheap', 1.45)
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'Cheapest Fuel' in html
+        assert '1.450' in html and 'Cheap · ' in html
+
+    def test_a_station_counts_with_its_latest_price(self, auth_client, test_user, sample_vehicle):
+        _price(test_user, 'A', 1.40, days_ago=20)
+        _price(test_user, 'A', 1.50, days_ago=2)
+        _price(test_user, 'B', 1.50, days_ago=1)
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_old_prices_do_not_count(self, auth_client, test_user, sample_vehicle):
+        _price(test_user, 'Old', 1.20, days_ago=90)
+        _price(test_user, 'New', 1.50, days_ago=1)
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_fuels_are_not_compared_with_each_other(self, auth_client, test_user, sample_vehicle):
+        _price(test_user, 'A', 1.50, fuel_type='petrol')
+        _price(test_user, 'B', 1.70, fuel_type='diesel')
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_hidden_with_stations_off_in_the_menu(self, auth_client, test_user, sample_vehicle):
+        _price(test_user, 'Dear', 1.60)
+        _price(test_user, 'Cheap', 1.45)
+        test_user.show_menu_stations = False
+        db.session.commit()
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
+
+    def test_another_users_prices_stay_out(self, auth_client, test_user, sample_vehicle):
+        other = User(username='neighbour', email='neighbour@example.com')
+        other.set_password('Password123')
+        db.session.add(other)
+        db.session.commit()
+        _price(other, 'Their Dear', 1.60)
+        _price(other, 'Their Cheap', 1.10)
+        _price(test_user, 'Mine', 1.50)
+        assert 'Cheapest Fuel' not in auth_client.get('/dashboard').get_data(as_text=True)
 
 
 LOCALES = sorted(p.name for p in (Path(__file__).resolve().parent.parent / 'app' / 'translations').iterdir()

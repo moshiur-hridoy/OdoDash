@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, attention, odometer, empty_state %}
+{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, attention, empty_state %}
 {% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Dashboard') }}{% endblock %}
 
@@ -43,31 +43,29 @@
             {% else %}
                 {% set change_label, change_tone = '0%', 'neutral' %}
             {% endif %}
+            {#- The badge compares like with like (see _same_point_before), so
+                the note names the figure it was measured against. -#}
             {% if period == 'year' %}
                 {% set hero_label = _('Spent in %(year)s', year=period_start.year) %}
-                {% set hero_note = _('Last year: %(amount)s', amount=(previous_total|money) ~ ' ' ~ currency) %}
+                {% set hero_note = _('%(amount)s by this point last year', amount=(previous_total|money) ~ ' ' ~ currency) %}
             {% else %}
                 {% set hero_label = _('Spent in %(month)s', month=period_start|dateformat('LLLL')) %}
-                {% set hero_note = _('Last month: %(amount)s', amount=(previous_total|money) ~ ' ' ~ currency) %}
+                {% set hero_note = _('%(amount)s by this point last month', amount=(previous_total|money) ~ ' ' ~ currency) %}
             {% endif %}
             {{ stat(hero_label, period_total|money, unit=currency, note=hero_note, hero=True, badge_label=change_label, badge_tone=change_tone) }}
-
-            {% if trend_points %}
-            <svg class="ds-sparkline" viewBox="0 0 600 80" preserveAspectRatio="none" role="img" aria-label="{{ _('Monthly Spending') }}">
-                <polyline points="{{ trend_points }}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-            </svg>
-            {% endif %}
 
             {% if period_total > 0 %}
             {% set share = namespace(fuel=0, charging=0) %}
             {% set share.fuel = (period_split.fuel / period_total * 100)|round|int %}
             {% set share.charging = (period_split.charging / period_total * 100)|round|int %}
+            {#- A type with nothing spent stays out of the bar and its legend. -#}
+            {% set split_items = [
+                {'label': _('Fuel'), 'value': period_split.fuel, 'display': share.fuel ~ '%', 'series': 'accent'},
+                {'label': _('Charging'), 'value': period_split.charging, 'display': share.charging ~ '%', 'series': 'charging'},
+                {'label': _('Other Expenses'), 'value': period_split.other, 'display': (100 - share.fuel - share.charging) ~ '%', 'series': 'other'},
+            ] | selectattr('value') | list %}
             <div class="dashboard-hero__split">
-                {{ split_bar([
-                    {'label': _('Fuel'), 'value': period_split.fuel, 'display': share.fuel ~ '%', 'series': 'accent'},
-                    {'label': _('Charging'), 'value': period_split.charging, 'display': share.charging ~ '%', 'series': 'charging'},
-                    {'label': _('Other Expenses'), 'value': period_split.other, 'display': (100 - share.fuel - share.charging) ~ '%', 'series': 'other'},
-                ], _('Spending by type')) }}
+                {{ split_bar(split_items, _('Spending by type')) }}
             </div>
             {% endif %}
         {% endcall %}
@@ -92,6 +90,8 @@
                                  'alert' if days < 0 else 'calendar') }}
                     {% endfor %}
                 </ul>
+                {% elif open_reminders_total %}
+                {{ empty_state(_('All good'), _('Nothing due in the next %(num)d days', num=attention_days), 'check') }}
                 {% else %}
                 {{ empty_state(_('All good'), _('No reminders'), 'check') }}
                 {% endif %}
@@ -122,15 +122,14 @@
                         note=_('On track for %(amount)s', amount=(year_projection|money) ~ ' ' ~ currency) if year_projection else None) }}
             {% endif %}
         {% endcall %}
+        {#- Only when stations disagree on price (see _cheapest_price): where
+            the state fixes the price, or with one station, it says nothing. -#}
+        {% if cheapest_price %}
         {% call card(class='ds-grow-even') %}
-            {% if cheapest_stations %}
-                {% set best = cheapest_stations[0] %}
-                {{ stat(_('Cheapest Fuel'), '%.3f'|format(best.price_per_unit), unit=currency, note=best.station.name ~ ' · ' ~ (best.fuel_type|fuel_type_label)) }}
-            {% else %}
-                {{ stat(_('Cheapest Fuel'), '—', note=_('No price data yet. Add fuel stations and log fuel to track prices.')) }}
-            {% endif %}
+            {{ stat(_('Cheapest Fuel'), '%.3f'|format(cheapest_price.price_per_unit), unit=currency, note=cheapest_price.station.name ~ ' · ' ~ (cheapest_price.fuel_type|fuel_type_label)) }}
             <a class="ds-card__action dashboard-stat-link" href="{{ url_for('stations.cheapest') }}">{{ _('View all') }}</a>
         {% endcall %}
+        {% endif %}
     </div>
 
     {% call card(_('Your Vehicles'), action_label=_('Manage'), action_href=url_for('vehicles.index'), flush=True) %}
@@ -139,13 +138,12 @@
             {% for row in vehicle_rows %}
             {% set vehicle = row.vehicle %}
             <li class="ds-list__item">
-                <span class="ds-swatch {{ 'ds-series--charging' if vehicle.fuel_type == 'electric' else 'ds-series--accent' }}"></span>
                 <div class="ds-list__main">
                     <a class="ds-list__title dashboard-vehicle-link" href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}">{{ vehicle.name }}</a>
                     <p class="ds-list__meta">{{ vehicle.make }} {{ vehicle.model }}{% if vehicle.year %} · {{ vehicle.year }}{% endif %}</p>
                 </div>
                 {% if row.odometer %}
-                {{ odometer(row.odometer, unit=row.reading_unit, label=_('Odometer') ~ ' ' ~ (row.odometer|groupnum) ~ ' ' ~ row.reading_unit) }}
+                <span class="ds-mono dashboard-odometer" title="{{ _('Odometer') }}">{{ row.odometer|groupnum }} {{ row.reading_unit }}</span>
                 {% endif %}
                 {% if row.consumption %}
                 <span class="ds-mono ds-muted dashboard-consumption">{{ '%.1f'|format(row.consumption) }} {{ row.consumption_unit }}</span>

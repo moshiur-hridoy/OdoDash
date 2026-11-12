@@ -9,6 +9,11 @@ from app.utils import shared_reading_unit
 
 bp = Blueprint('main', __name__)
 
+#: "Needs attention" lists reminders overdue or due within this many days.
+ATTENTION_DAYS = 30
+#: Station prices older than this do not count towards "Cheapest Fuel".
+PRICE_WINDOW_DAYS = 60
+
 
 @bp.route('/')
 def index():
@@ -73,8 +78,11 @@ def dashboard():
     net_cost = total_cost - total_allowance
     cost_per_distance = total_cost / total_distance if total_distance > 0 else None
 
-    # The hero figure: spending in the current month or year, set against the
-    # one before it, split into fuel, charging and everything else.
+    # The hero figure: spending in the current month or year, split into fuel,
+    # charging and everything else, set against the same stretch of the one
+    # before it. Comparing twelve days of November with all of October would
+    # read as a fall every month until the last week, so the previous period
+    # is cut off at the same point.
     if period == 'year':
         current_start = datetime(now.year, 1, 1)
         current_end = datetime(now.year + 1, 1, 1)
@@ -84,19 +92,12 @@ def dashboard():
         current_end = _add_months(current_start, 1)
         previous_start = _add_months(current_start, -1)
     current_split = _spending_between(vehicle_ids, current_start, current_end)
-    previous_total = sum(_spending_between(vehicle_ids, previous_start, current_start).values())
+    previous_cutoff = _same_point_before(now, period, previous_start, current_start)
+    previous_total = sum(_spending_between(vehicle_ids, previous_start, previous_cutoff).values())
     period_total = sum(current_split.values())
     period_change = None
     if previous_total > 0:
         period_change = round((period_total - previous_total) / previous_total * 100)
-
-    # Month-by-month totals behind the sparkline: the last six months, or the
-    # months of this year so far.
-    if period == 'year':
-        trend_months = [datetime(now.year, m, 1) for m in range(1, now.month + 1)]
-    else:
-        trend_months = [_add_months(current_start, -i) for i in range(5, -1, -1)]
-    trend = [sum(_spending_between(vehicle_ids, m, _add_months(m, 1)).values()) for m in trend_months]
 
     # Year to date, and where it is heading at the same pace.
     year_start = datetime(now.year, 1, 1)
@@ -127,26 +128,16 @@ def dashboard():
             label = str(gettext('Charging'))
             expenses_by_category[label] = round(expenses_by_category.get(label, 0) + total_charging_cost, 2)
 
-    # Get cheapest stations (most recent prices)
-    cheapest_stations = []
-    if vehicle_ids:
-        subquery = db.session.query(
-            FuelPriceHistory.station_id,
-            func.max(FuelPriceHistory.date).label('max_date')
-        ).group_by(FuelPriceHistory.station_id).subquery()
+    show_stations = current_user.show_menu_stations is None or current_user.show_menu_stations
+    cheapest_price = _cheapest_price(current_user.id) if vehicle_ids and show_stations else None
 
-        cheapest_stations = db.session.query(FuelPriceHistory).join(
-            subquery,
-            db.and_(
-                FuelPriceHistory.station_id == subquery.c.station_id,
-                FuelPriceHistory.date == subquery.c.max_date
-            )
-        ).order_by(FuelPriceHistory.price_per_unit.asc()).limit(3).all()
-
-    # Open reminders, overdue first then soonest, for "Needs attention"; the
-    # same reminders give each vehicle its status. Latest notes alongside.
+    # Open reminders, overdue first then soonest. "Needs attention" takes the
+    # ones overdue or due within ATTENTION_DAYS: an inspection eight months
+    # out is not something to act on today. All of them still set each
+    # vehicle's status. Latest notes alongside.
     dashboard_reminders = []
     dashboard_reminders_total = 0
+    open_reminders_total = 0
     dashboard_notes = []
     soonest_due = {}
     if vehicle_ids:
@@ -154,8 +145,10 @@ def dashboard():
             Reminder.vehicle_id.in_(vehicle_ids),
             Reminder.is_completed.is_(False)
         ).order_by(Reminder.due_date).all()
-        dashboard_reminders_total = len(open_reminders)
-        dashboard_reminders = open_reminders[:5]
+        open_reminders_total = len(open_reminders)
+        attention_due = [r for r in open_reminders if r.days_until_due() <= ATTENTION_DAYS]
+        dashboard_reminders_total = len(attention_due)
+        dashboard_reminders = attention_due[:5]
         for reminder in open_reminders:
             soonest_due.setdefault(reminder.vehicle_id, reminder.days_until_due())
         dashboard_notes = Note.query.filter(
@@ -199,8 +192,6 @@ def dashboard():
                            period_split=current_split,
                            period_change=period_change,
                            previous_total=previous_total,
-                           trend=trend,
-                           trend_points=_sparkline_points(trend),
                            year_to_date=year_to_date,
                            year_projection=year_projection,
                            month_average=month_average,
@@ -217,9 +208,11 @@ def dashboard():
                            total_distance=total_distance,
                            cost_per_distance=cost_per_distance,
                            recent_activity=recent_activity,
-                           cheapest_stations=cheapest_stations,
+                           cheapest_price=cheapest_price,
                            dashboard_reminders=dashboard_reminders,
                            dashboard_reminders_total=dashboard_reminders_total,
+                           open_reminders_total=open_reminders_total,
+                           attention_days=ATTENTION_DAYS,
                            dashboard_notes=dashboard_notes)
 
 
@@ -258,16 +251,64 @@ def _as_datetime(value):
     return datetime(value.year, value.month, value.day)
 
 
-def _sparkline_points(values, width=600, height=80, pad=6):
-    """SVG polyline points for a small trend line, or '' with under two values."""
-    if len(values) < 2:
-        return ''
-    top = max(values) or 1
-    step = width / (len(values) - 1)
-    return ' '.join(
-        f'{i * step:.1f},{pad + (height - 2 * pad) * (1 - value / top):.1f}'
-        for i, value in enumerate(values)
-    )
+def _same_point_before(now, period, previous_start, current_start):
+    """End (exclusive) of the previous period cut off where this one is now.
+
+    Today counts in full, so on 12 November the month compares 1-12 November
+    with 1-12 October. A day the previous month does not have (31 March
+    against February) takes the whole of it.
+    """
+    if period == 'year':
+        try:
+            same_day = now.replace(year=now.year - 1)
+        except ValueError:  # 29 February
+            same_day = now.replace(year=now.year - 1, day=28)
+        cutoff = datetime(same_day.year, same_day.month, same_day.day) + timedelta(days=1)
+    else:
+        cutoff = previous_start + timedelta(days=now.day)
+    return min(cutoff, current_start)
+
+
+def _cheapest_price(user_id):
+    """The cheapest recent price, when the user's stations disagree on price.
+
+    Takes each station's latest price per fuel within PRICE_WINDOW_DAYS. It
+    returns None unless at least two stations quote different prices for one
+    fuel: with a single station, or with prices set by the state (Bangladesh,
+    among others) and so the same everywhere, "cheapest" means nothing. With
+    several such fuels, the one most stations report wins.
+    """
+    since = datetime.now().date() - timedelta(days=PRICE_WINDOW_DAYS)
+    latest = db.session.query(
+        FuelPriceHistory.station_id,
+        FuelPriceHistory.fuel_type,
+        func.max(FuelPriceHistory.date).label('max_date'),
+    ).filter(
+        FuelPriceHistory.user_id == user_id,
+        FuelPriceHistory.date >= since,
+    ).group_by(FuelPriceHistory.station_id, FuelPriceHistory.fuel_type).subquery()
+    rows = db.session.query(FuelPriceHistory).join(
+        latest,
+        db.and_(
+            FuelPriceHistory.station_id == latest.c.station_id,
+            FuelPriceHistory.fuel_type == latest.c.fuel_type,
+            FuelPriceHistory.date == latest.c.max_date,
+        ),
+    ).filter(FuelPriceHistory.user_id == user_id).order_by(FuelPriceHistory.id).all()
+
+    by_fuel = {}
+    for row in rows:
+        # Two entries on a station's latest day: the later one stands.
+        by_fuel.setdefault(row.fuel_type, {})[row.station_id] = row
+    candidates = []
+    for fuel_type, per_station in by_fuel.items():
+        prices = [r.price_per_unit for r in per_station.values()]
+        if len(per_station) >= 2 and max(prices) - min(prices) > 1e-9:
+            candidates.append((-len(per_station), fuel_type, per_station))
+    if not candidates:
+        return None
+    _, _, per_station = min(candidates, key=lambda c: (c[0], c[1]))
+    return min(per_station.values(), key=lambda r: r.price_per_unit)
 
 
 def _vehicle_row(vehicle, soonest_due):
