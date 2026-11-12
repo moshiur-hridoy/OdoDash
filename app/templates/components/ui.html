@@ -71,7 +71,7 @@
 {#- A labelled figure. hero: the one large figure on a page.
     note_tone: success | warning | danger (default muted).
     badge_label/badge_tone: a chip beside the value, e.g. a trend. -#}
-{%- macro stat(label, value, unit=None, note=None, note_tone=None, hero=False, badge_label=None, badge_tone='neutral') -%}
+{%- macro stat(label, value, unit=None, note=None, note_tone=None, hero=False, badge_label=None, badge_tone='neutral', extra_note=None) -%}
 <div class="ds-stat{% if hero %} ds-stat--hero{% endif %}">
     <p class="ds-stat__label">{{ label }}</p>
     <div class="ds-stat__row">
@@ -79,6 +79,7 @@
         {%- if badge_label %}{{ badge(badge_label, badge_tone) }}{% endif %}
     </div>
     {%- if note %}<p class="ds-stat__note{% if note_tone %} ds-stat__note--{{ note_tone }}{% endif %}">{{ note }}</p>{% endif %}
+    {%- if extra_note %}<p class="ds-stat__note">{{ extra_note }}</p>{% endif %}
 </div>
 {%- endmacro %}
 

@@ -126,17 +126,20 @@
             {% else %}
                 {% set driven_label = _('Driven in %(month)s', month=driven_start|dateformat('LLLL')) %}
             {% endif %}
+            {#- The period's own cost per unit is what the card is about, so it
+                stands out; the all-time figure sits under it for scale. -#}
+            {% set driven_rate, all_time_rate = None, None %}
             {% if total_distance_unit and driven_cost_per %}
-                {% set driven_note = _('%(cost)s per %(unit)s · all time %(all_time)s',
-                                       cost=(driven_cost_per|money) ~ ' ' ~ currency, unit=total_distance_unit,
-                                       all_time=cost_per_distance|money) %}
-            {% elif total_distance_unit and cost_per_distance %}
-                {% set driven_note = _('All time: %(cost)s per %(unit)s',
-                                       cost=(cost_per_distance|money) ~ ' ' ~ currency, unit=total_distance_unit) %}
-            {% else %}
-                {% set driven_note = None %}
+                {% set driven_rate = _('%(cost)s per %(unit)s',
+                                       cost=(driven_cost_per|money) ~ ' ' ~ currency, unit=total_distance_unit) %}
             {% endif %}
-            {{ stat(driven_label, (driven|round|int)|groupnum, unit=total_distance_unit or _('mixed units'), note=driven_note) }}
+            {% if total_distance_unit and cost_per_distance %}
+                {% set all_time_rate = _('All time: %(cost)s per %(unit)s',
+                                         cost=(cost_per_distance|money) ~ ' ' ~ currency, unit=total_distance_unit) %}
+            {% endif %}
+            {{ stat(driven_label, (driven|round|int)|groupnum, unit=total_distance_unit or _('mixed units'),
+                    note=driven_rate or all_time_rate, note_tone='accent' if driven_rate else None,
+                    extra_note=all_time_rate if driven_rate else None) }}
         {% endcall %}
         {% call card(class='ds-grow-even') %}
             {% if period == 'year' %}

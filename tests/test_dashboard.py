@@ -352,7 +352,8 @@ class TestDashboardHero:
         # The vehicle logs km and the user reads miles: 800 km is 497 mi.
         assert '497<span class="ds-stat__unit">mi</span>' in html
         # 100 GBP over 497.1 mi last month; all time is the same spending over the same span.
-        assert '0.20 GBP per mi · all time 0.20' in html
+        assert '<p class="ds-stat__note ds-stat__note--accent">0.20 GBP per mi</p>' in html
+        assert '<p class="ds-stat__note">All time: 0.20 GBP per mi</p>' in html
         assert 'Cost per mi' not in html
 
     def test_month_bars_cover_the_last_six_months(self, auth_client, test_user, sample_vehicle):

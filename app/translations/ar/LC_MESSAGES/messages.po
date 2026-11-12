@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 00:53+0600\n"
+"POT-Creation-Date: 2026-11-13 01:08+0600\n"
 "PO-Revision-Date: 2026-08-03 16:49+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ar <LL@li.org>\n"
@@ -55,7 +55,7 @@ msgid "Engine hours"
 msgstr "ساعات المحرك"
 
 #: app/models.py:403 app/templates/charging/form.html:86
-#: app/templates/dashboard.html:170 app/templates/dashboard.html:196
+#: app/templates/dashboard.html:173 app/templates/dashboard.html:199
 #: app/templates/expenses/form.html:99 app/templates/expenses/index.html:55
 #: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:56
 #: app/templates/fuel/index.html:43 app/templates/fuel/index.html:159
@@ -1005,14 +1005,14 @@ msgstr "تمت إضافة سجل الوقود!"
 
 #: app/routes/main.py:146 app/routes/vehicles.py:213
 #: app/templates/base.html:587 app/templates/dashboard.html:74
-#: app/templates/dashboard.html:206 app/templates/partials/mobile_nav.html:23
+#: app/templates/dashboard.html:209 app/templates/partials/mobile_nav.html:23
 #: app/templates/timeline/index.html:114 app/templates/trips/index.html:127
 #: app/templates/vehicles/view.html:157
 msgid "Fuel"
 msgstr "الوقود"
 
 #: app/routes/main.py:149 app/routes/vehicles.py:216
-#: app/templates/dashboard.html:75 app/templates/dashboard.html:207
+#: app/templates/dashboard.html:75 app/templates/dashboard.html:210
 #: app/templates/timeline/index.html:126
 msgid "Charging"
 msgstr "الشحن"
@@ -1548,7 +1548,7 @@ msgstr "شحن المركبات الكهربائية"
 
 #: app/templates/allowance/index.html:2 app/templates/allowance/index.html:7
 #: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
-#: app/templates/base.html:540 app/templates/dashboard.html:271
+#: app/templates/base.html:540 app/templates/dashboard.html:274
 #: app/templates/partials/mobile_nav.html:32
 #: app/templates/vehicles/view.html:226
 msgid "Mileage Allowance"
@@ -1562,7 +1562,7 @@ msgstr "الإطارات"
 
 #: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
 #: app/templates/base.html:542 app/templates/charging/form.html:149
-#: app/templates/dashboard.html:239 app/templates/expenses/form.html:135
+#: app/templates/dashboard.html:242 app/templates/expenses/form.html:135
 #: app/templates/fuel/form.html:183 app/templates/notes/index.html:2
 #: app/templates/notes/index.html:7 app/templates/partials/mobile_nav.html:34
 #: app/templates/search/index.html:110 app/templates/stations/form.html:74
@@ -1646,7 +1646,7 @@ msgstr "مساء الخير، %(name)s"
 msgid "This month"
 msgstr "هذا الشهر"
 
-#: app/templates/dashboard.html:28 app/templates/dashboard.html:145
+#: app/templates/dashboard.html:28 app/templates/dashboard.html:148
 msgid "This year"
 msgstr "هذا العام"
 
@@ -1678,7 +1678,7 @@ msgstr "%(amount)s حتى هذا الوقت من الشهر الماضي"
 msgid "Monthly Spending"
 msgstr "الإنفاق الشهري"
 
-#: app/templates/dashboard.html:76 app/templates/dashboard.html:268
+#: app/templates/dashboard.html:76 app/templates/dashboard.html:271
 #: app/templates/vehicles/view.html:220
 msgid "Other Expenses"
 msgstr "مصروفات أخرى"
@@ -1691,8 +1691,8 @@ msgstr "الإنفاق حسب النوع"
 msgid "Needs attention"
 msgstr "يحتاج إلى انتباه"
 
-#: app/templates/dashboard.html:88 app/templates/dashboard.html:154
-#: app/templates/dashboard.html:239 app/templates/vehicles/view.html:733
+#: app/templates/dashboard.html:88 app/templates/dashboard.html:157
+#: app/templates/dashboard.html:242 app/templates/vehicles/view.html:733
 #: app/templates/vehicles/view.html:847 app/templates/vehicles/view.html:905
 msgid "View all"
 msgstr "عرض الكل"
@@ -1722,7 +1722,7 @@ msgid "In %(num)d days"
 msgstr "خلال %(num)d يوم"
 
 #: app/templates/dashboard.html:105 app/templates/dashboard.html:107
-#: app/templates/dashboard.html:177
+#: app/templates/dashboard.html:180
 msgid "All good"
 msgstr "كل شيء على ما يرام"
 
@@ -1751,64 +1751,64 @@ msgstr "المسافة المقطوعة في %(year)s"
 msgid "Driven in %(month)s"
 msgstr "المسافة المقطوعة في %(month)s"
 
-#: app/templates/dashboard.html:130
+#: app/templates/dashboard.html:133
 #, python-format
-msgid "%(cost)s per %(unit)s · all time %(all_time)s"
-msgstr "%(cost)s لكل %(unit)s · منذ البداية %(all_time)s"
+msgid "%(cost)s per %(unit)s"
+msgstr "%(cost)s لكل %(unit)s"
 
-#: app/templates/dashboard.html:134
+#: app/templates/dashboard.html:137
 #, python-format
 msgid "All time: %(cost)s per %(unit)s"
 msgstr "منذ البداية: %(cost)s لكل %(unit)s"
 
-#: app/templates/dashboard.html:139 app/templates/dashboard.html:269
+#: app/templates/dashboard.html:140 app/templates/dashboard.html:272
 #: app/templates/trips/index.html:41 app/templates/trips/index.html:45
 #: app/templates/trips/report.html:36 app/templates/trips/report.html:40
 #: app/templates/trips/report.html:68 app/templates/trips/report.html:127
 msgid "mixed units"
 msgstr "وحدات مختلطة"
 
-#: app/templates/dashboard.html:143
+#: app/templates/dashboard.html:146
 msgid "Average per month"
 msgstr "المتوسط الشهري"
 
-#: app/templates/dashboard.html:146
+#: app/templates/dashboard.html:149
 #, python-format
 msgid "On track for %(amount)s"
 msgstr "في الطريق إلى %(amount)s"
 
-#: app/templates/dashboard.html:153 app/templates/stations/cheapest.html:2
+#: app/templates/dashboard.html:156 app/templates/stations/cheapest.html:2
 #: app/templates/stations/cheapest.html:7 app/templates/stations/index.html:28
 msgid "Cheapest Fuel"
 msgstr "أرخص وقود"
 
-#: app/templates/dashboard.html:159 app/templates/dashboard.html:182
+#: app/templates/dashboard.html:162 app/templates/dashboard.html:185
 msgid "Your Vehicles"
 msgstr "مركباتك"
 
-#: app/templates/dashboard.html:159 app/templates/trips/form.html:27
+#: app/templates/dashboard.html:162 app/templates/trips/form.html:27
 msgid "Manage"
 msgstr "إدارة"
 
-#: app/templates/dashboard.html:175 app/templates/reminders/index.html:65
+#: app/templates/dashboard.html:178 app/templates/reminders/index.html:65
 #: app/templates/vehicles/view.html:859
 msgid "Overdue"
 msgstr "متأخرة"
 
-#: app/templates/dashboard.html:176 app/templates/vehicles/view.html:861
+#: app/templates/dashboard.html:179 app/templates/vehicles/view.html:861
 msgid "Due soon"
 msgstr "مستحقة قريباً"
 
-#: app/templates/dashboard.html:182
+#: app/templates/dashboard.html:185
 msgid "Add your first vehicle"
 msgstr "أضف مركبتك الأولى"
 
-#: app/templates/dashboard.html:186 app/templates/dashboard.html:224
+#: app/templates/dashboard.html:189 app/templates/dashboard.html:227
 msgid "Recent activity"
 msgstr "النشاط الأخير"
 
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
-#: app/templates/charging/form.html:37 app/templates/dashboard.html:192
+#: app/templates/charging/form.html:37 app/templates/dashboard.html:195
 #: app/templates/expenses/form.html:44 app/templates/expenses/index.html:50
 #: app/templates/fuel/form.html:48 app/templates/fuel/index.html:41
 #: app/templates/fuel/index.html:157 app/templates/maintenance/form.html:131
@@ -1818,7 +1818,7 @@ msgstr "النشاط الأخير"
 msgid "Date"
 msgstr "التاريخ"
 
-#: app/templates/dashboard.html:193 app/templates/documents/form.html:50
+#: app/templates/dashboard.html:196 app/templates/documents/form.html:50
 #: app/templates/expenses/index.html:53
 #: app/templates/maintenance/history.html:12
 #: app/templates/reminders/form.html:53 app/templates/reminders/index.html:36
@@ -1829,7 +1829,7 @@ msgstr "النوع"
 
 #: app/templates/allowance/form.html:19 app/templates/allowance/index.html:28
 #: app/templates/charging/form.html:19 app/templates/charging/index.html:38
-#: app/templates/dashboard.html:194 app/templates/documents/form.html:21
+#: app/templates/dashboard.html:197 app/templates/documents/form.html:21
 #: app/templates/expenses/form.html:29 app/templates/expenses/index.html:51
 #: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:24
 #: app/templates/fuel/index.html:42 app/templates/fuel/index.html:158
@@ -1842,69 +1842,69 @@ msgstr "النوع"
 msgid "Vehicle"
 msgstr "المركبة"
 
-#: app/templates/dashboard.html:195
+#: app/templates/dashboard.html:198
 msgid "Details"
 msgstr "التفاصيل"
 
 #: app/templates/allowance/form.html:41 app/templates/allowance/index.html:31
-#: app/templates/dashboard.html:197 app/templates/recurring/form.html:65
+#: app/templates/dashboard.html:200 app/templates/recurring/form.html:65
 msgid "Amount"
 msgstr "المبلغ"
 
-#: app/templates/dashboard.html:224 app/templates/vehicles/view.html:1079
+#: app/templates/dashboard.html:227 app/templates/vehicles/view.html:1079
 msgid "No fuel logs yet."
 msgstr "لا توجد سجلات وقود بعد."
 
-#: app/templates/dashboard.html:230 app/templates/vehicles/view.html:1013
+#: app/templates/dashboard.html:233 app/templates/vehicles/view.html:1013
 msgid "Expenses by Category"
 msgstr "المصروفات حسب الفئة"
 
-#: app/templates/dashboard.html:234 app/templates/vehicles/view.html:1127
+#: app/templates/dashboard.html:237 app/templates/vehicles/view.html:1127
 msgid "No expenses yet."
 msgstr "لا توجد مصروفات بعد."
 
-#: app/templates/dashboard.html:250 app/templates/notes/index.html:83
+#: app/templates/dashboard.html:253 app/templates/notes/index.html:83
 msgid "No notes"
 msgstr "لا توجد ملاحظات"
 
-#: app/templates/dashboard.html:254 app/templates/notes/form.html:2
+#: app/templates/dashboard.html:257 app/templates/notes/form.html:2
 #: app/templates/notes/form.html:11 app/templates/notes/form.html:76
 #: app/templates/notes/index.html:16 app/templates/notes/index.html:92
 #: app/templates/partials/mobile_nav.html:60
 msgid "Add Note"
 msgstr "إضافة ملاحظة"
 
-#: app/templates/dashboard.html:261
+#: app/templates/dashboard.html:264
 msgid "All time"
 msgstr "منذ البداية"
 
 #: app/templates/charging/form.html:140 app/templates/charging/index.html:28
-#: app/templates/dashboard.html:263 app/templates/fuel/_quick_form.html:75
+#: app/templates/dashboard.html:266 app/templates/fuel/_quick_form.html:75
 #: app/templates/fuel/form.html:105
 msgid "Total Cost"
 msgstr "التكلفة الإجمالية"
 
-#: app/templates/dashboard.html:264 app/templates/vehicles/view.html:207
+#: app/templates/dashboard.html:267 app/templates/vehicles/view.html:207
 msgid "Total Fuel Cost"
 msgstr "إجمالي تكلفة الوقود"
 
-#: app/templates/dashboard.html:266 app/templates/vehicles/view.html:214
+#: app/templates/dashboard.html:269 app/templates/vehicles/view.html:214
 msgid "Total Charging Cost"
 msgstr "إجمالي تكلفة الشحن"
 
-#: app/templates/dashboard.html:269 app/templates/trips/index.html:40
+#: app/templates/dashboard.html:272 app/templates/trips/index.html:40
 #: app/templates/trips/report.html:35 app/templates/vehicles/view.html:237
 msgid "Total Distance"
 msgstr "إجمالي المسافة"
 
-#: app/templates/dashboard.html:269 app/templates/trips/index.html:41
+#: app/templates/dashboard.html:272 app/templates/trips/index.html:41
 #: app/templates/trips/index.html:45 app/templates/trips/report.html:36
 #: app/templates/trips/report.html:40 app/templates/trips/report.html:68
 #: app/templates/trips/report.html:127
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr "يشمل هذا الإجمالي المركبات المحسوبة بالمسافة وبساعات المحرك."
 
-#: app/templates/dashboard.html:272 app/templates/vehicles/view.html:231
+#: app/templates/dashboard.html:275 app/templates/vehicles/view.html:231
 msgid "Net Cost"
 msgstr "التكلفة الصافية"
 
