@@ -43,7 +43,7 @@
 <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
     <ul class="divide-y divide-gray-200 dark:divide-gray-700">
         {% for station in stations %}
-        <li class="p-4 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-700">
+        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
             <div class="flex items-center justify-between">
                 <div class="flex items-center min-w-0">
                     <button onclick="toggleFavorite({{ station.id }})" class="mr-3 focus:outline-none" id="fav-btn-{{ station.id }}">

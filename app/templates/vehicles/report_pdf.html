@@ -244,7 +244,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-label">{% if vehicle.tracks_hours() %}Total Hours{% else %}Total Distance{% endif %}</div>
-            <div class="stat-value">{{ "%.0f"|format(stats.total_distance) }}</div>
+            <div class="stat-value">{{ stats.total_distance|groupnum }}</div>
             <div class="stat-unit">{{ vehicle.get_reading_unit() }}</div>
         </div>
         <div class="stat-card">
@@ -361,7 +361,7 @@
         {% for log in fuel_logs %}
         <tr>
             <td>{{ log.date|format_date }}</td>
-            <td class="text-right">{{ "%.0f"|format(log.odometer) if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }}</td>
+            <td class="text-right">{{ log.odometer|groupnum if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }}</td>
             <td class="text-right">{% if log.volume %}{{ "%.2f"|format(log.volume) }} {{ user.volume_unit }}{% else %}-{% endif %}</td>
             <td class="text-right">{% if log.price_per_unit %}{{ "%.3f"|format(log.price_per_unit) }}{% else %}-{% endif %}</td>
             <td class="text-right">{% if log.total_cost %}{{ log.total_cost|money }} {{ user.currency }}{% else %}-{% endif %}</td>

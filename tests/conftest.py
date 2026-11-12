@@ -32,6 +32,16 @@ class TestConfig:
     UPLOAD_FOLDER = '/tmp/may_test_uploads'
 
 
+@pytest.fixture(autouse=True)
+def _reset_login_throttle():
+    # The throttle is process-wide; without this, failed logins in one test
+    # would count against the next.
+    from app.security import login_throttle
+    login_throttle._failures.clear()
+    yield
+    login_throttle._failures.clear()
+
+
 @pytest.fixture(scope='function')
 def app():
     """Create a Flask application configured for testing."""

@@ -123,6 +123,12 @@ class User(UserMixin, db.Model):
     api_key = db.Column(db.String(64), unique=True, index=True)
     api_key_created_at = db.Column(db.DateTime)
 
+    # Telegram bot: the private chat linked to this account, and the one-time
+    # code the user sends the bot to link it.
+    telegram_chat_id = db.Column(db.String(32), unique=True, index=True)
+    telegram_link_code = db.Column(db.String(16), unique=True, index=True)
+    telegram_link_expires = db.Column(db.DateTime)
+
     # Menu preferences
     start_page = db.Column(db.String(50), default='dashboard')  # dashboard, vehicles, fuel, expenses, etc.
     # users and vehicles reference each other on purpose: a vehicle has an
@@ -237,7 +243,10 @@ class User(UserMixin, db.Model):
 
     def generate_api_key(self):
         """Generate a new API key for this user"""
-        self.api_key = f"may_{secrets.token_hex(32)}"
+        # 4 + 60 = 64 characters, the width of the column. The old "may_" +
+        # 64-hex form was 68 and PostgreSQL refused to store it; SQLite never
+        # checked. Existing keys keep working: lookups are by exact value.
+        self.api_key = f"odo_{secrets.token_hex(30)}"
         self.api_key_created_at = utcnow()
         return self.api_key
 

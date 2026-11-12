@@ -82,6 +82,8 @@ ACCOUNT_ENDPOINTS = {
     'auth.settings',
     'auth.notifications',
     'auth.menu_preferences',
+    'auth.telegram_link',
+    'auth.telegram_unlink',
     'api.toggle_dark_mode',
     'api.generate_api_key',
     'api.revoke_api_key',

@@ -2,7 +2,12 @@
 {% block title %}{% if log %}{{ _('Edit Fuel Log') }}{% else %}{{ _('Add Fuel Log') }}{% endif %}{% endblock %}
 
 {% block content %}
-{% set selected_id = (log.vehicle_id if log else selected_vehicle_id) %}
+{# After a refused save the form comes back with `form` (what was typed),
+   `error_field` and `error_message`; typed values win over the saved log. #}
+{% set posted = form if form else none %}
+{% macro invalid(name) %}{% if error_field == name %} aria-invalid="true" aria-describedby="{{ name }}-error" autofocus{% endif %}{% endmacro %}
+{% macro error_for(name) %}{% if error_field == name %}<p id="{{ name }}-error" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ error_message }}</p>{% endif %}{% endmacro %}
+{% set selected_id = ((posted.get('vehicle_id')|int) if posted else (log.vehicle_id if log else selected_vehicle_id)) %}
 {% set preselected = vehicles | selectattr('id', 'equalto', selected_id if selected_id else -1) | list %}
 {% set form_vehicle = preselected[0] if preselected else (vehicles[0] if vehicles else None) %}
 <div class="max-w-2xl mx-auto">
@@ -11,7 +16,7 @@
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{% if log %}{{ _('Edit Fuel Log') }}{% else %}{{ _('Add Fuel Log') }}{% endif %}</h1>
     </div>
 
-    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form id="fuel-form" method="POST" enctype="multipart/form-data" class="space-y-6">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -22,7 +27,7 @@
                             class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                         {% for vehicle in vehicles %}
                         <option value="{{ vehicle.id }}"
-                                {% if (log and log.vehicle_id == vehicle.id) or (selected_vehicle_id == vehicle.id) %}selected{% endif %}
+                                {% if vehicle.id == selected_id %}selected{% endif %}
                                 data-last-odometer="{{ vehicle.get_last_odometer(vehicle.get_effective_odometer_unit()) }}"
                                 data-odometer-unit="{{ vehicle.get_reading_unit() }}"
                                 data-reading-label="{{ vehicle.get_reading_label() }}"
@@ -42,7 +47,7 @@
                 <div>
                     <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Date') }} *</label>
                     <input type="text" name="date" id="date" required data-datepicker data-default-today
-                           value="{{ log.date.strftime('%Y-%m-%d') if log else '' }}"
+                           value="{{ posted.get('date', '') if posted else (log.date.strftime('%Y-%m-%d') if log else '') }}"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                 </div>
 
@@ -57,8 +62,9 @@
                         </span>
                     </label>
                     <input type="number" name="odometer" id="odometer" step="0.1" min="0" max="9999999"
-                           value="{{ log.odometer if log and log.has_recorded_odometer else '' }}"
+                           value="{{ posted.get('odometer', '') if posted else (log.odometer if log and log.has_recorded_odometer else '') }}"{{ invalid('odometer') }}
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('odometer') }}
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Leave blank if the reading was not recorded. Enter 0 to confirm a genuine zero reading.') }}</p>
                     <p id="tessie-odometer-note" class="hidden mt-1 text-xs text-green-600 dark:text-green-400">
                         {{ _('Odometer is automatically tracked via Tessie for this vehicle.') }}
@@ -68,44 +74,49 @@
                 <div>
                     <label for="volume" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Volume') }} ({{ current_user.volume_unit }})</label>
                     <input type="number" name="volume" id="volume" step="0.001" min="0" max="10000"
-                           value="{{ log.volume if log else '' }}"
+                           value="{{ posted.get('volume', '') if posted else (log.volume if log else '') }}"{{ invalid('volume') }}
                            onchange="calculateFuelAmounts()"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('volume') }}
                 </div>
 
                 <div>
                     <label for="price_per_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Price per') }} {{ current_user.volume_unit }} ({{ current_user.currency }})</label>
                     <input type="number" name="price_per_unit" id="price_per_unit" step="0.001" min="0" max="1000000"
                            oninput="pricePerUnitWasDerived = false"
-                           value="{{ log.price_per_unit if log else '' }}"
+                           value="{{ posted.get('price_per_unit', '') if posted else (log.price_per_unit if log else '') }}"{{ invalid('price_per_unit') }}
                            onchange="calculateFuelAmounts()"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('price_per_unit') }}
                 </div>
 
                 <div>
                     <label for="discount_per_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Discount per') }} {{ current_user.volume_unit }} ({{ current_user.currency }})</label>
                     <input type="number" name="discount_per_unit" id="discount_per_unit" step="0.001" min="0" max="1000000"
-                           value="{{ log.discount_per_unit if log and log.discount_per_unit is not none else '' }}"
+                           value="{{ posted.get('discount_per_unit', '') if posted else (log.discount_per_unit if log and log.discount_per_unit is not none else '') }}"{{ invalid('discount_per_unit') }}
                            onchange="calculateFuelAmounts()"
                            placeholder="0.000"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('discount_per_unit') }}
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Optional loyalty discount, subtracted from the price per unit.') }}</p>
                 </div>
 
                 <div>
                     <label for="total_cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Total Cost') }} ({{ current_user.currency }})</label>
                     <input type="number" name="total_cost" id="total_cost" step="0.01" min="0" max="1000000000"
-                           value="{{ log.total_cost if log else '' }}"
+                           value="{{ posted.get('total_cost', '') if posted else (log.total_cost if log else '') }}"{{ invalid('total_cost') }}
                            onchange="calculateFuelAmounts()"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('total_cost') }}
                 </div>
 
                 <div>
                     <label for="sales_tax" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Sales Tax') }} ({{ current_user.currency }})</label>
                     <input type="number" name="sales_tax" id="sales_tax" step="0.01" min="0" max="1000000000"
-                           value="{{ log.sales_tax if log and log.sales_tax is not none else '' }}"
+                           value="{{ posted.get('sales_tax', '') if posted else (log.sales_tax if log and log.sales_tax is not none else '') }}"{{ invalid('sales_tax') }}
                            placeholder="0.00"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('sales_tax') }}
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Optional. Sales tax shown on the receipt, already included in the total cost. Add the amounts together where more than one tax applies.') }}</p>
                 </div>
 
@@ -116,7 +127,7 @@
                             class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                         <option value="">{{ _('Select station or enter manually...') }}</option>
                         {% for station in stations %}
-                        <option value="{{ station.id }}" data-name="{{ station.name }}{% if station.brand %} ({{ station.brand }}){% endif %}">
+                        <option value="{{ station.id }}"{% if posted and (posted.get('station_id')|int) == station.id %} selected{% endif %} data-name="{{ station.name }}{% if station.brand %} ({{ station.brand }}){% endif %}">
                             {{ station.name }}{% if station.brand %} ({{ station.brand }}){% endif %}
                             {% if station.is_favorite %}*{% endif %}
                         </option>
@@ -124,7 +135,7 @@
                     </select>
                     {% endif %}
                     <input type="text" name="station" id="station"
-                           value="{{ log.station if log else '' }}"
+                           value="{{ posted.get('station', '') if posted else (log.station if log else '') }}"
                            placeholder="{{ _('e.g., Shell, BP') }}"
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                     {% if not stations %}
@@ -146,22 +157,23 @@
                         {{ _('Distance on this fuel') }} (<span id="fuel-distance-unit">{{ current_user.distance_unit }}</span>)
                     </label>
                     <input type="number" name="fuel_distance" id="fuel_distance" step="0.1" min="0"
-                           value="{{ log.fuel_distance if log and log.fuel_distance is not none else '' }}"
+                           value="{{ posted.get('fuel_distance', '') if posted else (log.fuel_distance if log and log.fuel_distance is not none else '') }}"{{ invalid('fuel_distance') }}
                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                    {{ error_for('fuel_distance') }}
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Distance run on this fuel since your last fill-up of it. The odometer can’t tell the fuels apart, so consumption for a dual-fuel vehicle needs this.') }}</p>
                 </div>
 
                 <div class="sm:col-span-2 flex flex-wrap gap-6">
                     <div class="flex items-center">
                         <input type="checkbox" name="is_full_tank" id="is_full_tank"
-                               {% if log and log.is_full_tank %}checked{% elif not log %}checked{% endif %}
+                               {% if posted %}{% if posted.get('is_full_tank') %}checked{% endif %}{% elif log and log.is_full_tank %}checked{% elif not log %}checked{% endif %}
                                class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
                         <label for="is_full_tank" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Full tank fill-up') }}</label>
                     </div>
 
                     <div class="flex items-center">
                         <input type="checkbox" name="is_missed" id="is_missed"
-                               {% if log and log.is_missed %}checked{% endif %}
+                               {% if (posted.get('is_missed') if posted else (log and log.is_missed)) %}checked{% endif %}
                                class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
                         <label for="is_missed" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Missed fill-up (incomplete data)') }}</label>
                     </div>
@@ -170,7 +182,7 @@
                 <div class="sm:col-span-2">
                     <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Notes') }}</label>
                     <textarea name="notes" id="notes" rows="2"
-                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ log.notes if log else '' }}</textarea>
+                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ posted.get('notes', '') if posted else (log.notes if log else '') }}</textarea>
                 </div>
 
                 <div class="sm:col-span-2">
@@ -194,7 +206,7 @@
         </div>
 
         <!-- Hidden field for return redirect -->
-        {% if request.args.get('return_to') == 'vehicle' or (request.referrer and '/vehicles/' in request.referrer) %}
+        {% if request.args.get('return_to') == 'vehicle' or (posted and posted.get('return_to') == 'vehicle') or (request.referrer and '/vehicles/' in request.referrer) %}
         <input type="hidden" name="return_to" value="vehicle">
         {% endif %}
 
@@ -216,6 +228,7 @@ const T_LAST_ODOMETER = {{ _('Last odometer')|tojson }};
 const T_LAST_HOURS = {{ _('Last engine hours')|tojson }};
 let pricePerUnitWasDerived = false;
 const isEditing = {{ (log is not none)|tojson }};
+const chosenFuelType = {{ (posted.get('fuel_type', '') if posted else (log.fuel_type if log and log.fuel_type else ''))|tojson }};
 
 function updateVehicleOdometer(vehicleId) {
     const select = document.getElementById('vehicle_id');
@@ -319,9 +332,7 @@ function updateFuelTypeSelector(selectedOption) {
             const opt = document.createElement('option');
             opt.value = value;
             opt.textContent = fuelLabels[value] || value;
-            {% if log and log.fuel_type %}
-            if (value === '{{ log.fuel_type }}') opt.selected = true;
-            {% endif %}
+            if (value === chosenFuelType) opt.selected = true;
             fuelTypeSelect.appendChild(opt);
         });
         fuelTypeField.classList.remove('hidden');
@@ -391,4 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<style>
+#fuel-form [aria-invalid="true"] { border-color: #dc2626; }
+</style>
 {% endblock %}

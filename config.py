@@ -11,7 +11,7 @@ basedir = Path(__file__).parent.absolute()
 load_dotenv(basedir / '.env')
 
 
-APP_VERSION = '0.47.0'
+APP_VERSION = '0.48.0'
 RELEASE_CHANNEL = os.environ.get('RELEASE_CHANNEL', 'stable')
 GIT_SHA = os.environ.get('GIT_SHA', '')[:7]  # Short SHA
 GITHUB_REPO = 'moshiur-hridoy/OdoDash'
@@ -165,10 +165,29 @@ class Config:
     # some hosting providers; normalise it so those URLs keep working (#239).
     if _database_url.startswith('postgres://'):
         _database_url = _database_url.replace('postgres://', 'postgresql://', 1)
+    # SQLAlchemy 2.1 maps a bare 'postgresql://' to the psycopg 3 driver, but
+    # the image ships psycopg2, so such URLs failed at startup with
+    # "No module named 'psycopg'". Pin the driver we install; a URL that
+    # already names a driver ('postgresql+psycopg://') is left alone.
+    if _database_url.startswith('postgresql://'):
+        _database_url = _database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
     SQLALCHEMY_DATABASE_URI = _database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or str(basedir / 'data' / 'uploads')
     MAX_CONTENT_LENGTH = 300 * 1024 * 1024  # 300MB max upload
+
+    # Session and "remember me" cookies: never readable from JavaScript, and
+    # not sent on cross-site subrequests (form posts, images, iframes), which
+    # blunts CSRF and login-state probing. Lax still sends them when a user
+    # follows a link into the app. Secure is opt-in because many instances
+    # are reached over plain HTTP on a home network; set COOKIE_SECURE=true
+    # when the app is only served over HTTPS.
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SECURE = REMEMBER_COOKIE_SECURE = (
+        os.environ.get('COOKIE_SECURE', '').strip().lower() in ('1', 'true', 'yes', 'on'))
     # Public demo instance: seeds sample data under a shared demo/demo login
     # and refuses account, admin and outbound-integration changes (app/demo.py).
     DEMO_MODE = os.environ.get('DEMO_MODE', '').strip().lower() in ('1', 'true', 'yes', 'on')

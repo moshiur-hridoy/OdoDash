@@ -40,10 +40,11 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
 | #380, #382, #385/#406 | Not started | |
 | #387, #413, #411, #360, #398, #386, #373, #268/#392 | Not started | |
 | #397, #355 | Not started (outside the app) | |
-| #414 admin settings 500 | Done | unreleased |
-| #419 Pillow / OS packages | Done | unreleased |
-| #393 / #396 discount cap on fuel edit | Done (leftover from v0.45.0) | unreleased |
-| #415 add fuel hidden on mobile | Covered by the bottom tab bar + quick-add | unreleased |
+| #414 admin settings 500 | Done | v0.47.0 |
+| #419 Pillow / OS packages | Done | v0.47.0 |
+| #393 / #396 discount cap on fuel edit | Done (leftover from v0.45.0) | v0.47.0 |
+| #415 add fuel hidden on mobile | Covered by the bottom tab bar + quick-add | v0.47.0 |
+| #403 recurring duplicates | Done | unreleased |
 | #418 consumption spikes | Needs the reporter's fuel log; code path looks correct | |
 | #416, #417, #420 | Feature requests, not started | |
 
@@ -262,3 +263,4 @@ checked only while the fix remains verified and in the intended branch.
 - 2026-11-11 — #419: `pillow>=13.0.0`, `certifi>=2026.10.23`, `apt-get upgrade -y` in the Dockerfile. Full suite → 1521 passed (Docker image not rebuilt locally).
 - 2026-11-11 — #393/#396: fuel edit's discount-per-unit cap moved from 1,000 to `MAX_UNIT_PRICE`, matching new logs. Full suite → 1521 passed.
 - 2026-11-11 — #414: rejected settings POST (password mismatch/weak, duplicate email) now rolls back and redirects instead of rendering without admin context. `pytest tests/test_auth.py tests/test_demo_mode.py tests/test_i18n.py` → 114 passed; the new admin test fails without the fix.
+- 2026-11-12 — #403: scheduler runs in one process (`flock` in `app/__init__.py`) and each period is claimed with a conditional update (`_claim_period` in `app/services/recurring_processor.py`). `pytest tests/test_recurring_processor.py tests/test_recurring.py` → 37 passed; the new tests fail without the claim. Four processes racing on one SQLite file, 20 recurring × 3 due periods: old code 81/87/108 expenses, new code 60/60/60 with 0 duplicates.

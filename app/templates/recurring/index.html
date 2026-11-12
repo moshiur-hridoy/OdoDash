@@ -22,7 +22,7 @@
 <div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
     <ul class="divide-y divide-gray-200 dark:divide-gray-700">
         {% for item in recurring %}
-        <li class="p-4 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-700 {% if not item.is_active %}opacity-50{% endif %}">
+        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 {% if not item.is_active %}opacity-50{% endif %}">
             <div class="flex items-center justify-between">
                 <div class="flex items-center min-w-0">
                     <div class="flex-shrink-0">
@@ -39,7 +39,7 @@
                             </svg>
                         </span>
                         {% else %}
-                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-600 dark:bg-gray-700">
+                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700">
                             <svg class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>

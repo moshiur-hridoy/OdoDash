@@ -37,8 +37,8 @@ class TestUserPassword:
 class TestUserApiKey:
     def test_generate_api_key_format(self, test_user):
         key = test_user.generate_api_key()
-        assert key.startswith('may_')
-        assert len(key) > 10
+        assert key.startswith('odo_')
+        assert len(key) == 64
 
     def test_api_key_stored_on_user(self, test_user):
         key = test_user.generate_api_key()

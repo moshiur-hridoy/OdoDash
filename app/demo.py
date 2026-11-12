@@ -52,6 +52,8 @@ BLOCKED_ENDPOINTS = {
     'auth.dvla_settings',
     'auth.uk_fuel_settings',
     'auth.tessie_settings',
+    'auth.telegram_settings',
+    'auth.telegram_link',
     'api.test_notification',
     'api.test_smtp',
     'api.dvla_lookup',

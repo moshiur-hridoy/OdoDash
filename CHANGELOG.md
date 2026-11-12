@@ -10,6 +10,71 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+## [0.48.0] - 2026-11-12
+
+### Added
+
+- Log fill-ups by messaging a Telegram bot. An admin pastes a @BotFather token
+  into Settings > Integrations > Telegram, and each user links their own
+  private chat with a one-time code. A message such as `40L 4800tk 45230km`
+  is saved as a fuel log. `/undo` removes the last bot entry within 30
+  minutes and `/unlink` disconnects the chat. It works offline, needs no
+  public URL, follows the usual role rules (viewers cannot log) and is
+  refused in demo mode.
+- Password fields show the requirements as you type, with a tick beside each
+  rule met and a check that the two entries match. The password error
+  messages are now translated.
+- A project landing page, published to GitHub Pages, and a ready-made
+  Portainer stack for running a public demo (`docs/demo.md`).
+
+### Security
+
+- Login cookies are `HttpOnly` and `SameSite=Lax`. Set `COOKIE_SECURE=true`
+  to also mark them `Secure` when OdoDash is only served over HTTPS.
+- Sign-in is throttled: after 5 failed attempts for one username from one
+  address within 15 minutes, that pair is refused until the window passes.
+  Another address can still sign in, so a guesser cannot lock the owner out.
+  Each failure is logged as `Failed login for '<username>' from <address>`
+  for tools such as fail2ban. The public demo login is exempt.
+
+### Fixed
+
+- A PostgreSQL `DATABASE_URL` written as `postgresql://...` no longer fails at
+  startup with "No module named 'psycopg'". SQLAlchemy 2.1 maps that scheme to
+  psycopg 3, which the image does not ship; it is now pinned to the installed
+  psycopg2 driver. URLs that name a driver are left as they are.
+- Generating an API key works on PostgreSQL. New keys are 64 characters to
+  fit their column (they were 68, which PostgreSQL refused); existing keys
+  keep working, and new ones start with `odo_`.
+- The Fuel Logs page shows 50 fill-ups per page with Newer and Older links,
+  instead of every log at once. With ~500 logs it went from 1,571 database
+  queries, 430 ms and 1.4 MB to 157 queries, 60 ms and 290 KB. The yearly
+  sales-tax totals still cover every log.
+- Log messages from the app after startup are no longer lost. Running the
+  database migrations at startup disabled every existing logger, so scheduler
+  output and errors written through the app's logger never appeared.
+- Recurring expenses are no longer generated twice. Each Gunicorn worker ran
+  its own hourly scheduler, so two workers could create the same due period;
+  now one process runs the scheduler, and each period is claimed before it is
+  generated so a second worker or container skips it. The same change stops
+  reminders being sent twice (#403).
+- A fuel log that fails validation comes back with everything you typed, the
+  message under the field that failed and that field focused, instead of a
+  blank form.
+- Distances and odometer readings follow the thousand-separator preference
+  everywhere, as money amounts already did. Users on the default "none"
+  setting see no change.
+- In dark mode, rows are no longer permanently highlighted and the settings
+  toggles are visible again.
+- Text on accent-coloured buttons stays legible whatever colour is chosen in
+  branding. The coloured side stripes on reminders and dashboard notes are
+  gone.
+
+### Changed
+
+- The users table gains three nullable columns for the Telegram link, added by
+  a new migration that runs automatically at startup.
+
 ## [0.47.0] - 2026-11-12
 
 ### Added

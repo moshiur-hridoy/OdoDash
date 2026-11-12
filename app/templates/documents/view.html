@@ -19,7 +19,7 @@
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <a href="{{ url_for('documents.download', document_id=document.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600">
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <svg class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
@@ -27,7 +27,7 @@
                     </a>
                     {% if can_write('documents') %}
                     <a href="{{ url_for('documents.edit', document_id=document.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600">
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                         {{ _('Edit') }}
                     </a>
                     {% endif %}

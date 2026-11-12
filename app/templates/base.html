@@ -133,8 +133,43 @@
             }
             return out;
         }
-        const onPrimary = contrast('#ffffff', baseColor) >= contrast('#111827', baseColor) ? '#ffffff' : '#111827';
+        // Filled accent surfaces (buttons) keep their text at 4.5:1 at rest and
+        // on hover. White text is preferred: when the accent is a touch too light
+        // for it, the fill is darkened just enough. Light accents (yellow, lime,
+        // cyan) would turn muddy that way, so they take dark text instead. Hover
+        // then moves further in the direction that adds contrast, so it can
+        // never take the text below the threshold the resting state met.
+        function lightnessFor(text, dir) {
+            let lt = l;
+            while (contrast(text, hslToHex(h, s, lt)) < 4.5) {
+                const next = lt + dir;
+                if (next < 0 || next > 100) break;
+                lt = next;
+            }
+            return lt;
+        }
+        const ON_LIGHT = '#111827';
+        const whiteFillL = lightnessFor('#ffffff', -1);
+        const whiteText = l - whiteFillL <= 12;
+        const onPrimary = whiteText ? '#ffffff' : ON_LIGHT;
+        const fillL = whiteText ? whiteFillL : lightnessFor(ON_LIGHT, 1);
+        const clampL = v => Math.min(96, Math.max(4, v));
+        let hoverDir = whiteText ? -1 : 1;
+        // Already at the end of the scale (near-black or near-white accent):
+        // hover the other way, which still leaves a wide contrast margin there.
+        if (clampL(fillL + hoverDir * 12) !== fillL + hoverDir * 12) hoverDir = -hoverDir;
+        const shade = (step, dir) => hslToHex(h, s, clampL(fillL + dir * step));
+        // Gradients run lighter at the top, as in premium.css.
+        const byLightness = (a, b) => relLuminance(a) >= relLuminance(b) ? [a, b] : [b, a];
+        const [fillTop, fillBottom] = byLightness(shade(0, hoverDir), shade(4, hoverDir));
+        const [hoverTop, hoverBottom] = byLightness(shade(8, hoverDir), shade(12, hoverDir));
         rootStyle.setProperty('--on-primary', onPrimary);
+        rootStyle.setProperty('--primary-fill', shade(0, hoverDir));
+        rootStyle.setProperty('--primary-fill-top', fillTop);
+        rootStyle.setProperty('--primary-fill-bottom', fillBottom);
+        rootStyle.setProperty('--primary-fill-hover', shade(8, hoverDir));
+        rootStyle.setProperty('--primary-fill-hover-top', hoverTop);
+        rootStyle.setProperty('--primary-fill-hover-bottom', hoverBottom);
         rootStyle.setProperty('--primary-ink', readableOn('#ffffff', -1));
         rootStyle.setProperty('--primary-ink-dark', readableOn('#12151c', 1));
     </script>
@@ -278,14 +313,6 @@
             box-shadow: var(--shadow-none);
         }
 
-        .reminder-overdue-surface {
-            border-left: 4px solid #ef4444;
-        }
-
-        .reminder-upcoming-surface {
-            border-left: 4px solid #f59e0b;
-        }
-
         .business-distance-surface {
             border: 2px solid #bbf7d0;
         }
@@ -386,9 +413,20 @@
         .bg-primary-50 { background-color: var(--primary-50); }
         .bg-primary-100 { background-color: var(--primary-100); }
         .bg-primary-600 { background-color: var(--primary-600); }
-        /* Text on a filled accent follows the accent's brightness. */
+        /* A filled accent carrying text uses the fill and hover shades the
+           palette script picked for it, so the text stays legible whatever
+           colour is chosen in branding. Two classes, so these win over both
+           Tailwind's single-class rules and the gradient in premium.css. */
         .bg-primary-600.text-white, .hover\:bg-primary-700.text-white,
         .dark\:bg-primary-600.text-white { color: var(--on-primary, #fff); }
+        .bg-primary-600.text-white {
+            background-color: var(--primary-fill, var(--primary-600));
+            background-image: linear-gradient(180deg, var(--primary-fill-top, var(--primary-500)), var(--primary-fill-bottom, var(--primary-600)));
+        }
+        .bg-primary-600.text-white:hover, .hover\:bg-primary-700.text-white:hover {
+            background-color: var(--primary-fill-hover, var(--primary-700));
+            background-image: linear-gradient(180deg, var(--primary-fill-hover-top, var(--primary-600)), var(--primary-fill-hover-bottom, var(--primary-700)));
+        }
         .bg-primary-700 { background-color: var(--primary-700); }
         .border-primary-200 { border-color: var(--primary-200); }
         .border-primary-300 { border-color: var(--primary-300); }
@@ -454,6 +492,7 @@
     <!-- Premium visual layer and shared chart theme (presentation only) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
     <script src="{{ url_for('static', filename='js/charts-theme.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/password-rules.js') }}" defer></script>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900">
     {% from 'partials/logo.html' import logo_mark %}

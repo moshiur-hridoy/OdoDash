@@ -51,14 +51,14 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {% for log in logs %}
-                <tr class="hover:bg-gray-50 dark:bg-gray-700">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ log.date|format_date }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         <a href="{{ url_for('vehicles.view', vehicle_id=log.vehicle_id) }}" class="text-primary-600 hover:text-primary-500">
                             {{ log.vehicle.name }}
                         </a>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ "%.0f"|format(log.odometer) if log.has_recorded_odometer else "—" }} {{ log.vehicle.get_reading_unit() }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ log.odometer|groupnum if log.has_recorded_odometer else "—" }} {{ log.vehicle.get_reading_unit() }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ log.effective_fuel_type|fuel_type_label }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {{ "%.1f"|format(log.volume or 0) }} {{ current_user.volume_unit }}
@@ -98,6 +98,19 @@
             </tbody>
         </table>
     </div>
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="flex items-center justify-between px-6 py-3 border-t border-gray-200 dark:border-gray-700 text-sm" aria-label="{{ _('Pagination') }}">
+        <span class="text-gray-500 dark:text-gray-400">{{ _('Page %(page)s of %(pages)s', page=pagination.page, pages=pagination.pages) }}</span>
+        <div class="flex gap-2">
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('fuel.index', page=pagination.prev_num) }}" class="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">{{ _('Newer') }}</a>
+            {% endif %}
+            {% if pagination.has_next %}
+            <a href="{{ url_for('fuel.index', page=pagination.next_num) }}" class="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">{{ _('Older') }}</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
 </div>
 {% else %}
 <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -152,7 +165,7 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {% for session in charging_sessions %}
-                <tr class="hover:bg-gray-50 dark:bg-gray-700">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ session.date|format_date }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         <a href="{{ url_for('vehicles.view', vehicle_id=session.vehicle_id) }}" class="text-primary-600 hover:text-primary-500">
@@ -160,7 +173,7 @@
                         </a>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {% if session.odometer %}{{ "%.0f"|format(session.odometer) }} {{ session.vehicle.get_reading_unit() }}{% else %}-{% endif %}
+                        {% if session.odometer %}{{ session.odometer|groupnum }} {{ session.vehicle.get_reading_unit() }}{% else %}-{% endif %}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {% if session.kwh_added %}{{ "%.1f"|format(session.kwh_added) }} kWh{% else %}-{% endif %}

@@ -120,7 +120,7 @@
                 <div class="ml-4 flex items-center gap-4">
                     <div class="text-right">
                         <p class="text-sm font-medium text-gray-900 dark:text-white">{{ "%.1f"|format(trip.distance) }} {{ trip.vehicle.get_reading_unit() }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ "%.0f"|format(trip.start_odometer) }} &rarr; {{ "%.0f"|format(trip.end_odometer or 0) }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ trip.start_odometer|groupnum }} &rarr; {{ (trip.end_odometer or 0)|groupnum }}</p>
                         {% if trip.fuel_used is not none %}
                         <p class="text-xs text-gray-500 dark:text-gray-400">{{ _('Fuel used') }}: {{ "%.1f"|format(trip.fuel_used) }} {{ current_user.volume_unit }}</p>
                         {% elif trip.start_fuel_level is not none or trip.end_fuel_level is not none %}

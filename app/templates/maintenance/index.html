@@ -26,7 +26,7 @@
         {% set current_odo = vehicle_odometers.get(schedule.vehicle_id, 0) %}
         {% set is_due = schedule.is_due(current_odo) %}
         {% set is_due_soon = schedule.is_due_soon(current_odo) %}
-        <li class="p-4 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-700 {% if is_due %}bg-red-50 dark:bg-red-900/20{% elif is_due_soon %}bg-amber-50 dark:bg-amber-900/20{% endif %}">
+        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 {% if is_due %}bg-red-50 dark:bg-red-900/20{% elif is_due_soon %}bg-amber-50 dark:bg-amber-900/20{% endif %}">
             <div class="flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2">

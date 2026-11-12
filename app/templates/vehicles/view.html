@@ -118,7 +118,7 @@
                 </div>
                 <div class="flex flex-wrap items-center justify-end gap-2 sm:ml-auto">
                     <a href="{{ url_for('vehicles.report', vehicle_id=vehicle.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700"
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                        title="{{ _('Download PDF Report') }}">
                         <svg class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -126,7 +126,7 @@
                         PDF
                     </a>
                     <a href="{{ url_for('vehicles.report', vehicle_id=vehicle.id, receipts=1) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700"
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                        title="{{ _('Download PDF Report with receipt images') }}">
                         <svg class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
@@ -135,13 +135,13 @@
                     </a>
                     {% if can_write('vehicles') %}
                     <a href="{{ url_for('vehicles.edit', vehicle_id=vehicle.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700">
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
                         {{ _('Edit') }}
                     </a>
                     {% endif %}
                     {% if can_write('vehicles') %}
                     <a href="{{ url_for('vehicles.share', vehicle_id=vehicle.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700">
+                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
                         {{ _('Share') }}
                     </a>
                     {% endif %}
@@ -235,7 +235,7 @@
     {% endif %}
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{% if vehicle.tracks_hours() %}{{ _('Total Hours') }}{% else %}{{ _('Total Distance') }}{% endif %}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.0f"|format(stats.total_distance) }}</dd>
+        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_distance|groupnum }}</dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.get_reading_unit() }}</dd>
     </div>
     {% if vehicle.uses_fuel() %}
@@ -289,7 +289,7 @@
         <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.2f"|format(stats.total_co2_kg / 1000) }}</dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('tonnes (estimated)') }}</dd>
         {% else %}
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.0f"|format(stats.total_co2_kg) }}</dd>
+        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_co2_kg|groupnum }}</dd>
         <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('kg (estimated)') }}</dd>
         {% endif %}
     </div>
@@ -441,7 +441,7 @@
             <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('DVLA Status') }}</h2>
         </div>
         <button onclick="refreshDvlaStatus({{ vehicle.id }})" id="dvla-refresh-btn"
-                class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 dark:bg-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600">
+                class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
             <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
@@ -463,7 +463,7 @@
                         {{ vehicle.mot_status }}
                     </span>
                     {% else %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
                         {{ vehicle.mot_status or 'Unknown' }}
                     </span>
                     {% endif %}
@@ -491,7 +491,7 @@
                         {{ vehicle.tax_status }}
                     </span>
                     {% else %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
                         {{ vehicle.tax_status or 'Unknown' }}
                     </span>
                     {% endif %}
@@ -566,9 +566,9 @@
                 <dd class="mt-1 text-sm text-gray-900 dark:text-white">
                     {% if vehicle.tessie_last_odometer %}
                     {% if vehicle.get_effective_odometer_unit() == 'mi' %}
-                    {{ "%.0f"|format(vehicle.tessie_last_odometer * 0.621371) }} mi
+                    {{ (vehicle.tessie_last_odometer * 0.621371)|groupnum }} mi
                     {% else %}
-                    {{ "%.0f"|format(vehicle.tessie_last_odometer) }} km
+                    {{ vehicle.tessie_last_odometer|groupnum }} km
                     {% endif %}
                     {% else %}
                     -
@@ -596,9 +596,9 @@
                 <dd class="mt-1 text-sm text-gray-900 dark:text-white">
                     {% if vehicle.tessie_battery_range %}
                     {% if vehicle.get_effective_odometer_unit() == 'mi' %}
-                    {{ "%.0f"|format(vehicle.tessie_battery_range * 0.621371) }} mi
+                    {{ (vehicle.tessie_battery_range * 0.621371)|groupnum }} mi
                     {% else %}
-                    {{ "%.0f"|format(vehicle.tessie_battery_range) }} km
+                    {{ vehicle.tessie_battery_range|groupnum }} km
                     {% endif %}
                     {% else %}
                     -
@@ -734,7 +734,7 @@
     </div>
     <ul class="divide-y divide-gray-200 dark:divide-gray-700">
         {% for reminder in reminders[:5] %}
-        <li class="px-6 py-4 hover:bg-gray-50 dark:bg-gray-700">
+        <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
             <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center space-x-3 min-w-0 flex-1">
                     {% if can_write('reminders') %}
@@ -866,7 +866,7 @@
                         <span>{{ schedule.next_due_date|format_date }}</span>
                         {% endif %}
                         {% if schedule.next_due_odometer %}
-                        <span>{{ schedule.next_due_odometer|int }} {{ vehicle.get_reading_unit() }}</span>
+                        <span>{{ schedule.next_due_odometer|groupnum }} {{ vehicle.get_reading_unit() }}</span>
                         {% endif %}
                     </div>
                 </div>
@@ -1036,7 +1036,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-900 dark:text-white">{{ log.date|format_date }}</p>
                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ "%.0f"|format(log.odometer) if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }} &middot;
+                            {{ log.odometer|groupnum if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }} &middot;
                             {{ "%.1f"|format(log.volume or 0) }} {{ current_user.volume_unit }}
                             {% if log.price_per_unit %}&middot; {{ "%.3f"|format(log.price_per_unit) }}/{{ current_user.volume_unit }}{% endif %}
                             {% if log.is_full_tank %}<span class="text-green-600">{{ _('(Full)') }}</span>{% endif %}

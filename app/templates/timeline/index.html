@@ -65,7 +65,7 @@
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ event.description }}</p>
                                 {% endif %}
                                 {% if event.odometer %}
-                                <p class="text-xs text-gray-400 dark:text-gray-500">{{ "%.0f"|format(event.odometer) }} {{ vehicle.get_reading_unit() }}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500">{{ event.odometer|groupnum }} {{ vehicle.get_reading_unit() }}</p>
                                 {% endif %}
                                 {% if event.notes %}
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap">{{ event.notes|linkify }}</p>
