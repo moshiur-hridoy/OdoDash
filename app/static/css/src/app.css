@@ -225,8 +225,10 @@
     color var(--ds-duration-fast) ease, box-shadow var(--ds-duration-fast) ease;
 }
 .ds-btn:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
-.ds-btn--primary { background: var(--ds-accent); color: var(--ds-on-accent); }
-.ds-btn--primary:hover { background: color-mix(in srgb, var(--ds-accent) 86%, #000000); }
+/* Fill and hover shades come from the palette script in base.html, chosen so
+   --ds-on-accent keeps 4.5:1 whatever accent is set in branding. */
+.ds-btn--primary { background: var(--primary-fill, var(--ds-accent)); color: var(--ds-on-accent); }
+.ds-btn--primary:hover { background: var(--primary-fill-hover, color-mix(in srgb, var(--ds-accent) 86%, #000000)); }
 .ds-btn--secondary { background: var(--ds-surface); border-color: var(--ds-border); color: var(--ds-text); }
 .ds-btn--secondary:hover { background: var(--ds-surface-sunken); }
 .ds-btn--ghost { background: transparent; color: var(--ds-text-muted); }
