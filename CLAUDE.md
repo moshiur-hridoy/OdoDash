@@ -274,3 +274,14 @@ rendered, in both themes, at `/design`.
 - The `.ds-` CSS is deliberately outside any Tailwind `@layer`: the macros
   compose class names the build cannot see, and layered classes it cannot see
   are dropped.
+
+The app shell is built from the same system: the sidebar (`.ds-side`), phone
+top bar (`.ds-topbar`) and page frame (`.ds-main`) in `base.html`, and the tab
+bar and sheets in `partials/mobile_nav.html`. The sidebar's section list
+(`nav_sections`) and the tab bar's (`nav_links`) are separate, so a new section
+goes in both. Shell CSS uses logical sides (`inset-inline-start`,
+`padding-inline-start`) so Arabic mirrors it; `tests/test_app_shell.py` keeps
+`left`/`right` out. The legacy `--color-*` tokens in `base.html` now read the
+`--ds-*` ones, so pages not yet redesigned share the shell's canvas and text
+colours. Without a built `app.css`, the source is handed to the runtime as
+`<style type="text/tailwindcss">`, so the shell still renders.
