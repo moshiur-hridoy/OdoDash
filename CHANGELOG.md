@@ -10,6 +10,11 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Security
+
+- Login cookies are `HttpOnly` and `SameSite=Lax`. Set `COOKIE_SECURE=true`
+  to also mark them `Secure` when OdoDash is only served over HTTPS.
+
 ### Fixed
 
 - A PostgreSQL `DATABASE_URL` written as `postgresql://...` no longer fails at

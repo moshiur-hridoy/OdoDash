@@ -820,3 +820,38 @@ class TestSidebarVersion:
             assert 'id="update-notice"' not in admin_client.get('/dashboard').get_data(as_text=True)
         finally:
             app.config['CHECK_FOR_UPDATES'] = True
+
+
+COOKIE_SETTINGS = ('SESSION_COOKIE_HTTPONLY', 'SESSION_COOKIE_SAMESITE',
+                   'SESSION_COOKIE_SECURE', 'REMEMBER_COOKIE_HTTPONLY',
+                   'REMEMBER_COOKIE_SAMESITE', 'REMEMBER_COOKIE_SECURE')
+
+
+# Flask-Login 0.6.3 stamps the remember cookie with datetime.utcnow().
+@pytest.mark.filterwarnings('ignore:datetime.datetime.utcnow:DeprecationWarning:flask_login')
+class TestLoginCookies:
+    @pytest.fixture(autouse=True)
+    def _production_cookie_settings(self, app):
+        # The test config does not inherit config.Config, so apply the
+        # production cookie settings explicitly.
+        from config import Config
+        for name in COOKIE_SETTINGS:
+            app.config[name] = getattr(Config, name)
+
+    def _cookie_headers(self, client):
+        response = client.post('/auth/login', data={
+            'username': 'testuser', 'password': 'TestPass123!', 'remember': 'on',
+        })
+        return [h for h in response.headers.getlist('Set-Cookie')]
+
+    def test_session_and_remember_cookies_are_httponly_and_lax(self, client, test_user):
+        cookies = self._cookie_headers(client)
+        names = {c.split('=', 1)[0] for c in cookies}
+        assert {'session', 'remember_token'} <= names
+        for cookie in cookies:
+            assert 'HttpOnly' in cookie
+            assert 'SameSite=Lax' in cookie
+
+    def test_secure_flag_is_opt_in(self, client, test_user):
+        # Plain-HTTP home-network installs must keep working by default.
+        assert all('Secure' not in c for c in self._cookie_headers(client))

@@ -175,6 +175,19 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or str(basedir / 'data' / 'uploads')
     MAX_CONTENT_LENGTH = 300 * 1024 * 1024  # 300MB max upload
+
+    # Session and "remember me" cookies: never readable from JavaScript, and
+    # not sent on cross-site subrequests (form posts, images, iframes), which
+    # blunts CSRF and login-state probing. Lax still sends them when a user
+    # follows a link into the app. Secure is opt-in because many instances
+    # are reached over plain HTTP on a home network; set COOKIE_SECURE=true
+    # when the app is only served over HTTPS.
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SECURE = REMEMBER_COOKIE_SECURE = (
+        os.environ.get('COOKIE_SECURE', '').strip().lower() in ('1', 'true', 'yes', 'on'))
     # Public demo instance: seeds sample data under a shared demo/demo login
     # and refuses account, admin and outbound-integration changes (app/demo.py).
     DEMO_MODE = os.environ.get('DEMO_MODE', '').strip().lower() in ('1', 'true', 'yes', 'on')
