@@ -337,7 +337,23 @@ def settings():
     # Get registration setting
     registration_enabled = AppSettings.get('registration_enabled', 'true') == 'true'
 
+    from app.services import telegram_bot
+    from app.utils import utcnow
+    link_code = current_user.telegram_link_code
+    if link_code and (not current_user.telegram_link_expires
+                      or current_user.telegram_link_expires < utcnow()):
+        link_code = None
+    telegram = {
+        'enabled': telegram_bot.is_enabled(),
+        'bot_username': telegram_bot.bot_username(),
+        'linked': bool(current_user.telegram_chat_id),
+        'link_code': link_code,
+        # Only admins see the token field; never send the token to others.
+        'token': telegram_bot.get_token() if current_user.is_admin else '',
+    }
+
     return render_template('auth/settings.html',
+                           telegram=telegram,
                            branding=branding,
                            smtp_settings=smtp_settings,
                            smtp_configured=smtp_configured,
@@ -521,6 +537,55 @@ def tessie_settings():
 
     flash(_('Tessie settings updated'), 'success')
     return redirect(url_for('auth.settings') + '#services-tessie')
+
+
+@bp.route('/telegram-settings', methods=['POST'])
+@login_required
+@admin_required
+def telegram_settings():
+    """Save (or clear) the Telegram bot token (admin only)."""
+    from app.services import telegram_bot
+
+    token = request.form.get('telegram_bot_token', '').strip()
+    if not token:
+        AppSettings.set(telegram_bot.SETTING_TOKEN, '')
+        AppSettings.set(telegram_bot.SETTING_USERNAME, '')
+        flash(_('Telegram bot disconnected'), 'success')
+        return redirect(url_for('auth.settings') + '#services-telegram')
+    try:
+        username = telegram_bot.check_token(token)
+    except telegram_bot.TelegramError as exc:
+        flash(_('Telegram rejected that token: %(error)s', error=str(exc)), 'error')
+        return redirect(url_for('auth.settings') + '#services-telegram')
+    AppSettings.set(telegram_bot.SETTING_TOKEN, token)
+    AppSettings.set(telegram_bot.SETTING_USERNAME, username)
+    # A new bot starts with its own update numbering.
+    AppSettings.set(telegram_bot.SETTING_OFFSET, '0')
+    flash(_('Telegram bot @%(username)s connected', username=username), 'success')
+    return redirect(url_for('auth.settings') + '#services-telegram')
+
+
+@bp.route('/telegram/link', methods=['POST'])
+@login_required
+def telegram_link():
+    """Issue a one-time code the user sends the bot to link their chat."""
+    from app.services import telegram_bot
+
+    if not telegram_bot.is_enabled():
+        flash(_('The Telegram bot is not set up on this instance.'), 'error')
+        return redirect(url_for('auth.settings') + '#services-telegram')
+    telegram_bot.new_link_code(current_user)
+    return redirect(url_for('auth.settings') + '#services-telegram')
+
+
+@bp.route('/telegram/unlink', methods=['POST'])
+@login_required
+def telegram_unlink():
+    from app.services import telegram_bot
+
+    telegram_bot.unlink(current_user)
+    flash(_('Telegram disconnected'), 'success')
+    return redirect(url_for('auth.settings') + '#services-telegram')
 
 
 @bp.route('/registration-settings', methods=['POST'])

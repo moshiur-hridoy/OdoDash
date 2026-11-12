@@ -26,7 +26,18 @@ Issue status and upstream code may change; recheck both before starting work.
 
 ## Status at a glance
 
-Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
+Updated 2026-11-12, after v0.48.0. Upstream rechecked the same day: 33 open
+issues, of which #421 and #422 are new.
+
+### Next up (agreed order, one issue at a time)
+
+1. #384 + #412 — total distance only reads fuel logs, so an EV with no fill-ups
+   shows 0 distance and an empty cost per km. Confirmed in this repo.
+2. #420 (part 1) — work out price per kWh from kWh and total cost.
+3. #422 — more maintenance types (brake rotors, drums, shoes).
+4. #421 — category filter and sort on the Expenses page.
+5. #416 — a separate loyalty card discount on fuel logs (needs a migration).
+6. #371 — Fuel Finder API provider and postcode matching (plan separately).
 
 | Issue | Status | Release |
 | --- | --- | --- |
@@ -36,7 +47,8 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
 | #395 document links | Done | v0.45.2 |
 | #381 large numbers | Partly done; locale/mobile/PDF check open | v0.45.2 |
 | #2 (this repo) total cost limit | Done, closed | v0.45.2 |
-| #403, #384, #412, #371 | Not started | |
+| #384, #412 | Confirmed here, next to fix | |
+| #371 | Partial: a failed feed no longer blocks the rest; matching and Fuel Finder open | |
 | #380, #382, #385/#406 | Not started | |
 | #387, #413, #411, #360, #398, #386, #373, #268/#392 | Not started | |
 | #397, #355 | Not started (outside the app) | |
@@ -44,9 +56,13 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
 | #419 Pillow / OS packages | Done | v0.47.0 |
 | #393 / #396 discount cap on fuel edit | Done (leftover from v0.45.0) | v0.47.0 |
 | #415 add fuel hidden on mobile | Covered by the bottom tab bar + quick-add | v0.47.0 |
-| #403 recurring duplicates | Done | unreleased |
+| #403 recurring duplicates | Done | v0.48.0 |
 | #418 consumption spikes | Needs the reporter's fuel log; code path looks correct | |
-| #416, #417, #420 | Feature requests, not started | |
+| #420 charging price per kWh / kWh per 100 km | Confirmed here, part 1 queued | |
+| #422 more maintenance types | Confirmed here, queued | |
+| #421 expense sort / filter | Confirmed here, queued | |
+| #416 loyalty card discount | Partly covered by discount per unit, queued | |
+| #417 multiple currencies | Large feature, deferred | |
 
 ## Phase 1 — Production bugs and data correctness
 
@@ -63,16 +79,24 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
         verify upgrades on both supported database backends.
         _Unit test for the generated SQL exists; live PostgreSQL run pending._
 
-- [ ] **[dannymcc/may#403](https://github.com/dannymcc/may/issues/403) — Recurring expenses create duplicates**
-  - [ ] Reproduce using the latest issue details and inspect the recurring
+- [x] **[dannymcc/may#403](https://github.com/dannymcc/may/issues/403) — Recurring expenses create duplicates**
+  _Fixed in v0.48.0: one process runs the scheduler and each period is claimed
+  before it is generated._
+  - [x] Reproduce using the latest issue details and inspect the recurring
         processor's behavior when invoked concurrently by multiple workers.
-  - [ ] If concurrent duplicate creation is confirmed, make processing
+  - [x] If concurrent duplicate creation is confirmed, make processing
         transaction-safe/idempotent (consider database constraints or locking
         appropriate to SQLite and PostgreSQL).
-  - [ ] Add regression tests for repeated and concurrent processing. Do not
+  - [x] Add regression tests for repeated and concurrent processing. Do not
         silently delete existing expense records.
 
 - [ ] **[dannymcc/may#384](https://github.com/dannymcc/may/issues/384) — Total distance differs from the odometer**
+  _Confirmed 2026-11-12: `Vehicle.get_total_distance()` in `app/models.py`
+  takes the first and last odometer of fuel logs only (Tessie aside). Charging,
+  trip and expense odometers are ignored. Proposed rule, to confirm before
+  coding because it changes figures people already see: latest odometer from
+  any source minus the earliest, with an optional purchase odometer on the
+  vehicle as the starting point._
   - [ ] Define the intended total-distance calculation, including used vehicles,
         missing readings, engine-hour vehicles, and unit conversions.
   - [ ] Reconcile the calculation with the latest odometer sources already
@@ -83,6 +107,9 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
         rules.
 
 - [ ] **[dannymcc/may#412](https://github.com/dannymcc/may/issues/412) — EV overview is missing analysis**
+  _Same cause as #384: an EV logged only through charging sessions has no fuel
+  logs, so total distance is 0 and cost per km stays empty. A second reporter
+  confirms it without using Trips. Fix together with #384._
   - [ ] Reproduce the report with trips and charging sessions, and identify
         which summary fields/charts are blank and why.
   - [ ] Check whether the distance calculation addressed in #384 is the cause;
@@ -102,6 +129,8 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
         non-matching cases using current provider data where possible.
   - [ ] Ensure one failed feed does not prevent successful feeds from being
         processed; improve actionable diagnostics for matching failures.
+        _First half already holds: `app/services/uk_fuel_prices.py` collects
+        each feed's error and carries on. Matching diagnostics still open._
   - [ ] Evaluate the UK Government Fuel Finder API as a provider option,
         including availability, authentication, data format, limits, and
         compatibility with existing saved stations.
@@ -159,6 +188,38 @@ Updated 2026-10-17. Released in v0.45.0 and v0.45.2.
         timelines, translations, exports, imports, API labels, and reminders.
   - [ ] Preserve old records and add coverage for category display and
         round-tripping.
+
+- [ ] **[dannymcc/may#420](https://github.com/dannymcc/may/issues/420) — Charging price per kWh and consumption**
+  _Checked 2026-11-12: `app/routes/charging.py` fills total cost from kWh ×
+  price, but not the reverse._
+  - [ ] Part 1: when kWh and total cost are given without a price, store
+        price per kWh = total cost / kWh on create and edit. Test both paths
+        and a zero kWh value.
+  - [ ] Part 2 (later): kWh per 100 km between consecutive sessions from SOC
+        and a usable battery capacity per vehicle. Overlaps with #413; plan
+        them together.
+  - [ ] Part 3 (later): autocomplete the charging network from past sessions.
+        Overlaps with #382.
+
+- [ ] **[dannymcc/may#422](https://github.com/dannymcc/may/issues/422) — More maintenance types**
+  _Only brake pads and brake fluid exist today._
+  - [ ] Add brake rotors (discs), brake drums and brake shoes to the
+        maintenance type lists in `app/models.py`, with translations in every
+        catalogue.
+  - [ ] Leave user-defined types for later; it overlaps with #385.
+
+- [ ] **[dannymcc/may#421](https://github.com/dannymcc/may/issues/421) — Sort and filter the Expenses page**
+  _Today the page filters only by maintenance group and part, newest first._
+  - [ ] Add a category filter and sort by date, cost and category, kept in the
+        query string so a filtered view can be bookmarked.
+  - [ ] Keep the filtered total, and test each filter and sort.
+
+- [ ] **[dannymcc/may#416](https://github.com/dannymcc/may/issues/416) — Loyalty card discount on fuel logs**
+  _`FuelLog.discount_per_unit` covers the per-litre discount; there is no field
+  for a lump-sum discount on top._
+  - [ ] Add a nullable total discount column with a migration, include it in
+        the form, the cost calculation, the API and exports.
+  - [ ] Test that old logs keep their totals.
 
 ## Phase 3 — Larger feature work
 

@@ -7,6 +7,7 @@ from urllib.parse import urlparse, urljoin
 import math
 from functools import wraps
 from flask import request, redirect, url_for, flash
+from flask_babel import gettext as _
 from flask_login import current_user
 from app.utils import parse_decimal
 
@@ -85,7 +86,8 @@ def validate_password_strength(password):
     """
     Validate password meets minimum security requirements.
 
-    Requirements:
+    Requirements (mirrored for live guidance in static/js/password-rules.js
+    and templates/partials/password_rules.html; change them together):
     - At least 8 characters long
     - Contains at least one uppercase letter
     - Contains at least one lowercase letter
@@ -98,19 +100,19 @@ def validate_password_strength(password):
         tuple: (is_valid, error_message)
     """
     if not password:
-        return False, "Password is required"
+        return False, _('Password is required')
 
     if len(password) < 8:
-        return False, "Password must be at least 8 characters long"
+        return False, _('Password must be at least 8 characters long')
 
     if not re.search(r'[A-Z]', password):
-        return False, "Password must contain at least one uppercase letter"
+        return False, _('Password must contain at least one uppercase letter')
 
     if not re.search(r'[a-z]', password):
-        return False, "Password must contain at least one lowercase letter"
+        return False, _('Password must contain at least one lowercase letter')
 
     if not re.search(r'\d', password):
-        return False, "Password must contain at least one digit"
+        return False, _('Password must contain at least one digit')
 
     return True, None
 

@@ -1,0 +1,88 @@
+# ============================================================================
+# OdoDash public demo: Portainer stack
+# ============================================================================
+#
+# WHAT IT DOES
+#   Runs OdoDash in demo mode: sample data for a whole year, and a shared
+#   login (username "demo", password "demo") shown on the login page.
+#   The data folder is a tmpfs (memory), so every restart of the demo container
+#   starts from an empty database and the sample data is created again. A small
+#   "reset" container restarts the demo every night so visitors' edits do not
+#   pile up.
+#
+# HOW TO INSTALL (Portainer)
+#   1. Stacks > Add stack. Name it: ododash-demo
+#   2. Build method "Web editor": paste this whole file.
+#      (Or "Repository": URL https://github.com/moshiur-hridoy/OdoDash,
+#       reference refs/heads/ododash-release, compose path docker-compose.demo.yml)
+#   3. Under "Environment variables" add:
+#        ODODASH_DEMO_SECRET_KEY   required. Any long random string,
+#                                  for example the output of: openssl rand -hex 32
+#        ODODASH_DEMO_PORT         optional. Host port, default 5052
+#        DEMO_RESET_EVERY          optional. Seconds between resets, default 86400
+#   4. Click "Deploy the stack".
+#   5. Open http://<your-server>:ODODASH_DEMO_PORT . The login page shows the
+#      "Live demo" box with demo / demo already filled in.
+#   6. To publish it, point your reverse proxy at that port over HTTPS, on its
+#      own subdomain, for example with Caddy:
+#        demo.example.com {
+#            reverse_proxy localhost:5052
+#        }
+#
+# TO RESET RIGHT NOW
+#   Restart the "ododash-demo" container in Portainer.
+#
+# TO UPDATE
+#   Open the stack and use "Pull and redeploy" (pull_policy: always below also
+#   fetches the newest image whenever the container is recreated).
+#
+# IF demo / demo IS REJECTED
+#   The demo account is created only when the database is empty. This stack
+#   has no volume, so that is normally always true. If it still fails, check the
+#   image is v0.47.0 or newer and read the container logs. More in docs/demo.md.
+#
+# SECURITY NOTES
+#   - The reset container mounts the Docker socket. Keep this stack to the demo
+#     only and do not publish a port for the reset container.
+#   - The demo container is limited to 512 MB and one CPU because it is public.
+#
+services:
+  ododash-demo:
+    image: ghcr.io/moshiur-hridoy/ododash:latest
+    pull_policy: always
+    container_name: ododash-demo
+    restart: unless-stopped
+    ports:
+      - "${ODODASH_DEMO_PORT:-5052}:5050"
+    environment:
+      DEMO_MODE: "1"
+      SECRET_KEY: "${ODODASH_DEMO_SECRET_KEY:?Set ODODASH_DEMO_SECRET_KEY}"
+      DATABASE_URL: "sqlite:////app/data/may.db"
+      UPLOAD_FOLDER: "/app/data/uploads"
+      PUID: "1000"
+      PGID: "1000"
+    # No volume on purpose: nothing a visitor does survives a restart.
+    tmpfs:
+      - /app/data
+    mem_limit: 512m
+    cpus: 1.0
+
+  # Restarts the demo on a timer. Needs the Docker socket, so keep this stack
+  # to the demo only and do not publish a port for this service.
+  ododash-demo-reset:
+    image: docker:cli
+    container_name: ododash-demo-reset
+    restart: unless-stopped
+    depends_on:
+      - ododash-demo
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      RESET_EVERY: "${DEMO_RESET_EVERY:-86400}"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          sleep "$$RESET_EVERY"
+          docker restart ododash-demo
+        done

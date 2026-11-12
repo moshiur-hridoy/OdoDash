@@ -10,6 +10,23 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+## [0.48.0] - 2026-11-12
+
+### Added
+
+- Log fill-ups by messaging a Telegram bot. An admin pastes a @BotFather token
+  into Settings > Integrations > Telegram, and each user links their own
+  private chat with a one-time code. A message such as `40L 4800tk 45230km`
+  is saved as a fuel log. `/undo` removes the last bot entry within 30
+  minutes and `/unlink` disconnects the chat. It works offline, needs no
+  public URL, follows the usual role rules (viewers cannot log) and is
+  refused in demo mode.
+- Password fields show the requirements as you type, with a tick beside each
+  rule met and a check that the two entries match. The password error
+  messages are now translated.
+- A project landing page, published to GitHub Pages, and a ready-made
+  Portainer stack for running a public demo (`docs/demo.md`).
+
 ### Security
 
 - Login cookies are `HttpOnly` and `SameSite=Lax`. Set `COOKIE_SECURE=true`
@@ -41,6 +58,22 @@ This file starts at 0.28.0. Notes for earlier releases are on the
   now one process runs the scheduler, and each period is claimed before it is
   generated so a second worker or container skips it. The same change stops
   reminders being sent twice (#403).
+- A fuel log that fails validation comes back with everything you typed, the
+  message under the field that failed and that field focused, instead of a
+  blank form.
+- Distances and odometer readings follow the thousand-separator preference
+  everywhere, as money amounts already did. Users on the default "none"
+  setting see no change.
+- In dark mode, rows are no longer permanently highlighted and the settings
+  toggles are visible again.
+- Text on accent-coloured buttons stays legible whatever colour is chosen in
+  branding. The coloured side stripes on reminders and dashboard notes are
+  gone.
+
+### Changed
+
+- The users table gains three nullable columns for the Telegram link, added by
+  a new migration that runs automatically at startup.
 
 ## [0.47.0] - 2026-11-12
 

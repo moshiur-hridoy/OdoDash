@@ -736,3 +736,11 @@ def _start_reminder_scheduler(app):
     thread = threading.Thread(target=reminder_loop, daemon=True, name='reminder-scheduler')
     thread.start()
     app.logger.info("Started background reminder scheduler (hourly checks)")
+
+    # The Telegram bot long-polls in this same process, so the scheduler lock
+    # also keeps it to one poller per instance. It idles until an admin sets a
+    # bot token.
+    if not app.config.get('TESTING'):
+        from app.services.telegram_bot import run_polling_loop
+        threading.Thread(target=run_polling_loop, args=(app,), daemon=True,
+                         name='telegram-bot').start()
