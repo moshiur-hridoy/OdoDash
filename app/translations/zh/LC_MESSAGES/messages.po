@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 00:40+0600\n"
+"POT-Creation-Date: 2026-11-13 00:53+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh <LL@li.org>\n"
@@ -54,7 +54,7 @@ msgid "Engine hours"
 msgstr "发动机小时"
 
 #: app/models.py:403 app/templates/charging/form.html:86
-#: app/templates/dashboard.html:157 app/templates/dashboard.html:183
+#: app/templates/dashboard.html:170 app/templates/dashboard.html:196
 #: app/templates/expenses/form.html:99 app/templates/expenses/index.html:55
 #: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:56
 #: app/templates/fuel/index.html:43 app/templates/fuel/index.html:159
@@ -65,7 +65,7 @@ msgstr "发动机小时"
 msgid "Odometer"
 msgstr "里程表"
 
-#: app/models.py:408 app/models.py:1486 app/templates/trips/form.html:189
+#: app/models.py:408 app/models.py:1527 app/templates/trips/form.html:189
 msgid "Hours"
 msgstr "小时"
 
@@ -76,471 +76,471 @@ msgstr "小时"
 msgid "Distance"
 msgstr "距离"
 
-#: app/models.py:1433
+#: app/models.py:1474
 msgid "Front Tire Size"
 msgstr "前轮胎尺寸"
 
-#: app/models.py:1434
+#: app/models.py:1475
 msgid "Rear Tire Size"
 msgstr "后轮胎尺寸"
 
-#: app/models.py:1435
+#: app/models.py:1476
 msgid "Wheel Size"
 msgstr "轮毂尺寸"
 
-#: app/models.py:1436
+#: app/models.py:1477
 msgid "Engine Oil Type"
 msgstr "机油类型"
 
-#: app/models.py:1437
+#: app/models.py:1478
 msgid "Oil Capacity"
 msgstr "机油容量"
 
-#: app/models.py:1438
+#: app/models.py:1479
 msgid "Coolant Type"
 msgstr "冷却液类型"
 
-#: app/models.py:1439
+#: app/models.py:1480
 msgid "Front Wiper Size"
 msgstr "前雨刷尺寸"
 
-#: app/models.py:1440
+#: app/models.py:1481
 msgid "Rear Wiper Size"
 msgstr "后雨刷尺寸"
 
-#: app/models.py:1441
+#: app/models.py:1482
 msgid "Battery Type"
 msgstr "电池类型"
 
-#: app/models.py:1442
+#: app/models.py:1483
 msgid "Spark Plug Type"
 msgstr "火花塞类型"
 
-#: app/models.py:1443
+#: app/models.py:1484
 msgid "Air Filter Part #"
 msgstr "空气滤清器编号"
 
-#: app/models.py:1444
+#: app/models.py:1485
 msgid "Cabin Filter Part #"
 msgstr "空调滤芯编号"
 
-#: app/models.py:1445
+#: app/models.py:1486
 msgid "Front Brake Pads"
 msgstr "前刹车片"
 
-#: app/models.py:1446
+#: app/models.py:1487
 msgid "Rear Brake Pads"
 msgstr "后刹车片"
 
-#: app/models.py:1447 app/models.py:2290
+#: app/models.py:1488 app/models.py:2331
 msgid "Transmission Fluid"
 msgstr "变速箱油"
 
-#: app/models.py:1448 app/models.py:1587 app/models.py:1652
+#: app/models.py:1489 app/models.py:1628 app/models.py:1693
 #: app/templates/auth/settings.html:197
 msgid "Custom"
 msgstr "自定义"
 
-#: app/models.py:1453 app/routes/maintenance.py:99
+#: app/models.py:1494 app/routes/maintenance.py:99
 #: app/templates/auth/settings.html:444 app/templates/auth/settings.html:510
 #: app/templates/base.html:535 app/templates/partials/mobile_nav.html:27
 msgid "Maintenance"
 msgstr "保养"
 
-#: app/models.py:1454
+#: app/models.py:1495
 msgid "Repairs"
 msgstr "维修"
 
-#: app/models.py:1455
+#: app/models.py:1496
 msgid "Inspection"
 msgstr "检验"
 
-#: app/models.py:1456
+#: app/models.py:1497
 msgid "Insurance"
 msgstr "保险"
 
-#: app/models.py:1457 app/models.py:1582
+#: app/models.py:1498 app/models.py:1623
 msgid "Road Tax"
 msgstr "车船税"
 
-#: app/models.py:1458
+#: app/models.py:1499
 msgid "Registration"
 msgstr "登记"
 
-#: app/models.py:1459
+#: app/models.py:1500
 msgid "Parking"
 msgstr "停车"
 
-#: app/models.py:1460
+#: app/models.py:1501
 msgid "Tolls"
 msgstr "过路费"
 
-#: app/models.py:1461
+#: app/models.py:1502
 msgid "Cleaning"
 msgstr "清洁"
 
-#: app/models.py:1462
+#: app/models.py:1503
 msgid "Accessories"
 msgstr "配件"
 
-#: app/models.py:1463 app/models.py:1480 app/models.py:1513 app/models.py:1620
-#: app/models.py:1630 app/models.py:1688 app/models.py:1696 app/models.py:2296
+#: app/models.py:1504 app/models.py:1521 app/models.py:1554 app/models.py:1661
+#: app/models.py:1671 app/models.py:1729 app/models.py:1737 app/models.py:2337
 msgid "Other"
 msgstr "其他"
 
-#: app/models.py:1468
+#: app/models.py:1509
 msgid "Car"
 msgstr "汽车"
 
-#: app/models.py:1469
+#: app/models.py:1510
 msgid "Van"
 msgstr "面包车"
 
-#: app/models.py:1470
+#: app/models.py:1511
 msgid "Motorbike"
 msgstr "摩托车"
 
-#: app/models.py:1471
+#: app/models.py:1512
 msgid "Scooter"
 msgstr "踏板车"
 
-#: app/models.py:1472
+#: app/models.py:1513
 msgid "Truck"
 msgstr "卡车"
 
-#: app/models.py:1473
+#: app/models.py:1514
 msgid "SUV"
 msgstr "SUV"
 
-#: app/models.py:1474
+#: app/models.py:1515
 msgid "Hatchback"
 msgstr "掀背车"
 
-#: app/models.py:1475
+#: app/models.py:1516
 msgid "Station Wagon / Estate"
 msgstr "旅行车"
 
-#: app/models.py:1476
+#: app/models.py:1517
 msgid "Pickup / Ute"
 msgstr "皮卡"
 
-#: app/models.py:1477
+#: app/models.py:1518
 msgid "Tractor"
 msgstr "拖拉机"
 
-#: app/models.py:1478
+#: app/models.py:1519
 msgid "ATV/UTV"
 msgstr "全地形车/UTV"
 
-#: app/models.py:1479
+#: app/models.py:1520
 msgid "Boat"
 msgstr "船"
 
-#: app/models.py:1485
+#: app/models.py:1526
 msgid "Mileage (km/mi)"
 msgstr "里程 (公里/英里)"
 
-#: app/models.py:1491 app/templates/auth/settings.html:130
+#: app/models.py:1532 app/templates/auth/settings.html:130
 msgid "Kilometres (km)"
 msgstr "公里 (km)"
 
-#: app/models.py:1492 app/templates/auth/settings.html:131
+#: app/models.py:1533 app/templates/auth/settings.html:131
 msgid "Miles (mi)"
 msgstr "英里 (mi)"
 
-#: app/models.py:1497
+#: app/models.py:1538
 msgid "Petrol/Gasoline"
 msgstr "汽油"
 
-#: app/models.py:1501
+#: app/models.py:1542
 msgid "Premium petrol (Octane)"
 msgstr "高标号汽油(辛烷)"
 
-#: app/models.py:1502
+#: app/models.py:1543
 msgid "Diesel"
 msgstr "柴油"
 
-#: app/models.py:1503
+#: app/models.py:1544
 msgid "Electric"
 msgstr "电动"
 
-#: app/models.py:1504
+#: app/models.py:1545
 msgid "Hybrid"
 msgstr "混合动力"
 
-#: app/models.py:1505
+#: app/models.py:1546
 msgid "Plug-in Hybrid"
 msgstr "插电式混合动力"
 
-#: app/models.py:1506
+#: app/models.py:1547
 msgid "LPG"
 msgstr "液化石油气 (LPG)"
 
-#: app/models.py:1507
+#: app/models.py:1548
 msgid "CNG"
 msgstr "压缩天然气 (CNG)"
 
-#: app/models.py:1508
+#: app/models.py:1549
 msgid "Hydrogen"
 msgstr "氢燃料"
 
-#: app/models.py:1509
+#: app/models.py:1550
 msgid "E85/Flex Fuel"
 msgstr "E85/灵活燃料"
 
-#: app/models.py:1512
+#: app/models.py:1553
 msgid "AdBlue/DEF"
 msgstr "AdBlue/DEF"
 
-#: app/models.py:1579
+#: app/models.py:1620
 msgid "MOT/Inspection"
 msgstr "年检/验车"
 
-#: app/models.py:1580
+#: app/models.py:1621
 msgid "Service Due"
 msgstr "保养到期"
 
-#: app/models.py:1581
+#: app/models.py:1622
 msgid "Insurance Renewal"
 msgstr "保险续保"
 
-#: app/models.py:1583
+#: app/models.py:1624
 msgid "Registration Renewal"
 msgstr "登记续期"
 
-#: app/models.py:1584
+#: app/models.py:1625
 msgid "Warranty Expiry"
 msgstr "保修到期"
 
-#: app/models.py:1585
+#: app/models.py:1626
 msgid "Tire Change"
 msgstr "更换轮胎"
 
-#: app/models.py:1586 app/models.py:1635
+#: app/models.py:1627 app/models.py:1676
 msgid "Oil Change"
 msgstr "更换机油"
 
-#: app/models.py:1606
+#: app/models.py:1647
 msgid "No Repeat"
 msgstr "不重复"
 
-#: app/models.py:1607
+#: app/models.py:1648
 msgid "Day(s)"
 msgstr "天"
 
-#: app/models.py:1608
+#: app/models.py:1649
 msgid "Week(s)"
 msgstr "周"
 
-#: app/models.py:1609
+#: app/models.py:1650
 msgid "Month(s)"
 msgstr "月"
 
-#: app/models.py:1610
+#: app/models.py:1651
 msgid "Year(s)"
 msgstr "年"
 
-#: app/models.py:1615
+#: app/models.py:1656
 msgid "Business"
 msgstr "商务"
 
-#: app/models.py:1616
+#: app/models.py:1657
 msgid "Personal"
 msgstr "私人"
 
-#: app/models.py:1617
+#: app/models.py:1658
 msgid "Commute"
 msgstr "通勤"
 
-#: app/models.py:1618
+#: app/models.py:1659
 msgid "Medical"
 msgstr "就医"
 
-#: app/models.py:1619
+#: app/models.py:1660
 msgid "Charity"
 msgstr "公益"
 
-#: app/models.py:1625
+#: app/models.py:1666
 msgid "Home Charging"
 msgstr "家庭充电"
 
-#: app/models.py:1626
+#: app/models.py:1667
 msgid "Level 1"
 msgstr "一级充电"
 
-#: app/models.py:1627
+#: app/models.py:1668
 msgid "Level 2"
 msgstr "二级充电"
 
-#: app/models.py:1628
+#: app/models.py:1669
 msgid "DC Fast Charge"
 msgstr "直流快充"
 
-#: app/models.py:1629
+#: app/models.py:1670
 msgid "Tesla Supercharger"
 msgstr "特斯拉超级充电桩"
 
-#: app/models.py:1636 app/models.py:2282
+#: app/models.py:1677 app/models.py:2323
 msgid "Oil Filter"
 msgstr "机油滤清器"
 
-#: app/models.py:1637 app/models.py:2283
+#: app/models.py:1678 app/models.py:2324
 msgid "Air Filter"
 msgstr "空气滤清器"
 
-#: app/models.py:1638
+#: app/models.py:1679
 msgid "Cabin/Pollen Filter"
 msgstr "空调滤芯"
 
-#: app/models.py:1639 app/models.py:2284
+#: app/models.py:1680 app/models.py:2325
 msgid "Fuel Filter"
 msgstr "燃油滤清器"
 
-#: app/models.py:1640
+#: app/models.py:1681
 msgid "Spark Plugs"
 msgstr "火花塞"
 
-#: app/models.py:1641
+#: app/models.py:1682
 msgid "Brake Pads"
 msgstr "刹车片"
 
-#: app/models.py:1642 app/models.py:2288
+#: app/models.py:1683 app/models.py:2329
 msgid "Brake Fluid"
 msgstr "刹车油"
 
-#: app/models.py:1643
+#: app/models.py:1684
 msgid "Coolant Flush"
 msgstr "冷却液更换"
 
-#: app/models.py:1644
+#: app/models.py:1685
 msgid "Transmission Service"
 msgstr "变速箱保养"
 
-#: app/models.py:1645
+#: app/models.py:1686
 msgid "Timing Belt"
 msgstr "正时皮带"
 
-#: app/models.py:1646
+#: app/models.py:1687
 msgid "Serpentine Belt"
 msgstr "传动皮带"
 
-#: app/models.py:1647
+#: app/models.py:1688
 msgid "Tire Rotation"
 msgstr "轮胎换位"
 
-#: app/models.py:1648
+#: app/models.py:1689
 msgid "Wheel Alignment"
 msgstr "四轮定位"
 
-#: app/models.py:1649
+#: app/models.py:1690
 msgid "Battery Check/Replace"
 msgstr "电池检查/更换"
 
-#: app/models.py:1650
+#: app/models.py:1691
 msgid "Wiper Blades"
 msgstr "雨刷片"
 
-#: app/models.py:1651
+#: app/models.py:1692
 msgid "Full Service"
 msgstr "全面保养"
 
-#: app/models.py:1656 app/models.py:2281
+#: app/models.py:1697 app/models.py:2322
 msgid "Engine Oil"
 msgstr "机油"
 
-#: app/models.py:1657
+#: app/models.py:1698
 msgid "Servicing"
 msgstr "常规保养"
 
-#: app/models.py:1658 app/templates/vehicles/view.html:361
+#: app/models.py:1699 app/templates/vehicles/view.html:361
 msgid "Parts"
 msgstr "配件"
 
-#: app/models.py:1681
+#: app/models.py:1722
 msgid "Insurance Policy"
 msgstr "保险单"
 
-#: app/models.py:1682
+#: app/models.py:1723
 msgid "Registration/V5C"
 msgstr "登记证/V5C"
 
-#: app/models.py:1683
+#: app/models.py:1724
 msgid "MOT Certificate"
 msgstr "年检证明"
 
-#: app/models.py:1684
+#: app/models.py:1725
 msgid "Service Record"
 msgstr "保养记录"
 
-#: app/models.py:1685
+#: app/models.py:1726
 msgid "Purchase Invoice"
 msgstr "购车发票"
 
-#: app/models.py:1686
+#: app/models.py:1727
 msgid "Warranty Document"
 msgstr "保修文件"
 
-#: app/models.py:1687
+#: app/models.py:1728
 msgid "Owner's Manual"
 msgstr "车主手册"
 
-#: app/models.py:1693
+#: app/models.py:1734
 msgid "Summer"
 msgstr "夏季"
 
-#: app/models.py:1694
+#: app/models.py:1735
 msgid "Winter"
 msgstr "冬季"
 
-#: app/models.py:1695
+#: app/models.py:1736
 msgid "All Season"
 msgstr "四季"
 
-#: app/models.py:2285
+#: app/models.py:2326
 msgid "Cabin Filter"
 msgstr "空调滤芯"
 
-#: app/models.py:2286
+#: app/models.py:2327
 msgid "Spark Plug"
 msgstr "火花塞"
 
-#: app/models.py:2287
+#: app/models.py:2328
 msgid "Brake Pad"
 msgstr "刹车片"
 
-#: app/models.py:2289
+#: app/models.py:2330
 msgid "Coolant"
 msgstr "冷却液"
 
-#: app/models.py:2291
+#: app/models.py:2332
 msgid "Battery"
 msgstr "电池"
 
-#: app/models.py:2292
+#: app/models.py:2333
 msgid "Tire"
 msgstr "轮胎"
 
-#: app/models.py:2293
+#: app/models.py:2334
 msgid "Belt"
 msgstr "皮带"
 
-#: app/models.py:2294
+#: app/models.py:2335
 msgid "Wiper Blade"
 msgstr "雨刷片"
 
-#: app/models.py:2295
+#: app/models.py:2336
 msgid "Light Bulb"
 msgstr "灯泡"
 
-#: app/models.py:2565 app/templates/tires/index.html:104
+#: app/models.py:2606 app/templates/tires/index.html:104
 msgid "All axles"
 msgstr "所有车轴"
 
-#: app/models.py:2565 app/templates/tires/index.html:105
+#: app/models.py:2606 app/templates/tires/index.html:105
 msgid "Front axle"
 msgstr "前轴"
 
-#: app/models.py:2565 app/templates/tires/index.html:106
+#: app/models.py:2606 app/templates/tires/index.html:106
 msgid "Rear axle"
 msgstr "后轴"
 
@@ -988,35 +988,35 @@ msgstr "加油记录已成功删除"
 msgid "Fuel log added!"
 msgstr "加油记录已添加！"
 
-#: app/routes/main.py:137 app/routes/vehicles.py:213
+#: app/routes/main.py:146 app/routes/vehicles.py:213
 #: app/templates/base.html:587 app/templates/dashboard.html:74
-#: app/templates/dashboard.html:193 app/templates/partials/mobile_nav.html:23
+#: app/templates/dashboard.html:206 app/templates/partials/mobile_nav.html:23
 #: app/templates/timeline/index.html:114 app/templates/trips/index.html:127
 #: app/templates/vehicles/view.html:157
 msgid "Fuel"
 msgstr "燃油"
 
-#: app/routes/main.py:140 app/routes/vehicles.py:216
-#: app/templates/dashboard.html:75 app/templates/dashboard.html:194
+#: app/routes/main.py:149 app/routes/vehicles.py:216
+#: app/templates/dashboard.html:75 app/templates/dashboard.html:207
 #: app/templates/timeline/index.html:126
 msgid "Charging"
 msgstr "充电"
 
-#: app/routes/main.py:389
+#: app/routes/main.py:401
 #, python-format
 msgid "Fuel: %(volume).1f L"
 msgstr "燃油：%(volume).1f L"
 
-#: app/routes/main.py:390 app/templates/search/index.html:74
+#: app/routes/main.py:402 app/templates/search/index.html:74
 msgid "Fuel Log"
 msgstr "加油记录"
 
-#: app/routes/main.py:414
+#: app/routes/main.py:426
 #, python-format
 msgid "Charging: %(kwh).1f kWh"
 msgstr "充电：%(kwh).1f kWh"
 
-#: app/routes/main.py:415 app/templates/search/index.html:160
+#: app/routes/main.py:427 app/templates/search/index.html:160
 msgid "Charging Session"
 msgstr "充电记录"
 
@@ -1520,7 +1520,7 @@ msgstr "电动车充电"
 
 #: app/templates/allowance/index.html:2 app/templates/allowance/index.html:7
 #: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
-#: app/templates/base.html:540 app/templates/dashboard.html:258
+#: app/templates/base.html:540 app/templates/dashboard.html:271
 #: app/templates/partials/mobile_nav.html:32
 #: app/templates/vehicles/view.html:226
 msgid "Mileage Allowance"
@@ -1534,7 +1534,7 @@ msgstr "轮胎"
 
 #: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
 #: app/templates/base.html:542 app/templates/charging/form.html:149
-#: app/templates/dashboard.html:226 app/templates/expenses/form.html:135
+#: app/templates/dashboard.html:239 app/templates/expenses/form.html:135
 #: app/templates/fuel/form.html:183 app/templates/notes/index.html:2
 #: app/templates/notes/index.html:7 app/templates/partials/mobile_nav.html:34
 #: app/templates/search/index.html:110 app/templates/stations/form.html:74
@@ -1618,7 +1618,7 @@ msgstr "晚上好，%(name)s"
 msgid "This month"
 msgstr "本月"
 
-#: app/templates/dashboard.html:28 app/templates/dashboard.html:132
+#: app/templates/dashboard.html:28 app/templates/dashboard.html:145
 msgid "This year"
 msgstr "今年"
 
@@ -1650,7 +1650,7 @@ msgstr "上月同期：%(amount)s"
 msgid "Monthly Spending"
 msgstr "月度支出"
 
-#: app/templates/dashboard.html:76 app/templates/dashboard.html:255
+#: app/templates/dashboard.html:76 app/templates/dashboard.html:268
 #: app/templates/vehicles/view.html:220
 msgid "Other Expenses"
 msgstr "其他费用"
@@ -1663,8 +1663,8 @@ msgstr "按类型的支出"
 msgid "Needs attention"
 msgstr "需要处理"
 
-#: app/templates/dashboard.html:88 app/templates/dashboard.html:141
-#: app/templates/dashboard.html:226 app/templates/vehicles/view.html:733
+#: app/templates/dashboard.html:88 app/templates/dashboard.html:154
+#: app/templates/dashboard.html:239 app/templates/vehicles/view.html:733
 #: app/templates/vehicles/view.html:847 app/templates/vehicles/view.html:905
 msgid "View all"
 msgstr "查看全部"
@@ -1694,7 +1694,7 @@ msgid "In %(num)d days"
 msgstr "%(num)d 天后"
 
 #: app/templates/dashboard.html:105 app/templates/dashboard.html:107
-#: app/templates/dashboard.html:164
+#: app/templates/dashboard.html:177
 msgid "All good"
 msgstr "一切正常"
 
@@ -1713,60 +1713,74 @@ msgstr "暂无提醒"
 msgid "Add Reminder"
 msgstr "添加提醒"
 
-#: app/templates/dashboard.html:122 app/templates/dashboard.html:124
-#: app/templates/vehicles/view.html:276
-msgid "Cost per"
-msgstr "单位成本"
+#: app/templates/dashboard.html:125
+#, python-format
+msgid "Driven in %(year)s"
+msgstr "%(year)s年行驶里程"
 
-#: app/templates/dashboard.html:124
-msgid "unit"
-msgstr "单位"
-
-#: app/templates/dashboard.html:126 app/templates/dashboard.html:248
-msgid "All time"
-msgstr "全部时间"
+#: app/templates/dashboard.html:127
+#, python-format
+msgid "Driven in %(month)s"
+msgstr "%(month)s行驶里程"
 
 #: app/templates/dashboard.html:130
+#, python-format
+msgid "%(cost)s per %(unit)s · all time %(all_time)s"
+msgstr "每%(unit)s %(cost)s · 全部时间 %(all_time)s"
+
+#: app/templates/dashboard.html:134
+#, python-format
+msgid "All time: %(cost)s per %(unit)s"
+msgstr "全部时间：每%(unit)s %(cost)s"
+
+#: app/templates/dashboard.html:139 app/templates/dashboard.html:269
+#: app/templates/trips/index.html:41 app/templates/trips/index.html:45
+#: app/templates/trips/report.html:36 app/templates/trips/report.html:40
+#: app/templates/trips/report.html:68 app/templates/trips/report.html:127
+msgid "mixed units"
+msgstr "单位混用"
+
+#: app/templates/dashboard.html:143
 msgid "Average per month"
 msgstr "月均"
 
-#: app/templates/dashboard.html:133
+#: app/templates/dashboard.html:146
 #, python-format
 msgid "On track for %(amount)s"
 msgstr "预计 %(amount)s"
 
-#: app/templates/dashboard.html:140 app/templates/stations/cheapest.html:2
+#: app/templates/dashboard.html:153 app/templates/stations/cheapest.html:2
 #: app/templates/stations/cheapest.html:7 app/templates/stations/index.html:28
 msgid "Cheapest Fuel"
 msgstr "最低油价"
 
-#: app/templates/dashboard.html:146 app/templates/dashboard.html:169
+#: app/templates/dashboard.html:159 app/templates/dashboard.html:182
 msgid "Your Vehicles"
 msgstr "您的车辆"
 
-#: app/templates/dashboard.html:146 app/templates/trips/form.html:27
+#: app/templates/dashboard.html:159 app/templates/trips/form.html:27
 msgid "Manage"
 msgstr "管理"
 
-#: app/templates/dashboard.html:162 app/templates/reminders/index.html:65
+#: app/templates/dashboard.html:175 app/templates/reminders/index.html:65
 #: app/templates/vehicles/view.html:859
 msgid "Overdue"
 msgstr "已逾期"
 
-#: app/templates/dashboard.html:163 app/templates/vehicles/view.html:861
+#: app/templates/dashboard.html:176 app/templates/vehicles/view.html:861
 msgid "Due soon"
 msgstr "即将到期"
 
-#: app/templates/dashboard.html:169
+#: app/templates/dashboard.html:182
 msgid "Add your first vehicle"
 msgstr "添加您的第一辆车辆"
 
-#: app/templates/dashboard.html:173 app/templates/dashboard.html:211
+#: app/templates/dashboard.html:186 app/templates/dashboard.html:224
 msgid "Recent activity"
 msgstr "最近动态"
 
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
-#: app/templates/charging/form.html:37 app/templates/dashboard.html:179
+#: app/templates/charging/form.html:37 app/templates/dashboard.html:192
 #: app/templates/expenses/form.html:44 app/templates/expenses/index.html:50
 #: app/templates/fuel/form.html:48 app/templates/fuel/index.html:41
 #: app/templates/fuel/index.html:157 app/templates/maintenance/form.html:131
@@ -1776,7 +1790,7 @@ msgstr "最近动态"
 msgid "Date"
 msgstr "日期"
 
-#: app/templates/dashboard.html:180 app/templates/documents/form.html:50
+#: app/templates/dashboard.html:193 app/templates/documents/form.html:50
 #: app/templates/expenses/index.html:53
 #: app/templates/maintenance/history.html:12
 #: app/templates/reminders/form.html:53 app/templates/reminders/index.html:36
@@ -1787,7 +1801,7 @@ msgstr "类型"
 
 #: app/templates/allowance/form.html:19 app/templates/allowance/index.html:28
 #: app/templates/charging/form.html:19 app/templates/charging/index.html:38
-#: app/templates/dashboard.html:181 app/templates/documents/form.html:21
+#: app/templates/dashboard.html:194 app/templates/documents/form.html:21
 #: app/templates/expenses/form.html:29 app/templates/expenses/index.html:51
 #: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:24
 #: app/templates/fuel/index.html:42 app/templates/fuel/index.html:158
@@ -1800,72 +1814,69 @@ msgstr "类型"
 msgid "Vehicle"
 msgstr "车辆"
 
-#: app/templates/dashboard.html:182
+#: app/templates/dashboard.html:195
 msgid "Details"
 msgstr "详情"
 
 #: app/templates/allowance/form.html:41 app/templates/allowance/index.html:31
-#: app/templates/dashboard.html:184 app/templates/recurring/form.html:65
+#: app/templates/dashboard.html:197 app/templates/recurring/form.html:65
 msgid "Amount"
 msgstr "金额"
 
-#: app/templates/dashboard.html:211 app/templates/vehicles/view.html:1079
+#: app/templates/dashboard.html:224 app/templates/vehicles/view.html:1079
 msgid "No fuel logs yet."
 msgstr "暂无加油记录。"
 
-#: app/templates/dashboard.html:217 app/templates/vehicles/view.html:1013
+#: app/templates/dashboard.html:230 app/templates/vehicles/view.html:1013
 msgid "Expenses by Category"
 msgstr "按类别划分的支出"
 
-#: app/templates/dashboard.html:221 app/templates/vehicles/view.html:1127
+#: app/templates/dashboard.html:234 app/templates/vehicles/view.html:1127
 msgid "No expenses yet."
 msgstr "暂无费用。"
 
-#: app/templates/dashboard.html:237 app/templates/notes/index.html:83
+#: app/templates/dashboard.html:250 app/templates/notes/index.html:83
 msgid "No notes"
 msgstr "暂无备注"
 
-#: app/templates/dashboard.html:241 app/templates/notes/form.html:2
+#: app/templates/dashboard.html:254 app/templates/notes/form.html:2
 #: app/templates/notes/form.html:11 app/templates/notes/form.html:76
 #: app/templates/notes/index.html:16 app/templates/notes/index.html:92
 #: app/templates/partials/mobile_nav.html:60
 msgid "Add Note"
 msgstr "添加备注"
 
+#: app/templates/dashboard.html:261
+msgid "All time"
+msgstr "全部时间"
+
 #: app/templates/charging/form.html:140 app/templates/charging/index.html:28
-#: app/templates/dashboard.html:250 app/templates/fuel/_quick_form.html:75
+#: app/templates/dashboard.html:263 app/templates/fuel/_quick_form.html:75
 #: app/templates/fuel/form.html:105
 msgid "Total Cost"
 msgstr "总费用"
 
-#: app/templates/dashboard.html:251 app/templates/vehicles/view.html:207
+#: app/templates/dashboard.html:264 app/templates/vehicles/view.html:207
 msgid "Total Fuel Cost"
 msgstr "燃油总费用"
 
-#: app/templates/dashboard.html:253 app/templates/vehicles/view.html:214
+#: app/templates/dashboard.html:266 app/templates/vehicles/view.html:214
 msgid "Total Charging Cost"
 msgstr "总充电费用"
 
-#: app/templates/dashboard.html:256 app/templates/trips/index.html:40
+#: app/templates/dashboard.html:269 app/templates/trips/index.html:40
 #: app/templates/trips/report.html:35 app/templates/vehicles/view.html:237
 msgid "Total Distance"
 msgstr "总里程"
 
-#: app/templates/dashboard.html:256 app/templates/trips/index.html:41
+#: app/templates/dashboard.html:269 app/templates/trips/index.html:41
 #: app/templates/trips/index.html:45 app/templates/trips/report.html:36
 #: app/templates/trips/report.html:40 app/templates/trips/report.html:68
 #: app/templates/trips/report.html:127
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr "此合计包含按里程和按发动机小时数计量的车辆。"
 
-#: app/templates/dashboard.html:256 app/templates/trips/index.html:41
-#: app/templates/trips/index.html:45 app/templates/trips/report.html:36
-#: app/templates/trips/report.html:40 app/templates/trips/report.html:68
-#: app/templates/trips/report.html:127
-msgid "mixed units"
-msgstr "单位混用"
-
-#: app/templates/dashboard.html:259 app/templates/vehicles/view.html:231
+#: app/templates/dashboard.html:272 app/templates/vehicles/view.html:231
 msgid "Net Cost"
 msgstr "净费用"
 
@@ -5549,6 +5560,10 @@ msgstr "至少需要两次加满油箱的记录。"
 #: app/templates/vehicles/view.html:270
 msgid "Avg. Charging"
 msgstr "平均充电量"
+
+#: app/templates/vehicles/view.html:276
+msgid "Cost per"
+msgstr "单位成本"
 
 #: app/templates/vehicles/view.html:282
 msgid "Fuel Used"

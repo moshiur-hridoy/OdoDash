@@ -117,13 +117,26 @@
     </div>
 
     <div class="ds-row">
+        {#- The last complete month (or year): how far, and what each unit of
+            it cost. A fleet that mixes engine hours with distance gets the
+            total without a per-unit cost, as in All time below (#324). -#}
         {% call card(class='ds-grow-even') %}
-            {% if total_distance_unit %}
-                {% set per_label = _('Cost per') ~ ' ' ~ total_distance_unit %}
+            {% if period == 'year' %}
+                {% set driven_label = _('Driven in %(year)s', year=driven_start.year) %}
             {% else %}
-                {% set per_label = _('Cost per') ~ ' ' ~ _('unit') %}
+                {% set driven_label = _('Driven in %(month)s', month=driven_start|dateformat('LLLL')) %}
             {% endif %}
-            {{ stat(per_label, cost_per_distance|money if cost_per_distance else '—', unit=currency if cost_per_distance else None, note=_('All time')) }}
+            {% if total_distance_unit and driven_cost_per %}
+                {% set driven_note = _('%(cost)s per %(unit)s · all time %(all_time)s',
+                                       cost=(driven_cost_per|money) ~ ' ' ~ currency, unit=total_distance_unit,
+                                       all_time=cost_per_distance|money) %}
+            {% elif total_distance_unit and cost_per_distance %}
+                {% set driven_note = _('All time: %(cost)s per %(unit)s',
+                                       cost=(cost_per_distance|money) ~ ' ' ~ currency, unit=total_distance_unit) %}
+            {% else %}
+                {% set driven_note = None %}
+            {% endif %}
+            {{ stat(driven_label, (driven|round|int)|groupnum, unit=total_distance_unit or _('mixed units'), note=driven_note) }}
         {% endcall %}
         {% call card(class='ds-grow-even') %}
             {% if period == 'year' %}
