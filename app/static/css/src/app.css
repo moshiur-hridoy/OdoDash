@@ -279,6 +279,10 @@
 .ds-stat__note--success { color: var(--ds-success); }
 .ds-stat__note--warning { color: var(--ds-warning); }
 .ds-stat__note--danger { color: var(--ds-danger); }
+/* Emphasis, not a verdict: for the figure a card is about when green or red
+   would read as good or bad. */
+.ds-stat__note--accent { color: var(--ds-accent-ink); font-weight: 600; }
+.ds-stat__note--split > span { white-space: nowrap; }
 .ds-stat--hero .ds-stat__label { font-size: var(--ds-text-base); }
 .ds-stat--hero .ds-stat__value {
   font-size: clamp(2.25rem, 1.5rem + 3vw, var(--ds-text-hero)); line-height: 1.1; letter-spacing: -0.035em;

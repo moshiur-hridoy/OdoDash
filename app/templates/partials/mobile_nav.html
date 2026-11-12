@@ -6,7 +6,7 @@
     'dashboard': ICONS['grid'],
     'vehicles': ICONS['car'],
     'fuel': ICONS['fuel'],
-    'expenses': ICONS['money'],
+    'expenses': ICONS['receipt'],
     'reminders': ICONS['bell'],
     'trips': ICONS['map'],
     'maintenance': ICONS['wrench'],
@@ -38,24 +38,30 @@
     {% set flag = current_user|attr('show_menu_' ~ key) %}
     {% if flag is not defined or flag %}{% if visible.append((key, endpoint, label, active)) %}{% endif %}{% endif %}
 {% endfor %}
+{#- Someone whose vehicles are all electric never fills up: charging takes
+    fuel's place, as a tab and first in the quick-add sheet. -#}
+{% set user_vehicles = current_user.get_all_vehicles() %}
+{% set electric_only = user_vehicles and not (user_vehicles|selectattr('fuel_type', 'ne', 'electric')|list) %}
 {#- The two tabs beside Dashboard: the first visible of these, in order. -#}
 {% set tab_keys = [] %}
 {% set enabled_keys = visible|map(attribute=0)|list %}
-{% for key in ('fuel', 'expenses', 'vehicles', 'reminders', 'trips') %}
+{% for key in (('charging',) if electric_only else ('fuel',)) + ('expenses', 'vehicles', 'reminders', 'trips') %}
     {% if key in enabled_keys and tab_keys|length < 2 and tab_keys.append(key) %}{% endif %}
 {% endfor %}
 {% set tabs = [] %}
 {% for key in tab_keys %}{% for item in visible if item[0] == key %}{% if tabs.append(item) %}{% endif %}{% endfor %}{% endfor %}
 {% set more_links = visible|rejectattr(0, 'in', tab_keys)|list %}
 {% set more_active = more_links|selectattr(3)|list|length > 0 or ep.startswith('search.') or ep == 'auth.settings' %}
+{#- One fuel entry: it opens the quick form, which links to the full one. -#}
 {% set add_actions = [] %}
-{% if can_write('fuel') and 'fuel' in enabled_keys %}
-    {% if add_actions.append((url_for('fuel.quick'), _('Quick Fuel Entry'), ICONS['clock'])) %}{% endif %}
-    {% if add_actions.append((url_for('fuel.new'), _('Add Fuel Log'), nav_icons['fuel'])) %}{% endif %}
+{% set can_charge = can_write('charging') and 'charging' in enabled_keys %}
+{% if electric_only and can_charge %}{% if add_actions.append((url_for('charging.new'), _('Add Charging Session'), nav_icons['charging'])) %}{% endif %}{% endif %}
+{% if can_write('fuel') and 'fuel' in enabled_keys and not electric_only %}
+    {% if add_actions.append((url_for('fuel.quick'), _('Add Fuel Log'), nav_icons['fuel'])) %}{% endif %}
 {% endif %}
 {% if can_write('expenses') and 'expenses' in enabled_keys %}{% if add_actions.append((url_for('expenses.new'), _('Add Expense'), nav_icons['expenses'])) %}{% endif %}{% endif %}
 {% if can_write('trips') and 'trips' in enabled_keys %}{% if add_actions.append((url_for('trips.new'), _('Log Trip'), nav_icons['trips'])) %}{% endif %}{% endif %}
-{% if can_write('charging') and 'charging' in enabled_keys %}{% if add_actions.append((url_for('charging.new'), _('Add Charging Session'), nav_icons['charging'])) %}{% endif %}{% endif %}
+{% if can_charge and not electric_only %}{% if add_actions.append((url_for('charging.new'), _('Add Charging Session'), nav_icons['charging'])) %}{% endif %}{% endif %}
 {% if can_write('reminders') and 'reminders' in enabled_keys %}{% if add_actions.append((url_for('reminders.new'), _('Add Reminder'), nav_icons['reminders'])) %}{% endif %}{% endif %}
 {% if can_write('notes') and 'notes' in enabled_keys %}{% if add_actions.append((url_for('notes.new'), _('Add Note'), nav_icons['notes'])) %}{% endif %}{% endif %}
 
@@ -197,9 +203,19 @@
         cursor: pointer;
     }
     .tabbar__tab span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tabbar__icon { width: 1.5rem; height: 1.5rem; transition: transform 160ms ease; }
+    /* The icon sits in a pill, filled on the current tab, so where you are
+       reads from shape as well as colour. */
+    .tabbar__icon {
+        box-sizing: content-box;
+        width: 1.5rem;
+        height: 1.5rem;
+        padding: 0.125rem 1rem;
+        border-radius: 9999px;
+        transition: transform 160ms ease, background-color 160ms ease;
+    }
     .tabbar__tab:active .tabbar__icon { transform: scale(0.9); }
     .tabbar__tab.is-active { color: var(--ds-accent-ink, var(--primary-600)); font-weight: 600; }
+    .tabbar__tab.is-active .tabbar__icon { background: var(--ds-accent-soft, var(--primary-50)); }
     .tabbar__add {
         flex: none;
         align-self: center;
@@ -315,7 +331,26 @@
     }
     .sheet__action svg { width: 1.375rem; height: 1.375rem; }
     .sheet__action.is-active { color: var(--ds-accent-ink, var(--primary-600)); }
-    .sheet__action--danger { color: var(--ds-danger, #dc2626); }
+    /* Log out stands apart from Settings, past a divider, so a slip of the
+       thumb aimed at Settings does not sign you out. */
+    .sheet__action--danger { position: relative; margin-inline-start: 1.25rem; color: var(--ds-danger, #dc2626); }
+    .sheet__action--danger::before {
+        content: '';
+        position: absolute;
+        inset-inline-start: -0.75rem;
+        top: 0.625rem;
+        bottom: 0.625rem;
+        width: 1px;
+        background: var(--color-border);
+    }
+    /* Dragged down by its handle or top edge (see the script): the panel
+       follows the finger, then slides away or springs back. */
+    /* is-settling stays until the sheet closes: dropping it would bring the
+       opening animation back and replay it. is-dragging comes second so it
+       wins while a finger is down. */
+    .sheet__panel.is-settling { animation: none; transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .sheet__panel.is-dragging { animation: none; transition: none; }
+    .sheet.is-swiped .sheet__panel { animation: none; }
 
     /* Form sheets (quick fuel): a bottom sheet on phones, a centred dialog on desktop. */
     .sheet__header { display: flex; align-items: center; justify-content: space-between; margin: 0 0 0.75rem 0.25rem; }
@@ -385,6 +420,11 @@
         var lastTrigger = null;
         function open(sheet, trigger) {
             lastTrigger = trigger;
+            // A sheet hidden some other way (back/forward cache) may still
+            // carry drag state; clear it so the opening animation plays.
+            var panel = sheet.querySelector('.sheet__panel');
+            if (panel) { panel.classList.remove('is-dragging', 'is-settling'); panel.style.transform = ''; }
+            sheet.classList.remove('is-swiped');
             sheet.hidden = false;
             document.documentElement.style.overflow = 'hidden';
             var first = sheet.querySelector('.sheet__grid a, .sheet__grid button');
@@ -394,11 +434,49 @@
             if (sheet.hidden || sheet.classList.contains('is-closing')) return;
             sheet.classList.add('is-closing');
             setTimeout(function () {
-                sheet.classList.remove('is-closing');
+                sheet.classList.remove('is-closing', 'is-swiped');
+                var panel = sheet.querySelector('.sheet__panel');
+                if (panel) { panel.classList.remove('is-settling'); panel.style.transform = ''; }
                 sheet.hidden = true;
                 document.documentElement.style.overflow = '';
                 if (lastTrigger) lastTrigger.focus({ preventScroll: true });
             }, 190);
+        }
+        // The handle promises a drag, so a sheet follows a finger pulling it
+        // down and closes past a quarter of its height (or on a quick flick).
+        // It only starts when the panel is scrolled to its top, so scrolling
+        // a long sheet back up does not close it. Desktop shows a dialog.
+        function enableSwipe(sheet) {
+            var panel = sheet.querySelector('.sheet__panel');
+            if (!panel) return;
+            var startY = null, dy = 0, startTime = 0;
+            panel.addEventListener('touchstart', function (e) {
+                if (window.matchMedia('(min-width: 1024px)').matches || panel.scrollTop > 0) { startY = null; return; }
+                startY = e.touches[0].clientY; dy = 0; startTime = Date.now();
+            }, { passive: true });
+            panel.addEventListener('touchmove', function (e) {
+                if (startY === null) return;
+                dy = Math.max(0, e.touches[0].clientY - startY);
+                if (dy > 4) {
+                    panel.classList.add('is-dragging');
+                    panel.style.transform = 'translateY(' + dy + 'px)';
+                }
+            }, { passive: true });
+            panel.addEventListener('touchend', function () {
+                if (startY === null) return;
+                startY = null;
+                if (!panel.classList.contains('is-dragging')) return;
+                panel.classList.remove('is-dragging');
+                panel.classList.add('is-settling');
+                var flick = dy > 40 && Date.now() - startTime < 250;
+                if (dy > panel.offsetHeight / 4 || flick) {
+                    panel.style.transform = 'translateY(100%)';
+                    sheet.classList.add('is-swiped');
+                    close(sheet);
+                } else {
+                    panel.style.transform = '';
+                }
+            });
         }
         document.querySelectorAll('[data-sheet-open]').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -409,6 +487,7 @@
             sheet.querySelectorAll('[data-sheet-close]').forEach(function (el) {
                 el.addEventListener('click', function () { close(sheet); });
             });
+            enableSwipe(sheet);
         });
         document.addEventListener('keydown', function (e) {
             if (e.key !== 'Escape') return;

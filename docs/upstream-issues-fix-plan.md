@@ -32,7 +32,10 @@ issues, of which #421 and #422 are new.
 ### Next up (agreed order, one issue at a time)
 
 1. #384 + #412 — total distance only reads fuel logs, so an EV with no fill-ups
-   shows 0 distance and an empty cost per km. Confirmed in this repo.
+   shows 0 distance and an empty cost per km. Done 2026-11-13 on
+   design-system: `Vehicle.get_odometer_readings()` feeds total distance and
+   the new `get_distance_between()` behind the dashboard's "Driven in" card.
+   An optional purchase odometer is still open.
 2. #420 (part 1) — work out price per kWh from kWh and total cost.
 3. #422 — more maintenance types (brake rotors, drums, shoes).
 4. #421 — category filter and sort on the Expenses page.
@@ -47,7 +50,7 @@ issues, of which #421 and #422 are new.
 | #395 document links | Done | v0.45.2 |
 | #381 large numbers | Partly done; locale/mobile/PDF check open | v0.45.2 |
 | #2 (this repo) total cost limit | Done, closed | v0.45.2 |
-| #384, #412 | Confirmed here, next to fix | |
+| #384, #412 | Done: distance reads every odometer source; purchase odometer field not added | v0.49.0 (planned) |
 | #371 | Partial: a failed feed no longer blocks the rest; matching and Fuel Finder open | |
 | #380, #382, #385/#406 | Not started | |
 | #387, #413, #411, #360, #398, #386, #373, #268/#392 | Not started | |
@@ -90,7 +93,7 @@ issues, of which #421 and #422 are new.
   - [x] Add regression tests for repeated and concurrent processing. Do not
         silently delete existing expense records.
 
-- [ ] **[dannymcc/may#384](https://github.com/dannymcc/may/issues/384) — Total distance differs from the odometer**
+- [x] **[dannymcc/may#384](https://github.com/dannymcc/may/issues/384) — Total distance differs from the odometer**
   _Confirmed 2026-11-12: `Vehicle.get_total_distance()` in `app/models.py`
   takes the first and last odometer of fuel logs only (Tessie aside). Charging,
   trip and expense odometers are ignored. Proposed rule, to confirm before
@@ -106,7 +109,7 @@ issues, of which #421 and #422 are new.
   - [ ] Add model and dashboard/vehicle-page regression tests for the agreed
         rules.
 
-- [ ] **[dannymcc/may#412](https://github.com/dannymcc/may/issues/412) — EV overview is missing analysis**
+- [x] **[dannymcc/may#412](https://github.com/dannymcc/may/issues/412) — EV overview is missing analysis**
   _Same cause as #384: an EV logged only through charging sessions has no fuel
   logs, so total distance is 0 and cost per km stays empty. A second reporter
   confirms it without using Trips. Fix together with #384._

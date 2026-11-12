@@ -175,15 +175,21 @@ class TestTotalsDoNotMixUnits:
         body = auth_client.get('/dashboard').get_data(as_text=True)
         assert 'mixed units' in body
 
+    @staticmethod
+    def _driven_unit(body):
+        """The unit on the dashboard's "Driven in" card (it replaced "Cost per")."""
+        card = body[body.index('Driven in '):]
+        return card[card.index('ds-stat__unit">') + len('ds-stat__unit">'):].split('<', 1)[0]
+
     def test_dashboard_distance_only_fleet_is_unchanged(self, auth_client, sample_vehicle):
         body = auth_client.get('/dashboard').get_data(as_text=True)
         assert 'mixed units' not in body
-        assert 'Cost per mi' in body
+        assert self._driven_unit(body) == 'mi'
 
     def test_dashboard_hours_only_fleet_reads_in_hours(self, auth_client, tractor):
         body = auth_client.get('/dashboard').get_data(as_text=True)
         assert 'mixed units' not in body
-        assert 'Cost per h' in body
+        assert self._driven_unit(body) == 'h'
 
     def _two_trips(self, test_user, sample_vehicle, tractor):
         db.session.add_all([

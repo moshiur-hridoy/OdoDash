@@ -334,6 +334,29 @@ class TestDashboardHero:
         assert 'ds-sparkline' not in html
         assert 'On track for ' in html
 
+    def test_driven_last_month_with_its_cost_per_km(self, auth_client, test_user, sample_vehicle):
+        last = _month_start(-1)
+        db.session.add_all([
+            FuelLog(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=_month_start(-2),
+                    odometer=10000.0, volume=40.0, total_cost=0, is_full_tank=True),
+            ChargingSession(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=last + timedelta(days=9),
+                            odometer=10500.0, kwh_added=20.0, total_cost=30.0),
+            Expense(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=last + timedelta(days=19),
+                    category='maintenance', description='Tyres', cost=70.0, odometer=10800.0),
+        ])
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        month = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July',
+                 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'}[last.month]
+        assert f'Driven in {month}' in html
+        # The vehicle logs km and the user reads miles: 800 km is 497 mi.
+        assert '497<span class="ds-stat__unit">mi</span>' in html
+        # 100 GBP over 497.1 mi last month; all time is the same spending over the same span.
+        # One line: last month's rate in the accent, then the all-time one after a dot.
+        assert ('<p class="ds-stat__note ds-stat__note--split"><span class="ds-stat__note--accent">'
+                '0.20 GBP per mi</span> <span aria-hidden="true">·</span> <span>all time 0.20</span></p>') in html
+        assert 'Cost per mi' not in html
+
     def test_month_bars_cover_the_last_six_months(self, auth_client, test_user, sample_vehicle):
         _spend(sample_vehicle, test_user, _month_start(), fuel=50)
         _spend(sample_vehicle, test_user, _month_start(-2), fuel=100)

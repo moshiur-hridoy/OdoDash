@@ -12,6 +12,17 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ### Fixed
 
+- Total distance, and the cost per km built on it, counts odometer readings
+  from fuel logs, charging sessions, trips and expenses, not fuel logs alone.
+  An electric car logged only through charging sessions showed no distance
+  and no cost per km (#384, #412). Vehicles logged mostly through fuel see
+  the same figure or a slightly longer span.
+- The dashboard's change against last month compares the same number of
+  days, so early in a month it no longer shows a large fall. Needs attention
+  lists reminders due within 30 days. Cheapest Fuel reads only your own
+  stations' prices (it used to rank every user's together) and appears only
+  when your stations' recent prices differ, so it stays away where fuel
+  prices are set by the state.
 - The Telegram bot and its settings panel are translated into every
   language. In 0.48.0 they appeared in English everywhere, because their
   strings never reached the translation template. A test now fails when a

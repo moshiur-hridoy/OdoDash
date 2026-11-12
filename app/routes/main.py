@@ -102,6 +102,15 @@ def dashboard():
     if previous_total > 0:
         period_change = round((period_total - previous_total) / previous_total * 100)
 
+    # Distance driven in the last complete month (or year), and what it cost
+    # per unit over that same stretch. A finished period has all its
+    # odometer readings in; the current one would lag until the next entry.
+    driven_start, driven_end = previous_start, current_start
+    driven = sum(v.get_distance_between(driven_start, driven_end, current_user.distance_unit)
+                 for v in vehicles)
+    driven_spend = sum(_spending_between(vehicle_ids, driven_start, driven_end).values())
+    driven_cost_per = driven_spend / driven if driven > 0 else None
+
     # Month by month under the hero figure: the last six months, or this
     # year's months so far. Whole months, so the current one is partial.
     if period == 'year':
@@ -205,6 +214,9 @@ def dashboard():
                            period_change=period_change,
                            previous_total=previous_total,
                            month_totals=month_totals,
+                           driven_start=driven_start,
+                           driven=driven,
+                           driven_cost_per=driven_cost_per,
                            year_to_date=year_to_date,
                            year_projection=year_projection,
                            month_average=month_average,
