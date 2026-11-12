@@ -237,7 +237,10 @@ class User(UserMixin, db.Model):
 
     def generate_api_key(self):
         """Generate a new API key for this user"""
-        self.api_key = f"may_{secrets.token_hex(32)}"
+        # 4 + 60 = 64 characters, the width of the column. The old "may_" +
+        # 64-hex form was 68 and PostgreSQL refused to store it; SQLite never
+        # checked. Existing keys keep working: lookups are by exact value.
+        self.api_key = f"odo_{secrets.token_hex(30)}"
         self.api_key_created_at = utcnow()
         return self.api_key
 

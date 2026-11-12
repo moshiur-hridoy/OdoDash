@@ -12,6 +12,13 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ### Fixed
 
+- A PostgreSQL `DATABASE_URL` written as `postgresql://...` no longer fails at
+  startup with "No module named 'psycopg'". SQLAlchemy 2.1 maps that scheme to
+  psycopg 3, which the image does not ship; it is now pinned to the installed
+  psycopg2 driver. URLs that name a driver are left as they are.
+- Generating an API key works on PostgreSQL. New keys are 64 characters to
+  fit their column (they were 68, which PostgreSQL refused); existing keys
+  keep working, and new ones start with `odo_`.
 - Recurring expenses are no longer generated twice. Each Gunicorn worker ran
   its own hourly scheduler, so two workers could create the same due period;
   now one process runs the scheduler, and each period is claimed before it is

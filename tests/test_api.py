@@ -48,6 +48,12 @@ class TestApiKeyManagement:
         assert 'created_at' in data
         assert len(data['api_key']) > 10
 
+    def test_generated_key_fits_its_column(self, app, test_user):
+        # PostgreSQL rejects a value longer than VARCHAR(n); SQLite does not,
+        # so this length check is what catches it in the test suite.
+        column_length = User.__table__.c.api_key.type.length
+        assert len(test_user.generate_api_key()) <= column_length
+
     def test_generate_api_key_unauthenticated(self, client):
         resp = client.post('/api/key/generate')
         assert resp.status_code in (302, 401)
