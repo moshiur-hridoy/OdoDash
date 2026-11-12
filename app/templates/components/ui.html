@@ -177,6 +177,45 @@
     call body, written as plain HTML so its name/id stay exactly as the route
     expects; give it class="ds-control" and, with an error,
     aria-invalid="true" aria-describedby="<for_id>-error". -#}
+{#- Numbered progress for a multi-step flow. `steps` is a list of labels,
+    `current` the 1-based step the page is on. -#}
+{%- macro steps(labels, current) -%}
+<ol class="ds-steps">
+    {%- for label in labels %}
+    <li class="ds-steps__item{% if loop.index < current %} is-done{% elif loop.index == current %} is-current{% endif %}"{% if loop.index == current %} aria-current="step"{% endif %}>
+        <span class="ds-steps__dot">{% if loop.index < current %}{{ icon('check', 14) }}{% else %}{{ loop.index }}{% endif %}</span>
+        <span class="ds-steps__label">{{ label }}</span>
+    </li>
+    {%- endfor %}
+</ol>
+{%- endmacro %}
+
+{#- File picker drawn as a drop zone. The real <input type="file"> covers the
+    zone, so clicking and dropping both work without script; static/js/ds.js
+    only writes the chosen file name into it. -#}
+{%- macro file_drop(id, accept, hint=None, name=None, required=True) -%}
+<div class="ds-drop">
+    <input type="file" id="{{ id }}" name="{{ name or id }}" accept="{{ accept }}"{% if required %} required{% endif %}
+           class="ds-drop__input" data-file-drop{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
+    <span class="ds-drop__icon">{{ icon('upload', 22) }}</span>
+    <span class="ds-drop__text" data-file-name>{{ _('Choose a file or drag it here') }}</span>
+    {%- if hint %}<span class="ds-drop__hint" id="{{ id }}-hint">{{ hint }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+{#- Password input with a show/hide toggle (wired by static/js/ds.js).
+    Extra attributes (autocomplete, required, autofocus, value) go in `attrs`. -#}
+{%- macro password_input(id, name=None, attrs={}) -%}
+<div class="ds-password">
+    <input type="password" id="{{ id }}" name="{{ name or id }}" class="ds-control"{{ attrs|xmlattr }}>
+    <button type="button" class="ds-password__toggle" data-password-toggle="{{ id }}" aria-controls="{{ id }}"
+            aria-pressed="false" aria-label="{{ _('Show password') }}"
+            data-label-show="{{ _('Show password') }}" data-label-hide="{{ _('Hide password') }}">
+        <span data-eye="show">{{ icon('eye', 18) }}</span><span data-eye="hide" hidden>{{ icon('eye-off', 18) }}</span>
+    </button>
+</div>
+{%- endmacro %}
+
 {%- macro field(label, for_id, help=None, error=None, required=False) -%}
 <div class="ds-field">
     <label class="ds-field__label" for="{{ for_id }}">{{ label }}{% if required %}<span class="ds-field__required" aria-hidden="true">*</span>{% endif %}</label>

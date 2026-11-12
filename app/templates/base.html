@@ -510,6 +510,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
     <script src="{{ url_for('static', filename='js/charts-theme.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/password-rules.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/ds.js') }}" defer></script>
     {% if TAILWIND_CSS_URL %}
     {# Last in <head> on purpose: the runtime it replaces appends its <style>
        here too, so utilities keep winning the same ties against the inline
@@ -666,7 +667,7 @@
         {% include 'partials/mobile_nav.html' %}
     </div>
     {% else %}
-    <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="ds-canvas min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         {% block auth_content %}{% endblock %}
     </div>
     {% endif %}

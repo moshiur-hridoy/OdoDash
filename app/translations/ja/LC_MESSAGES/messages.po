@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 05:31+0600\n"
+"POT-Creation-Date: 2026-11-13 05:40+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -146,7 +146,7 @@ msgstr "カスタム"
 
 #: app/models.py:1494 app/routes/maintenance.py:99
 #: app/templates/auth/settings.html:444 app/templates/auth/settings.html:510
-#: app/templates/base.html:535 app/templates/partials/mobile_nav.html:27
+#: app/templates/base.html:536 app/templates/partials/mobile_nav.html:27
 msgid "Maintenance"
 msgstr "メンテナンス"
 
@@ -995,7 +995,7 @@ msgid "Fuel log added!"
 msgstr "給油記録を追加しました！"
 
 #: app/routes/main.py:146 app/routes/vehicles.py:229
-#: app/templates/base.html:587 app/templates/dashboard.html:74
+#: app/templates/base.html:588 app/templates/dashboard.html:74
 #: app/templates/dashboard.html:211 app/templates/partials/mobile_nav.html:23
 #: app/templates/timeline/index.html:114 app/templates/trips/index.html:127
 #: app/templates/vehicles/view.html:443 app/templates/vehicles/view.html:470
@@ -1472,22 +1472,23 @@ msgid "Dismiss"
 msgstr "閉じる"
 
 #: app/templates/auth/settings.html:439 app/templates/auth/settings.html:490
-#: app/templates/base.html:530 app/templates/partials/mobile_nav.html:22
+#: app/templates/base.html:531 app/templates/partials/mobile_nav.html:22
 #: app/templates/vehicles/index.html:3 app/templates/vehicles/index.html:7
 #: app/templates/vehicles/index.html:12
 msgid "Vehicles"
 msgstr "車両"
 
 #: app/templates/auth/settings.html:440 app/templates/auth/settings.html:495
-#: app/templates/base.html:531 app/templates/fuel/index.html:2
-#: app/templates/fuel/index.html:7 app/templates/search/index.html:66
-#: app/templates/vehicles/view.html:543
+#: app/templates/base.html:532 app/templates/fuel/index.html:2
+#: app/templates/fuel/index.html:7 app/templates/import/csv_upload.html:18
+#: app/templates/search/index.html:66 app/templates/vehicles/view.html:543
 msgid "Fuel Logs"
 msgstr "給油記録"
 
 #: app/templates/auth/settings.html:442 app/templates/auth/settings.html:500
-#: app/templates/base.html:532 app/templates/expenses/index.html:2
+#: app/templates/base.html:533 app/templates/expenses/index.html:2
 #: app/templates/expenses/index.html:7 app/templates/expenses/index.html:174
+#: app/templates/import/csv_upload.html:18
 #: app/templates/partials/mobile_nav.html:24
 #: app/templates/search/index.html:43 app/templates/timeline/index.html:120
 #: app/templates/vehicles/view.html:445 app/templates/vehicles/view.html:545
@@ -1495,24 +1496,25 @@ msgid "Expenses"
 msgstr "経費"
 
 #: app/templates/auth/settings.html:443 app/templates/auth/settings.html:505
-#: app/templates/base.html:533 app/templates/partials/mobile_nav.html:25
+#: app/templates/base.html:534 app/templates/partials/mobile_nav.html:25
 #: app/templates/reminders/index.html:2 app/templates/reminders/index.html:7
 msgid "Reminders"
 msgstr "リマインダー"
 
 #: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
-#: app/templates/base.html:534 app/templates/partials/mobile_nav.html:26
+#: app/templates/base.html:535 app/templates/import/csv_upload.html:19
+#: app/templates/partials/mobile_nav.html:26
 #: app/templates/search/index.html:130 app/templates/trips/index.html:2
 #: app/templates/trips/index.html:7
 msgid "Trips"
 msgstr "走行記録"
 
-#: app/templates/base.html:536 app/templates/partials/mobile_nav.html:28
+#: app/templates/base.html:537 app/templates/partials/mobile_nav.html:28
 msgid "Recurring"
 msgstr "定期"
 
 #: app/templates/auth/settings.html:446 app/templates/auth/settings.html:520
-#: app/templates/base.html:537 app/templates/documents/index.html:2
+#: app/templates/base.html:538 app/templates/documents/index.html:2
 #: app/templates/documents/index.html:7
 #: app/templates/partials/mobile_nav.html:29
 #: app/templates/search/index.html:89
@@ -1520,32 +1522,32 @@ msgid "Documents"
 msgstr "ドキュメント"
 
 #: app/templates/auth/settings.html:447 app/templates/auth/settings.html:525
-#: app/templates/base.html:538 app/templates/partials/mobile_nav.html:30
+#: app/templates/base.html:539 app/templates/partials/mobile_nav.html:30
 #: app/templates/stations/index.html:2 app/templates/stations/index.html:7
 msgid "Fuel Stations"
 msgstr "ガソリンスタンド"
 
 #: app/templates/auth/settings.html:449 app/templates/auth/settings.html:535
-#: app/templates/base.html:539 app/templates/partials/mobile_nav.html:31
+#: app/templates/base.html:540 app/templates/partials/mobile_nav.html:31
 msgid "EV Charging"
 msgstr "EV充電"
 
 #: app/templates/allowance/index.html:2 app/templates/allowance/index.html:7
 #: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
-#: app/templates/base.html:540 app/templates/dashboard.html:276
+#: app/templates/base.html:541 app/templates/dashboard.html:276
 #: app/templates/partials/mobile_nav.html:32
 #: app/templates/vehicles/view.html:205
 msgid "Mileage Allowance"
 msgstr "マイレージ手当"
 
-#: app/templates/auth/settings.html:545 app/templates/base.html:541
+#: app/templates/auth/settings.html:545 app/templates/base.html:542
 #: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:2
 #: app/templates/tires/index.html:7
 msgid "Tires"
 msgstr "タイヤ"
 
 #: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
-#: app/templates/base.html:542 app/templates/charging/form.html:149
+#: app/templates/base.html:543 app/templates/charging/form.html:149
 #: app/templates/dashboard.html:244 app/templates/expenses/form.html:135
 #: app/templates/fuel/form.html:183 app/templates/notes/index.html:2
 #: app/templates/notes/index.html:7 app/templates/partials/mobile_nav.html:34
@@ -1558,55 +1560,55 @@ msgstr "タイヤ"
 msgid "Notes"
 msgstr "メモ"
 
-#: app/templates/base.html:567 app/templates/base.html:655
+#: app/templates/base.html:568 app/templates/base.html:656
 #: app/templates/partials/mobile_nav.html:129
 #: app/templates/search/index.html:2 app/templates/search/index.html:6
 #: app/templates/search/index.html:32
 msgid "Search"
 msgstr "検索"
 
-#: app/templates/base.html:570 app/templates/partials/mobile_nav.html:78
+#: app/templates/base.html:571 app/templates/partials/mobile_nav.html:78
 msgid "Main navigation"
 msgstr "メインナビゲーション"
 
-#: app/templates/auth/settings.html:438 app/templates/base.html:571
+#: app/templates/auth/settings.html:438 app/templates/base.html:572
 #: app/templates/dashboard.html:4 app/templates/partials/mobile_nav.html:80
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
-#: app/templates/base.html:577 app/templates/partials/mobile_nav.html:98
+#: app/templates/base.html:578 app/templates/partials/mobile_nav.html:98
 #: app/templates/partials/mobile_nav.html:119
 msgid "More"
 msgstr "その他"
 
-#: app/templates/auth/settings.html:441 app/templates/base.html:586
+#: app/templates/auth/settings.html:441 app/templates/base.html:587
 #: app/templates/fuel/quick.html:2 app/templates/fuel/quick.html:7
 #: app/templates/partials/mobile_nav.html:149
 msgid "Quick Fuel Entry"
 msgstr "クイック給油入力"
 
-#: app/templates/base.html:593
+#: app/templates/base.html:594
 msgid "Update available"
 msgstr "アップデートがあります"
 
-#: app/templates/base.html:595 app/templates/base.html:641
+#: app/templates/base.html:596 app/templates/base.html:642
 msgid "What's new"
 msgstr "新機能"
 
-#: app/templates/base.html:596
+#: app/templates/base.html:597
 msgid "How to update"
 msgstr "アップデート方法"
 
-#: app/templates/base.html:630 app/templates/partials/mobile_nav.html:126
+#: app/templates/base.html:631 app/templates/partials/mobile_nav.html:126
 msgid "Toggle dark mode"
 msgstr "ダークモードを切り替え"
 
 #: app/templates/auth/settings.html:3 app/templates/auth/settings.html:7
-#: app/templates/base.html:633 app/templates/partials/mobile_nav.html:132
+#: app/templates/base.html:634 app/templates/partials/mobile_nav.html:132
 msgid "Settings"
 msgstr "設定"
 
-#: app/templates/base.html:636 app/templates/partials/mobile_nav.html:135
+#: app/templates/base.html:637 app/templates/partials/mobile_nav.html:135
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -1825,6 +1827,8 @@ msgstr "種類"
 #: app/templates/expenses/form.html:29 app/templates/expenses/index.html:51
 #: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:24
 #: app/templates/fuel/index.html:42 app/templates/fuel/index.html:158
+#: app/templates/import/csv_mapping.html:14
+#: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/form.html:30
 #: app/templates/maintenance/history.html:14 app/templates/notes/form.html:19
 #: app/templates/notes/index.html:29 app/templates/recurring/form.html:21
@@ -1940,7 +1944,8 @@ msgstr "例: 6月のクライアント訪問"
 #: app/templates/allowance/form.html:77 app/templates/charging/form.html:159
 #: app/templates/documents/form.html:116 app/templates/expenses/form.html:169
 #: app/templates/fuel/form.html:216
-#: app/templates/import/backup_preview.html:90
+#: app/templates/import/backup_preview.html:75
+#: app/templates/import/csv_mapping.html:90
 #: app/templates/maintenance/form.html:189
 #: app/templates/maintenance/index.html:163 app/templates/notes/form.html:72
 #: app/templates/recurring/form.html:143 app/templates/reminders/form.html:126
@@ -2031,25 +2036,25 @@ msgid "Account Details"
 msgstr "アカウント詳細"
 
 #: app/templates/auth/create_user.html:28 app/templates/auth/edit_user.html:29
-#: app/templates/auth/login.html:28 app/templates/auth/register.html:22
+#: app/templates/auth/login.html:18 app/templates/auth/register.html:11
 #: app/templates/auth/settings.html:232 app/templates/vehicles/share.html:14
 msgid "Username"
 msgstr "ユーザー名"
 
 #: app/templates/auth/create_user.html:34 app/templates/auth/edit_user.html:34
-#: app/templates/auth/forgot_password.html:23
-#: app/templates/auth/register.html:28 app/templates/auth/settings.html:249
+#: app/templates/auth/forgot_password.html:11
+#: app/templates/auth/register.html:17 app/templates/auth/settings.html:249
 #: app/templates/auth/settings.html:1471
 msgid "Email"
 msgstr "メール"
 
-#: app/templates/auth/create_user.html:41 app/templates/auth/login.html:35
-#: app/templates/auth/register.html:34
+#: app/templates/auth/create_user.html:41 app/templates/auth/login.html:24
+#: app/templates/auth/register.html:23
 msgid "Password"
 msgstr "パスワード"
 
-#: app/templates/auth/create_user.html:47 app/templates/auth/register.html:41
-#: app/templates/auth/reset_password.html:29
+#: app/templates/auth/create_user.html:47 app/templates/auth/register.html:29
+#: app/templates/auth/reset_password.html:18
 msgid "Confirm Password"
 msgstr "パスワード確認"
 
@@ -2071,8 +2076,8 @@ msgid "Update user details and credentials"
 msgstr "ユーザー情報と認証情報を更新"
 
 #: app/templates/auth/edit_user.html:69
-#: app/templates/auth/reset_password.html:3
-#: app/templates/auth/reset_password.html:37
+#: app/templates/auth/reset_password.html:4
+#: app/templates/auth/reset_password.html:23
 msgid "Reset Password"
 msgstr "パスワードリセット"
 
@@ -2081,7 +2086,7 @@ msgid "Leave blank to keep the current password"
 msgstr "現在のパスワードを維持する場合は空欄のままにしてください"
 
 #: app/templates/auth/edit_user.html:76
-#: app/templates/auth/reset_password.html:22
+#: app/templates/auth/reset_password.html:12
 #: app/templates/auth/settings.html:374
 msgid "New Password"
 msgstr "新しいパスワード"
@@ -2090,65 +2095,66 @@ msgstr "新しいパスワード"
 msgid "Confirm New Password"
 msgstr "新しいパスワード確認"
 
-#: app/templates/auth/forgot_password.html:2
+#: app/templates/auth/forgot_password.html:3
 msgid "Forgot Password"
 msgstr "パスワードをお忘れですか"
 
-#: app/templates/auth/forgot_password.html:15
+#: app/templates/auth/forgot_password.html:5
 msgid "Reset your password"
 msgstr "パスワードをリセット"
 
-#: app/templates/auth/forgot_password.html:18
+#: app/templates/auth/forgot_password.html:6
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "メールアドレスを入力すると、パスワードリセット用のリンクをお送りします。"
 
-#: app/templates/auth/forgot_password.html:30
+#: app/templates/auth/forgot_password.html:15
 msgid "Send Reset Link"
 msgstr "リセットリンクを送信"
 
-#: app/templates/auth/forgot_password.html:35
-#: app/templates/auth/reset_password.html:42
+#: app/templates/auth/forgot_password.html:19
+#: app/templates/auth/reset_password.html:27
 msgid "Back to login"
 msgstr "ログインに戻る"
 
-#: app/templates/auth/login.html:2
+#: app/templates/auth/login.html:3
 msgid "Login"
 msgstr "ログイン"
 
-#: app/templates/auth/login.html:45
-msgid "Remember me"
-msgstr "ログイン状態を保持する"
-
-#: app/templates/auth/login.html:48
-msgid "Forgot password?"
-msgstr "パスワードをお忘れですか？"
-
-#: app/templates/auth/login.html:54 app/templates/auth/register.html:55
+#: app/templates/auth/login.html:5 app/templates/auth/login.html:39
+#: app/templates/auth/register.html:38
 msgid "Sign in"
 msgstr "サインイン"
 
-#: app/templates/auth/login.html:60
+#: app/templates/auth/login.html:32
+msgid "Remember me"
+msgstr "ログイン状態を保持する"
+
+#: app/templates/auth/login.html:35
+msgid "Forgot password?"
+msgstr "パスワードをお忘れですか？"
+
+#: app/templates/auth/login.html:43
 msgid "Don't have an account?"
 msgstr "アカウントをお持ちでないですか？"
 
-#: app/templates/auth/login.html:61 app/templates/auth/register.html:3
+#: app/templates/auth/login.html:43 app/templates/auth/register.html:4
 msgid "Register"
 msgstr "登録"
 
-#: app/templates/auth/register.html:16
+#: app/templates/auth/register.html:6
 msgid "Create your account"
 msgstr "アカウントを作成"
 
-#: app/templates/auth/register.html:49
+#: app/templates/auth/register.html:34
 msgid "Create Account"
 msgstr "アカウントを作成"
 
-#: app/templates/auth/register.html:54
+#: app/templates/auth/register.html:38
 msgid "Already have an account?"
 msgstr "すでにアカウントをお持ちですか？"
 
-#: app/templates/auth/reset_password.html:16
+#: app/templates/auth/reset_password.html:6
 msgid "Set a new password"
 msgstr "新しいパスワードを設定"
 
@@ -2493,6 +2499,9 @@ msgstr "Hammond の SQLite データベース (.db ファイル) から取り込
 
 #: app/templates/auth/settings.html:599 app/templates/auth/settings.html:615
 #: app/templates/auth/settings.html:631 app/templates/auth/settings.html:643
+#: app/templates/import/csv_mapping.html:10
+#: app/templates/import/csv_mapping.html:91
+#: app/templates/import/csv_upload.html:10
 msgid "Import"
 msgstr "取り込み"
 
@@ -2504,7 +2513,7 @@ msgstr "Clarkson の MySQL ダンプ (.sql ファイル) から取り込み"
 msgid "Import from Fuelly CSV export (.csv file)"
 msgstr "Fuelly の CSV エクスポート (.csv ファイル) から取り込み"
 
-#: app/templates/auth/settings.html:638 app/templates/import/csv_upload.html:2
+#: app/templates/auth/settings.html:638 app/templates/import/csv_upload.html:4
 msgid "CSV Import"
 msgstr "CSVインポート"
 
@@ -3493,7 +3502,7 @@ msgid "Cost per kWh"
 msgstr "kWhあたりの費用"
 
 #: app/templates/charging/index.html:2 app/templates/charging/index.html:7
-#: app/templates/search/index.html:152
+#: app/templates/import/csv_upload.html:19 app/templates/search/index.html:152
 msgid "Charging Sessions"
 msgstr "充電セッション"
 
@@ -3537,6 +3546,18 @@ msgstr "EV充電の追跡を開始して、エネルギー使用量とコスト�
 #: app/templates/charging/index.html:154
 msgid "Log Your First Charge"
 msgstr "最初の充電を記録"
+
+#: app/templates/components/ui.html:201
+msgid "Choose a file or drag it here"
+msgstr "ファイルを選択するか、ここにドラッグ"
+
+#: app/templates/components/ui.html:212 app/templates/components/ui.html:213
+msgid "Show password"
+msgstr "パスワードを表示"
+
+#: app/templates/components/ui.html:213
+msgid "Hide password"
+msgstr "パスワードを隠す"
 
 #: app/templates/documents/form.html:2 app/templates/documents/form.html:13
 msgid "Edit Document"
@@ -3597,7 +3618,10 @@ msgstr "有効期限前にリマインドする"
 msgid "Days before to remind"
 msgstr "何日前にリマインドするか"
 
-#: app/templates/documents/form.html:120 app/templates/vehicles/view.html:603
+#: app/templates/documents/form.html:120
+#: app/templates/import/csv_mapping.html:10
+#: app/templates/import/csv_upload.html:10
+#: app/templates/vehicles/view.html:603
 msgid "Upload"
 msgstr "アップロード"
 
@@ -3779,7 +3803,7 @@ msgid "Vendor"
 msgstr "業者"
 
 #: app/templates/expenses/index.html:175
-#: app/templates/import/backup_preview.html:53
+#: app/templates/import/backup_preview.html:41
 #: app/templates/trips/report.html:126
 msgid "Total"
 msgstr "合計"
@@ -4005,82 +4029,87 @@ msgstr "モバイル向けクイック給油記録"
 msgid "Need more options? Use full form"
 msgstr "詳細な入力が必要ですか？フルフォームを使用"
 
-#: app/templates/import/backup_preview.html:2
-#: app/templates/import/backup_preview.html:94
-#: app/templates/import/backup_upload.html:2
+#: app/templates/import/backup_preview.html:4
+#: app/templates/import/backup_preview.html:76
+#: app/templates/import/backup_upload.html:4
 msgid "Restore Backup"
 msgstr "バックアップを復元"
 
-#: app/templates/import/backup_preview.html:7
+#: app/templates/import/backup_preview.html:8
 msgid "Choose a different file"
 msgstr "別のファイルを選ぶ"
 
-#: app/templates/import/backup_preview.html:8
+#: app/templates/import/backup_preview.html:9
 msgid "Restore Preview"
 msgstr "復元のプレビュー"
 
-#: app/templates/import/backup_preview.html:10
+#: app/templates/import/backup_preview.html:9
 msgid ""
 "Nothing has been changed yet. This is what will be added to your account."
 msgstr "まだ何も変更されていません。アカウントに追加される内容は次のとおりです。"
 
-#: app/templates/import/backup_preview.html:17
+#: app/templates/import/backup_preview.html:12
 msgid "Backup type"
 msgstr "バックアップの種類"
 
-#: app/templates/import/backup_preview.html:18
+#: app/templates/import/backup_preview.html:12
 msgid "Full backup (with files)"
 msgstr "完全バックアップ (ファイルを含む)"
 
-#: app/templates/import/backup_preview.html:18
+#: app/templates/import/backup_preview.html:12
 msgid "JSON export"
 msgstr "JSON エクスポート"
 
-#: app/templates/import/backup_preview.html:21
+#: app/templates/import/backup_preview.html:13
 msgid "Exported"
 msgstr "書き出し日時"
 
-#: app/templates/import/backup_preview.html:22
-#: app/templates/import/backup_preview.html:26
+#: app/templates/import/backup_preview.html:13
+#: app/templates/import/backup_preview.html:14
 #: app/templates/maintenance/history.html:52
 msgid "Unknown"
 msgstr "不明"
 
-#: app/templates/import/backup_preview.html:25
+#: app/templates/import/backup_preview.html:14
 msgid "Exported by"
 msgstr "書き出したユーザー"
 
-#: app/templates/import/backup_preview.html:36
+#: app/templates/import/backup_preview.html:22
 msgid "Data"
 msgstr "データ"
 
-#: app/templates/import/backup_preview.html:37
+#: app/templates/import/backup_preview.html:23
 msgid "Will be added"
 msgstr "追加される"
 
-#: app/templates/import/backup_preview.html:38
+#: app/templates/import/backup_preview.html:24
 msgid "Already present"
 msgstr "既に存在"
 
-#: app/templates/import/backup_preview.html:64
+#: app/templates/import/backup_preview.html:50
 msgid "Vehicles in this backup"
 msgstr "このバックアップ内の車両"
 
-#: app/templates/import/backup_preview.html:70
+#: app/templates/import/backup_preview.html:56
 msgid "will be added"
 msgstr "が追加されます"
 
-#: app/templates/import/backup_preview.html:72
+#: app/templates/import/backup_preview.html:58
 msgid "already in your account — its records will be merged"
 msgstr "は既にアカウントにあります — 記録は統合されます"
 
-#: app/templates/import/backup_preview.html:82
+#: app/templates/import/backup_preview.html:69
 msgid ""
 "Everything in this backup is already in your account. Restoring it will "
 "change nothing."
 msgstr "このバックアップの内容はすべて既にアカウントにあります。復元しても何も変わりません。"
 
 #: app/templates/import/backup_upload.html:8
+#: app/templates/import/csv_upload.html:8
+msgid "Back to settings"
+msgstr "設定に戻る"
+
+#: app/templates/import/backup_upload.html:9
 msgid "Restore a May Backup"
 msgstr "May のバックアップを復元"
 
@@ -4096,27 +4125,108 @@ msgid ""
 msgstr ""
 "バックアップはアカウントに統合されます。何も削除も上書きもされず、既にある記録は重複せずスキップされます。書き込む前に、追加される内容の概要が表示されます。"
 
-#: app/templates/import/backup_upload.html:17
+#: app/templates/import/backup_upload.html:15
 msgid ""
 "Documents, attachments and vehicle images can only be restored from a full "
 "backup ZIP, because a JSON export does not contain the files."
 msgstr "JSON エクスポートにはファイルが含まれないため、書類・添付ファイル・車両画像は完全バックアップの ZIP からのみ復元できます。"
 
-#: app/templates/import/backup_upload.html:24
+#: app/templates/import/backup_upload.html:22
 msgid "Backup File"
 msgstr "バックアップファイル"
 
-#: app/templates/import/backup_upload.html:27
+#: app/templates/import/backup_upload.html:23
 msgid "Accepts may_backup_*.json and may_full_backup_*.zip files."
 msgstr "may_backup_*.json と may_full_backup_*.zip のファイルに対応しています。"
 
-#: app/templates/import/backup_upload.html:33
+#: app/templates/import/backup_upload.html:26
 msgid "Next: Preview"
 msgstr "次へ: プレビュー"
 
-#: app/templates/import/csv_mapping.html:2
+#: app/templates/import/csv_mapping.html:4
 msgid "CSV Import - Map Columns"
 msgstr "CSVインポート - 列のマッピング"
+
+#: app/templates/import/csv_mapping.html:8
+msgid "Back to upload"
+msgstr "アップロードに戻る"
+
+#: app/templates/import/csv_mapping.html:9
+msgid "Map CSV Columns"
+msgstr "CSVの列を割り当て"
+
+#: app/templates/import/csv_mapping.html:10
+#: app/templates/import/csv_upload.html:10
+msgid "Map Columns"
+msgstr "列を割り当て"
+
+#: app/templates/import/csv_mapping.html:13
+#: app/templates/import/csv_upload.html:16
+msgid "Data Type"
+msgstr "データの種類"
+
+#: app/templates/import/csv_mapping.html:15
+msgid "Rows"
+msgstr "行数"
+
+#: app/templates/import/csv_mapping.html:23
+msgid "Column Mapping"
+msgstr "列の割り当て"
+
+#: app/templates/import/csv_mapping.html:25
+msgid "Date Format in CSV"
+msgstr "CSVの日付形式"
+
+#: app/templates/import/csv_mapping.html:27
+msgid "Auto-detect"
+msgstr "自動検出"
+
+#: app/templates/import/csv_mapping.html:34
+msgid "Required fields"
+msgstr "必須項目"
+
+#: app/templates/import/csv_mapping.html:46
+msgid "Map every required field before importing."
+msgstr "インポートする前に、すべての必須項目を割り当ててください。"
+
+#: app/templates/import/csv_mapping.html:50
+msgid "CSV Column"
+msgstr "CSVの列"
+
+#: app/templates/import/csv_mapping.html:50
+msgid "Map To"
+msgstr "割り当て先"
+
+#: app/templates/import/csv_mapping.html:61
+msgid "Skip this column"
+msgstr "この列をスキップ"
+
+#: app/templates/import/csv_mapping.html:72
+#: app/templates/import/csv_mapping.html:74
+msgid "Data Preview"
+msgstr "データのプレビュー"
+
+#: app/templates/import/csv_mapping.html:73
+#, python-format
+msgid "The first %(num)s rows of the file, as they were read."
+msgstr "読み込んだままのファイルの先頭 %(num)s 行です。"
+
+#: app/templates/import/csv_upload.html:9
+msgid "Import from CSV"
+msgstr "CSVからインポート"
+
+#: app/templates/import/csv_upload.html:9
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file."
+msgstr "任意のCSVファイルから給油記録、経費、走行記録、充電記録をインポートします。"
+
+#: app/templates/import/csv_upload.html:38
+msgid "CSV File"
+msgstr "CSVファイル"
+
+#: app/templates/import/csv_upload.html:43
+msgid "Next: Map Columns"
+msgstr "次へ：列を割り当て"
 
 #: app/templates/maintenance/form.html:2
 #: app/templates/maintenance/form.html:12
