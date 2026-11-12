@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OdoDash · Self-hosted vehicle tracking</title>
+<meta name="description" content="OdoDash is a self-hosted, open-source dashboard for fuel, EV charging, expenses, maintenance, reminders and trips across all your vehicles.">
+<meta name="theme-color" content="#07090d">
+<meta property="og:title" content="OdoDash · Self-hosted vehicle tracking">
+<meta property="og:description" content="Fuel, EV charging, expenses, maintenance and trips in one beautiful, self-hosted dashboard.">
+<meta property="og:image" content="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/dashboard-dark.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230284c7'/%3E%3Ccircle cx='32' cy='34' r='16' fill='none' stroke='%23fff' stroke-width='5' stroke-dasharray='70 31' transform='rotate(135 32 34)'/%3E%3Cpath d='M32 34l9-9' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root {
+  color-scheme: dark;
+  --accent: #0ea5e9;
+  --bg: #07090d;
+  --bg-2: #0c1016;
+  --surface: #10151d;
+  --surface-2: #151b25;
+  --line: rgb(255 255 255 / 0.08);
+  --line-strong: rgb(255 255 255 / 0.14);
+  --text: #eef2f7;
+  --muted: #94a0b2;
+  --faint: #5d6878;
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --accent-text: color-mix(in srgb, var(--accent) 70%, white);
+  --radius: 18px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --font: "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; height: auto; }
+button { font: inherit; color: inherit; }
+::selection { background: var(--accent); color: #fff; }
+
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+/* ---------- Ambient background ---------- */
+.ambient {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(1100px 600px at 80% -12%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 65%),
+    radial-gradient(800px 500px at -10% 30%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%),
+    var(--bg);
+  transition: background 0.6s var(--ease);
+}
+.grid-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+  opacity: 0.55;
+}
+
+/* ---------- Nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+.nav.scrolled { border-bottom-color: var(--line); }
+.nav-inner { display: flex; align-items: center; gap: 24px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; transition: background 0.4s; box-shadow: 0 6px 20px -6px var(--accent); }
+.brand-mark svg { width: 22px; height: 22px; }
+.nav-links { display: flex; gap: 4px; margin-left: auto; }
+.nav-links a { padding: 8px 12px; border-radius: 10px; color: var(--muted); font-size: 14px; font-weight: 500; transition: color 0.2s, background 0.2s; }
+.nav-links a:hover { color: var(--text); background: rgb(255 255 255 / 0.05); }
+@media (max-width: 760px) { .nav-links { display: none; } .nav-cta { margin-left: auto; } }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; padding: 0 20px; border-radius: 12px;
+  font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+  border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  transition: transform 0.2s var(--ease), background 0.2s, border-color 0.2s, box-shadow 0.3s;
+}
+.btn:active { transform: scale(0.98); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn-primary {
+  background: var(--accent); color: #fff;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, white) inset, 0 10px 30px -10px var(--accent);
+}
+.btn-primary:hover { box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, white) inset, 0 14px 40px -8px var(--accent); transform: translateY(-1px); }
+.btn-ghost { background: rgb(255 255 255 / 0.04); border-color: var(--line-strong); }
+.btn-ghost:hover { background: rgb(255 255 255 / 0.08); }
+.btn-sm { height: 36px; padding: 0 14px; font-size: 14px; border-radius: 10px; }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; padding: 88px 0 40px; text-align: center; }
+@media (max-width: 640px) { .hero { padding-top: 56px; } }
+.pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 14px 6px 6px; border-radius: 999px;
+  background: rgb(255 255 255 / 0.04); border: 1px solid var(--line-strong);
+  font-size: 13px; color: var(--muted);
+}
+.pill b { background: var(--accent-soft); color: var(--accent-text); padding: 2px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+.pill:hover { color: var(--text); }
+h1 {
+  margin: 28px auto 0; max-width: 900px;
+  font-size: clamp(42px, 7.4vw, 84px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 800;
+  background: linear-gradient(180deg, #fff 30%, color-mix(in srgb, #fff 55%, var(--bg)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+h1 .glow {
+  background: linear-gradient(100deg, var(--accent-text), var(--accent) 60%, color-mix(in srgb, var(--accent) 60%, #a78bfa));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lede { margin: 24px auto 0; max-width: 640px; font-size: clamp(17px, 2vw, 20px); color: var(--muted); line-height: 1.55; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 36px; }
+
+/* Odometer */
+.odo-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 44px; color: var(--faint); font-size: 13px; flex-wrap: wrap; }
+.odo {
+  display: inline-flex; gap: 3px; padding: 6px; border-radius: 12px;
+  background: linear-gradient(180deg, #05070a, #0d1219); border: 1px solid var(--line-strong);
+  box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.6);
+  font-family: var(--mono); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.odo-digit { position: relative; width: 0.9em; height: 1.4em; overflow: hidden; border-radius: 5px; background: linear-gradient(180deg, #161d27, #0b0f15 50%, #161d27); }
+.odo-digit:last-child { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 45%, #000), color-mix(in srgb, var(--accent) 25%, #000) 50%, color-mix(in srgb, var(--accent) 45%, #000)); }
+.odo-strip { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-direction: column; transition: transform 1.6s var(--ease); }
+.odo-strip span { height: 1.4em; line-height: 1.4em; text-align: center; color: #e8edf4; }
+.odo-unit { font-family: var(--mono); font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; }
+
+/* Hero shot */
+.hero-shot-wrap { perspective: 1800px; margin-top: 64px; position: relative; }
+.hero-shot-wrap::before {
+  content: ""; position: absolute; left: 10%; right: 10%; top: 8%; height: 70%;
+  background: var(--accent); filter: blur(120px); opacity: 0.35; z-index: -1; border-radius: 50%;
+  transition: background 0.6s;
+}
+.frame {
+  border-radius: 16px; padding: 8px; background: linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03));
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 40px 120px -30px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(0 0 0 / 0.4);
+}
+.frame-bar { display: flex; align-items: center; gap: 6px; padding: 4px 6px 10px; }
+.frame-bar i { width: 10px; height: 10px; border-radius: 50%; background: rgb(255 255 255 / 0.14); }
+.frame-bar .url { margin: 0 auto; padding: 2px 14px; border-radius: 8px; background: rgb(0 0 0 / 0.3); font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.frame img { border-radius: 9px; width: 100%; aspect-ratio: 1800 / 1116; object-fit: cover; background: var(--surface); }
+.hero-shot { transform-origin: 50% 0; transform: rotateX(22deg) scale(0.94); transition: transform 0.12s linear; will-change: transform; }
+
+/* ---------- Logos / stats strip ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 80px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.stat { background: var(--bg-2); padding: 28px 24px; text-align: center; }
+.stat strong { display: block; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.04em; font-weight: 750; line-height: 1.1; }
+.stat span { color: var(--muted); font-size: 14px; }
+@media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- Section headings ---------- */
+section { position: relative; }
+.section { padding: 120px 0 0; }
+@media (max-width: 640px) { .section { padding-top: 88px; } }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent-text); }
+.eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+h2 { margin: 16px 0 0; font-size: clamp(32px, 4.8vw, 54px); line-height: 1.06; letter-spacing: -0.04em; font-weight: 750; max-width: 760px; }
+h2 .dim { color: var(--faint); }
+.sub { margin: 18px 0 0; max-width: 600px; color: var(--muted); font-size: 18px; }
+.center { text-align: center; }
+.center h2, .center .sub { margin-left: auto; margin-right: auto; }
+
+/* ---------- Bento ---------- */
+.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 56px; }
+.card {
+  position: relative; overflow: hidden;
+  grid-column: span 2; padding: 28px; border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface), var(--bg-2));
+  border: 1px solid var(--line);
+  transition: border-color 0.3s, transform 0.4s var(--ease);
+  isolation: isolate;
+}
+.card::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity 0.4s;
+  background: radial-gradient(400px 220px at var(--mx, 50%) var(--my, 0%), var(--accent-soft), transparent 70%);
+}
+.card:hover { border-color: var(--line-strong); }
+.card:hover::after { opacity: 1; }
+.card.wide { grid-column: span 3; }
+.card.xl { grid-column: span 4; }
+.card h3 { margin: 18px 0 6px; font-size: 19px; letter-spacing: -0.02em; font-weight: 650; }
+.card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+.icon {
+  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent-text);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.icon svg { width: 22px; height: 22px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.tag { font-size: 12px; font-family: var(--mono); padding: 4px 9px; border-radius: 7px; background: rgb(255 255 255 / 0.04); border: 1px solid var(--line); color: var(--muted); }
+@media (max-width: 960px) { .card, .card.wide, .card.xl { grid-column: span 3; } }
+@media (max-width: 640px) { .bento { grid-template-columns: 1fr; } .card, .card.wide, .card.xl { grid-column: auto; } }
+
+/* Mini chart inside the fuel card */
+.spark { display: flex; align-items: flex-end; gap: 6px; height: 88px; margin-top: 24px; }
+.spark i { flex: 1; border-radius: 5px 5px 2px 2px; background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 25%, transparent)); transform-origin: bottom; transform: scaleY(0); transition: transform 1s var(--ease); }
+.in .spark i { transform: scaleY(1); }
+.spark-legend { display: flex; justify-content: space-between; margin-top: 10px; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+
+/* Reminder stack */
+.notes { margin-top: 22px; display: grid; gap: 8px; }
+.note { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgb(255 255 255 / 0.03); border: 1px solid var(--line); font-size: 14px; }
+.note .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); flex: none; }
+.note .dot.warn { background: #f59e0b; box-shadow: 0 0 12px #f59e0b; }
+.note small { margin-left: auto; color: var(--faint); font-family: var(--mono); font-size: 11px; }
+
+/* ---------- Compare slider ---------- */
+.compare {
+  position: relative; margin-top: 56px; border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--line-strong); aspect-ratio: 1800 / 1116; background: var(--surface);
+  user-select: none; -webkit-user-select: none; touch-action: pan-y;
+}
+.compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.compare .light { clip-path: inset(0 calc(100% - var(--pos, 50%)) 0 0); }
+.compare-handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 20px rgb(0 0 0 / 0.5); pointer-events: none; }
+.compare-handle::after {
+  content: "‹ ›"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 46px; height: 46px; border-radius: 50%; background: #fff; color: #0b0f15;
+  display: grid; place-items: center; font-weight: 700; font-size: 18px; letter-spacing: 2px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+}
+.compare input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.compare-label { position: absolute; top: 16px; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); pointer-events: none; }
+.compare-label.l { left: 16px; background: rgb(255 255 255 / 0.8); color: #0b0f15; }
+.compare-label.r { right: 16px; background: rgb(0 0 0 / 0.55); color: #fff; }
+
+/* ---------- Accent picker ---------- */
+.split { display: grid; grid-template-columns: 1fr 1.25fr; gap: 56px; align-items: center; }
+.split-rev { grid-template-columns: 1.25fr 1fr; }
+@media (max-width: 900px) { .split, .split-rev { grid-template-columns: 1fr; gap: 40px; } }
+.swatches { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.swatch {
+  width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer; padding: 0;
+  background: var(--c); position: relative;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.15) inset;
+  transition: transform 0.25s var(--ease);
+}
+.swatch:hover { transform: scale(1.08); }
+.swatch[aria-pressed="true"]::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--c); }
+.swatch-note { margin-top: 18px; font-size: 14px; color: var(--faint); }
+.checks { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; }
+.checks li { display: flex; gap: 12px; color: var(--muted); }
+.checks li::before { content: ""; flex: none; margin-top: 4px; width: 18px; height: 18px; border-radius: 6px; background: var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 12px no-repeat; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+.checks b { color: var(--text); font-weight: 600; }
+
+/* ---------- Tabs / terminal ---------- */
+.terminal { margin-top: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line-strong); background: #05070a; box-shadow: 0 40px 100px -40px rgb(0 0 0 / 0.9); }
+.term-head { display: flex; align-items: center; gap: 4px; padding: 10px 12px; border-bottom: 1px solid var(--line); background: var(--bg-2); }
+.tab { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--muted); cursor: pointer; font-weight: 500; }
+.tab[aria-selected="true"] { background: rgb(255 255 255 / 0.07); color: var(--text); }
+.copy { margin-left: auto; border: 1px solid var(--line-strong); background: transparent; border-radius: 8px; padding: 5px 10px; font-size: 12px; color: var(--muted); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.copy:hover { color: var(--text); }
+.copy svg { width: 14px; height: 14px; }
+pre { margin: 0; padding: 22px 24px; font-family: var(--mono); font-size: 14px; line-height: 1.8; overflow-x: auto; color: #cfd8e3; }
+pre .c { color: var(--faint); }
+pre .p { color: var(--accent-text); user-select: none; -webkit-user-select: none; }
+pre .s { color: #fbbf24; }
+.panel[hidden] { display: none; }
+.steps { display: grid; gap: 22px; margin-top: 36px; counter-reset: step; }
+.step { display: flex; gap: 16px; }
+.step::before { counter-increment: step; content: counter(step); flex: none; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font-family: var(--mono); font-size: 13px; font-weight: 700; background: var(--accent-soft); color: var(--accent-text); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
+.step h4 { margin: 3px 0 2px; font-size: 16px; }
+.step p { margin: 0; color: var(--muted); font-size: 15px; }
+code.inline { font-family: var(--mono); font-size: 0.88em; padding: 2px 6px; border-radius: 6px; background: rgb(255 255 255 / 0.06); border: 1px solid var(--line); }
+
+/* ---------- Integrations marquee ---------- */
+.marquee { margin-top: 48px; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.marquee-track { display: flex; gap: 12px; width: max-content; animation: scroll 40s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: 14px; white-space: nowrap; }
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+@keyframes scroll { to { transform: translateX(-50%); } }
+
+/* ---------- CTA ---------- */
+.cta {
+  position: relative; overflow: hidden; margin-top: 140px; padding: 80px 32px; border-radius: 28px; text-align: center;
+  background: radial-gradient(600px 300px at 50% 0%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 70%), var(--surface);
+  border: 1px solid var(--line-strong);
+}
+.cta h2 { margin: 0 auto; }
+.cta .grid-bg { mask-image: radial-gradient(ellipse 60% 80% at 50% 0%, #000 20%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 60% 80% at 50% 0%, #000 20%, transparent 70%); }
+@media (max-width: 640px) { .cta { padding: 56px 20px; margin-top: 100px; } }
+
+/* ---------- Footer ---------- */
+footer { margin-top: 96px; padding: 40px 0 56px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
+.foot { display: flex; flex-wrap: wrap; gap: 20px 40px; justify-content: space-between; align-items: flex-start; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.foot-links a:hover, .credit a:hover { color: var(--text); }
+.credit { margin-top: 8px; max-width: 460px; line-height: 1.6; }
+.credit a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+
+/* ---------- Reveal ---------- */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.08s; } .d2 { transition-delay: 0.16s; } .d3 { transition-delay: 0.24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+  .hero-shot { transform: none; }
+  .spark i { transform: scaleY(1); }
+}
+</style>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand" aria-label="OdoDash home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 16.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13.5l4-4"/></svg>
+      </span>
+      OdoDash
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#themes">Design</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#install">Self-host</a>
+    </nav>
+    <a class="btn btn-ghost btn-sm nav-cta" href="https://github.com/moshiur-hridoy/OdoDash" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+      GitHub
+    </a>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <a class="pill reveal" id="relPill" href="https://github.com/moshiur-hridoy/OdoDash/releases/latest" target="_blank" rel="noopener">
+        <b id="relTag">Latest</b> Open source · MIT · Self-hosted <span aria-hidden="true">→</span>
+      </a>
+      <h1 class="reveal d1">Every kilometre.<br><span class="glow">Beautifully tracked.</span></h1>
+      <p class="lede reveal d2">OdoDash is a self-hosted dashboard for fuel, EV charging, expenses, maintenance and trips. It runs on your own server, and the interface is one you'll want to open.</p>
+      <div class="hero-ctas reveal d3">
+        <a class="btn btn-primary" href="#install">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>
+          Deploy in one command
+        </a>
+        <a class="btn btn-ghost" href="#features">Explore features</a>
+      </div>
+
+      <div class="odo-row reveal d3" aria-label="Odometer">
+        <div class="odo" id="odo" aria-hidden="true"></div>
+        <span class="odo-unit">km logged, and counting</span>
+      </div>
+
+      <div class="hero-shot-wrap">
+        <div class="hero-shot" id="heroShot">
+          <div class="frame">
+            <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">ododash.local:5050</span></div>
+            <img src="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/dashboard-dark.png" alt="The OdoDash dashboard in dark mode, showing cost per km, total distance, fuel cost and a monthly spending chart" width="1800" height="1116" fetchpriority="high">
+          </div>
+        </div>
+      </div>
+
+      <div class="stats reveal">
+        <div class="stat"><strong id="langCount">20</strong><span>languages</span></div>
+        <div class="stat"><strong>0</strong><span>trackers or cloud lock-in</span></div>
+        <div class="stat"><strong>1</strong><span>command to deploy</span></div>
+        <div class="stat"><strong>∞</strong><span>vehicles and users</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section class="section" id="features">
+    <div class="wrap">
+      <span class="eyebrow reveal">Features</span>
+      <h2 class="reveal d1">Everything your garage needs. <span class="dim">Nothing it doesn't.</span></h2>
+      <p class="sub reveal d2">From a single scooter to a family fleet: log it in seconds and see where the money goes.</p>
+
+      <div class="bento">
+        <article class="card xl reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h12"/><path d="M4 9h10"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V9.83a2 2 0 0 0-.59-1.42L18 5"/></svg></div>
+          <h3>Fuel and EV charging</h3>
+          <p>Consumption is worked out for you in L/100km, MPG or kWh. Quick entry mode and favourite stations keep each fill-up to a few taps.</p>
+          <div class="spark" aria-hidden="true">
+            <i style="height:42%"></i><i style="height:58%;transition-delay:.05s"></i><i style="height:36%;transition-delay:.1s"></i><i style="height:74%;transition-delay:.15s"></i><i style="height:52%;transition-delay:.2s"></i><i style="height:88%;transition-delay:.25s"></i><i style="height:64%;transition-delay:.3s"></i><i style="height:46%;transition-delay:.35s"></i><i style="height:70%;transition-delay:.4s"></i><i style="height:96%;transition-delay:.45s"></i><i style="height:60%;transition-delay:.5s"></i><i style="height:80%;transition-delay:.55s"></i>
+          </div>
+          <div class="spark-legend" aria-hidden="true"><span>JAN</span><span>JUN</span><span>DEC</span></div>
+        </article>
+
+        <article class="card reveal d1">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+          <h3>Reminders that reach you</h3>
+          <p>MOT, service and tax reminders by email, ntfy, Pushover or webhook.</p>
+          <div class="notes" aria-hidden="true">
+            <div class="note"><span class="dot warn"></span>Service due<small>in 340 km</small></div>
+            <div class="note"><span class="dot"></span>Insurance renewal<small>12 days</small></div>
+          </div>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg></div>
+          <h3>Expenses, sorted</h3>
+          <p>Group costs by category and let recurring payments such as insurance and road tax post themselves.</p>
+        </article>
+
+        <article class="card reveal d1">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          <h3>Maintenance and tyres</h3>
+          <p>Schedules by mileage, engine hours or date, with a full history of every tyre set.</p>
+        </article>
+
+        <article class="card reveal d2">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
+          <h3>Analytics and PDF reports</h3>
+          <p>Spending trends, consumption charts and printable vehicle reports for resale or tax.</p>
+        </article>
+
+        <article class="card wide reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg></div>
+          <h3>Trips and mileage logs</h3>
+          <p>Split business and personal trips so your claim is ready when tax season arrives.</p>
+          <div class="tags"><span class="tag">business</span><span class="tag">personal</span><span class="tag">CSV export</span></div>
+        </article>
+
+        <article class="card wide reveal d1">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>Built for the whole household</h3>
+          <p>Share vehicles with roles. Units, currency, date format and language are set per person, so kilometres and miles can live side by side.</p>
+          <div class="tags"><span class="tag">roles</span><span class="tag">km / mi</span><span class="tag">L / gal</span><span class="tag">20 languages</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THEMES ================= -->
+  <section class="section" id="themes">
+    <div class="wrap">
+      <div class="center">
+        <span class="eyebrow reveal">Designer-led</span>
+        <h2 class="reveal d1">Light or dark. <span class="dim">One design system.</span></h2>
+        <p class="sub reveal d2">Both themes share the same tokens, so neither one feels like an afterthought. Drag to compare.</p>
+      </div>
+      <div class="compare reveal" id="compare">
+        <img class="dark" src="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/dashboard-dark.png" alt="Dashboard in dark mode" loading="lazy" width="1800" height="1116">
+        <img class="light" src="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/dashboard-light.png" alt="Dashboard in light mode" loading="lazy" width="1800" height="1116">
+        <span class="compare-label l">Light</span>
+        <span class="compare-label r">Dark</span>
+        <div class="compare-handle" aria-hidden="true"></div>
+        <input type="range" min="0" max="100" value="50" aria-label="Compare light and dark mode">
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ACCENT ================= -->
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow reveal">Make it yours</span>
+        <h2 class="reveal d1">Pick a colour. <span class="dim">Everything follows.</span></h2>
+        <p class="sub reveal d2">Buttons, charts, highlights and the ambient glow all take your accent, and text stays readable on any colour. Try it on this page:</p>
+        <div class="swatches reveal d3" id="swatches" role="group" aria-label="Accent colour">
+          <button class="swatch" style="--c:#0ea5e9" data-c="#0ea5e9" aria-label="Sky" aria-pressed="true"></button>
+          <button class="swatch" style="--c:#8b5cf6" data-c="#8b5cf6" aria-label="Violet" aria-pressed="false"></button>
+          <button class="swatch" style="--c:#10b981" data-c="#10b981" aria-label="Emerald" aria-pressed="false"></button>
+          <button class="swatch" style="--c:#f97316" data-c="#f97316" aria-label="Orange" aria-pressed="false"></button>
+          <button class="swatch" style="--c:#f43f5e" data-c="#f43f5e" aria-label="Rose" aria-pressed="false"></button>
+          <button class="swatch" style="--c:#eab308" data-c="#eab308" aria-label="Amber" aria-pressed="false"></button>
+        </div>
+        <ul class="checks reveal">
+          <li><span><b>Branding for admins.</b> Set the app name, tagline and logo.</span></li>
+          <li><span><b>Mobile and PWA.</b> Install it on your phone and it behaves like an app.</span></li>
+          <li><span><b>Fewer clicks.</b> Forms check limits as you type.</span></li>
+        </ul>
+      </div>
+      <div class="frame reveal d1">
+        <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">settings / branding</span></div>
+        <img src="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/accent-color.png" alt="The OdoDash dashboard with an orange accent colour" loading="lazy" width="1800" height="1116">
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VEHICLE ================= -->
+  <section class="section">
+    <div class="wrap split split-rev">
+      <div class="frame reveal">
+        <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">vehicles / 1</span></div>
+        <img src="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/vehicle-page.png" alt="A vehicle page with costs, distance, consumption and quick actions" loading="lazy" width="1800" height="1117">
+      </div>
+      <div>
+        <span class="eyebrow reveal">Every vehicle at a glance</span>
+        <h2 class="reveal d1">The whole story <span class="dim">on one page.</span></h2>
+        <p class="sub reveal d2">Costs, distance, consumption and CO₂ in one place. Quick actions to log fuel, trips, expenses and reminders. Maintenance history, parts and a timeline one tap away.</p>
+        <ul class="checks reveal d3">
+          <li><span><b>Documents and receipts</b> attached to vehicles, fuel logs and expenses.</span></li>
+          <li><span><b>Import from May or Fuelly</b>, export to JSON and CSV at any time.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INTEGRATIONS ================= -->
+  <section class="section" id="integrations">
+    <div class="wrap center">
+      <span class="eyebrow reveal">Integrations</span>
+      <h2 class="reveal d1">Plays well with <span class="dim">your homelab.</span></h2>
+      <p class="sub reveal d2">A REST API, a calendar feed and native hooks into the tools you already run.</p>
+    </div>
+    <div class="marquee reveal" aria-label="Integrations">
+      <div class="marquee-track">
+        <span class="chip">Home Assistant</span><span class="chip">REST API</span><span class="chip">Calendar subscription</span><span class="chip">ntfy</span><span class="chip">Pushover</span><span class="chip">Webhooks</span><span class="chip">Email (SMTP)</span><span class="chip">UK fuel prices</span><span class="chip">DVLA lookup</span><span class="chip">Fuelly CSV import</span><span class="chip">May backups</span><span class="chip">PostgreSQL</span><span class="chip">SQLite</span>
+        <span class="chip" aria-hidden="true">Home Assistant</span><span class="chip" aria-hidden="true">REST API</span><span class="chip" aria-hidden="true">Calendar subscription</span><span class="chip" aria-hidden="true">ntfy</span><span class="chip" aria-hidden="true">Pushover</span><span class="chip" aria-hidden="true">Webhooks</span><span class="chip" aria-hidden="true">Email (SMTP)</span><span class="chip" aria-hidden="true">UK fuel prices</span><span class="chip" aria-hidden="true">DVLA lookup</span><span class="chip" aria-hidden="true">Fuelly CSV import</span><span class="chip" aria-hidden="true">May backups</span><span class="chip" aria-hidden="true">PostgreSQL</span><span class="chip" aria-hidden="true">SQLite</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INSTALL ================= -->
+  <section class="section" id="install">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow reveal">Self-host</span>
+        <h2 class="reveal d1">Up and running <span class="dim">before your coffee cools.</span></h2>
+        <div class="steps">
+          <div class="step reveal"><div><h4>Pull and start</h4><p>One Docker Compose file. Multi-arch images for amd64 and arm64, so it runs on a Raspberry Pi too.</p></div></div>
+          <div class="step reveal d1"><div><h4>Open port 5050</h4><p>Sign in as <code class="inline">admin</code>. Unless you set <code class="inline">ADMIN_PASSWORD</code>, the generated password is printed once in the logs.</p></div></div>
+          <div class="step reveal d2"><div><h4>Add your first vehicle</h4><p>Your data stays in your own database. No account, no telemetry, no subscription.</p></div></div>
+        </div>
+      </div>
+      <div class="terminal reveal d1">
+        <div class="term-head" role="tablist" aria-label="Install method">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="p-docker" id="t-docker">Docker</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="p-compose" id="t-compose">compose.yml</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="p-manual" id="t-manual">Manual</button>
+          <button class="copy" id="copyBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="panel" id="p-docker" role="tabpanel" aria-labelledby="t-docker"><pre><span class="p">$ </span>git clone https://github.com/moshiur-hridoy/OdoDash.git
+<span class="p">$ </span>cd OdoDash
+<span class="p">$ </span>docker compose up -d
+<span class="c"># → open http://localhost:5050</span></pre></div>
+        <div class="panel" id="p-compose" role="tabpanel" aria-labelledby="t-compose" hidden><pre>services:
+  ododash:
+    image: <span class="s">ghcr.io/moshiur-hridoy/ododash:latest</span>
+    container_name: ododash
+    restart: unless-stopped
+    ports:
+      - <span class="s">"5050:5050"</span>
+    volumes:
+      - ./data:/app/data
+    environment:
+      - SECRET_KEY=<span class="s">change-me</span></pre></div>
+        <div class="panel" id="p-manual" role="tabpanel" aria-labelledby="t-manual" hidden><pre><span class="p">$ </span>python3 -m venv venv &amp;&amp; source venv/bin/activate
+<span class="p">$ </span>pip install -r requirements.txt
+<span class="p">$ </span>pybabel compile -d app/translations
+<span class="p">$ </span>python run.py</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="wrap">
+    <div class="cta reveal">
+      <div class="grid-bg" aria-hidden="true"></div>
+      <span class="eyebrow">Free and open source</span>
+      <h2 style="margin-top:16px">Your cars. Your server.<br><span class="dim">Your data.</span></h2>
+      <p class="sub center" style="margin-left:auto;margin-right:auto">MIT-licensed and actively maintained. Stars, issues, translations and design ideas are all welcome.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="https://github.com/moshiur-hridoy/OdoDash" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Star on GitHub
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/moshiur-hridoy/OdoDash/blob/ododash-release/docs/installation.md" target="_blank" rel="noopener">Read the docs</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a href="#top" class="brand" style="color:var(--text)">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 16.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13.5l4-4"/></svg></span>
+        OdoDash
+      </a>
+      <p class="credit">A designer-led fork of <a href="https://github.com/dannymcc/may" target="_blank" rel="noopener">May</a> by Danny McClelland, with thanks for the foundation it is built on.</p>
+    </div>
+    <div class="foot-links">
+      <a href="https://github.com/moshiur-hridoy/OdoDash" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/moshiur-hridoy/OdoDash/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/moshiur-hridoy/OdoDash/blob/ododash-release/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>
+      <a href="https://github.com/moshiur-hridoy/OdoDash/issues" target="_blank" rel="noopener">Issues</a>
+      <a href="https://github.com/moshiur-hridoy/OdoDash/blob/ododash-release/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* Nav border on scroll + hero tilt */
+  var nav = document.getElementById('nav');
+  var shot = document.getElementById('heroShot');
+  var ticking = false;
+  function onScroll() {
+    var y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 8);
+    if (!reduce && shot) {
+      var p = Math.min(Math.max(y / 420, 0), 1);
+      shot.style.transform = 'rotateX(' + (22 * (1 - p)).toFixed(2) + 'deg) scale(' + (0.94 + 0.06 * p).toFixed(3) + ')';
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+
+  /* Reveal on scroll */
+  var els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    els.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* Odometer */
+  var odo = document.getElementById('odo');
+  var DIGITS = 6, value = 0, target = 7405;
+  var strips = [];
+  for (var i = 0; i < DIGITS; i++) {
+    var d = document.createElement('span'); d.className = 'odo-digit';
+    var s = document.createElement('span'); s.className = 'odo-strip';
+    for (var n = 0; n <= 9; n++) { var c = document.createElement('span'); c.textContent = n; s.appendChild(c); }
+    d.appendChild(s); odo.appendChild(d); strips.push(s);
+  }
+  function render(v) {
+    var str = String(v).padStart(DIGITS, '0');
+    for (var i = 0; i < DIGITS; i++) strips[i].style.transform = 'translateY(' + (-1.4 * +str[i]) + 'em)';
+  }
+  render(0);
+  setTimeout(function () { value = target; render(value); }, reduce ? 0 : 500);
+  if (!reduce) setInterval(function () { value += 1; render(value); }, 2400);
+
+  /* Card spotlight */
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.addEventListener('pointermove', function (e) {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* Compare slider */
+  var compare = document.getElementById('compare');
+  var range = compare.querySelector('input');
+  function setPos() { compare.style.setProperty('--pos', range.value + '%'); }
+  range.addEventListener('input', setPos);
+  setPos();
+
+  /* Accent picker */
+  var swatches = document.querySelectorAll('.swatch');
+  function setAccent(c, save) {
+    root.style.setProperty('--accent', c);
+    swatches.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.c === c ? 'true' : 'false'); });
+    if (save) { try { localStorage.setItem('ododash-accent', c); } catch (e) {} }
+  }
+  swatches.forEach(function (b) { b.addEventListener('click', function () { setAccent(b.dataset.c, true); }); });
+  try { var saved = localStorage.getItem('ododash-accent'); if (saved) setAccent(saved, false); } catch (e) {}
+
+  /* Live facts from GitHub: latest release tag and language count.
+     The static text above is the fallback if the API is unreachable or
+     rate-limited; results are cached for an hour per visitor. */
+  var REPO = 'https://api.github.com/repos/moshiur-hridoy/OdoDash';
+  function cached(key, url, pick) {
+    try {
+      var hit = JSON.parse(sessionStorage.getItem(key) || 'null');
+      if (hit && Date.now() - hit.t < 3600000) return Promise.resolve(hit.v);
+    } catch (e) {}
+    return fetch(url, { headers: { Accept: 'application/vnd.github+json' } })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var v = pick(d);
+        try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), v: v })); } catch (e) {}
+        return v;
+      });
+  }
+  if (window.fetch) {
+    cached('od-release', REPO + '/releases/latest', function (d) { return { tag: d.tag_name, url: d.html_url }; })
+      .then(function (r) {
+        if (!r || !r.tag) return;
+        document.getElementById('relTag').textContent = r.tag;
+        if (r.url) document.getElementById('relPill').href = r.url;
+      }).catch(function () {});
+    // One folder per translated locale; English is the source language, hence +1.
+    cached('od-langs', REPO + '/contents/app/translations?ref=ododash-release', function (d) {
+      return Array.isArray(d) ? d.filter(function (x) { return x.type === 'dir'; }).length + 1 : null;
+    }).then(function (n) { if (n > 1) document.getElementById('langCount').textContent = n; }).catch(function () {});
+  }
+
+  /* Install tabs + copy */
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o) {
+        var on = o === t;
+        o.setAttribute('aria-selected', on ? 'true' : 'false');
+        document.getElementById(o.getAttribute('aria-controls')).hidden = !on;
+      });
+    });
+  });
+  var copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', function () {
+    var panel = document.querySelector('.panel:not([hidden]) pre');
+    var clone = panel.cloneNode(true);
+    clone.querySelectorAll('.p, .c').forEach(function (n) { n.remove(); });
+    var text = clone.textContent.replace(/\n+$/, '').replace(/^\n/gm, '');
+    var label = copyBtn.querySelector('span');
+    function done(ok) { label.textContent = ok ? 'Copied' : 'Copy failed'; setTimeout(function () { label.textContent = 'Copy'; }, 1600); }
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  });
+})();
+</script>
+</body>
+</html>
