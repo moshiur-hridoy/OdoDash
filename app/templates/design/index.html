@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {#- Design-system reference (admins only). Developer-facing and deliberately
     not translated: every figure here is sample content, not the user's data. -#}
-{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, attention, odometer, empty_state, field %}
+{% from 'components/ui.html' import page_header, back_link, button, card, stat, badge, segmented, split_bar, attention, odometer, empty_state, field %}
 {% from 'components/icons.html' import icon %}
 {% block title %}Design system{% endblock %}
 
@@ -14,7 +14,7 @@
     {% endcall %}
 
     <nav aria-label="Sections" class="flex flex-wrap gap-2">
-        {% for id, label in [('dashboard', 'Dashboard'), ('tokens', 'Tokens'), ('buttons', 'Buttons'), ('badges', 'Badges'), ('stats', 'Stats'), ('controls', 'Segmented & split bar'), ('attention', 'Attention'), ('odometer', 'Odometer'), ('table', 'Table'), ('forms', 'Forms'), ('empty', 'Empty state')] %}
+        {% for id, label in [('dashboard', 'Dashboard'), ('tokens', 'Tokens'), ('buttons', 'Buttons'), ('back', 'Back link'), ('badges', 'Badges'), ('stats', 'Stats'), ('controls', 'Segmented & split bar'), ('attention', 'Attention'), ('odometer', 'Odometer'), ('table', 'Table'), ('forms', 'Forms'), ('filters', 'Filter bar'), ('empty', 'Empty state')] %}
         <a href="#{{ id }}" class="ds-badge ds-badge--neutral" style="text-decoration:none">{{ label }}</a>
         {% endfor %}
     </nav>
@@ -118,6 +118,14 @@
     {% endcall %}
 
     {# ------------------------------------------------------------------ #}
+    <h2 id="back" class="ds-card__title" style="margin-top:24px">Back link</h2>
+    {% call card() %}
+        {{ back_link('Back to stations', '#') }}
+        <pre class="ds-mono ds-muted" style="margin:8px 0 0;font-size:12px;white-space:pre-wrap">{% raw %}{{ back_link(_('Back to stations'), url_for('stations.index')) }}
+{{ back_link(vehicle.name, url_for('vehicles.view', vehicle_id=vehicle.id)) }}{% endraw %}</pre>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
     <h2 id="badges" class="ds-card__title" style="margin-top:24px">Badges</h2>
     {% call card() %}
         <div class="flex flex-wrap items-center gap-2">
@@ -214,6 +222,13 @@
     {% endcall %}
 
     {# ------------------------------------------------------------------ #}
+    <h2 id="filters" class="ds-card__title" style="margin-top:24px">Filter bar</h2>
+    <form class="ds-card ds-filters" onsubmit="return false">
+        {% call field('Vehicle', 'demo-filter-vehicle') %}<select id="demo-filter-vehicle" class="ds-control"><option>All vehicles</option><option>Daily Driver</option></select>{% endcall %}
+        {% call field('Type', 'demo-filter-type') %}<select id="demo-filter-type" class="ds-control"><option>All types</option></select>{% endcall %}
+        <div class="ds-filters__actions">{{ button('Clear filters', href='#', variant='ghost', icon_name='x') }}</div>
+    </form>
+
     <h2 id="empty" class="ds-card__title" style="margin-top:24px">Empty state</h2>
     {% call card() %}
         {{ empty_state('No fuel logs yet', 'Log your first fill-up and OdoDash starts working out consumption and cost per km.', 'fuel', 'Add fuel log', '#') }}

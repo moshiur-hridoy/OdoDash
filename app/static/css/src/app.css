@@ -506,6 +506,28 @@ textarea.ds-control { height: auto; min-height: 96px; padding: 10px 12px; resize
 .ds-facts dd span { font-size: var(--ds-text-sm); font-weight: 500; color: var(--ds-text-muted); }
 .ds-facts__positive { color: var(--ds-success); }
 
+/* ---- Back link ------------------------------------------------------ */
+.ds-back {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-bottom: 8px;
+  font-size: var(--ds-text-sm); font-weight: 500; color: var(--ds-text-muted); text-decoration: none;
+}
+.ds-back:hover { color: var(--ds-text); }
+.ds-back:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); border-radius: var(--ds-radius-sm); }
+@media (pointer: coarse) { .ds-back { min-height: var(--ds-touch-target); } }
+
+/* ---- Filter bar ----------------------------------------------------- */
+/* Selects that narrow a list. They submit on change; the Filter button is
+   only there for a browser without JavaScript. */
+.ds-filters {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; padding: 16px 20px;
+}
+.ds-filters .ds-field { flex: 1 1 180px; max-width: 280px; }
+.ds-filters__actions { display: flex; align-items: center; gap: 8px; }
+@media (max-width: 640px) {
+  .ds-filters { padding: 14px 16px; }
+  .ds-filters .ds-field { flex-basis: 100%; max-width: none; }
+}
+
 /* ---- Dashboard ------------------------------------------------------ */
 .dashboard-hero__split { margin-top: 20px; }
 .dashboard-attention .ds-card__title { display: flex; align-items: center; gap: 8px; }
@@ -531,6 +553,111 @@ textarea.ds-control { height: auto; min-height: 96px; padding: 10px 12px; resize
   .dashboard .dashboard-odometer { display: none; }
 }
 
+
+/* ---- Vehicles list --------------------------------------------------- */
+.vehicle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.vehicle-card {
+  display: flex; flex-direction: column; overflow: hidden; color: var(--ds-text); text-decoration: none;
+  transition: border-color var(--ds-duration-fast) ease, box-shadow var(--ds-duration-fast) ease;
+}
+.vehicle-card:hover { border-color: color-mix(in srgb, var(--ds-border) 55%, var(--ds-text-subtle)); box-shadow: var(--ds-shadow-raised); }
+.vehicle-card:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.vehicle-card__media {
+  aspect-ratio: 2 / 1; display: grid; place-items: center; border-bottom: 1px solid var(--ds-border-soft);
+  background: color-mix(in srgb, var(--ds-accent) 7%, var(--ds-surface-sunken)); color: var(--ds-accent-ink);
+}
+.vehicle-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.vehicle-card__media svg { width: 64px; height: 64px; opacity: 0.7; }
+.vehicle-card__body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 16px 20px 18px; }
+.vehicle-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.vehicle-card__name { margin: 0; font-size: var(--ds-text-lg); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.vehicle-card__meta { margin: 2px 0 0; font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
+.vehicle-card__badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+.vehicle-card__reading { min-height: 26px; }
+.vehicle-card__foot {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: auto;
+  padding-top: 12px; border-top: 1px solid var(--ds-border-soft); font-size: var(--ds-text-sm);
+}
+.vehicle-card__cost { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.vehicle-card__cost span { font-weight: 400; color: var(--ds-text-muted); }
+.vehicle-card--archived .vehicle-card__media { filter: grayscale(1); opacity: 0.7; }
+/* Phones: a row per vehicle, with the photo as a thumbnail on the side, so
+   three or four vehicles fit on one screen instead of one. */
+@media (max-width: 640px) {
+  .vehicle-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .vehicle-card { flex-direction: row; }
+  .vehicle-card__media {
+    flex: none; width: 96px; aspect-ratio: auto; border-bottom: 0;
+    border-inline-end: 1px solid var(--ds-border-soft);
+  }
+  .vehicle-card__media svg { width: 40px; height: 40px; }
+  .vehicle-card__body { min-width: 0; gap: 10px; padding: 12px 14px; }
+  .vehicle-card__name { font-size: var(--ds-text-base); }
+  .vehicle-card__foot { padding-top: 10px; }
+}
+
+/* ---- Cheapest fuel -------------------------------------------------- */
+.price-list { margin: 0; padding: 0; list-style: none; }
+.price-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center;
+  gap: 12px 14px; padding: 14px 0; border-bottom: 1px solid var(--ds-border-soft);
+}
+.price-row:last-child { border-bottom: 0; }
+.price-rank {
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--ds-radius-pill);
+  background: var(--ds-surface-sunken); color: var(--ds-text-muted);
+  font-size: var(--ds-text-xs); font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.price-row--best .price-rank { background: var(--ds-success-soft); color: var(--ds-success); }
+.price-row__value { text-align: end; }
+.price-row__price { margin: 0; font-size: var(--ds-text-lg); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price-row__price span { margin-inline-start: 3px; font-size: var(--ds-text-xs); font-weight: 500; color: var(--ds-text-muted); }
+.price-row--best .price-row__price { color: var(--ds-success); }
+.price-row__meta { margin: 1px 0 0; font-size: var(--ds-text-xs); color: var(--ds-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.price-row__diff { color: var(--ds-warning); }
+@media (max-width: 640px) { .price-row { gap: 10px; } }
+
+/* ---- Maintenance history -------------------------------------------- */
+.history-summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.history-summary { padding: 8px 24px 4px; }
+.history-summary strong { font-size: var(--ds-text-lg); font-variant-numeric: tabular-nums; }
+.history-summary strong span { font-size: var(--ds-text-sm); font-weight: 400; color: var(--ds-text-muted); }
+.history-item {
+  display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 4px 16px;
+  padding: 16px 0; border-bottom: 1px solid var(--ds-border-soft);
+}
+.history-item:last-child { border-bottom: 0; }
+.history-item__date { font-size: var(--ds-text-sm); color: var(--ds-text-muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.history-item__head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.history-item__title { margin: 0; font-size: var(--ds-text-base); font-weight: 600; }
+.history-item__meta { margin: 2px 0 0; font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
+.history-item__cost { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: end; }
+.history-item__cost span { font-weight: 400; font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
+.history-item__notes {
+  grid-column: 2 / -1; margin: 6px 0 0; padding: 8px 12px; border-radius: var(--ds-radius-md);
+  background: var(--ds-surface-sunken); font-size: var(--ds-text-sm); white-space: pre-line; overflow-wrap: anywhere;
+}
+.history-note { margin: 12px 4px 0; font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+@media (max-width: 640px) {
+  .history-item { grid-template-columns: minmax(0, 1fr) auto; }
+  .history-item__date { grid-column: 1 / -1; order: -1; padding: 0; font-size: var(--ds-text-xs); }
+  .history-item__notes { grid-column: 1 / -1; }
+  .history-summary { padding: 8px 16px 4px; }
+}
+
+/* ---- Vehicle sharing ------------------------------------------------ */
+.share-page { max-width: 640px; }
+.share-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.share-form .ds-field { flex: 1 1 220px; }
+.share-form .ds-btn { height: 40px; }
+.share-list { margin: 0; padding: 0; list-style: none; }
+.share-empty { margin: 0; color: var(--ds-text-muted); }
+.share-user { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--ds-border-soft); }
+.share-user:last-child { border-bottom: 0; }
+.share-user .ds-avatar { width: 36px; height: 36px; margin: 0; font-size: var(--ds-text-sm); text-transform: uppercase; }
+.share-user__main { flex: 1; min-width: 0; }
+.share-user__name { margin: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-user__email { margin: 1px 0 0; font-size: var(--ds-text-sm); color: var(--ds-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ---- App shell (phase 3) -------------------------------------------- */
 /* The sidebar, the phone top bar and the page frame in base.html. The

@@ -28,6 +28,12 @@
 </header>
 {%- endmacro %}
 
+{#- Link back to the parent page, above a page header. The label is the
+    parent's name (a vehicle's, or an existing "Back to ..." string). -#}
+{%- macro back_link(label, href) -%}
+<a class="ds-back" href="{{ href }}">{{ icon('arrow-left', 16) }}<span>{{ label }}</span></a>
+{%- endmacro %}
+
 {#- A link (href given) or a <button>.
     variant: primary | secondary | ghost | danger;  size: md | sm.
     icon_only: shows just the icon and uses the label as its accessible name. -#}

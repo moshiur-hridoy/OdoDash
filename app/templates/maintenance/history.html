@@ -1,43 +1,72 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, card, badge, field, empty_state %}
 {% block title %}{{ _('Maintenance History') }}{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ _('Maintenance History') }}</h1>
-<form method="GET" class="mb-6 flex flex-wrap items-end gap-3">
-    <label for="vehicle_id" class="sr-only">{{ _('Vehicle') }}</label>
-    <select name="vehicle_id" id="vehicle_id" onchange="this.form.submit()" class="rounded-md border-gray-300 dark:bg-gray-800 dark:text-white">
-        <option value="">{{ _('All Vehicles') }}</option>
-        {% for vehicle in vehicles %}<option value="{{ vehicle.id }}" {% if selected_vehicle_id == vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
-    </select>
-    <div>
-        <label for="maintenance_group" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Type') }}</label>
-        <select name="maintenance_group" id="maintenance_group" class="rounded-md border-gray-300 dark:bg-gray-800 dark:text-white">
+{% set currency = current_user.currency %}
+{% set group_labels = dict(maintenance_groups) %}
+{% set filtered = selected_vehicle_id or selected_group or selected_part %}
+<div class="ds">
+{{ back_link(_('Back to Maintenance'), url_for('maintenance.index')) }}
+{{ page_header(_('Maintenance History')) }}
+
+<div class="ds-stack">
+    <form method="GET" class="ds-card ds-filters">
+        {% call field(_('Vehicle'), 'vehicle_id') %}
+        <select name="vehicle_id" id="vehicle_id" class="ds-control" onchange="this.form.submit()">
+            <option value="">{{ _('All Vehicles') }}</option>
+            {% for vehicle in vehicles %}<option value="{{ vehicle.id }}" {% if selected_vehicle_id == vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
+        </select>
+        {% endcall %}
+        {% call field(_('Type'), 'maintenance_group') %}
+        <select name="maintenance_group" id="maintenance_group" class="ds-control" onchange="this.form.submit()">
             <option value="">{{ _('All Types') }}</option>
             {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if selected_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
         </select>
-    </div>
-    {% if part_names %}
-    <div>
-        <label for="maintenance_part" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Part') }}</label>
-        <select name="maintenance_part" id="maintenance_part" class="rounded-md border-gray-300 dark:bg-gray-800 dark:text-white">
+        {% endcall %}
+        {% if part_names %}
+        {% call field(_('Part'), 'maintenance_part') %}
+        <select name="maintenance_part" id="maintenance_part" class="ds-control" onchange="this.form.submit()">
             <option value="">{{ _('All Parts') }}</option>
             {% for part in part_names %}<option value="{{ part }}" {% if selected_part == part %}selected{% endif %}>{{ part }}</option>{% endfor %}
         </select>
-    </div>
-    {% endif %}
-    <button type="submit" class="text-primary-600">{{ _('Filter') }}</button>
-</form>
-{% if total_cost %}<p class="mb-4 text-sm text-gray-600 dark:text-gray-300">{{ _('Filtered total') }}: <strong>{{ total_cost|money }} {{ current_user.currency }}</strong></p>{% endif %}
-<p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ _('History includes recorded completions and the latest saved service details. Earlier overwritten details cannot be recovered.') }}</p>
-<div class="space-y-3">
-{% for event in events %}
-<article class="surface-card bg-white dark:bg-gray-800 p-4">
-    <h2 class="font-semibold text-gray-900 dark:text-white">{{ event.name }}</h2>
-    {% if event.maintenance_group %}
-    <span class="mt-1 inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-gray-700 dark:text-primary-300">{{ dict(maintenance_groups).get(event.maintenance_group, event.maintenance_group) }}</span>
-    {% endif %}
-    <p class="text-sm text-gray-600 dark:text-gray-300">{{ event.vehicle.name }} · {{ event.performed_date|format_date if event.performed_date else _('Unknown') }}{% if event.odometer is not none %} · {{ event.odometer|groupnum }} {{ event.vehicle.get_reading_unit() }}{% endif %}</p>
-    {% if event.notes %}<p class="mt-2 text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{{ event.notes|linkify }}</p>{% endif %}
-</article>
-{% else %}<p class="text-gray-500 dark:text-gray-400">{{ _('No maintenance history yet.') }}</p>{% endfor %}
+        {% endcall %}
+        {% endif %}
+        <div class="ds-filters__actions">
+            <noscript>{{ button(_('Filter'), variant='secondary', type='submit') }}</noscript>
+            {% if filtered %}{{ button(_('Clear filters'), href=url_for('maintenance.history'), variant='ghost', icon_name='x') }}{% endif %}
+        </div>
+    </form>
+
+    {% call card(flush=True) %}
+        {% if events %}
+        {% if total_cost %}
+        <div class="history-summary">
+            <span class="ds-muted">{{ _('Filtered total') if filtered else _('Total Cost') }}</span>
+            <strong>{{ total_cost|money }} <span>{{ currency }}</span></strong>
+        </div>
+        {% endif %}
+        <ol class="ds-list">
+            {% for event in events %}
+            {% set reading_unit = event.vehicle.get_reading_unit() %}
+            <li class="history-item">
+                <div class="history-item__date">{{ event.performed_date|format_date if event.performed_date else _('Unknown') }}</div>
+                <div>
+                    <div class="history-item__head">
+                        <h2 class="history-item__title">{{ event.name }}</h2>
+                        {% if event.maintenance_group %}{{ badge(group_labels.get(event.maintenance_group, event.maintenance_group), 'accent') }}{% endif %}
+                    </div>
+                    <p class="history-item__meta">{{ event.vehicle.name }}{% if event.odometer is not none %} · <span class="ds-num">{{ event.odometer|groupnum }} {{ reading_unit }}</span>{% endif %}</p>
+                </div>
+                <div class="history-item__cost">{% if event.cost %}{{ event.cost|money }} <span>{{ currency }}</span>{% endif %}</div>
+                {% if event.notes %}<p class="history-item__notes">{{ event.notes|linkify }}</p>{% endif %}
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        {{ empty_state(_('No maintenance history yet.'), None, 'wrench') }}
+        {% endif %}
+    {% endcall %}
+</div>
+<p class="history-note">{{ _('History includes recorded completions and the latest saved service details. Earlier overwritten details cannot be recovered.') }}</p>
 </div>
 {% endblock %}
