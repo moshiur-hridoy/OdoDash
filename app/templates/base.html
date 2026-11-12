@@ -305,10 +305,13 @@
         /* Shared form controls: keep native HTML semantics, but give every
            page the same compact, modern treatment. Checkbox/radio controls
            stay native so their existing behaviour and accessibility remain
-           unchanged. */
-        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
-        form select,
-        form textarea,
+           unchanged. Design-system fields (.ds-control) are styled from
+           app.css instead, so these rules leave them alone. The exclusion is
+           wrapped in :where() so it adds no specificity: every existing
+           control keeps exactly the rules it won before. */
+        form input:where(:not(.ds-control)):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+        form select:where(:not(.ds-control)),
+        form textarea:where(:not(.ds-control)),
         .app-input,
         .app-select,
         .app-textarea {
@@ -319,14 +322,14 @@
             box-shadow: var(--shadow-none);
             transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
         }
-        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
-        form select,
+        form input:where(:not(.ds-control)):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+        form select:where(:not(.ds-control)),
         .app-input,
         .app-select {
             min-height: 36px;
             padding: 0 10px;
         }
-        form select,
+        form select:where(:not(.ds-control)),
         .app-select {
             appearance: none;
             padding: 0 36px 0 10px !important;
@@ -336,20 +339,20 @@
             background-repeat: no-repeat;
             background-size: 5px 5px, 5px 5px;
         }
-        form textarea,
+        form textarea:where(:not(.ds-control)),
         .app-textarea {
             min-height: 88px;
             padding: 10px 12px;
         }
-        form input::placeholder,
-        form textarea::placeholder,
+        form input:where(:not(.ds-control))::placeholder,
+        form textarea:where(:not(.ds-control))::placeholder,
         .app-input::placeholder,
         .app-textarea::placeholder {
             color: var(--control-placeholder);
         }
-        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):focus,
-        form select:focus,
-        form textarea:focus,
+        form input:where(:not(.ds-control)):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):focus,
+        form select:where(:not(.ds-control)):focus,
+        form textarea:where(:not(.ds-control)):focus,
         .app-input:focus,
         .app-select:focus,
         .app-textarea:focus {
@@ -357,9 +360,9 @@
             border-color: var(--primary-500);
             box-shadow: var(--shadow-focus);
         }
-        form input:disabled,
-        form select:disabled,
-        form textarea:disabled,
+        form input:where(:not(.ds-control)):disabled,
+        form select:where(:not(.ds-control)):disabled,
+        form textarea:where(:not(.ds-control)):disabled,
         .app-input:disabled,
         .app-select:disabled,
         .app-textarea:disabled {

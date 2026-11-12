@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{#- Design-system reference (admins only). Developer-facing and deliberately
+    not translated: every figure here is sample content, not the user's data. -#}
+{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, attention, odometer, empty_state, field %}
+{% from 'components/icons.html' import icon %}
+{% block title %}Design system{% endblock %}
+
+{% block content %}
+<div class="ds ds-canvas -mx-4 -my-6 px-4 py-6 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:py-8 min-h-screen">
+<div class="mx-auto max-w-6xl ds-stack">
+
+    {% call page_header('Design system', eyebrow='Developer reference', subtitle='Every component, rendered live from templates/components/ui.html. Sample content only.') %}
+        {{ button('Toggle theme', variant='secondary', icon_name='gauge', attrs={'data-theme-toggle': ''}) }}
+    {% endcall %}
+
+    <nav aria-label="Sections" class="flex flex-wrap gap-2">
+        {% for id, label in [('dashboard', 'Dashboard'), ('tokens', 'Tokens'), ('buttons', 'Buttons'), ('badges', 'Badges'), ('stats', 'Stats'), ('controls', 'Segmented & split bar'), ('attention', 'Attention'), ('odometer', 'Odometer'), ('table', 'Table'), ('forms', 'Forms'), ('empty', 'Empty state')] %}
+        <a href="#{{ id }}" class="ds-badge ds-badge--neutral" style="text-decoration:none">{{ label }}</a>
+        {% endfor %}
+    </nav>
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="dashboard" class="ds-card__title" style="margin-top:12px">Dashboard, composed from the components</h2>
+
+    {% call page_header('Good evening, Moshiur', eyebrow='Thursday, 12 November') %}
+        {{ button('All vehicles', variant='secondary', icon_name='chevron-down') }}
+        {{ segmented([{'label': 'Month', 'href': '#', 'current': True}, {'label': 'Year', 'href': '#'}], 'Period') }}
+        {{ button('More options', variant='secondary', icon_name='dots', icon_only=True) }}
+    {% endcall %}
+
+    <div class="ds-row">
+        {% call card(class='ds-grow-2') %}
+            {{ stat('Spent in November', '৳18,420', note='৳9.80 per km · 1,880 km driven', hero=True, badge_label='↓ 12% vs October', badge_tone='success') }}
+            <div style="margin-top:24px">
+            {{ split_bar([
+                {'label': 'Fuel', 'value': 58, 'display': '58%', 'series': 'accent'},
+                {'label': 'Charging', 'value': 12, 'display': '12%', 'series': 'charging'},
+                {'label': 'Other', 'value': 30, 'display': '30%', 'series': 'other'},
+            ], 'Spending by kind') }}
+            </div>
+        {% endcall %}
+
+        {% call card('Needs attention', class='ds-grow-1') %}
+            <ul class="ds-attention-list">
+                {{ attention('Insurance expired 3 days ago', 'Daily Driver · Corolla', 'danger', 'alert', 'Renew', '#') }}
+                {{ attention('Oil change in 420 km', 'Daily Driver · due at 85,650 km', 'warning', 'wrench', 'Log', '#') }}
+                {{ attention('Tax token due 14 Dec', 'Weekend EV · Model 3', 'neutral', 'calendar', 'View', '#') }}
+            </ul>
+        {% endcall %}
+    </div>
+
+    <div class="ds-row">
+        {% call card(class='ds-grow-even') %}{{ stat('Avg consumption', '8.1', unit='L/100km', note='+0.6 vs your usual', note_tone='danger') }}{% endcall %}
+        {% call card(class='ds-grow-even') %}{{ stat('Fuel price paid', '৳122', unit='/ L', note='Cheapest nearby: Padma ৳119') }}{% endcall %}
+        {% call card(class='ds-grow-even') %}{{ stat('This year', '৳1.94 lakh', note='On track for ৳2.3 lakh') }}{% endcall %}
+    </div>
+
+    {% call card('Your vehicles', action_label='Manage', action_href='#', flush=True) %}
+        <ul class="ds-list">
+            <li class="ds-list__item">
+                <span class="ds-swatch ds-series--accent"></span>
+                <div class="ds-list__main"><p class="ds-list__title">Daily Driver</p><p class="ds-list__meta">Toyota Corolla 2019</p></div>
+                {{ odometer(85230) }}
+                <span class="ds-mono ds-muted" style="font-size:13px">7.9 L/100km</span>
+                {{ badge('Service soon', 'warning') }}
+            </li>
+            <li class="ds-list__item">
+                <span class="ds-swatch ds-series--charging"></span>
+                <div class="ds-list__main"><p class="ds-list__title">Weekend EV</p><p class="ds-list__meta">Tesla Model 3 2022</p></div>
+                {{ odometer(21040) }}
+                <span class="ds-mono ds-muted" style="font-size:13px">15.2 kWh/100km</span>
+                {{ badge('All good', 'success') }}
+            </li>
+        </ul>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="tokens" class="ds-card__title" style="margin-top:24px">Tokens</h2>
+    {% call card() %}
+        <div class="grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))">
+            {% for name in ['bg', 'surface', 'surface-sunken', 'border', 'text', 'text-muted', 'accent', 'accent-ink', 'accent-soft', 'success', 'success-soft', 'warning', 'warning-soft', 'danger', 'danger-soft', 'series-charging', 'series-other'] %}
+            <div class="flex items-center gap-3">
+                <span style="width:36px;height:36px;border-radius:8px;border:1px solid var(--ds-border);background:var(--ds-{{ name }})"></span>
+                <code class="ds-mono" style="font-size:12px">--ds-{{ name }}</code>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="ds-stack" style="gap:6px;margin-top:24px">
+            <p style="margin:0;font-size:var(--ds-text-hero);font-weight:600;letter-spacing:-0.035em;line-height:1.1">৳18,420 <span class="ds-muted" style="font-size:12px;letter-spacing:0;font-weight:400">hero · 52px</span></p>
+            <p style="margin:0;font-size:var(--ds-text-xl);font-weight:600;letter-spacing:-0.02em">Page title <span class="ds-muted" style="font-size:12px;font-weight:400">xl · 28px</span></p>
+            <p style="margin:0;font-size:var(--ds-text-figure);font-weight:600">7,405 km <span class="ds-muted" style="font-size:12px;font-weight:400">figure · 26px</span></p>
+            <p style="margin:0;font-size:var(--ds-text-lg);font-weight:600">Card title <span class="ds-muted" style="font-size:12px;font-weight:400">lg · 15px</span></p>
+            <p style="margin:0">Body text, tabular figures 0123456789 <span class="ds-muted" style="font-size:12px">base · 14px</span></p>
+            <p class="ds-muted" style="margin:0;font-size:var(--ds-text-sm)">Secondary line <span style="font-size:12px">sm · 13px</span></p>
+            <p class="ds-mono" style="margin:0">ODO 085230 · 47.0 km/L <span class="ds-muted" style="font-size:12px">mono</span></p>
+        </div>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="buttons" class="ds-card__title" style="margin-top:24px">Buttons</h2>
+    {% call card() %}
+        <div class="flex flex-wrap items-center gap-2">
+            {{ button('Add fuel', icon_name='plus') }}
+            {{ button('Secondary', variant='secondary') }}
+            {{ button('Ghost', variant='ghost') }}
+            {{ button('Delete', variant='danger', icon_name='trash') }}
+            {{ button('Link button', href='#', variant='secondary', icon_name='arrow-right') }}
+            {{ button('Disabled', disabled=True) }}
+            {{ button('Edit', variant='ghost', icon_name='edit', icon_only=True) }}
+        </div>
+        <div class="flex flex-wrap items-center gap-2" style="margin-top:12px">
+            {{ button('Small', size='sm', icon_name='plus') }}
+            {{ button('Small secondary', size='sm', variant='secondary') }}
+            {{ button('Delete', size='sm', variant='ghost', icon_name='trash', icon_only=True) }}
+        </div>
+        <pre class="ds-mono ds-muted" style="margin:16px 0 0;font-size:12px;white-space:pre-wrap">{% raw %}{{ button(_('Add fuel'), href=url_for('fuel.new'), icon_name='plus') }}
+{{ button(_('Delete'), variant='danger', type='submit', attrs={'data-confirm': _('Delete this log?')}) }}{% endraw %}</pre>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="badges" class="ds-card__title" style="margin-top:24px">Badges</h2>
+    {% call card() %}
+        <div class="flex flex-wrap items-center gap-2">
+            {{ badge('Neutral') }} {{ badge('Fuel', 'accent') }} {{ badge('All good', 'success') }}
+            {{ badge('Service soon', 'warning') }} {{ badge('Overdue', 'danger') }}
+            {{ badge('Fuel', 'accent', square=True) }} {{ badge('Service', square=True) }}
+        </div>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="stats" class="ds-card__title" style="margin-top:24px">Stats</h2>
+    <div class="ds-row">
+        {% call card(class='ds-grow-even') %}{{ stat('Cost per km', '4.00', unit='BDT') }}{% endcall %}
+        {% call card(class='ds-grow-even') %}{{ stat('Total distance', '7,405', unit='km', note='Since purchase') }}{% endcall %}
+        {% call card(class='ds-grow-even') %}{{ stat('Avg consumption', '47.0', unit='km/L', note='Better than usual', note_tone='success') }}{% endcall %}
+    </div>
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="controls" class="ds-card__title" style="margin-top:24px">Segmented control and split bar</h2>
+    {% call card() %}
+        {{ segmented([{'label': '6M', 'href': '#', 'current': True}, {'label': '1Y', 'href': '#'}, {'label': 'All', 'href': '#'}], 'Period') }}
+        <div style="margin-top:20px;max-width:520px">
+            {{ split_bar([{'label': 'Fuel', 'value': 69, 'display': '20,360', 'series': 'accent'}, {'label': 'Other expenses', 'value': 31, 'display': '9,250', 'series': 'other'}], 'Total spent') }}
+        </div>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="attention" class="ds-card__title" style="margin-top:24px">Attention items</h2>
+    {% call card() %}
+        <ul class="ds-attention-list" style="max-width:520px">
+            {{ attention('Insurance expired 3 days ago', 'Honda X-Blade', 'danger', 'alert', 'Renew', '#') }}
+            {{ attention('Engine oil change in 373 km', 'Every 1,000 km', 'warning', 'wrench', 'Log', '#') }}
+            {{ attention('Tax token due 4 Feb', None, 'neutral', 'calendar') }}
+        </ul>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="odometer" class="ds-card__title" style="margin-top:24px">Odometer</h2>
+    {% call card() %}
+        <div class="flex flex-wrap items-center gap-8">
+            {{ odometer(8627) }}
+            {{ odometer(8627, size='lg') }}
+            {{ odometer(1240, unit='h', label='Engine hours 1,240') }}
+        </div>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="table" class="ds-card__title" style="margin-top:24px">Table (stacks into cards below 640px)</h2>
+    {% call card('Recent activity', action_label='View all', action_href='#', flush=True) %}
+        <div class="ds-table-wrap">
+            <table class="ds-table ds-table--stack">
+                <thead><tr><th>Date</th><th>Type</th><th>Details</th><th class="ds-num">Odometer</th><th class="ds-num">Amount</th><th><span class="ds-sr-only">Actions</span></th></tr></thead>
+                <tbody>
+                    {% for date, kind, tone, details, odo, amount in [
+                        ('11 Nov', 'Fuel', 'accent', '38.5 L Octane · full tank', '85,230 km', '৳4,697'),
+                        ('9 Nov', 'Charging', 'success', '42 kWh · home charger', '21,040 km', '৳630'),
+                        ('6 Nov', 'Service', 'neutral', 'Front brake pads', '84,910 km', '৳3,800'),
+                    ] %}
+                    <tr>
+                        <td class="ds-muted" data-cell="meta">{{ date }}</td>
+                        <td data-cell="meta">{{ badge(kind, tone, square=True) }}</td>
+                        <td data-cell="title">{{ details }}</td>
+                        <td class="ds-num ds-muted ds-mono" data-label="Odometer">{{ odo }}</td>
+                        <td class="ds-num" data-cell="value"><strong>{{ amount }}</strong></td>
+                        <td data-cell="actions"><div class="ds-table__actions">{{ button('Edit', href='#', variant='ghost', size='sm', icon_name='edit', icon_only=True) }}{{ button('Delete', variant='ghost', size='sm', icon_name='trash', icon_only=True) }}</div></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="forms" class="ds-card__title" style="margin-top:24px">Form fields</h2>
+    {% call card() %}
+        {# Inside a real <form> on purpose: base.html styles bare form controls,
+           and this proves .ds-control fields are left to the design system. #}
+        <form method="get" action="#" onsubmit="return false" class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))">
+            {% call field('Odometer', 'demo-odometer', help='The reading on the dashboard, in km.', required=True) %}
+                <input class="ds-control" id="demo-odometer" name="odometer" inputmode="decimal" placeholder="85230" aria-describedby="demo-odometer-help">
+            {% endcall %}
+            {% call field('Fuel type', 'demo-fuel') %}
+                <select class="ds-control" id="demo-fuel" name="fuel_type"><option>Octane</option><option>Petrol</option><option>Diesel</option></select>
+            {% endcall %}
+            {% call field('Price per litre', 'demo-price', error='Enter a price greater than zero.') %}
+                <input class="ds-control" id="demo-price" name="price" value="0" aria-invalid="true" aria-describedby="demo-price-error">
+            {% endcall %}
+            {% call field('Notes', 'demo-notes') %}
+                <textarea class="ds-control" id="demo-notes" name="notes" placeholder="Station, receipt number…"></textarea>
+            {% endcall %}
+            <label class="ds-check"><input type="checkbox" checked> <span>Full tank</span></label>
+            <div class="flex gap-2 items-end">{{ button('Save', type='submit', icon_name='check') }}{{ button('Cancel', href='#', variant='ghost') }}</div>
+        </form>
+    {% endcall %}
+
+    {# ------------------------------------------------------------------ #}
+    <h2 id="empty" class="ds-card__title" style="margin-top:24px">Empty state</h2>
+    {% call card() %}
+        {{ empty_state('No fuel logs yet', 'Log your first fill-up and OdoDash starts working out consumption and cost per km.', 'fuel', 'Add fuel log', '#') }}
+    {% endcall %}
+
+</div>
+</div>
+{% endblock %}

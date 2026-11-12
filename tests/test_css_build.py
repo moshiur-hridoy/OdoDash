@@ -104,6 +104,18 @@ def test_glued_class_scanner_catches_both_forms():
     assert not _GLUED.search('toast toast--{{ kind }}')
 
 
+def test_design_system_classes_are_never_purged():
+    """The component macros compose class names (`'ds-btn--' ~ variant`,
+    `ds-badge--{{ tone }}`) that the build cannot see. Inside a Tailwind
+    @layer they would be dropped and the components would render unstyled,
+    so the .ds- rules stay plain CSS, placed before the utilities so a
+    utility still wins a tie."""
+    source = (ROOT / 'app' / 'static' / 'css' / 'src' / 'app.css').read_text(encoding='utf-8')
+    assert '@layer components {' not in source
+    assert '@layer utilities {' not in source
+    assert source.index('.ds-btn {') < source.index('@tailwind utilities;')
+
+
 def test_build_script_covers_the_image_platforms():
     spec = importlib.util.spec_from_file_location('build_css', ROOT / 'scripts' / 'build_css.py')
     build_css = importlib.util.module_from_spec(spec)
