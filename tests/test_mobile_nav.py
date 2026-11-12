@@ -69,3 +69,41 @@ class TestMobileNav:
     def test_more_tab_is_active_on_a_more_section(self, auth_client):
         tabbar = _tabbar(auth_client.get('/maintenance/').get_data(as_text=True))
         assert re.search(r'class="tabbar__tab is-active" data-sheet-open="sheet-more"', tabbar)
+
+    def test_expenses_use_a_receipt_not_a_currency_sign(self, auth_client):
+        # A dollar sign read oddly to anyone keeping taka, euros or yen.
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        receipt, dollar = 'd="M5 3v18l2-1.5', 'd="M12 3v18M16.5 7.5'
+        assert receipt in _tabbar(html)
+        assert receipt in _section(html, 'sheet-add')
+        assert dollar not in html  # the sidebar too
+
+    def test_one_fuel_entry_in_the_add_sheet(self, auth_client):
+        add = _section(auth_client.get('/dashboard').get_data(as_text=True), 'sheet-add')
+        assert add.count('/fuel/') == 1
+        assert 'href="/fuel/quick" data-quick-fuel' in add
+        assert 'Add Fuel Log' in add and 'Quick Fuel Entry' not in add
+        assert '/fuel/new' not in add
+
+    def test_an_electric_only_garage_gets_charging_instead_of_fuel(self, auth_client, test_user):
+        from app.models import Vehicle
+        db.session.add(Vehicle(owner_id=test_user.id, name='Leaf', vehicle_type='car', fuel_type='electric'))
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert re.findall(r'href="([^"]+)"', _tabbar(html)) == ['/dashboard', '/charging/', '/expenses/']
+        add = _section(html, 'sheet-add')
+        hrefs = re.findall(r'href="([^"]+)"', add)
+        assert hrefs[0] == '/charging/new'
+        assert '/fuel/' not in add
+
+    def test_a_mixed_garage_keeps_the_fuel_tab(self, auth_client, test_user, sample_vehicle):
+        from app.models import Vehicle
+        db.session.add(Vehicle(owner_id=test_user.id, name='Leaf', vehicle_type='car', fuel_type='electric'))
+        db.session.commit()
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert re.findall(r'href="([^"]+)"', _tabbar(html)) == ['/dashboard', '/fuel/', '/expenses/']
+
+    def test_sheets_can_be_swiped_closed(self, auth_client):
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert 'function enableSwipe(sheet)' in html
+        assert 'enableSwipe(sheet);' in html
