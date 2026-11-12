@@ -78,8 +78,11 @@
         <p class="ds-stat__value">{{ value }}{% if unit %}<span class="ds-stat__unit">{{ unit }}</span>{% endif %}</p>
         {%- if badge_label %}{{ badge(badge_label, badge_tone) }}{% endif %}
     </div>
-    {%- if note %}<p class="ds-stat__note{% if note_tone %} ds-stat__note--{{ note_tone }}{% endif %}">{{ note }}</p>{% endif %}
-    {%- if extra_note %}<p class="ds-stat__note">{{ extra_note }}</p>{% endif %}
+    {%- if note and extra_note %}
+    {#- One line, two parts: the toned note, then the muted extra after a dot.
+        Each part keeps together, so a narrow card breaks the line at the dot. -#}
+    <p class="ds-stat__note ds-stat__note--split"><span class="{% if note_tone %}ds-stat__note--{{ note_tone }}{% endif %}">{{ note }}</span> <span aria-hidden="true">·</span> <span>{{ extra_note }}</span></p>
+    {%- elif note %}<p class="ds-stat__note{% if note_tone %} ds-stat__note--{{ note_tone }}{% endif %}">{{ note }}</p>{% endif %}
 </div>
 {%- endmacro %}
 
