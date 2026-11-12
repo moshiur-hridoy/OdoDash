@@ -67,7 +67,19 @@ class TestDotenvLoading:
             tmp_path,
             dotenv='DATABASE_URL=postgres://user:pw@host:5432/may\n',
         )
-        assert settings['SQLALCHEMY_DATABASE_URI'] == 'postgresql://user:pw@host:5432/may'
+        assert settings['SQLALCHEMY_DATABASE_URI'] == 'postgresql+psycopg2://user:pw@host:5432/may'
+
+    def test_bare_postgresql_url_pins_the_installed_driver(self, tmp_path):
+        # SQLAlchemy 2.1 defaults 'postgresql://' to psycopg 3, which the
+        # image does not install; startup failed until the driver was pinned.
+        settings = run_config(
+            tmp_path, dotenv='DATABASE_URL=postgresql://user:pw@host:5432/may\n')
+        assert settings['SQLALCHEMY_DATABASE_URI'] == 'postgresql+psycopg2://user:pw@host:5432/may'
+
+    def test_explicit_driver_is_kept(self, tmp_path):
+        settings = run_config(
+            tmp_path, dotenv='DATABASE_URL=postgresql+psycopg://user:pw@host:5432/may\n')
+        assert settings['SQLALCHEMY_DATABASE_URI'] == 'postgresql+psycopg://user:pw@host:5432/may'
 
     def test_defaults_used_when_no_dotenv(self, tmp_path):
         settings = run_config(tmp_path, dotenv=None)

@@ -165,6 +165,12 @@ class Config:
     # some hosting providers; normalise it so those URLs keep working (#239).
     if _database_url.startswith('postgres://'):
         _database_url = _database_url.replace('postgres://', 'postgresql://', 1)
+    # SQLAlchemy 2.1 maps a bare 'postgresql://' to the psycopg 3 driver, but
+    # the image ships psycopg2, so such URLs failed at startup with
+    # "No module named 'psycopg'". Pin the driver we install; a URL that
+    # already names a driver ('postgresql+psycopg://') is left alone.
+    if _database_url.startswith('postgresql://'):
+        _database_url = _database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
     SQLALCHEMY_DATABASE_URI = _database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or str(basedir / 'data' / 'uploads')
