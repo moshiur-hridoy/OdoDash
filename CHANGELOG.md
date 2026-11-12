@@ -10,6 +10,13 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Fixed
+
+- The Telegram bot and its settings panel are translated into every
+  language. In 0.48.0 they appeared in English everywhere, because their
+  strings never reached the translation template. A test now fails when a
+  string marked for translation is missing from the template.
+
 ## [0.48.0] - 2026-11-12
 
 ### Added
