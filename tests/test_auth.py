@@ -827,8 +827,9 @@ COOKIE_SETTINGS = ('SESSION_COOKIE_HTTPONLY', 'SESSION_COOKIE_SAMESITE',
                    'REMEMBER_COOKIE_SAMESITE', 'REMEMBER_COOKIE_SECURE')
 
 
-# Flask-Login 0.6.3 stamps the remember cookie with datetime.utcnow().
-@pytest.mark.filterwarnings('ignore:datetime.datetime.utcnow:DeprecationWarning:flask_login')
+# Flask-Login 0.6.3 stamps the remember cookie with the naive-UTC clock
+# Python 3.12 deprecates; the warning is the library's, not ours.
+@pytest.mark.filterwarnings('ignore::DeprecationWarning:flask_login')
 class TestLoginCookies:
     @pytest.fixture(autouse=True)
     def _production_cookie_settings(self, app):
@@ -855,3 +856,67 @@ class TestLoginCookies:
     def test_secure_flag_is_opt_in(self, client, test_user):
         # Plain-HTTP home-network installs must keep working by default.
         assert all('Secure' not in c for c in self._cookie_headers(client))
+
+
+class TestLoginThrottle:
+    def _fail(self, client, username='testuser'):
+        return client.post('/auth/login', data={'username': username, 'password': 'wrong-password'})
+
+    def test_fifth_failure_locks_the_pair(self, client, test_user):
+        for _ in range(5):
+            assert self._fail(client).status_code == 200
+        blocked = client.post('/auth/login', data={
+            'username': 'testuser', 'password': 'TestPass123!'})
+        # Even the right password is refused while locked.
+        assert blocked.status_code == 429
+        assert b'Too many failed sign-in attempts' in blocked.data
+
+    def test_success_clears_earlier_failures(self, client, test_user):
+        for _ in range(4):
+            self._fail(client)
+        ok = client.post('/auth/login', data={'username': 'testuser', 'password': 'TestPass123!'})
+        assert ok.status_code == 302
+        client.get('/auth/logout')
+        for _ in range(4):
+            assert self._fail(client).status_code == 200
+
+    def test_username_case_does_not_dodge_the_lock(self, client, test_user):
+        for name in ('testuser', 'TestUser', 'TESTUSER', 'testUser', 'Testuser'):
+            self._fail(client, name)
+        assert self._fail(client).status_code == 429
+
+    def test_another_address_is_not_locked(self, client, test_user):
+        for _ in range(5):
+            self._fail(client)
+        other = client.post('/auth/login', data={
+            'username': 'testuser', 'password': 'TestPass123!'},
+            environ_base={'REMOTE_ADDR': '10.0.0.9'})
+        assert other.status_code == 302
+
+    def test_public_demo_login_is_not_throttled(self, app, client, test_user):
+        app.config['DEMO_MODE'] = True
+        for _ in range(6):
+            assert self._fail(client, 'demo').status_code == 200
+
+    def test_failures_are_logged(self, app, client, test_user, caplog):
+        # Flask's app logger does not propagate to root, so listen on it.
+        app.logger.addHandler(caplog.handler)
+        try:
+            self._fail(client)
+        finally:
+            app.logger.removeHandler(caplog.handler)
+        assert "Failed login for 'testuser' from 127.0.0.1" in caplog.text
+
+
+class TestLoginThrottleWindow:
+    def test_lock_lifts_when_the_window_passes(self):
+        from app.security import LoginThrottle
+        now = [1000.0]
+        throttle = LoginThrottle(max_failures=3, window_seconds=60, clock=lambda: now[0])
+        for _ in range(3):
+            throttle.record_failure('a', 'ip')
+            now[0] += 1
+        # Oldest failure at 1000, now 1003: it ages out at 1060.
+        assert throttle.retry_after('a', 'ip') == 57
+        now[0] += 57
+        assert throttle.retry_after('a', 'ip') == 0

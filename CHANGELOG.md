@@ -14,6 +14,11 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 - Login cookies are `HttpOnly` and `SameSite=Lax`. Set `COOKIE_SECURE=true`
   to also mark them `Secure` when OdoDash is only served over HTTPS.
+- Sign-in is throttled: after 5 failed attempts for one username from one
+  address within 15 minutes, that pair is refused until the window passes.
+  Another address can still sign in, so a guesser cannot lock the owner out.
+  Each failure is logged as `Failed login for '<username>' from <address>`
+  for tools such as fail2ban. The public demo login is exempt.
 
 ### Fixed
 

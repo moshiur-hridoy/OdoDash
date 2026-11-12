@@ -314,3 +314,69 @@ def secure_filename_with_uuid(filename):
 
     # Add UUID prefix
     return f"{uuid.uuid4().hex}_{secure_name}"
+
+
+class LoginThrottle:
+    """Slow down password guessing on the login form.
+
+    Counts failed sign-ins per (username, client address) in a sliding
+    window. Once a pair reaches ``max_failures`` it is refused until its
+    oldest failure ages out, without even checking the password.
+
+    Keying on the pair rather than the username alone means someone guessing
+    from one address cannot lock the real owner out from another. Behind a
+    reverse proxy every client shares the proxy's address, so the lock then
+    falls on the username for one window, which is still short.
+
+    The state lives in process memory: nothing to migrate, and a restart
+    clears it. Under Gunicorn each worker counts separately, which multiplies
+    the allowance by the worker count but keeps the order of magnitude.
+    """
+
+    def __init__(self, max_failures=5, window_seconds=15 * 60, clock=None):
+        import threading
+        import time
+        self.max_failures = max_failures
+        self.window = window_seconds
+        self._clock = clock or time.monotonic
+        self._failures = {}
+        self._lock = threading.Lock()
+
+    @staticmethod
+    def _key(username, address):
+        return ((username or '').strip().lower(), address or '')
+
+    def _recent(self, key, now):
+        stamps = [t for t in self._failures.get(key, ()) if now - t < self.window]
+        if stamps:
+            self._failures[key] = stamps
+        else:
+            self._failures.pop(key, None)
+        return stamps
+
+    def retry_after(self, username, address):
+        """Seconds until this pair may try again, or 0 if it may now."""
+        with self._lock:
+            now = self._clock()
+            stamps = self._recent(self._key(username, address), now)
+            if len(stamps) < self.max_failures:
+                return 0
+            return max(1, int(stamps[-self.max_failures] + self.window - now))
+
+    def record_failure(self, username, address):
+        with self._lock:
+            now = self._clock()
+            key = self._key(username, address)
+            self._recent(key, now)
+            self._failures.setdefault(key, []).append(now)
+            # Keep memory bounded if something hammers many usernames.
+            if len(self._failures) > 10000:
+                for stale_key in list(self._failures):
+                    self._recent(stale_key, now)  # drops keys with nothing recent
+
+    def reset(self, username, address):
+        with self._lock:
+            self._failures.pop(self._key(username, address), None)
+
+
+login_throttle = LoginThrottle()

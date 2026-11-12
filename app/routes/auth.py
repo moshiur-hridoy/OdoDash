@@ -9,7 +9,7 @@ from app import db
 from app.models import User, AppSettings, USER_ROLES, USER_ROLE_DESCRIPTIONS, ROLE_EDITOR, ROLE_WRITE_SCOPES
 from app.security import (
     get_safe_redirect_url, validate_password_strength,
-    validate_webhook_url, admin_required
+    validate_webhook_url, admin_required, login_throttle
 )
 from app.services.notifications import NotificationService
 from config import APP_VERSION, DISPLAY_VERSION, RELEASE_CHANNEL, GITHUB_REPO
@@ -26,25 +26,45 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         remember = request.form.get('remember', False)
+        address = request.remote_addr
+        # The demo login is public, so throttling it would only let one
+        # visitor lock the next one out.
+        throttled = not (current_app.config.get('DEMO_MODE') and username == 'demo')
+
+        wait = login_throttle.retry_after(username, address) if throttled else 0
+        if wait:
+            flash(_('Too many failed sign-in attempts. Try again in %(minutes)s minutes.',
+                    minutes=max(1, -(-wait // 60))), 'error')
+            return render_template('auth/login.html', **_login_page_context()), 429
 
         user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):
+            login_throttle.reset(username, address)
             login_user(user, remember=remember)
             next_page = request.args.get('next')
             # Validate redirect URL to prevent open redirect attacks
             safe_redirect = get_safe_redirect_url(next_page, default=None)
             return redirect(safe_redirect or get_start_page_url(user))
 
+        if throttled:
+            login_throttle.record_failure(username, address)
+        # One line per failure, in a fixed shape, so fail2ban or a log alert
+        # can act on it.
+        current_app.logger.warning('Failed login for %r from %s', (username or '')[:64], address)
         flash(_('Invalid username or password'), 'error')
 
+    return render_template('auth/login.html', **_login_page_context())
+
+
+def _login_page_context():
     registration_enabled = AppSettings.get('registration_enabled', 'true') == 'true'
     smtp_configured = bool(
         AppSettings.get('smtp_enabled', 'true') == 'true' and
         AppSettings.get('smtp_host') and
         AppSettings.get('smtp_username')
     )
-    return render_template('auth/login.html', registration_enabled=registration_enabled, smtp_configured=smtp_configured)
+    return {'registration_enabled': registration_enabled, 'smtp_configured': smtp_configured}
 
 
 @bp.route('/forgot-password', methods=['GET', 'POST'])
