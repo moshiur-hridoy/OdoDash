@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from 'partials/password_rules.html' import password_rules, password_match %}
 {% block title %}{{ _('Edit User') }} - {{ user.username }}{% endblock %}
 
 {% block content %}
@@ -73,13 +74,15 @@
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
                         <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('New Password') }}</label>
-                        <input type="password" name="new_password" id="new_password"
+                        <input type="password" name="new_password" id="new_password" autocomplete="new-password"
                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                        {{ password_rules('new_password', 'confirm_new_password', optional=true) }}
                     </div>
                     <div>
                         <label for="confirm_new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Confirm New Password') }}</label>
-                        <input type="password" name="confirm_new_password" id="confirm_new_password"
+                        <input type="password" name="confirm_new_password" id="confirm_new_password" autocomplete="new-password"
                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+                        {{ password_match('confirm_new_password') }}
                     </div>
                 </div>
             </div>

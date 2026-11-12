@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-12 06:24+0600\n"
+"POT-Creation-Date: 2026-11-12 16:33+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko <LL@li.org>\n"
@@ -44,8 +44,8 @@ msgstr "주유와 충전을 기록할 수 있습니다. 그 외에는 읽기 전
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "읽기 전용. 데이터를 볼 수 있지만 변경할 수 없습니다."
 
-#: app/models.py:185 app/templates/auth/create_user.html:71
-#: app/templates/auth/edit_user.html:59
+#: app/models.py:185 app/templates/auth/create_user.html:74
+#: app/templates/auth/edit_user.html:60
 msgid "Administrator"
 msgstr "관리자"
 
@@ -55,7 +55,7 @@ msgstr "엔진 가동 시간"
 
 #: app/models.py:397 app/templates/charging/form.html:86
 #: app/templates/expenses/form.html:99 app/templates/expenses/index.html:55
-#: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:51
+#: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:56
 #: app/templates/fuel/index.html:43 app/templates/fuel/index.html:159
 #: app/templates/maintenance/form.html:138
 #: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
@@ -69,7 +69,7 @@ msgid "Hours"
 msgstr "시간"
 
 #: app/models.py:403 app/templates/allowance/form.html:48
-#: app/templates/allowance/index.html:30 app/templates/auth/settings.html:126
+#: app/templates/allowance/index.html:30 app/templates/auth/settings.html:127
 #: app/templates/tires/index.html:135 app/templates/trips/form.html:97
 #: app/templates/trips/form.html:188 app/templates/trips/report.html:102
 msgid "Distance"
@@ -136,13 +136,13 @@ msgid "Transmission Fluid"
 msgstr "변속기 오일"
 
 #: app/models.py:1442 app/models.py:1581 app/models.py:1646
-#: app/templates/auth/settings.html:196
+#: app/templates/auth/settings.html:197
 msgid "Custom"
 msgstr "사용자 지정"
 
 #: app/models.py:1447 app/routes/maintenance.py:99
-#: app/templates/auth/settings.html:441 app/templates/auth/settings.html:507
-#: app/templates/base.html:513 app/templates/partials/mobile_nav.html:26
+#: app/templates/auth/settings.html:444 app/templates/auth/settings.html:510
+#: app/templates/base.html:514 app/templates/partials/mobile_nav.html:26
 msgid "Maintenance"
 msgstr "정비"
 
@@ -239,11 +239,11 @@ msgstr "보트"
 msgid "Mileage (km/mi)"
 msgstr "주행거리 (km/mi)"
 
-#: app/models.py:1485 app/templates/auth/settings.html:129
+#: app/models.py:1485 app/templates/auth/settings.html:130
 msgid "Kilometres (km)"
 msgstr "킬로미터 (km)"
 
-#: app/models.py:1486 app/templates/auth/settings.html:130
+#: app/models.py:1486 app/templates/auth/settings.html:131
 msgid "Miles (mi)"
 msgstr "마일 (mi)"
 
@@ -547,9 +547,29 @@ msgstr "뒤 차축"
 msgid "Your account does not have permission to change this data."
 msgstr "이 계정에는 데이터를 변경할 권한이 없습니다."
 
-#: app/routes/allowance.py:31 app/routes/expenses.py:179 app/routes/fuel.py:91
-#: app/routes/fuel.py:524 app/routes/notes.py:31 app/routes/reminders.py:64
-#: app/routes/tires.py:77 app/routes/trips.py:76
+#: app/security.py:103
+msgid "Password is required"
+msgstr "비밀번호는 필수입니다"
+
+#: app/security.py:106
+msgid "Password must be at least 8 characters long"
+msgstr "비밀번호는 8자 이상이어야 합니다"
+
+#: app/security.py:109
+msgid "Password must contain at least one uppercase letter"
+msgstr "비밀번호에 대문자가 하나 이상 포함되어야 합니다"
+
+#: app/security.py:112
+msgid "Password must contain at least one lowercase letter"
+msgstr "비밀번호에 소문자가 하나 이상 포함되어야 합니다"
+
+#: app/security.py:115
+msgid "Password must contain at least one digit"
+msgstr "비밀번호에 숫자가 하나 이상 포함되어야 합니다"
+
+#: app/routes/allowance.py:31 app/routes/expenses.py:179
+#: app/routes/fuel.py:117 app/routes/fuel.py:533 app/routes/notes.py:31
+#: app/routes/reminders.py:64 app/routes/tires.py:77 app/routes/trips.py:76
 #: app/templates/fuel/_quick_no_vehicle.html:2
 msgid "Please add a vehicle first"
 msgstr "먼저 차량을 추가하십시오"
@@ -561,9 +581,9 @@ msgstr "먼저 차량을 추가하십시오"
 #: app/routes/documents.py:165 app/routes/documents.py:205
 #: app/routes/expenses.py:188 app/routes/expenses.py:278
 #: app/routes/expenses.py:333 app/routes/expenses.py:362
-#: app/routes/expenses.py:367 app/routes/fuel.py:100 app/routes/fuel.py:258
-#: app/routes/fuel.py:424 app/routes/fuel.py:479 app/routes/fuel.py:484
-#: app/routes/fuel.py:539 app/routes/fuel.py:540 app/routes/maintenance.py:220
+#: app/routes/expenses.py:367 app/routes/fuel.py:126 app/routes/fuel.py:273
+#: app/routes/fuel.py:433 app/routes/fuel.py:488 app/routes/fuel.py:493
+#: app/routes/fuel.py:545 app/routes/fuel.py:546 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
 #: app/routes/notes.py:40 app/routes/notes.py:87 app/routes/notes.py:128
 #: app/routes/reminders.py:72 app/routes/reminders.py:127
@@ -754,6 +774,8 @@ msgstr "유효하지 않거나 만료된 재설정 링크입니다. 새로 요�
 
 #: app/routes/auth.py:132 app/routes/auth.py:190 app/routes/auth.py:271
 #: app/routes/auth.py:603 app/routes/auth.py:650
+#: app/templates/partials/password_rules.html:33
+#: app/templates/partials/password_rules.html:48
 msgid "Passwords do not match"
 msgstr "비밀번호가 일치하지 않습니다"
 
@@ -926,28 +948,28 @@ msgstr "비용이 성공적으로 업데이트되었습니다"
 msgid "Expense deleted successfully"
 msgstr "비용이 성공적으로 삭제되었습니다"
 
-#: app/routes/expenses.py:376 app/routes/fuel.py:493
+#: app/routes/expenses.py:376 app/routes/fuel.py:502
 msgid "Attachment deleted"
 msgstr "첨부 파일이 삭제되었습니다"
 
-#: app/routes/fuel.py:225
+#: app/routes/fuel.py:243
 msgid "Fuel log added successfully"
 msgstr "주유 기록이 성공적으로 추가되었습니다"
 
-#: app/routes/fuel.py:394
+#: app/routes/fuel.py:406
 msgid "Fuel log updated successfully"
 msgstr "주유 기록이 성공적으로 업데이트되었습니다"
 
-#: app/routes/fuel.py:458
+#: app/routes/fuel.py:467
 msgid "Fuel log deleted successfully"
 msgstr "주유 기록이 성공적으로 삭제되었습니다"
 
-#: app/routes/fuel.py:598 app/routes/fuel.py:601
+#: app/routes/fuel.py:604 app/routes/fuel.py:607
 msgid "Fuel log added!"
 msgstr "주유 기록이 추가되었습니다!"
 
 #: app/routes/main.py:134 app/routes/vehicles.py:213
-#: app/templates/base.html:582 app/templates/dashboard.html:581
+#: app/templates/base.html:583 app/templates/dashboard.html:581
 #: app/templates/partials/mobile_nav.html:22
 #: app/templates/timeline/index.html:114 app/templates/trips/index.html:127
 #: app/templates/vehicles/view.html:157
@@ -1314,28 +1336,28 @@ msgstr "부품이 성공적으로 삭제되었습니다"
 msgid "Dismiss"
 msgstr "닫기"
 
-#: app/templates/auth/settings.html:435 app/templates/base.html:484
+#: app/templates/auth/settings.html:438 app/templates/base.html:485
 #: app/templates/dashboard.html:2 app/templates/dashboard.html:133
 #: app/templates/partials/mobile_nav.html:73
 msgid "Dashboard"
 msgstr "대시보드"
 
-#: app/templates/auth/settings.html:436 app/templates/auth/settings.html:487
-#: app/templates/base.html:486 app/templates/dashboard.html:149
+#: app/templates/auth/settings.html:439 app/templates/auth/settings.html:490
+#: app/templates/base.html:487 app/templates/dashboard.html:149
 #: app/templates/partials/mobile_nav.html:21
 #: app/templates/vehicles/index.html:2 app/templates/vehicles/index.html:22
 msgid "Vehicles"
 msgstr "차량"
 
-#: app/templates/auth/settings.html:437 app/templates/auth/settings.html:492
-#: app/templates/base.html:489 app/templates/fuel/index.html:2
+#: app/templates/auth/settings.html:440 app/templates/auth/settings.html:495
+#: app/templates/base.html:490 app/templates/fuel/index.html:2
 #: app/templates/fuel/index.html:7 app/templates/search/index.html:66
 #: app/templates/vehicles/view.html:1028
 msgid "Fuel Logs"
 msgstr "주유 기록"
 
-#: app/templates/auth/settings.html:439 app/templates/auth/settings.html:497
-#: app/templates/base.html:492 app/templates/dashboard.html:587
+#: app/templates/auth/settings.html:442 app/templates/auth/settings.html:500
+#: app/templates/base.html:493 app/templates/dashboard.html:587
 #: app/templates/expenses/index.html:2 app/templates/expenses/index.html:7
 #: app/templates/expenses/index.html:174
 #: app/templates/partials/mobile_nav.html:23
@@ -1344,66 +1366,66 @@ msgstr "주유 기록"
 msgid "Expenses"
 msgstr "비용"
 
-#: app/templates/auth/settings.html:440 app/templates/auth/settings.html:502
-#: app/templates/base.html:495 app/templates/dashboard.html:330
+#: app/templates/auth/settings.html:443 app/templates/auth/settings.html:505
+#: app/templates/base.html:496 app/templates/dashboard.html:330
 #: app/templates/partials/mobile_nav.html:24
 #: app/templates/reminders/index.html:2 app/templates/reminders/index.html:7
 msgid "Reminders"
 msgstr "알림"
 
-#: app/templates/auth/settings.html:445 app/templates/auth/settings.html:527
-#: app/templates/base.html:498 app/templates/partials/mobile_nav.html:25
+#: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
+#: app/templates/base.html:499 app/templates/partials/mobile_nav.html:25
 #: app/templates/search/index.html:130 app/templates/trips/index.html:2
 #: app/templates/trips/index.html:7
 msgid "Trips"
 msgstr "주행"
 
-#: app/templates/base.html:510 app/templates/partials/mobile_nav.html:91
+#: app/templates/base.html:511 app/templates/partials/mobile_nav.html:91
 #: app/templates/partials/mobile_nav.html:112
 msgid "More"
 msgstr "더보기"
 
-#: app/templates/base.html:516 app/templates/partials/mobile_nav.html:27
+#: app/templates/base.html:517 app/templates/partials/mobile_nav.html:27
 msgid "Recurring"
 msgstr "반복"
 
-#: app/templates/auth/settings.html:443 app/templates/auth/settings.html:517
-#: app/templates/base.html:519 app/templates/documents/index.html:2
+#: app/templates/auth/settings.html:446 app/templates/auth/settings.html:520
+#: app/templates/base.html:520 app/templates/documents/index.html:2
 #: app/templates/documents/index.html:7
 #: app/templates/partials/mobile_nav.html:28
 #: app/templates/search/index.html:89
 msgid "Documents"
 msgstr "문서"
 
-#: app/templates/auth/settings.html:444 app/templates/auth/settings.html:522
-#: app/templates/base.html:522 app/templates/partials/mobile_nav.html:29
+#: app/templates/auth/settings.html:447 app/templates/auth/settings.html:525
+#: app/templates/base.html:523 app/templates/partials/mobile_nav.html:29
 #: app/templates/stations/index.html:2 app/templates/stations/index.html:7
 msgid "Fuel Stations"
 msgstr "주유소"
 
-#: app/templates/auth/settings.html:446 app/templates/auth/settings.html:532
-#: app/templates/base.html:525 app/templates/partials/mobile_nav.html:30
+#: app/templates/auth/settings.html:449 app/templates/auth/settings.html:535
+#: app/templates/base.html:526 app/templates/partials/mobile_nav.html:30
 msgid "EV Charging"
 msgstr "전기차 충전"
 
 #: app/templates/allowance/index.html:2 app/templates/allowance/index.html:7
-#: app/templates/auth/settings.html:447 app/templates/auth/settings.html:537
-#: app/templates/base.html:528 app/templates/dashboard.html:280
+#: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
+#: app/templates/base.html:529 app/templates/dashboard.html:280
 #: app/templates/partials/mobile_nav.html:31
 #: app/templates/vehicles/view.html:226
 msgid "Mileage Allowance"
 msgstr "주행 수당"
 
-#: app/templates/auth/settings.html:542 app/templates/base.html:531
+#: app/templates/auth/settings.html:545 app/templates/base.html:532
 #: app/templates/partials/mobile_nav.html:32 app/templates/tires/index.html:2
 #: app/templates/tires/index.html:7
 msgid "Tires"
 msgstr "타이어"
 
-#: app/templates/auth/settings.html:448 app/templates/auth/settings.html:547
-#: app/templates/base.html:534 app/templates/charging/form.html:149
+#: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
+#: app/templates/base.html:535 app/templates/charging/form.html:149
 #: app/templates/dashboard.html:336 app/templates/expenses/form.html:135
-#: app/templates/fuel/form.html:171 app/templates/notes/index.html:2
+#: app/templates/fuel/form.html:183 app/templates/notes/index.html:2
 #: app/templates/notes/index.html:7 app/templates/partials/mobile_nav.html:33
 #: app/templates/search/index.html:110 app/templates/stations/form.html:74
 #: app/templates/tires/form.html:83 app/templates/trips/form.html:142
@@ -1414,42 +1436,42 @@ msgstr "타이어"
 msgid "Notes"
 msgstr "메모"
 
-#: app/templates/base.html:540 app/templates/base.html:545
+#: app/templates/base.html:541 app/templates/base.html:546
 msgid "What's new"
 msgstr "새로운 소식"
 
-#: app/templates/base.html:543
+#: app/templates/base.html:544
 msgid "Update available"
 msgstr "업데이트 가능"
 
-#: app/templates/base.html:546
+#: app/templates/base.html:547
 msgid "How to update"
 msgstr "업데이트 방법"
 
-#: app/templates/auth/settings.html:438 app/templates/base.html:580
+#: app/templates/auth/settings.html:441 app/templates/base.html:581
 #: app/templates/fuel/quick.html:2 app/templates/fuel/quick.html:7
 #: app/templates/partials/mobile_nav.html:52
 #: app/templates/partials/mobile_nav.html:143
 msgid "Quick Fuel Entry"
 msgstr "빠른 주유 입력"
 
-#: app/templates/base.html:588 app/templates/partials/mobile_nav.html:119
+#: app/templates/base.html:589 app/templates/partials/mobile_nav.html:119
 msgid "Toggle dark mode"
 msgstr "다크 모드 전환"
 
-#: app/templates/base.html:592 app/templates/base.html:617
+#: app/templates/base.html:593 app/templates/base.html:618
 #: app/templates/partials/mobile_nav.html:123
 #: app/templates/search/index.html:2 app/templates/search/index.html:6
 #: app/templates/search/index.html:32
 msgid "Search"
 msgstr "검색"
 
-#: app/templates/auth/settings.html:2 app/templates/auth/settings.html:6
-#: app/templates/base.html:595 app/templates/partials/mobile_nav.html:126
+#: app/templates/auth/settings.html:3 app/templates/auth/settings.html:7
+#: app/templates/base.html:596 app/templates/partials/mobile_nav.html:126
 msgid "Settings"
 msgstr "설정"
 
-#: app/templates/base.html:598 app/templates/partials/mobile_nav.html:129
+#: app/templates/base.html:599 app/templates/partials/mobile_nav.html:129
 msgid "Logout"
 msgstr "로그아웃"
 
@@ -1498,7 +1520,7 @@ msgstr "단위"
 
 #: app/templates/charging/form.html:140 app/templates/charging/index.html:28
 #: app/templates/dashboard.html:261 app/templates/fuel/_quick_form.html:75
-#: app/templates/fuel/form.html:96
+#: app/templates/fuel/form.html:105
 msgid "Total Cost"
 msgstr "총 비용"
 
@@ -1623,7 +1645,7 @@ msgstr "주행 수당으로 돌아가기"
 #: app/templates/charging/form.html:19 app/templates/charging/index.html:38
 #: app/templates/documents/form.html:21 app/templates/expenses/form.html:29
 #: app/templates/expenses/index.html:51 app/templates/fuel/_quick_form.html:14
-#: app/templates/fuel/form.html:19 app/templates/fuel/index.html:42
+#: app/templates/fuel/form.html:24 app/templates/fuel/index.html:42
 #: app/templates/fuel/index.html:158 app/templates/maintenance/form.html:30
 #: app/templates/maintenance/history.html:6 app/templates/notes/form.html:19
 #: app/templates/notes/index.html:29 app/templates/recurring/form.html:21
@@ -1635,7 +1657,7 @@ msgstr "차량"
 
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
 #: app/templates/charging/form.html:37 app/templates/expenses/form.html:44
-#: app/templates/expenses/index.html:50 app/templates/fuel/form.html:43
+#: app/templates/expenses/index.html:50 app/templates/fuel/form.html:48
 #: app/templates/fuel/index.html:41 app/templates/fuel/index.html:157
 #: app/templates/maintenance/form.html:131 app/templates/notes/form.html:34
 #: app/templates/notes/index.html:28 app/templates/tires/index.html:87
@@ -1673,7 +1695,7 @@ msgstr "예: 6월 고객 방문"
 
 #: app/templates/allowance/form.html:77 app/templates/charging/form.html:159
 #: app/templates/documents/form.html:116 app/templates/expenses/form.html:169
-#: app/templates/fuel/form.html:204
+#: app/templates/fuel/form.html:216
 #: app/templates/import/backup_preview.html:90
 #: app/templates/maintenance/form.html:189
 #: app/templates/maintenance/index.html:163 app/templates/notes/form.html:72
@@ -1685,10 +1707,10 @@ msgstr "예: 6월 고객 방문"
 msgid "Cancel"
 msgstr "취소"
 
-#: app/templates/allowance/form.html:81 app/templates/auth/edit_user.html:91
-#: app/templates/auth/settings.html:213 app/templates/charging/form.html:163
+#: app/templates/allowance/form.html:81 app/templates/auth/edit_user.html:94
+#: app/templates/auth/settings.html:214 app/templates/charging/form.html:163
 #: app/templates/documents/form.html:120 app/templates/expenses/form.html:173
-#: app/templates/fuel/form.html:208 app/templates/maintenance/form.html:193
+#: app/templates/fuel/form.html:220 app/templates/maintenance/form.html:193
 #: app/templates/notes/form.html:76 app/templates/recurring/form.html:147
 #: app/templates/stations/form.html:105 app/templates/tires/form.html:107
 #: app/templates/trips/form.html:156 app/templates/trips/template_form.html:90
@@ -1723,7 +1745,7 @@ msgstr "이 수당 항목을 삭제하시겠습니까?"
 
 #: app/templates/allowance/index.html:57 app/templates/documents/form.html:108
 #: app/templates/expenses/form.html:149 app/templates/expenses/index.html:101
-#: app/templates/fuel/form.html:185 app/templates/fuel/index.html:92
+#: app/templates/fuel/form.html:197 app/templates/fuel/index.html:92
 #: app/templates/notes/index.html:61 app/templates/recurring/form.html:135
 #: app/templates/stations/form.html:93 app/templates/tires/index.html:152
 #: app/templates/tires/index.html:170 app/templates/vehicles/view.html:418
@@ -1742,80 +1764,80 @@ msgstr "업무용 주행에 대해 받는 주행 수당을 기록하십시오."
 msgid "API Documentation"
 msgstr "API 문서"
 
-#: app/templates/auth/create_user.html:2 app/templates/auth/create_user.html:8
-#: app/templates/auth/create_user.html:79 app/templates/auth/users.html:9
+#: app/templates/auth/create_user.html:3 app/templates/auth/create_user.html:9
+#: app/templates/auth/create_user.html:82 app/templates/auth/users.html:9
 msgid "Create User"
 msgstr "사용자 생성"
 
-#: app/templates/auth/create_user.html:9
+#: app/templates/auth/create_user.html:10
 msgid "Add a new user account"
 msgstr "새 사용자 계정 추가"
 
-#: app/templates/auth/create_user.html:13 app/templates/auth/edit_user.html:13
+#: app/templates/auth/create_user.html:14 app/templates/auth/edit_user.html:14
 msgid "Back to Users"
 msgstr "사용자 목록으로 돌아가기"
 
-#: app/templates/auth/create_user.html:22 app/templates/auth/edit_user.html:23
+#: app/templates/auth/create_user.html:23 app/templates/auth/edit_user.html:24
 msgid "Account Details"
 msgstr "계정 정보"
 
-#: app/templates/auth/create_user.html:27 app/templates/auth/edit_user.html:28
-#: app/templates/auth/login.html:28 app/templates/auth/register.html:21
-#: app/templates/auth/settings.html:231
+#: app/templates/auth/create_user.html:28 app/templates/auth/edit_user.html:29
+#: app/templates/auth/login.html:28 app/templates/auth/register.html:22
+#: app/templates/auth/settings.html:232
 msgid "Username"
 msgstr "사용자 이름"
 
-#: app/templates/auth/create_user.html:33 app/templates/auth/edit_user.html:33
+#: app/templates/auth/create_user.html:34 app/templates/auth/edit_user.html:34
 #: app/templates/auth/forgot_password.html:23
-#: app/templates/auth/register.html:27 app/templates/auth/settings.html:248
-#: app/templates/auth/settings.html:1371
+#: app/templates/auth/register.html:28 app/templates/auth/settings.html:249
+#: app/templates/auth/settings.html:1374
 msgid "Email"
 msgstr "이메일"
 
-#: app/templates/auth/create_user.html:40 app/templates/auth/login.html:35
-#: app/templates/auth/register.html:33
+#: app/templates/auth/create_user.html:41 app/templates/auth/login.html:35
+#: app/templates/auth/register.html:34
 msgid "Password"
 msgstr "비밀번호"
 
-#: app/templates/auth/create_user.html:45 app/templates/auth/register.html:39
-#: app/templates/auth/reset_password.html:27
+#: app/templates/auth/create_user.html:47 app/templates/auth/register.html:41
+#: app/templates/auth/reset_password.html:29
 msgid "Confirm Password"
 msgstr "비밀번호 확인"
 
-#: app/templates/auth/create_user.html:53 app/templates/auth/edit_user.html:40
-#: app/templates/auth/settings.html:235 app/templates/auth/users.html:21
+#: app/templates/auth/create_user.html:56 app/templates/auth/edit_user.html:41
+#: app/templates/auth/settings.html:236 app/templates/auth/users.html:21
 msgid "Role"
 msgstr "역할"
 
-#: app/templates/auth/create_user.html:65 app/templates/auth/edit_user.html:52
+#: app/templates/auth/create_user.html:68 app/templates/auth/edit_user.html:53
 msgid "Administrators always have full access, whatever role is set."
 msgstr "관리자는 설정된 역할과 관계없이 항상 전체 권한을 가집니다."
 
-#: app/templates/auth/edit_user.html:2
+#: app/templates/auth/edit_user.html:3
 msgid "Edit User"
 msgstr "사용자 편집"
 
-#: app/templates/auth/edit_user.html:9
+#: app/templates/auth/edit_user.html:10
 msgid "Update user details and credentials"
 msgstr "사용자 정보 및 인증 정보 업데이트"
 
-#: app/templates/auth/edit_user.html:68
-#: app/templates/auth/reset_password.html:2
-#: app/templates/auth/reset_password.html:34
+#: app/templates/auth/edit_user.html:69
+#: app/templates/auth/reset_password.html:3
+#: app/templates/auth/reset_password.html:37
 msgid "Reset Password"
 msgstr "비밀번호 재설정"
 
-#: app/templates/auth/edit_user.html:69
+#: app/templates/auth/edit_user.html:70
 msgid "Leave blank to keep the current password"
 msgstr "현재 비밀번호를 유지하려면 비워 두십시오"
 
-#: app/templates/auth/edit_user.html:75
-#: app/templates/auth/reset_password.html:21
-#: app/templates/auth/settings.html:373
+#: app/templates/auth/edit_user.html:76
+#: app/templates/auth/reset_password.html:22
+#: app/templates/auth/settings.html:374
 msgid "New Password"
 msgstr "새 비밀번호"
 
-#: app/templates/auth/edit_user.html:80 app/templates/auth/settings.html:379
+#: app/templates/auth/edit_user.html:82 app/templates/auth/settings.html:381
 msgid "Confirm New Password"
 msgstr "새 비밀번호 확인"
 
@@ -1837,7 +1859,7 @@ msgid "Send Reset Link"
 msgstr "재설정 링크 보내기"
 
 #: app/templates/auth/forgot_password.html:35
-#: app/templates/auth/reset_password.html:39
+#: app/templates/auth/reset_password.html:42
 msgid "Back to login"
 msgstr "로그인으로 돌아가기"
 
@@ -1853,7 +1875,7 @@ msgstr "로그인 상태 유지"
 msgid "Forgot password?"
 msgstr "비밀번호를 잊으셨나요?"
 
-#: app/templates/auth/login.html:54 app/templates/auth/register.html:52
+#: app/templates/auth/login.html:54 app/templates/auth/register.html:55
 msgid "Sign in"
 msgstr "로그인"
 
@@ -1861,485 +1883,485 @@ msgstr "로그인"
 msgid "Don't have an account?"
 msgstr "계정이 없으신가요?"
 
-#: app/templates/auth/login.html:61 app/templates/auth/register.html:2
+#: app/templates/auth/login.html:61 app/templates/auth/register.html:3
 msgid "Register"
 msgstr "회원가입"
 
-#: app/templates/auth/register.html:15
+#: app/templates/auth/register.html:16
 msgid "Create your account"
 msgstr "계정 만들기"
 
-#: app/templates/auth/register.html:46
+#: app/templates/auth/register.html:49
 msgid "Create Account"
 msgstr "계정 만들기"
 
-#: app/templates/auth/register.html:51
+#: app/templates/auth/register.html:54
 msgid "Already have an account?"
 msgstr "이미 계정이 있으신가요?"
 
-#: app/templates/auth/reset_password.html:15
+#: app/templates/auth/reset_password.html:16
 msgid "Set a new password"
 msgstr "새 비밀번호 설정"
 
-#: app/templates/auth/settings.html:7
+#: app/templates/auth/settings.html:8
 msgid "Manage your preferences and account"
 msgstr "환경설정 및 계정 관리"
 
-#: app/templates/auth/settings.html:18 app/templates/auth/settings.html:98
+#: app/templates/auth/settings.html:19 app/templates/auth/settings.html:99
 msgid "Units & Values"
 msgstr "단위 및 값"
 
-#: app/templates/auth/settings.html:26
+#: app/templates/auth/settings.html:27
 msgid "Account & Security"
 msgstr "계정 및 보안"
 
-#: app/templates/auth/settings.html:34 app/templates/auth/settings.html:424
+#: app/templates/auth/settings.html:35 app/templates/auth/settings.html:427
 msgid "Menu & Navigation"
 msgstr "메뉴 및 탐색"
 
-#: app/templates/auth/settings.html:42
+#: app/templates/auth/settings.html:43
 msgid "Import / Export"
 msgstr "가져오기 / 내보내기"
 
-#: app/templates/auth/settings.html:50
+#: app/templates/auth/settings.html:51
 msgid "API"
 msgstr "API"
 
-#: app/templates/auth/settings.html:58 app/templates/auth/settings.html:357
-#: app/templates/auth/settings.html:797
+#: app/templates/auth/settings.html:59 app/templates/auth/settings.html:358
+#: app/templates/auth/settings.html:800
 msgid "Integrations"
 msgstr "연동"
 
-#: app/templates/auth/settings.html:66
+#: app/templates/auth/settings.html:67
 msgid "Notifications"
 msgstr "알림"
 
-#: app/templates/auth/settings.html:75
+#: app/templates/auth/settings.html:76
 msgid "Branding"
 msgstr "브랜딩"
 
-#: app/templates/auth/settings.html:84 app/templates/auth/settings.html:1779
+#: app/templates/auth/settings.html:85 app/templates/auth/settings.html:1782
 msgid "About"
 msgstr "정보"
 
-#: app/templates/auth/settings.html:99
+#: app/templates/auth/settings.html:100
 msgid "Configure how measurements and currencies are displayed"
 msgstr "측정 단위 및 통화 표시 방식 설정"
 
-#: app/templates/auth/settings.html:105
+#: app/templates/auth/settings.html:106
 msgid "Language"
 msgstr "언어"
 
-#: app/templates/auth/settings.html:115
+#: app/templates/auth/settings.html:116
 msgid "Date Format"
 msgstr "날짜 형식"
 
-#: app/templates/auth/settings.html:118
+#: app/templates/auth/settings.html:119
 msgid "DD/MM/YYYY"
 msgstr "일/월/년"
 
-#: app/templates/auth/settings.html:119
+#: app/templates/auth/settings.html:120
 msgid "MM/DD/YYYY"
 msgstr "월/일/년"
 
-#: app/templates/auth/settings.html:120
+#: app/templates/auth/settings.html:121
 msgid "YYYY-MM-DD"
 msgstr "년-월-일"
 
-#: app/templates/auth/settings.html:121
+#: app/templates/auth/settings.html:122
 msgid "DD.MM.YYYY"
 msgstr "일.월.년"
 
-#: app/templates/auth/settings.html:135 app/templates/fuel/_quick_form.html:57
-#: app/templates/fuel/form.html:69 app/templates/fuel/index.html:45
+#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:57
+#: app/templates/fuel/form.html:75 app/templates/fuel/index.html:45
 msgid "Volume"
 msgstr "용량"
 
-#: app/templates/auth/settings.html:138
+#: app/templates/auth/settings.html:139
 #: app/templates/vehicles/part_form.html:58
 msgid "Liters (L)"
 msgstr "리터 (L)"
 
-#: app/templates/auth/settings.html:139
+#: app/templates/auth/settings.html:140
 msgid "UK Gallons (gal)"
 msgstr "영국 갤런 (gal)"
 
-#: app/templates/auth/settings.html:140
+#: app/templates/auth/settings.html:141
 msgid "US Gallons (gal)"
 msgstr "미국 갤런 (gal)"
 
-#: app/templates/auth/settings.html:145
+#: app/templates/auth/settings.html:146
 msgid "Fuel Consumption"
 msgstr "연비"
 
-#: app/templates/auth/settings.html:148
+#: app/templates/auth/settings.html:149
 msgid "L/100km"
 msgstr "L/100km"
 
-#: app/templates/auth/settings.html:149
+#: app/templates/auth/settings.html:150
 msgid "MPG (UK)"
 msgstr "MPG(영국)"
 
-#: app/templates/auth/settings.html:150
+#: app/templates/auth/settings.html:151
 msgid "MPG (US)"
 msgstr "MPG(미국)"
 
-#: app/templates/auth/settings.html:151
+#: app/templates/auth/settings.html:152
 msgid "km/L"
 msgstr "km/L"
 
-#: app/templates/auth/settings.html:156
+#: app/templates/auth/settings.html:157
 msgid "Thousand Separator"
 msgstr "천 단위 구분 기호"
 
-#: app/templates/auth/settings.html:159 app/templates/vehicles/form.html:73
+#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:73
 msgid "None"
 msgstr "없음"
 
-#: app/templates/auth/settings.html:160
+#: app/templates/auth/settings.html:161
 msgid "Space"
 msgstr "공백"
 
-#: app/templates/auth/settings.html:161
+#: app/templates/auth/settings.html:162
 msgid "Comma"
 msgstr "쉼표"
 
-#: app/templates/auth/settings.html:162
+#: app/templates/auth/settings.html:163
 msgid "Period"
 msgstr "마침표"
 
-#: app/templates/auth/settings.html:170
+#: app/templates/auth/settings.html:171
 msgid "Round costs to whole numbers"
 msgstr "비용을 정수로 반올림"
 
-#: app/templates/auth/settings.html:176
+#: app/templates/auth/settings.html:177
 msgid "Currency"
 msgstr "통화"
 
-#: app/templates/auth/settings.html:199
+#: app/templates/auth/settings.html:200
 msgid "Custom Currency"
 msgstr "사용자 지정 통화"
 
-#: app/templates/auth/settings.html:202
+#: app/templates/auth/settings.html:203
 msgid "e.g. ZAR, R, CHF"
 msgstr "예: ZAR, R, CHF"
 
-#: app/templates/auth/settings.html:204
+#: app/templates/auth/settings.html:205
 msgid "Enter a currency code or symbol to display"
 msgstr "표시할 통화 코드 또는 기호를 입력하십시오"
 
-#: app/templates/auth/settings.html:225
+#: app/templates/auth/settings.html:226
 msgid "Account Information"
 msgstr "계정 정보"
 
-#: app/templates/auth/settings.html:226
+#: app/templates/auth/settings.html:227
 msgid "Your account details"
 msgstr "내 계정 정보"
 
-#: app/templates/auth/settings.html:240
+#: app/templates/auth/settings.html:241
 msgid ""
 "Your account can see the data but cannot change it. Ask an administrator if "
 "you need more access."
 msgstr "이 계정은 데이터를 볼 수 있지만 변경할 수 없습니다. 더 넓은 권한이 필요하면 관리자에게 문의하세요."
 
-#: app/templates/auth/settings.html:242
+#: app/templates/auth/settings.html:243
 msgid ""
 "Your account can record fuel fill-ups and charging sessions. Ask an "
 "administrator if you need more access."
 msgstr "이 계정은 주유와 충전을 기록할 수 있습니다. 더 넓은 권한이 필요하면 관리자에게 문의하세요."
 
-#: app/templates/auth/settings.html:253
+#: app/templates/auth/settings.html:254
 msgid "Member Since"
 msgstr "가입일"
 
-#: app/templates/auth/settings.html:260
+#: app/templates/auth/settings.html:261
 msgid "Save Email"
 msgstr "이메일 저장"
 
-#: app/templates/auth/settings.html:268
+#: app/templates/auth/settings.html:269
 msgid "Appearance"
 msgstr "외관"
 
-#: app/templates/auth/settings.html:269
+#: app/templates/auth/settings.html:270
 msgid "Customize how the app looks"
 msgstr "앱 외관 사용자 지정"
 
-#: app/templates/auth/settings.html:275
+#: app/templates/auth/settings.html:276
 msgid "Dark Mode"
 msgstr "다크 모드"
 
-#: app/templates/auth/settings.html:276
+#: app/templates/auth/settings.html:277
 msgid "Use dark theme for the interface"
 msgstr "인터페이스에 다크 테마 사용"
 
-#: app/templates/auth/settings.html:291
+#: app/templates/auth/settings.html:292
 msgid "User Management"
 msgstr "사용자 관리"
 
-#: app/templates/auth/settings.html:292
+#: app/templates/auth/settings.html:293
 msgid "Manage users and permissions"
 msgstr "사용자 및 권한 관리"
 
-#: app/templates/auth/settings.html:298 app/templates/auth/users.html:2
+#: app/templates/auth/settings.html:299 app/templates/auth/users.html:2
 msgid "Users"
 msgstr "사용자"
 
-#: app/templates/auth/settings.html:299
+#: app/templates/auth/settings.html:300
 msgid "View and manage all users"
 msgstr "모든 사용자 보기 및 관리"
 
-#: app/templates/auth/settings.html:303
+#: app/templates/auth/settings.html:304
 msgid "Manage Users"
 msgstr "사용자 관리"
 
-#: app/templates/auth/settings.html:309
+#: app/templates/auth/settings.html:310
 msgid "Allow Registration"
 msgstr "회원가입 허용"
 
-#: app/templates/auth/settings.html:310
+#: app/templates/auth/settings.html:311
 msgid "Allow new users to create accounts"
 msgstr "새 사용자의 계정 생성 허용"
 
-#: app/templates/auth/settings.html:344
+#: app/templates/auth/settings.html:345
 msgid "Admin Settings"
 msgstr "관리자 설정"
 
-#: app/templates/auth/settings.html:345
+#: app/templates/auth/settings.html:346
 msgid "Configure system-wide settings for all users:"
 msgstr "모든 사용자에 대한 시스템 전체 설정 구성:"
 
-#: app/templates/auth/settings.html:349
+#: app/templates/auth/settings.html:350
 msgid "SMTP / Notifications"
 msgstr "SMTP / 알림"
 
-#: app/templates/auth/settings.html:353
+#: app/templates/auth/settings.html:354
 msgid "Branding / Appearance"
 msgstr "브랜딩 / 외관"
 
-#: app/templates/auth/settings.html:366
+#: app/templates/auth/settings.html:367
 msgid "Change Password"
 msgstr "비밀번호 변경"
 
-#: app/templates/auth/settings.html:367
+#: app/templates/auth/settings.html:368
 msgid "Update your password to keep your account secure"
 msgstr "계정 보안을 위해 비밀번호를 업데이트하십시오"
 
-#: app/templates/auth/settings.html:389
+#: app/templates/auth/settings.html:392
 msgid "Update Password"
 msgstr "비밀번호 업데이트"
 
-#: app/templates/auth/settings.html:397 app/templates/vehicles/view.html:1135
+#: app/templates/auth/settings.html:400 app/templates/vehicles/view.html:1135
 msgid "Danger Zone"
 msgstr "위험 구역"
 
-#: app/templates/auth/settings.html:398
+#: app/templates/auth/settings.html:401
 msgid "Irreversible actions"
 msgstr "되돌릴 수 없는 작업"
 
-#: app/templates/auth/settings.html:404 app/templates/auth/settings.html:409
+#: app/templates/auth/settings.html:407 app/templates/auth/settings.html:412
 msgid "Delete Account"
 msgstr "계정 삭제"
 
-#: app/templates/auth/settings.html:405
+#: app/templates/auth/settings.html:408
 msgid "Permanently delete your account and all data"
 msgstr "계정 및 모든 데이터를 영구적으로 삭제합니다"
 
-#: app/templates/auth/settings.html:425
+#: app/templates/auth/settings.html:428
 msgid "Customize which menu items to show and your start page"
 msgstr "표시할 메뉴 항목과 시작 페이지를 사용자 지정"
 
-#: app/templates/auth/settings.html:431
+#: app/templates/auth/settings.html:434
 msgid "Start Page"
 msgstr "시작 페이지"
 
-#: app/templates/auth/settings.html:432
+#: app/templates/auth/settings.html:435
 msgid "Which page to show when you log in"
 msgstr "로그인 시 표시할 페이지"
 
-#: app/templates/auth/settings.html:442 app/templates/auth/settings.html:512
+#: app/templates/auth/settings.html:445 app/templates/auth/settings.html:515
 #: app/templates/recurring/index.html:2 app/templates/recurring/index.html:7
 msgid "Recurring Expenses"
 msgstr "반복 비용"
 
-#: app/templates/auth/settings.html:454
+#: app/templates/auth/settings.html:457
 #: app/templates/trips/template_form.html:27
 msgid "Default Vehicle"
 msgstr "기본 차량"
 
-#: app/templates/auth/settings.html:455
+#: app/templates/auth/settings.html:458
 msgid ""
 "Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
 "sessions"
 msgstr "주유 기록, 비용, 주행, 충전 세션 추가 시 미리 선택될 차량"
 
-#: app/templates/auth/settings.html:458
+#: app/templates/auth/settings.html:461
 msgid "No default"
 msgstr "기본값 없음"
 
-#: app/templates/auth/settings.html:468
+#: app/templates/auth/settings.html:471
 msgid "Quick Entry Button"
 msgstr "빠른 입력 버튼"
 
-#: app/templates/auth/settings.html:469
+#: app/templates/auth/settings.html:472
 msgid "Show a quick fuel entry button in the navigation bar for rapid logging"
 msgstr "빠른 기록을 위해 탐색 모음에 빠른 주유 입력 버튼 표시"
 
-#: app/templates/auth/settings.html:480
+#: app/templates/auth/settings.html:483
 msgid "Show Menu Items"
 msgstr "메뉴 항목 표시"
 
-#: app/templates/auth/settings.html:481
+#: app/templates/auth/settings.html:484
 msgid "Choose which items appear in the navigation menu"
 msgstr "탐색 메뉴에 표시할 항목 선택"
 
-#: app/templates/auth/settings.html:556 app/templates/auth/settings.html:1477
+#: app/templates/auth/settings.html:559 app/templates/auth/settings.html:1480
 msgid "Save Preferences"
 msgstr "환경설정 저장"
 
-#: app/templates/auth/settings.html:569
+#: app/templates/auth/settings.html:572
 msgid "Import Data"
 msgstr "데이터 가져오기"
 
-#: app/templates/auth/settings.html:570
+#: app/templates/auth/settings.html:573
 msgid ""
 "Restore a May backup, or import your data from other fuel tracking "
 "applications"
 msgstr "May 백업을 복원하거나 다른 연료 관리 앱에서 데이터를 가져오세요"
 
-#: app/templates/auth/settings.html:576
+#: app/templates/auth/settings.html:579
 msgid "Restore May Backup"
 msgstr "May 백업 복원"
 
-#: app/templates/auth/settings.html:577
+#: app/templates/auth/settings.html:580
 msgid ""
 "Restore a JSON export (.json) or full backup (.zip) from another May "
 "instance"
 msgstr "다른 May 인스턴스의 JSON 내보내기(.json) 또는 전체 백업(.zip)을 복원합니다"
 
-#: app/templates/auth/settings.html:581
+#: app/templates/auth/settings.html:584
 msgid "Restore"
 msgstr "복원"
 
-#: app/templates/auth/settings.html:588
+#: app/templates/auth/settings.html:591
 msgid "Import from Hammond SQLite database (.db file)"
 msgstr "Hammond SQLite 데이터베이스(.db 파일)에서 가져오기"
 
-#: app/templates/auth/settings.html:596 app/templates/auth/settings.html:612
-#: app/templates/auth/settings.html:628 app/templates/auth/settings.html:640
+#: app/templates/auth/settings.html:599 app/templates/auth/settings.html:615
+#: app/templates/auth/settings.html:631 app/templates/auth/settings.html:643
 msgid "Import"
 msgstr "가져오기"
 
-#: app/templates/auth/settings.html:604
+#: app/templates/auth/settings.html:607
 msgid "Import from Clarkson MySQL dump (.sql file)"
 msgstr "Clarkson MySQL 덤프(.sql 파일)에서 가져오기"
 
-#: app/templates/auth/settings.html:620
+#: app/templates/auth/settings.html:623
 msgid "Import from Fuelly CSV export (.csv file)"
 msgstr "Fuelly CSV 내보내기(.csv 파일)에서 가져오기"
 
-#: app/templates/auth/settings.html:635 app/templates/import/csv_upload.html:2
+#: app/templates/auth/settings.html:638 app/templates/import/csv_upload.html:2
 msgid "CSV Import"
 msgstr "CSV 가져오기"
 
-#: app/templates/auth/settings.html:636
+#: app/templates/auth/settings.html:639
 msgid ""
 "Import fuel logs, expenses, trips, or charging sessions from any CSV file"
 msgstr "임의의 CSV 파일에서 주유, 지출, 주행, 충전 기록 가져오기"
 
-#: app/templates/auth/settings.html:647
+#: app/templates/auth/settings.html:650
 msgid "Import from Drivvo backup files"
 msgstr "Drivvo 백업 파일에서 가져오기"
 
-#: app/templates/auth/settings.html:651
+#: app/templates/auth/settings.html:654
 msgid "Soon"
 msgstr "준비 중"
 
-#: app/templates/auth/settings.html:660
+#: app/templates/auth/settings.html:663
 msgid "Export Data"
 msgstr "데이터 내보내기"
 
-#: app/templates/auth/settings.html:661
+#: app/templates/auth/settings.html:664
 msgid "Download your data for backup or migration"
 msgstr "백업 또는 마이그레이션을 위해 데이터 다운로드"
 
-#: app/templates/auth/settings.html:667
+#: app/templates/auth/settings.html:670
 msgid "Export as CSV"
 msgstr "CSV로 내보내기"
 
-#: app/templates/auth/settings.html:668
+#: app/templates/auth/settings.html:671
 msgid ""
 "Download all your vehicles, fuel logs, and expenses as CSV files (ZIP "
 "archive)"
 msgstr "모든 차량, 주유 기록 및 비용을 CSV 파일로 다운로드 (ZIP 압축 파일)"
 
-#: app/templates/auth/settings.html:672
+#: app/templates/auth/settings.html:675
 msgid "Download CSV"
 msgstr "CSV 다운로드"
 
-#: app/templates/auth/settings.html:678
+#: app/templates/auth/settings.html:681
 msgid "Export as JSON"
 msgstr "JSON으로 내보내기"
 
-#: app/templates/auth/settings.html:679
+#: app/templates/auth/settings.html:682
 msgid "Download a complete backup of your data in JSON format"
 msgstr "JSON 형식으로 전체 데이터 백업 다운로드"
 
-#: app/templates/auth/settings.html:683
+#: app/templates/auth/settings.html:686
 msgid "Download JSON"
 msgstr "JSON 다운로드"
 
-#: app/templates/auth/settings.html:689
+#: app/templates/auth/settings.html:692
 msgid "Full Backup"
 msgstr "전체 백업"
 
-#: app/templates/auth/settings.html:690
+#: app/templates/auth/settings.html:693
 msgid ""
 "Download all data and files (images, documents, attachments) as a ZIP "
 "archive"
 msgstr "모든 데이터 및 파일(이미지, 문서, 첨부파일)을 ZIP 압축 파일로 다운로드"
 
-#: app/templates/auth/settings.html:694
+#: app/templates/auth/settings.html:697
 msgid "Download ZIP"
 msgstr "ZIP 다운로드"
 
-#: app/templates/auth/settings.html:710
+#: app/templates/auth/settings.html:713
 msgid "API Access"
 msgstr "API 접근"
 
-#: app/templates/auth/settings.html:711
+#: app/templates/auth/settings.html:714
 msgid "Generate API keys to connect external applications"
 msgstr "외부 애플리케이션 연결을 위한 API 키 생성"
 
-#: app/templates/auth/settings.html:713
+#: app/templates/auth/settings.html:716
 msgid "View API Docs"
 msgstr "API 문서 보기"
 
-#: app/templates/auth/settings.html:722
+#: app/templates/auth/settings.html:725
 msgid "Your API Key"
 msgstr "내 API 키"
 
-#: app/templates/auth/settings.html:741 app/templates/auth/settings.html:778
-#: app/templates/auth/settings.html:954 app/templates/auth/settings.html:968
+#: app/templates/auth/settings.html:744 app/templates/auth/settings.html:781
+#: app/templates/auth/settings.html:957 app/templates/auth/settings.html:971
 msgid "Copy"
 msgstr "복사"
 
-#: app/templates/auth/settings.html:744
+#: app/templates/auth/settings.html:747
 msgid "Created"
 msgstr "생성됨"
 
-#: app/templates/auth/settings.html:748
+#: app/templates/auth/settings.html:751
 msgid "Regenerate Key"
 msgstr "키 재생성"
 
-#: app/templates/auth/settings.html:752
+#: app/templates/auth/settings.html:755
 msgid "Revoke Key"
 msgstr "키 해지"
 
-#: app/templates/auth/settings.html:759
+#: app/templates/auth/settings.html:762
 msgid "API Key"
 msgstr "API 키"
 
-#: app/templates/auth/settings.html:760
+#: app/templates/auth/settings.html:763
 msgid ""
 "Generate an API key to access May programmatically. You can use it to "
 "integrate with other applications or build your own tools."
@@ -2347,110 +2369,110 @@ msgstr ""
 "May에 프로그래밍 방식으로 접근하기 위한 API 키를 생성하십시오. 다른 애플리케이션과 연동하거나 자체 도구를 구축하는 데 사용할 수 "
 "있습니다."
 
-#: app/templates/auth/settings.html:763
+#: app/templates/auth/settings.html:766
 msgid "Generate API Key"
 msgstr "API 키 생성"
 
-#: app/templates/auth/settings.html:772
+#: app/templates/auth/settings.html:775
 msgid "API Key Generated"
 msgstr "API 키가 생성되었습니다"
 
-#: app/templates/auth/settings.html:773
+#: app/templates/auth/settings.html:776
 msgid "Copy your API key now. For security, it won't be shown in full again."
 msgstr "지금 API 키를 복사하십시오. 보안상의 이유로 전체 키가 다시 표시되지 않습니다."
 
-#: app/templates/auth/settings.html:784
+#: app/templates/auth/settings.html:787
 msgid "Done"
 msgstr "완료"
 
-#: app/templates/auth/settings.html:798
+#: app/templates/auth/settings.html:801
 msgid "Connect May with external services and applications"
 msgstr "May를 외부 서비스 및 애플리케이션과 연결"
 
-#: app/templates/auth/settings.html:812
+#: app/templates/auth/settings.html:815
 msgid "Calendar"
 msgstr "캘린더"
 
-#: app/templates/auth/settings.html:815
+#: app/templates/auth/settings.html:818
 msgid "Subscribe to reminders in your calendar app"
 msgstr "캘린더 앱에서 알림 구독"
 
-#: app/templates/auth/settings.html:817 app/templates/auth/settings.html:838
+#: app/templates/auth/settings.html:820 app/templates/auth/settings.html:841
 msgid "Ready"
 msgstr "준비됨"
 
-#: app/templates/auth/settings.html:819 app/templates/auth/settings.html:840
+#: app/templates/auth/settings.html:822 app/templates/auth/settings.html:843
 msgid "Requires API key"
 msgstr "API 키가 필요합니다"
 
-#: app/templates/auth/settings.html:833 app/templates/auth/settings.html:1020
+#: app/templates/auth/settings.html:836 app/templates/auth/settings.html:1023
 msgid "Home Assistant"
 msgstr "Home Assistant"
 
-#: app/templates/auth/settings.html:836 app/templates/auth/settings.html:1021
+#: app/templates/auth/settings.html:839 app/templates/auth/settings.html:1024
 msgid "Create sensors and automations for your vehicles"
 msgstr "차량용 센서 및 자동화 생성"
 
-#: app/templates/auth/settings.html:855
+#: app/templates/auth/settings.html:858
 msgid "DVLA"
 msgstr "DVLA"
 
-#: app/templates/auth/settings.html:856 app/templates/auth/settings.html:878
-#: app/templates/auth/settings.html:900 app/templates/auth/settings.html:1493
+#: app/templates/auth/settings.html:859 app/templates/auth/settings.html:881
+#: app/templates/auth/settings.html:903 app/templates/auth/settings.html:1496
 msgid "Admin"
 msgstr "관리자"
 
-#: app/templates/auth/settings.html:859 app/templates/auth/settings.html:1116
+#: app/templates/auth/settings.html:862 app/templates/auth/settings.html:1119
 msgid "Look up UK vehicle MOT and tax status"
 msgstr "영국 차량 MOT 및 세금 상태 조회"
 
-#: app/templates/auth/settings.html:861 app/templates/auth/settings.html:883
+#: app/templates/auth/settings.html:864 app/templates/auth/settings.html:886
 msgid "Configured"
 msgstr "설정됨"
 
-#: app/templates/auth/settings.html:863 app/templates/auth/settings.html:885
+#: app/templates/auth/settings.html:866 app/templates/auth/settings.html:888
 msgid "Not configured"
 msgstr "설정되지 않음"
 
-#: app/templates/auth/settings.html:877
+#: app/templates/auth/settings.html:880
 msgid "Tessie"
 msgstr "Tessie"
 
-#: app/templates/auth/settings.html:881
+#: app/templates/auth/settings.html:884
 msgid "Sync Tesla vehicle odometer and battery"
 msgstr "Tesla 차량 주행거리계 및 배터리 동기화"
 
-#: app/templates/auth/settings.html:899 app/templates/auth/settings.html:1266
+#: app/templates/auth/settings.html:902 app/templates/auth/settings.html:1269
 msgid "UK Fuel Prices"
 msgstr "영국 연료 가격"
 
-#: app/templates/auth/settings.html:903 app/templates/auth/settings.html:1267
+#: app/templates/auth/settings.html:906 app/templates/auth/settings.html:1270
 msgid "Pull live forecourt prices for saved stations"
 msgstr "저장한 주유소의 실시간 가격 가져오기"
 
-#: app/templates/auth/settings.html:905
+#: app/templates/auth/settings.html:908
 msgid "Enabled"
 msgstr "사용함"
 
-#: app/templates/auth/settings.html:907
+#: app/templates/auth/settings.html:910
 msgid "Disabled"
 msgstr "사용 안 함"
 
-#: app/templates/auth/settings.html:921 app/templates/auth/settings.html:1007
-#: app/templates/auth/settings.html:1102 app/templates/auth/settings.html:1173
-#: app/templates/auth/settings.html:1253
+#: app/templates/auth/settings.html:924 app/templates/auth/settings.html:1010
+#: app/templates/auth/settings.html:1105 app/templates/auth/settings.html:1176
+#: app/templates/auth/settings.html:1256
 msgid "Back to Integrations"
 msgstr "연동으로 돌아가기"
 
-#: app/templates/auth/settings.html:934
+#: app/templates/auth/settings.html:937
 msgid "Calendar Subscription"
 msgstr "캘린더 구독"
 
-#: app/templates/auth/settings.html:935
+#: app/templates/auth/settings.html:938
 msgid "Subscribe to your reminders in any calendar app"
 msgstr "모든 캘린더 앱에서 알림을 구독하십시오"
 
-#: app/templates/auth/settings.html:943
+#: app/templates/auth/settings.html:946
 msgid ""
 "Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
 "calendar app that supports iCal subscriptions."
@@ -2458,102 +2480,102 @@ msgstr ""
 "Apple Calendar, Google Calendar, Outlook 또는 iCal 구독을 지원하는 다른 캘린더 앱에 이 캘린더를 "
 "추가하십시오."
 
-#: app/templates/auth/settings.html:946
+#: app/templates/auth/settings.html:949
 msgid "Webcal URL"
 msgstr "Webcal URL"
 
-#: app/templates/auth/settings.html:947
+#: app/templates/auth/settings.html:950
 msgid "Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)"
 msgstr "대부분의 캘린더 앱에서 이 URL을 사용하십시오 (Apple Calendar, Outlook 등)"
 
-#: app/templates/auth/settings.html:960
+#: app/templates/auth/settings.html:963
 msgid "HTTPS URL"
 msgstr "HTTPS URL"
 
-#: app/templates/auth/settings.html:961
+#: app/templates/auth/settings.html:964
 msgid "Use this URL for Google Calendar"
 msgstr "Google Calendar에서 이 URL을 사용하십시오"
 
-#: app/templates/auth/settings.html:974
+#: app/templates/auth/settings.html:977
 msgid "What's included in the calendar?"
 msgstr "캘린더에 포함된 항목"
 
-#: app/templates/auth/settings.html:976
+#: app/templates/auth/settings.html:979
 msgid "Maintenance schedules"
 msgstr "정비 일정"
 
-#: app/templates/auth/settings.html:977
+#: app/templates/auth/settings.html:980
 msgid "Recurring expense due dates"
 msgstr "반복 비용 만기일"
 
-#: app/templates/auth/settings.html:978
+#: app/templates/auth/settings.html:981
 msgid "Document expiry dates"
 msgstr "문서 만료일"
 
-#: app/templates/auth/settings.html:979
+#: app/templates/auth/settings.html:982
 msgid "Custom reminders"
 msgstr "사용자 지정 알림"
 
-#: app/templates/auth/settings.html:988 app/templates/auth/settings.html:1082
+#: app/templates/auth/settings.html:991 app/templates/auth/settings.html:1085
 msgid "API Key Required"
 msgstr "API 키가 필요합니다"
 
-#: app/templates/auth/settings.html:989
+#: app/templates/auth/settings.html:992
 msgid "Generate an API key in the API section to enable calendar integration."
 msgstr "캘린더 연동을 활성화하려면 API 섹션에서 API 키를 생성하십시오."
 
-#: app/templates/auth/settings.html:992 app/templates/auth/settings.html:1086
+#: app/templates/auth/settings.html:995 app/templates/auth/settings.html:1089
 msgid "Go to API Settings"
 msgstr "API 설정으로 이동"
 
-#: app/templates/auth/settings.html:1029
+#: app/templates/auth/settings.html:1032
 msgid ""
 "Add the following configuration to your Home Assistant configuration.yaml to"
 " create vehicle sensors."
 msgstr "차량 센서를 생성하려면 Home Assistant의 configuration.yaml에 다음 구성을 추가하십시오."
 
-#: app/templates/auth/settings.html:1032
+#: app/templates/auth/settings.html:1035
 msgid "REST Sensor Configuration"
 msgstr "REST 센서 구성"
 
-#: app/templates/auth/settings.html:1048
+#: app/templates/auth/settings.html:1051
 msgid "Copy configuration"
 msgstr "구성 복사"
 
-#: app/templates/auth/settings.html:1052
+#: app/templates/auth/settings.html:1055
 msgid "Available API Endpoints"
 msgstr "사용 가능한 API 엔드포인트"
 
-#: app/templates/auth/settings.html:1056
+#: app/templates/auth/settings.html:1059
 msgid "API health check"
 msgstr "API 상태 확인"
 
-#: app/templates/auth/settings.html:1060
+#: app/templates/auth/settings.html:1063
 msgid "List all vehicles"
 msgstr "모든 차량 목록"
 
-#: app/templates/auth/settings.html:1064
+#: app/templates/auth/settings.html:1067
 msgid "Vehicle statistics"
 msgstr "차량 통계"
 
-#: app/templates/auth/settings.html:1068
+#: app/templates/auth/settings.html:1071
 msgid "Upcoming reminders"
 msgstr "다가오는 알림"
 
-#: app/templates/auth/settings.html:1072
+#: app/templates/auth/settings.html:1075
 msgid "Combined summary"
 msgstr "종합 요약"
 
-#: app/templates/auth/settings.html:1083
+#: app/templates/auth/settings.html:1086
 msgid ""
 "Generate an API key in the API section to enable Home Assistant integration."
 msgstr "Home Assistant 연동을 활성화하려면 API 섹션에서 API 키를 생성하십시오."
 
-#: app/templates/auth/settings.html:1115
+#: app/templates/auth/settings.html:1118
 msgid "DVLA Vehicle Lookup"
 msgstr "DVLA 차량 조회"
 
-#: app/templates/auth/settings.html:1124
+#: app/templates/auth/settings.html:1127
 msgid ""
 "The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax "
 "status, and vehicle details for UK registered vehicles. This enables "
@@ -2562,52 +2584,52 @@ msgstr ""
 "DVLA 차량 조회 서비스를 통해 영국 등록 차량의 MOT 상태, 세금 상태 및 차량 정보를 조회할 수 있습니다. 이를 통해 새 차량 "
 "추가 시 차량 정보가 자동으로 입력됩니다."
 
-#: app/templates/auth/settings.html:1128
+#: app/templates/auth/settings.html:1131
 msgid "How to get an API key"
 msgstr "API 키를 받는 방법"
 
-#: app/templates/auth/settings.html:1130
+#: app/templates/auth/settings.html:1133
 msgid "Visit the"
 msgstr "방문하십시오"
 
-#: app/templates/auth/settings.html:1130
+#: app/templates/auth/settings.html:1133
 msgid "DVLA Developer Portal"
 msgstr "DVLA 개발자 포털"
 
-#: app/templates/auth/settings.html:1131
+#: app/templates/auth/settings.html:1134
 msgid "Register for a free account"
 msgstr "무료 계정 등록"
 
-#: app/templates/auth/settings.html:1132
+#: app/templates/auth/settings.html:1135
 msgid "Subscribe to the Vehicle Enquiry Service API"
 msgstr "Vehicle Enquiry Service API 구독"
 
-#: app/templates/auth/settings.html:1133
+#: app/templates/auth/settings.html:1136
 msgid "Copy your API key and paste it below"
 msgstr "API 키를 복사하여 아래에 붙여넣기"
 
-#: app/templates/auth/settings.html:1140
+#: app/templates/auth/settings.html:1143
 msgid "DVLA API Key"
 msgstr "DVLA API 키"
 
-#: app/templates/auth/settings.html:1148 app/templates/auth/settings.html:1228
-#: app/templates/auth/settings.html:1578
+#: app/templates/auth/settings.html:1151 app/templates/auth/settings.html:1231
+#: app/templates/auth/settings.html:1581
 msgid "Test"
 msgstr "테스트"
 
-#: app/templates/auth/settings.html:1157
+#: app/templates/auth/settings.html:1160
 msgid "Save DVLA Settings"
 msgstr "DVLA 설정 저장"
 
-#: app/templates/auth/settings.html:1186 app/templates/vehicles/form.html:277
+#: app/templates/auth/settings.html:1189 app/templates/vehicles/form.html:277
 msgid "Tessie Integration"
 msgstr "Tessie 연동"
 
-#: app/templates/auth/settings.html:1187
+#: app/templates/auth/settings.html:1190
 msgid "Sync Tesla vehicle data via Tessie"
 msgstr "Tessie를 통해 Tesla 차량 데이터 동기화"
 
-#: app/templates/auth/settings.html:1195
+#: app/templates/auth/settings.html:1198
 msgid ""
 "Tessie allows you to automatically sync odometer readings, battery level, "
 "and range from your Tesla vehicles. When enabled for a vehicle, odometer "
@@ -2616,51 +2638,51 @@ msgstr ""
 "Tessie를 사용하면 Tesla 차량의 주행거리계, 배터리 수준 및 주행 가능 거리를 자동으로 동기화할 수 있습니다. 차량에 대해 "
 "활성화하면 주행거리계 추적이 자동으로 이루어집니다."
 
-#: app/templates/auth/settings.html:1199
+#: app/templates/auth/settings.html:1202
 msgid "Important"
 msgstr "중요"
 
-#: app/templates/auth/settings.html:1201
+#: app/templates/auth/settings.html:1204
 msgid "Tessie subscription required ($6.99/month per vehicle)"
 msgstr "Tessie 구독이 필요합니다 (차량당 월 $6.99)"
 
-#: app/templates/auth/settings.html:1202
+#: app/templates/auth/settings.html:1205
 msgid "Your Tesla must be connected to Tessie"
 msgstr "Tesla가 Tessie에 연결되어 있어야 합니다"
 
-#: app/templates/auth/settings.html:1203
+#: app/templates/auth/settings.html:1206
 msgid "When enabled, manual odometer entry is disabled"
 msgstr "활성화하면 수동 주행거리계 입력이 비활성화됩니다"
 
-#: app/templates/auth/settings.html:1208
+#: app/templates/auth/settings.html:1211
 msgid "How to get an API token"
 msgstr "API 토큰을 받는 방법"
 
-#: app/templates/auth/settings.html:1210
+#: app/templates/auth/settings.html:1213
 msgid "Sign up at"
 msgstr "가입하십시오"
 
-#: app/templates/auth/settings.html:1211
+#: app/templates/auth/settings.html:1214
 msgid "Connect your Tesla account"
 msgstr "Tesla 계정 연결"
 
-#: app/templates/auth/settings.html:1212
+#: app/templates/auth/settings.html:1215
 msgid "Go to Settings and create an API token"
 msgstr "설정으로 이동하여 API 토큰 생성"
 
-#: app/templates/auth/settings.html:1213
+#: app/templates/auth/settings.html:1216
 msgid "Paste the token below"
 msgstr "아래에 토큰 붙여넣기"
 
-#: app/templates/auth/settings.html:1220
+#: app/templates/auth/settings.html:1223
 msgid "Tessie API Token"
 msgstr "Tessie API 토큰"
 
-#: app/templates/auth/settings.html:1237
+#: app/templates/auth/settings.html:1240
 msgid "Save Tessie Settings"
 msgstr "Tessie 설정 저장"
 
-#: app/templates/auth/settings.html:1275
+#: app/templates/auth/settings.html:1278
 msgid ""
 "UK retailers publish forecourt prices under the government fuel price "
 "transparency scheme. May matches your saved stations to those forecourts by "
@@ -2670,271 +2692,271 @@ msgstr ""
 "영국 판매사는 정부의 연료 가격 투명화 제도에 따라 주유소 가격을 공개합니다. May는 저장한 주유소를 우편번호로 이 주유소들과 연결해 "
 "가격을 기록하므로, 가격 기록과 최저가 연료가 직접 입력하지 않아도 최신 상태로 유지됩니다."
 
-#: app/templates/auth/settings.html:1279
+#: app/templates/auth/settings.html:1282
 msgid "Before you start"
 msgstr "시작하기 전에"
 
-#: app/templates/auth/settings.html:1281
+#: app/templates/auth/settings.html:1284
 msgid "No API key is needed; the feeds are open data"
 msgstr "API 키는 필요하지 않습니다. 피드는 공개 데이터입니다"
 
-#: app/templates/auth/settings.html:1282
+#: app/templates/auth/settings.html:1285
 msgid "Give each station a postcode so it can be matched to a forecourt"
 msgstr "주유소와 연결할 수 있도록 각 주유소에 우편번호를 입력하세요"
 
-#: app/templates/auth/settings.html:1283
+#: app/templates/auth/settings.html:1286
 msgid ""
 "Prices refresh automatically every few hours, or on demand from the Fuel "
 "Stations page"
 msgstr "가격은 몇 시간마다 자동으로 갱신되며, 주유소 페이지에서 직접 갱신할 수도 있습니다"
 
-#: app/templates/auth/settings.html:1284
+#: app/templates/auth/settings.html:1287
 msgid "See the"
 msgstr "참고:"
 
-#: app/templates/auth/settings.html:1284
+#: app/templates/auth/settings.html:1287
 msgid "gov.uk guidance"
 msgstr "gov.uk 안내"
 
-#: app/templates/auth/settings.html:1284
+#: app/templates/auth/settings.html:1287
 msgid "for the current retailer list"
 msgstr "최신 판매사 목록은 여기에서 확인하세요"
 
-#: app/templates/auth/settings.html:1294
+#: app/templates/auth/settings.html:1297
 msgid "Enable UK fuel price updates"
 msgstr "영국 연료 가격 업데이트 사용"
 
-#: app/templates/auth/settings.html:1298
+#: app/templates/auth/settings.html:1301
 msgid "Retailer feeds (optional)"
 msgstr "판매사 피드(선택 사항)"
 
-#: app/templates/auth/settings.html:1303
+#: app/templates/auth/settings.html:1306
 #, python-format
 msgid ""
 "One feed per line. Leave blank to use the built-in list (%(count)s "
 "retailers)."
 msgstr "한 줄에 하나씩 입력하세요. 비워 두면 내장 목록(%(count)s개 판매사)을 사용합니다."
 
-#: app/templates/auth/settings.html:1310
+#: app/templates/auth/settings.html:1313
 msgid "Save UK Fuel Price Settings"
 msgstr "영국 연료 가격 설정 저장"
 
-#: app/templates/auth/settings.html:1329
+#: app/templates/auth/settings.html:1332
 msgid "Notification Preferences"
 msgstr "알림 환경설정"
 
-#: app/templates/auth/settings.html:1330
+#: app/templates/auth/settings.html:1333
 msgid "Configure how you receive reminders about your vehicles"
 msgstr "차량 알림 수신 방법 설정"
 
-#: app/templates/auth/settings.html:1337
+#: app/templates/auth/settings.html:1340
 msgid "Enable Reminders"
 msgstr "알림 활성화"
 
-#: app/templates/auth/settings.html:1338
+#: app/templates/auth/settings.html:1341
 msgid "Receive notifications for upcoming reminders"
 msgstr "다가오는 알림에 대한 통지 수신"
 
-#: app/templates/auth/settings.html:1350
+#: app/templates/auth/settings.html:1353
 msgid "Default Reminder Lead Time"
 msgstr "기본 알림 사전 통지 기간"
 
-#: app/templates/auth/settings.html:1351
+#: app/templates/auth/settings.html:1354
 msgid "How many days before the due date should you be notified?"
 msgstr "만기일 며칠 전에 알림을 받으시겠습니까?"
 
-#: app/templates/auth/settings.html:1354 app/templates/reminders/form.html:108
+#: app/templates/auth/settings.html:1357 app/templates/reminders/form.html:108
 msgid "On the due date"
 msgstr "만기일 당일"
 
-#: app/templates/auth/settings.html:1355 app/templates/reminders/form.html:109
+#: app/templates/auth/settings.html:1358 app/templates/reminders/form.html:109
 msgid "1 day before"
 msgstr "1일 전"
 
-#: app/templates/auth/settings.html:1356 app/templates/reminders/form.html:110
+#: app/templates/auth/settings.html:1359 app/templates/reminders/form.html:110
 msgid "3 days before"
 msgstr "3일 전"
 
-#: app/templates/auth/settings.html:1357 app/templates/reminders/form.html:111
+#: app/templates/auth/settings.html:1360 app/templates/reminders/form.html:111
 msgid "1 week before"
 msgstr "1주일 전"
 
-#: app/templates/auth/settings.html:1358 app/templates/reminders/form.html:112
+#: app/templates/auth/settings.html:1361 app/templates/reminders/form.html:112
 msgid "2 weeks before"
 msgstr "2주일 전"
 
-#: app/templates/auth/settings.html:1359 app/templates/reminders/form.html:113
+#: app/templates/auth/settings.html:1362 app/templates/reminders/form.html:113
 msgid "1 month before"
 msgstr "1개월 전"
 
-#: app/templates/auth/settings.html:1365
+#: app/templates/auth/settings.html:1368
 msgid "Notification Method"
 msgstr "알림 방법"
 
-#: app/templates/auth/settings.html:1366
+#: app/templates/auth/settings.html:1369
 msgid "Choose how you want to receive notifications"
 msgstr "알림 수신 방법을 선택하십시오"
 
-#: app/templates/auth/settings.html:1371 app/templates/auth/settings.html:1375
+#: app/templates/auth/settings.html:1374 app/templates/auth/settings.html:1378
 msgid "not configured"
 msgstr "설정되지 않음"
 
-#: app/templates/auth/settings.html:1373
+#: app/templates/auth/settings.html:1376
 msgid "ntfy (Push Notifications)"
 msgstr "ntfy (푸시 알림)"
 
-#: app/templates/auth/settings.html:1375 app/templates/auth/settings.html:1591
+#: app/templates/auth/settings.html:1378 app/templates/auth/settings.html:1594
 msgid "Pushover"
 msgstr "Pushover"
 
-#: app/templates/auth/settings.html:1377
+#: app/templates/auth/settings.html:1380
 msgid "Webhook (HTTP POST)"
 msgstr "Webhook (HTTP POST)"
 
-#: app/templates/auth/settings.html:1387
+#: app/templates/auth/settings.html:1390
 msgid "Notifications will be sent to"
 msgstr "알림이 다음으로 전송됩니다"
 
-#: app/templates/auth/settings.html:1394
+#: app/templates/auth/settings.html:1397
 msgid "Email not configured. Ask an administrator to configure SMTP settings."
 msgstr "이메일이 설정되지 않았습니다. 관리자에게 SMTP 설정을 요청하십시오."
 
-#: app/templates/auth/settings.html:1403
+#: app/templates/auth/settings.html:1406
 msgid "is a simple pub-sub notification service. Enter your topic below."
 msgstr "는 간단한 발행-구독 알림 서비스입니다. 아래에 주제를 입력하십시오."
 
-#: app/templates/auth/settings.html:1406
+#: app/templates/auth/settings.html:1409
 msgid "ntfy Topic or Server URL"
 msgstr "ntfy 주제 또는 서버 URL"
 
-#: app/templates/auth/settings.html:1411
+#: app/templates/auth/settings.html:1414
 msgid ""
 "For ntfy.sh, just enter your topic name. For self-hosted, enter the full "
 "URL."
 msgstr "ntfy.sh의 경우 주제 이름만 입력하십시오. 자체 호스팅의 경우 전체 URL을 입력하십시오."
 
-#: app/templates/auth/settings.html:1414
+#: app/templates/auth/settings.html:1417
 msgid "ntfy Access Token"
 msgstr "ntfy 액세스 토큰"
 
-#: app/templates/auth/settings.html:1416
+#: app/templates/auth/settings.html:1419
 msgid "Token saved — enter a new one to replace it"
 msgstr "토큰이 저장되었습니다 — 교체하려면 새 토큰을 입력하십시오"
 
-#: app/templates/auth/settings.html:1419
+#: app/templates/auth/settings.html:1422
 msgid ""
 "Optional — only needed for self-hosted ntfy servers with authentication "
 "enabled. Leave blank to keep the saved token."
 msgstr "선택 사항 — 인증이 활성화된 자체 호스팅 ntfy 서버에만 필요합니다. 저장된 토큰을 유지하려면 비워 두십시오."
 
-#: app/templates/auth/settings.html:1424
+#: app/templates/auth/settings.html:1427
 msgid "Remove the saved token"
 msgstr "저장된 토큰 제거"
 
-#: app/templates/auth/settings.html:1434
+#: app/templates/auth/settings.html:1437
 msgid "sends notifications to your devices. Enter your User Key below."
 msgstr "장치로 알림을 보냅니다. 아래에 사용자 키를 입력하십시오."
 
-#: app/templates/auth/settings.html:1437
+#: app/templates/auth/settings.html:1440
 msgid "Pushover User Key"
 msgstr "Pushover 사용자 키"
 
-#: app/templates/auth/settings.html:1442
+#: app/templates/auth/settings.html:1445
 msgid "Find your User Key on your Pushover dashboard."
 msgstr "Pushover 대시보드에서 사용자 키를 찾으십시오."
 
-#: app/templates/auth/settings.html:1449
+#: app/templates/auth/settings.html:1452
 msgid "Notifications will be sent as JSON POST requests to your webhook URL."
 msgstr "알림이 Webhook URL로 JSON POST 요청으로 전송됩니다."
 
-#: app/templates/auth/settings.html:1452
+#: app/templates/auth/settings.html:1455
 msgid "Webhook URL"
 msgstr "Webhook URL"
 
-#: app/templates/auth/settings.html:1457
+#: app/templates/auth/settings.html:1460
 #, python-brace-format
 msgid "JSON payload: {title, message, reminder_id, vehicle_name, due_date}"
 msgstr "JSON 페이로드: {title, message, reminder_id, vehicle_name, due_date}"
 
-#: app/templates/auth/settings.html:1468
+#: app/templates/auth/settings.html:1471
 msgid "Send Test Notification"
 msgstr "테스트 알림 보내기"
 
-#: app/templates/auth/settings.html:1492
+#: app/templates/auth/settings.html:1495
 msgid "Notification Services"
 msgstr "알림 서비스"
 
-#: app/templates/auth/settings.html:1495
+#: app/templates/auth/settings.html:1498
 msgid "Configure notification services available to all users"
 msgstr "모든 사용자가 사용할 수 있는 알림 서비스 구성"
 
-#: app/templates/auth/settings.html:1508
+#: app/templates/auth/settings.html:1511
 msgid "Email (SMTP)"
 msgstr "이메일 (SMTP)"
 
-#: app/templates/auth/settings.html:1520
+#: app/templates/auth/settings.html:1523
 msgid "SMTP Host"
 msgstr "SMTP 호스트"
 
-#: app/templates/auth/settings.html:1527
+#: app/templates/auth/settings.html:1530
 msgid "SMTP Port"
 msgstr "SMTP 포트"
 
-#: app/templates/auth/settings.html:1534
+#: app/templates/auth/settings.html:1537
 msgid "SMTP Username"
 msgstr "SMTP 사용자 이름"
 
-#: app/templates/auth/settings.html:1541
+#: app/templates/auth/settings.html:1544
 msgid "SMTP Password"
 msgstr "SMTP 비밀번호"
 
-#: app/templates/auth/settings.html:1548
+#: app/templates/auth/settings.html:1551
 msgid "Sender Email"
 msgstr "발신자 이메일"
 
-#: app/templates/auth/settings.html:1555
+#: app/templates/auth/settings.html:1558
 msgid "Sender Name"
 msgstr "발신자 이름"
 
-#: app/templates/auth/settings.html:1568
+#: app/templates/auth/settings.html:1571
 msgid "Use TLS"
 msgstr "TLS 사용"
 
-#: app/templates/auth/settings.html:1574
+#: app/templates/auth/settings.html:1577
 msgid "Use SSL"
 msgstr "SSL 사용"
 
-#: app/templates/auth/settings.html:1602
+#: app/templates/auth/settings.html:1605
 msgid "sends push notifications to iOS and Android devices."
 msgstr "iOS 및 Android 장치로 푸시 알림을 보냅니다."
 
-#: app/templates/auth/settings.html:1605
+#: app/templates/auth/settings.html:1608
 msgid "Application Token"
 msgstr "애플리케이션 토큰"
 
-#: app/templates/auth/settings.html:1610
+#: app/templates/auth/settings.html:1613
 msgid "Create an application at pushover.net to get your token"
 msgstr "토큰을 받으려면 pushover.net에서 애플리케이션을 생성하십시오"
 
-#: app/templates/auth/settings.html:1620
+#: app/templates/auth/settings.html:1623
 msgid "ntfy"
 msgstr "ntfy"
 
-#: app/templates/auth/settings.html:1621 app/templates/auth/settings.html:1636
+#: app/templates/auth/settings.html:1624 app/templates/auth/settings.html:1639
 msgid "Always available"
 msgstr "항상 사용 가능"
 
-#: app/templates/auth/settings.html:1625
+#: app/templates/auth/settings.html:1628
 msgid ""
 "is a free, open-source notification service that requires no admin "
 "configuration. Users can set their own topic."
 msgstr "는 관리자 설정이 필요 없는 무료 오픈소스 알림 서비스입니다. 사용자가 자체 주제를 설정할 수 있습니다."
 
-#: app/templates/auth/settings.html:1635
+#: app/templates/auth/settings.html:1638
 msgid "Webhook"
 msgstr "Webhook"
 
-#: app/templates/auth/settings.html:1639
+#: app/templates/auth/settings.html:1642
 msgid ""
 "Webhooks allow users to integrate with any service that accepts HTTP POST "
 "requests (Home Assistant, Discord, Slack, etc.)"
@@ -2942,147 +2964,147 @@ msgstr ""
 "Webhook을 사용하면 HTTP POST 요청을 수신하는 모든 서비스(Home Assistant, Discord, Slack 등)와 "
 "연동할 수 있습니다."
 
-#: app/templates/auth/settings.html:1646
+#: app/templates/auth/settings.html:1649
 msgid "Save Notification Settings"
 msgstr "알림 설정 저장"
 
-#: app/templates/auth/settings.html:1657
+#: app/templates/auth/settings.html:1660
 msgid "Manage Reminders"
 msgstr "알림 관리"
 
-#: app/templates/auth/settings.html:1658
+#: app/templates/auth/settings.html:1661
 msgid "View and manage your upcoming reminders"
 msgstr "다가오는 알림 보기 및 관리"
 
-#: app/templates/auth/settings.html:1663
+#: app/templates/auth/settings.html:1666
 msgid "View all reminders"
 msgstr "모든 알림 보기"
 
-#: app/templates/auth/settings.html:1680
+#: app/templates/auth/settings.html:1683
 msgid "Application Branding"
 msgstr "애플리케이션 브랜딩"
 
-#: app/templates/auth/settings.html:1681
+#: app/templates/auth/settings.html:1684
 msgid "Customize how May appears to all users"
 msgstr "모든 사용자에게 표시되는 May의 외관 사용자 지정"
 
-#: app/templates/auth/settings.html:1687
+#: app/templates/auth/settings.html:1690
 msgid "Application Name"
 msgstr "애플리케이션 이름"
 
-#: app/templates/auth/settings.html:1695
+#: app/templates/auth/settings.html:1698
 msgid "Tagline"
 msgstr "태그라인"
 
-#: app/templates/auth/settings.html:1703
+#: app/templates/auth/settings.html:1706
 msgid "Primary Color"
 msgstr "기본 색상"
 
-#: app/templates/auth/settings.html:1722
+#: app/templates/auth/settings.html:1725
 msgid "Logo"
 msgstr "로고"
 
-#: app/templates/auth/settings.html:1726 app/templates/auth/settings.html:1727
+#: app/templates/auth/settings.html:1729 app/templates/auth/settings.html:1730
 msgid "Current logo"
 msgstr "현재 로고"
 
-#: app/templates/auth/settings.html:1739
+#: app/templates/auth/settings.html:1742
 msgid "Remove Logo"
 msgstr "로고 삭제"
 
-#: app/templates/auth/settings.html:1744
+#: app/templates/auth/settings.html:1747
 msgid "Are you sure you want to remove the logo?"
 msgstr "로고를 삭제하시겠습니까?"
 
-#: app/templates/auth/settings.html:1767
+#: app/templates/auth/settings.html:1770
 msgid "Save Branding"
 msgstr "브랜딩 저장"
 
-#: app/templates/auth/settings.html:1780
+#: app/templates/auth/settings.html:1783
 msgid "Version information and updates"
 msgstr "버전 정보 및 업데이트"
 
-#: app/templates/auth/settings.html:1787
+#: app/templates/auth/settings.html:1790
 msgid "Current Version"
 msgstr "현재 버전"
 
-#: app/templates/auth/settings.html:1810
+#: app/templates/auth/settings.html:1813
 msgid "Check for Updates"
 msgstr "업데이트 확인"
 
-#: app/templates/auth/settings.html:1811
+#: app/templates/auth/settings.html:1814
 msgid "Click to check for newer versions"
 msgstr "최신 버전을 확인하려면 클릭하십시오"
 
-#: app/templates/auth/settings.html:1818
+#: app/templates/auth/settings.html:1821
 msgid "Check Now"
 msgstr "지금 확인"
 
-#: app/templates/auth/settings.html:1829
+#: app/templates/auth/settings.html:1832
 msgid "Update Available"
 msgstr "업데이트 사용 가능"
 
-#: app/templates/auth/settings.html:1831
+#: app/templates/auth/settings.html:1834
 msgid "Version"
 msgstr "버전"
 
-#: app/templates/auth/settings.html:1831
+#: app/templates/auth/settings.html:1834
 msgid "is available"
 msgstr "사용 가능합니다"
 
-#: app/templates/auth/settings.html:1835
+#: app/templates/auth/settings.html:1838
 msgid "View Release Notes"
 msgstr "릴리스 노트 보기"
 
-#: app/templates/auth/settings.html:1842
+#: app/templates/auth/settings.html:1845
 msgid "To update (Docker):"
 msgstr "업데이트 방법 (Docker):"
 
-#: app/templates/auth/settings.html:1845
+#: app/templates/auth/settings.html:1848
 msgid "Or use Watchtower for automatic updates."
 msgstr "또는 Watchtower를 사용하여 자동 업데이트하십시오."
 
-#: app/templates/auth/settings.html:1857
+#: app/templates/auth/settings.html:1860
 msgid "You are running the latest version"
 msgstr "최신 버전을 사용 중입니다"
 
-#: app/templates/auth/settings.html:1864
+#: app/templates/auth/settings.html:1867
 msgid "Resources"
 msgstr "리소스"
 
-#: app/templates/auth/settings.html:1871
+#: app/templates/auth/settings.html:1874
 msgid "Source Code"
 msgstr "소스 코드"
 
-#: app/templates/auth/settings.html:1878
+#: app/templates/auth/settings.html:1881
 msgid "Report an Issue"
 msgstr "문제 보고"
 
-#: app/templates/auth/settings.html:1885
+#: app/templates/auth/settings.html:1888
 msgid "All Releases"
 msgstr "모든 릴리스"
 
-#: app/templates/auth/settings.html:1892
+#: app/templates/auth/settings.html:1895
 msgid "Documentation"
 msgstr "문서"
 
-#: app/templates/auth/settings.html:2307
+#: app/templates/auth/settings.html:2310
 msgid "Checking..."
 msgstr "확인 중..."
 
-#: app/templates/auth/settings.html:2326
+#: app/templates/auth/settings.html:2329
 msgid "A newer version is available"
 msgstr "최신 버전을 사용할 수 있습니다"
 
-#: app/templates/auth/settings.html:2331
+#: app/templates/auth/settings.html:2334
 msgid "Last checked just now"
 msgstr "방금 확인함"
 
-#: app/templates/auth/settings.html:2335
+#: app/templates/auth/settings.html:2338
 msgid "Could not check for updates"
 msgstr "업데이트를 확인할 수 없습니다"
 
-#: app/templates/auth/settings.html:2340
+#: app/templates/auth/settings.html:2343
 msgid "Error checking for updates"
 msgstr "업데이트 확인 중 오류 발생"
 
@@ -3386,7 +3408,7 @@ msgstr "선택 사항 — 지출 날짜에 정비 일정을 완료된 것으로 
 msgid "Receipts / Attachments"
 msgstr "영수증 / 첨부 파일"
 
-#: app/templates/expenses/form.html:148 app/templates/fuel/form.html:184
+#: app/templates/expenses/form.html:148 app/templates/fuel/form.html:196
 msgid "Delete this attachment?"
 msgstr "이 첨부 파일을 삭제하시겠습니까?"
 
@@ -3463,11 +3485,11 @@ msgstr "합계"
 msgid "Last"
 msgstr "최근"
 
-#: app/templates/fuel/_quick_form.html:9 app/templates/fuel/form.html:56
+#: app/templates/fuel/_quick_form.html:9 app/templates/fuel/form.html:61
 msgid "From Tessie"
 msgstr "Tessie에서 가져옴"
 
-#: app/templates/fuel/_quick_form.html:65 app/templates/fuel/form.html:77
+#: app/templates/fuel/_quick_form.html:65 app/templates/fuel/form.html:84
 #: app/templates/vehicles/view.html:1334
 msgid "Price per"
 msgstr "단위당 가격"
@@ -3476,11 +3498,11 @@ msgstr "단위당 가격"
 msgid "Full tank"
 msgstr "가득 채우기"
 
-#: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:113
+#: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:124
 msgid "Station"
 msgstr "주유소"
 
-#: app/templates/fuel/_quick_form.html:96 app/templates/fuel/form.html:117
+#: app/templates/fuel/_quick_form.html:96 app/templates/fuel/form.html:128
 msgid "Select station or enter manually..."
 msgstr "주유소를 선택하거나 직접 입력..."
 
@@ -3504,81 +3526,81 @@ msgstr "저장 후 추가 입력"
 msgid "Add Vehicle"
 msgstr "차량 추가"
 
-#: app/templates/fuel/form.html:2 app/templates/fuel/form.html:11
+#: app/templates/fuel/form.html:2 app/templates/fuel/form.html:16
 msgid "Edit Fuel Log"
 msgstr "주유 기록 편집"
 
-#: app/templates/fuel/form.html:2 app/templates/fuel/form.html:11
-#: app/templates/fuel/form.html:208 app/templates/fuel/index.html:16
+#: app/templates/fuel/form.html:2 app/templates/fuel/form.html:16
+#: app/templates/fuel/form.html:220 app/templates/fuel/index.html:16
 #: app/templates/fuel/index.html:129 app/templates/partials/mobile_nav.html:53
 #: app/templates/vehicles/view.html:311
 msgid "Add Fuel Log"
 msgstr "주유 기록 추가"
 
-#: app/templates/fuel/form.html:10
+#: app/templates/fuel/form.html:15
 msgid "Back to fuel logs"
 msgstr "주유 기록으로 돌아가기"
 
-#: app/templates/fuel/form.html:39 app/templates/fuel/form.html:216
+#: app/templates/fuel/form.html:44 app/templates/fuel/form.html:228
 #: app/templates/trips/form.html:56 app/templates/trips/form.html:183
 msgid "Last engine hours"
 msgstr "최근 엔진 가동시간"
 
-#: app/templates/fuel/form.html:39 app/templates/fuel/form.html:215
+#: app/templates/fuel/form.html:44 app/templates/fuel/form.html:227
 #: app/templates/trips/form.html:56 app/templates/trips/form.html:182
 msgid "Last odometer"
 msgstr "최근 주행거리"
 
-#: app/templates/fuel/form.html:62
+#: app/templates/fuel/form.html:68
 msgid ""
 "Leave blank if the reading was not recorded. Enter 0 to confirm a genuine "
 "zero reading."
 msgstr "수치를 기록하지 않았다면 비워 두세요. 실제로 0이었음을 확인하려면 0을 입력하세요."
 
-#: app/templates/fuel/form.html:64
+#: app/templates/fuel/form.html:70
 msgid "Odometer is automatically tracked via Tessie for this vehicle."
 msgstr "이 차량의 주행거리계는 Tessie를 통해 자동으로 기록됩니다."
 
-#: app/templates/fuel/form.html:86
+#: app/templates/fuel/form.html:94
 msgid "Discount per"
 msgstr "단위당 할인"
 
-#: app/templates/fuel/form.html:92
+#: app/templates/fuel/form.html:101
 msgid "Optional loyalty discount, subtracted from the price per unit."
 msgstr "선택 사항인 멤버십 할인으로, 단위당 가격에서 차감됩니다."
 
-#: app/templates/fuel/form.html:104
+#: app/templates/fuel/form.html:114
 msgid "Sales Tax"
 msgstr "부가세"
 
-#: app/templates/fuel/form.html:109
+#: app/templates/fuel/form.html:120
 msgid ""
 "Optional. Sales tax shown on the receipt, already included in the total "
 "cost. Add the amounts together where more than one tax applies."
 msgstr "선택 사항. 영수증에 표시되어 총비용에 이미 포함된 세액입니다. 세금이 여러 건이면 금액을 합산하세요."
 
-#: app/templates/fuel/form.html:128
+#: app/templates/fuel/form.html:139
 msgid "e.g., Shell, BP"
 msgstr "예: Shell, BP"
 
-#: app/templates/fuel/form.html:132
+#: app/templates/fuel/form.html:143
 msgid "Add saved stations"
 msgstr "저장된 주유소 추가"
 
-#: app/templates/fuel/form.html:132
+#: app/templates/fuel/form.html:143
 msgid "for quick selection and price tracking"
 msgstr "빠른 선택 및 가격 추적을 위해"
 
-#: app/templates/fuel/form.html:138 app/templates/fuel/index.html:44
+#: app/templates/fuel/form.html:149 app/templates/fuel/index.html:44
 #: app/templates/vehicles/form.html:59
 msgid "Fuel Type"
 msgstr "연료 유형"
 
-#: app/templates/fuel/form.html:146
+#: app/templates/fuel/form.html:157
 msgid "Distance on this fuel"
 msgstr "이 연료로 주행한 거리"
 
-#: app/templates/fuel/form.html:151
+#: app/templates/fuel/form.html:163
 msgid ""
 "Distance run on this fuel since your last fill-up of it. The odometer can’t "
 "tell the fuels apart, so consumption for a dual-fuel vehicle needs this."
@@ -3586,15 +3608,15 @@ msgstr ""
 "마지막으로 이 연료를 넣은 이후 주행한 거리입니다. 주행거리계는 연료를 구분하지 못하므로 이중 연료 차량의 연비 계산에는 이 값이 "
 "필요합니다."
 
-#: app/templates/fuel/form.html:159
+#: app/templates/fuel/form.html:171
 msgid "Full tank fill-up"
 msgstr "가득 채우기"
 
-#: app/templates/fuel/form.html:166
+#: app/templates/fuel/form.html:178
 msgid "Missed fill-up (incomplete data)"
 msgstr "누락된 주유 (불완전한 데이터)"
 
-#: app/templates/fuel/form.html:177
+#: app/templates/fuel/form.html:189
 msgid "Receipt / Attachment"
 msgstr "영수증 / 첨부 파일"
 
@@ -4052,6 +4074,34 @@ msgstr "닫기"
 #: app/templates/partials/mobile_nav.html:148
 msgid "Something went wrong"
 msgstr "문제가 발생했습니다"
+
+#: app/templates/partials/password_rules.html:32
+msgid "This password does not meet all the requirements yet"
+msgstr "이 비밀번호는 아직 모든 요구 사항을 충족하지 않습니다"
+
+#: app/templates/partials/password_rules.html:35
+msgid "Password requirements"
+msgstr "비밀번호 요구 사항"
+
+#: app/templates/partials/password_rules.html:36
+msgid "At least 8 characters"
+msgstr "8자 이상"
+
+#: app/templates/partials/password_rules.html:37
+msgid "One uppercase letter (A–Z)"
+msgstr "대문자 1개 (A–Z)"
+
+#: app/templates/partials/password_rules.html:38
+msgid "One lowercase letter (a–z)"
+msgstr "소문자 1개 (a–z)"
+
+#: app/templates/partials/password_rules.html:39
+msgid "One number (0–9)"
+msgstr "숫자 1개 (0–9)"
+
+#: app/templates/partials/password_rules.html:47
+msgid "Passwords match"
+msgstr "비밀번호가 일치합니다"
 
 #: app/templates/recurring/form.html:2 app/templates/recurring/form.html:13
 msgid "Edit Recurring Expense"
