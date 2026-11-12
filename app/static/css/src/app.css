@@ -467,7 +467,10 @@ textarea.ds-control { height: auto; min-height: 96px; padding: 10px 12px; resize
   background: color-mix(in srgb, var(--ds-series-charging) 20%, var(--ds-surface)); color: var(--ds-text);
 }
 .ds-facts {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px 24px; margin: 0;
+  /* auto-fit, not auto-fill: empty tracks collapse, so however many facts
+     there are (four to seven) they spread across the row instead of leaving
+     one stranded on a line of its own. */
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px 24px; margin: 0;
 }
 .ds-facts dt { font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
 .ds-facts dd {
