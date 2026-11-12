@@ -161,8 +161,8 @@ class TestFuelNew:
             'volume': '0.05',
             'total_cost': '100000',
             'station_id': str(sample_station.id),
-        }, follow_redirects=True)
-        assert resp.status_code == 200
+        })
+        assert resp.status_code == 422
         assert FuelLog.query.filter_by(
             vehicle_id=sample_vehicle.id, odometer=15401.0
         ).first() is None
@@ -238,8 +238,8 @@ class TestFuelSalesTax:
             'price_per_unit': '1.50',
             'sales_tax': '-5',
             'is_full_tank': 'on',
-        }, follow_redirects=True)
-        assert resp.status_code == 200
+        })
+        assert resp.status_code == 422
         assert FuelLog.query.filter_by(
             vehicle_id=sample_vehicle.id, odometer=16200.0).first() is None
 
@@ -1559,8 +1559,7 @@ class TestDualFuelConsumption:
 
     def test_bad_attributed_distance_is_rejected_not_crashed(self, auth_client,
                                                              bifuel_vehicle):
-        """A negative distance must come back as a flashed error. There is no
-        fuel/new.html to render, so the failure path has to redirect."""
+        """A negative distance must come back as an error on the form, not a 500."""
         resp = auth_client.post('/fuel/new', data={
             'vehicle_id': str(bifuel_vehicle.id),
             'date': '2024-03-01',
@@ -1571,9 +1570,9 @@ class TestDualFuelConsumption:
             'fuel_type': 'lpg',
             'fuel_distance': '-5',
             'is_full_tank': 'on',
-        }, follow_redirects=True)
+        })
 
-        assert resp.status_code == 200
+        assert resp.status_code == 422
         assert FuelLog.query.filter_by(vehicle_id=bifuel_vehicle.id).count() == 0
 
     def test_edit_updates_attributed_distance(self, auth_client, bifuel_vehicle, test_user):
@@ -1631,7 +1630,7 @@ class TestDerivedPriceEditing:
             'date': '2024-03-05', 'odometer': '15400', 'volume': '0.05',
             'total_cost': '100000',
         })
-        assert response.status_code == 302
+        assert response.status_code == 422
         db.session.refresh(sample_fuel_log)
         assert sample_fuel_log.volume == old_volume
         assert sample_fuel_log.price_per_unit == old_price

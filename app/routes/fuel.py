@@ -34,6 +34,32 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def _stations():
+    """Saved stations for the form's dropdown, favourites and most used first."""
+    return FuelStation.query.order_by(
+        FuelStation.is_favorite.desc(),
+        FuelStation.times_used.desc()
+    ).all()
+
+
+def _form_rejected(vehicles, field, message, log=None):
+    """Show the fuel form again with what was typed and why it was refused.
+
+    Redirecting to a blank form made the user retype every field to fix one.
+    The message sits under the field that failed. 422 rather than 200 so
+    nothing reads the response as a saved log.
+    """
+    return render_template('fuel/form.html',
+                           log=log,
+                           vehicles=vehicles,
+                           stations=_stations(),
+                           fuel_types=FUEL_TYPES,
+                           selected_vehicle_id=request.form.get('vehicle_id', type=int),
+                           form=request.form,
+                           error_field=field,
+                           error_message=message), 422
+
+
 @bp.route('/')
 @login_required
 def index():
@@ -103,42 +129,36 @@ def new():
         date_str = request.form.get('date')
         date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else datetime.now().date()
 
-        # Validate numeric inputs. A failure sends the user back to the form
-        # with the flash: there is no `fuel/new.html` template to re-render.
+        # Validate numeric inputs. A failure re-renders the form with the
+        # values as typed and the message under the field that failed.
         odometer, err = validate_positive_number(request.form.get('odometer'), 'Odometer', max_value=9999999)
         if err:
-            flash(err, 'error')
-            return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+            return _form_rejected(vehicles, 'odometer', err)
 
         volume, err = validate_positive_number(request.form.get('volume'), 'Volume', max_value=10000)
         if err:
-            flash(err, 'error')
-            return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+            return _form_rejected(vehicles, 'volume', err)
 
         price_per_unit, err = validate_positive_number(request.form.get('price_per_unit'), 'Price per unit', max_value=MAX_UNIT_PRICE)
         if err:
-            flash(err, 'error')
-            return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+            return _form_rejected(vehicles, 'price_per_unit', err)
 
         discount_per_unit = None
         if request.form.get('discount_per_unit'):
             discount_per_unit, err = validate_positive_number(request.form.get('discount_per_unit'), 'Discount per unit', max_value=MAX_UNIT_PRICE)
             if err:
-                flash(err, 'error')
-                return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+                return _form_rejected(vehicles, 'discount_per_unit', err)
 
         total_cost, err = validate_positive_number(request.form.get('total_cost'), 'Total cost', max_value=MAX_AMOUNT)
         if err:
-            flash(err, 'error')
-            return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+            return _form_rejected(vehicles, 'total_cost', err)
 
         # Sales tax paid on the fill-up, already included in the total cost (#225)
         sales_tax = None
         if request.form.get('sales_tax'):
             sales_tax, err = validate_positive_number(request.form.get('sales_tax'), 'Sales tax', max_value=MAX_AMOUNT)
             if err:
-                flash(err, 'error')
-                return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+                return _form_rejected(vehicles, 'sales_tax', err)
 
         # Distance run on this fuel — only bi-fuel vehicles need it (#221)
         fuel_distance = None
@@ -146,8 +166,7 @@ def new():
             fuel_distance, err = validate_positive_number(
                 request.form.get('fuel_distance'), 'Distance on this fuel', max_value=9999999)
             if err:
-                flash(err, 'error')
-                return redirect(url_for('fuel.new', vehicle_id=vehicle_id))
+                return _form_rejected(vehicles, 'fuel_distance', err)
 
         # Derive the unit price from the amount paid when it was omitted.
         # Add the discount back because total_cost represents the amount paid
@@ -158,8 +177,7 @@ def new():
                 price_per_unit, 'Price per unit', max_value=MAX_UNIT_PRICE
             )
             if err:
-                flash(err, 'error')
-                return redirect(url_for('fuel.new'))
+                return _form_rejected(vehicles, 'total_cost', err)
 
         log = FuelLog(
             vehicle_id=vehicle_id,
@@ -234,10 +252,7 @@ def new():
     selected_vehicle_id = request.args.get('vehicle_id', type=int) or current_user.default_vehicle_id
 
     # Get all fuel stations for dropdown (stations are system-wide)
-    stations = FuelStation.query.order_by(
-        FuelStation.is_favorite.desc(),
-        FuelStation.times_used.desc()
-    ).all()
+    stations = _stations()
 
     return render_template('fuel/form.html',
                            log=None,
@@ -272,16 +287,14 @@ def edit(log_id):
                 values[field], err = validate_positive_number(
                     request.form.get(field), label, max_value=maximum)
                 if err:
-                    flash(err, 'error')
-                    return redirect(url_for('fuel.edit', log_id=log.id))
+                    return _form_rejected(vehicles, field, err, log=log)
             if values['volume'] and values['total_cost'] is not None:
                 derived_price, err = validate_positive_number(
                     round(values['total_cost'] / values['volume']
                           + (values['discount_per_unit'] or 0), 3),
                     'Price per unit', max_value=MAX_UNIT_PRICE)
                 if err:
-                    flash(err, 'error')
-                    return redirect(url_for('fuel.edit', log_id=log.id))
+                    return _form_rejected(vehicles, 'total_cost', err, log=log)
 
         # Capture old values before updating for price history sync
         old_price = log.price_per_unit
@@ -297,8 +310,7 @@ def edit(log_id):
         reading, err = validate_positive_number(request.form.get('odometer'), 'Odometer', max_value=9999999)
         if err:
             db.session.rollback()
-            flash(err, 'error')
-            return redirect(url_for('fuel.edit', log_id=log.id))
+            return _form_rejected(vehicles, 'odometer', err, log=log)
         log.odometer = reading or 0
         log.odometer_confirmed = reading is not None
         log.volume = parse_decimal(request.form.get('volume')) if request.form.get('volume') else None
@@ -400,10 +412,7 @@ def edit(log_id):
         return redirect(url_for('fuel.index'))
 
     # Get all fuel stations for dropdown (stations are system-wide)
-    stations = FuelStation.query.order_by(
-        FuelStation.is_favorite.desc(),
-        FuelStation.times_used.desc()
-    ).all()
+    stations = _stations()
 
     return render_template('fuel/form.html',
                            log=log,
@@ -525,10 +534,7 @@ def quick():
         return redirect(url_for('vehicles.new'))
 
     # Get all fuel stations for dropdown (stations are system-wide)
-    stations = FuelStation.query.order_by(
-        FuelStation.is_favorite.desc(),
-        FuelStation.times_used.desc()
-    ).all()
+    stations = _stations()
 
     if request.method == 'POST':
         vehicle_id = int(request.form.get('vehicle_id'))
