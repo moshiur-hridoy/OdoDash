@@ -24,6 +24,9 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 - Generating an API key works on PostgreSQL. New keys are 64 characters to
   fit their column (they were 68, which PostgreSQL refused); existing keys
   keep working, and new ones start with `odo_`.
+- Log messages from the app after startup are no longer lost. Running the
+  database migrations at startup disabled every existing logger, so scheduler
+  output and errors written through the app's logger never appeared.
 - Recurring expenses are no longer generated twice. Each Gunicorn worker ran
   its own hourly scheduler, so two workers could create the same due period;
   now one process runs the scheduler, and each period is claimed before it is
