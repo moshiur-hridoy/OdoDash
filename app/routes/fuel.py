@@ -100,7 +100,11 @@ def index():
         if total
     ]
 
+    # Fuel and charging history are separate tabs.
+    active_tab = 'charging' if request.args.get('tab') == 'charging' else 'fuel'
+
     return render_template('fuel/index.html',
+                           active_tab=active_tab,
                            logs=logs,
                            pagination=pagination,
                            vehicles=vehicles,

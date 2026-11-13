@@ -32,6 +32,22 @@
 </div>
 {% endif %}
 
+<div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+    <nav class="-mb-px flex gap-6 overflow-x-auto" aria-label="{{ _('Type') }}">
+        {% set tab_on = 'border-primary-500 text-primary-600 dark:text-primary-400' %}
+        {% set tab_off = 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200' %}
+        <a href="{{ url_for('fuel.index') }}" {% if active_tab == 'fuel' %}aria-current="page"{% endif %}
+           class="whitespace-nowrap py-3 px-1 border-b-2 text-sm font-medium {{ tab_on if active_tab == 'fuel' else tab_off }}">
+            {{ _('Fuel Logs') }} ({{ pagination.total }})
+        </a>
+        <a href="{{ url_for('fuel.index', tab='charging') }}" {% if active_tab == 'charging' %}aria-current="page"{% endif %}
+           class="whitespace-nowrap py-3 px-1 border-b-2 text-sm font-medium {{ tab_on if active_tab == 'charging' else tab_off }}">
+            {{ _('Charging History') }} ({{ charging_sessions|length }})
+        </a>
+    </nav>
+</div>
+
+{% if active_tab == 'fuel' %}
 {% if logs %}
 <div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
     <div class="overflow-x-auto">
@@ -132,9 +148,8 @@
     </div>
 </div>
 {% endif %}
-
-{% if charging_sessions %}
-<div class="mt-8 sm:flex sm:items-center sm:justify-between mb-6">
+{% else %}
+<div class="sm:flex sm:items-center sm:justify-between mb-6">
     <div>
         <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ _('Charging History') }}</h2>
         <p class="text-gray-500 dark:text-gray-400">{{ _('Sessions logged for your electric and plug-in hybrid vehicles') }}</p>
@@ -149,6 +164,12 @@
     </a>
     {% endif %}
 </div>
+{% if not charging_sessions %}
+<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+    <h3 class="text-sm font-medium text-gray-900 dark:text-white">{{ _('No charging sessions') }}</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Start tracking your EV charging to monitor energy usage and costs.') }}</p>
+</div>
+{% else %}
 <div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -193,5 +214,6 @@
         </table>
     </div>
 </div>
+{% endif %}
 {% endif %}
 {% endblock %}
