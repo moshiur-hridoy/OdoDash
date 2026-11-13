@@ -143,4 +143,4 @@ MIT License, see [LICENSE](LICENSE). The original May project is Copyright (c) 2
 
 ---
 
-**Made with ❤️ by [Danny McClelland](https://github.com/dannymcc) — rebranded and maintained as OdoDash by [moshiur-hridoy](https://github.com/moshiur-hridoy)**
+**OdoDash is a fork of [May](https://github.com/dannymcc/may), created by [Danny McClelland](https://github.com/dannymcc). Redesigned and maintained by [moshiur-hridoy](https://github.com/moshiur-hridoy).**
