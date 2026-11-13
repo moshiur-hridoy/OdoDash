@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% from 'components/ui.html' import page_header, button, badge, segmented, empty_state, pager %}
+{% from 'components/ui.html' import page_header, button, badge, empty_state, pager %}
 {% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Fuel Logs') }}{% endblock %}
 
 {% block content %}
 {%- set currency = current_user.currency -%}
 {%- set volume_unit = current_user.volume_unit -%}
-{#- The vehicle filter rides along on every tab and pager link. -#}
+{#- The vehicle filter rides along on every pager link. -#}
 {%- set scope_args = {'vehicle': selected_vehicle.id} if selected_vehicle else {} -%}
 {%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
 <div class="ds log-page">
@@ -14,7 +14,6 @@
 {% call page_header(_('Fuel Logs'), subtitle=_('Track your fuel fill-ups and consumption')) %}
     {% if vehicles|length > 1 %}
     <form method="GET" class="log-vehicle">
-        {% if active_tab == 'charging' %}<input type="hidden" name="tab" value="charging">{% endif %}
         <label class="ds-sr-only" for="log-vehicle">{{ _('Vehicle') }}</label>
         <select id="log-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
             <option value="">{{ _('All Vehicles') }}</option>
@@ -25,23 +24,12 @@
         <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
     </form>
     {% endif %}
-    {% if active_tab == 'charging' %}
-        {% if can_write('charging') %}{{ button(_('Add Charging Session'), href=url_for('charging.new'), icon_name='plus') }}{% endif %}
-    {% elif can_write('fuel') %}
+    {% if can_write('fuel') %}
         {{ button(_('Add Fuel Log'), href=url_for('fuel.new'), icon_name='plus') }}
     {% endif %}
 {% endcall %}
 
-{% if has_charging %}
-{{ segmented([
-    {'label': _('Fuel Logs') ~ ' · ' ~ fuel_count, 'href': url_for('fuel.index', **scope_args), 'current': active_tab == 'fuel'},
-    {'label': _('Charging History') ~ ' · ' ~ charging_count, 'href': url_for('fuel.index', tab='charging', **scope_args), 'current': active_tab == 'charging'},
-], _('Type')) }}
-{% endif %}
-
-{# ------------------------------------------------------------------ fuel #}
-{% if active_tab == 'fuel' %}
-
+{#- Charging has its own page (charging.index); this one is fuel only. -#}
 {% if fuel_count %}
 <dl class="ds-card log-summary">
     <div>
@@ -182,15 +170,6 @@
     {{ empty_state(_('No fuel logs'), _('Start tracking your fuel fill-ups.'), 'fuel',
                    _('Add Fuel Log') if can_write('fuel') else None, url_for('fuel.new')) }}
 </div>
-{% endif %}
-
-{# -------------------------------------------------------------- charging #}
-{% else %}
-
-{%- set pager_endpoint = 'fuel.index' -%}
-{%- set pager_args = dict(scope_args, tab='charging') -%}
-{% include 'charging/_log.html' %}
-
 {% endif %}
 </div>
 {% endblock %}

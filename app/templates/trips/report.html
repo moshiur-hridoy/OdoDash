@@ -1,182 +1,97 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, badge, button, empty_state %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import purpose_icons %}
 {% block title %}{{ _('Trip Report') }}{% endblock %}
 
-{% block extra_scripts %}
-<!-- Chart.js - Needed for trip reports -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-{% endblock %}
-
 {% block content %}
-<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+{%- set purpose_tones = {'business': 'success', 'personal': 'accent', 'commute': 'warning', 'medical': 'danger'} -%}
+{%- macro distance(value) -%}
+{{ "%.1f"|format(value) }}{% if total_distance_unit %}<span>{{ total_distance_unit }}</span>{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}
+{%- endmacro -%}
+{%- set used = summary.items()|selectattr('1.count')|list -%}
+{%- set top = (used|map(attribute='1.distance')|max) if used else 0 -%}
+<div class="ds log-page">
+
+{{ back_link(_('Back to trips'), url_for('trips.index')) }}
+{% call page_header(_('Trip Report') ~ ' · ' ~ year, subtitle=_('Summary of trips by purpose for tax deductions')) %}
+    {% if years|length > 1 %}
+    <form method="GET" class="log-vehicle">
+        <label class="ds-sr-only" for="report-year">{{ _('Year') }}</label>
+        <select id="report-year" name="year" class="ds-control" onchange="this.form.submit()">
+            {% for y in years %}<option value="{{ y }}"{% if y == year %} selected{% endif %}>{{ y }}</option>{% endfor %}
+        </select>
+        <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    </form>
+    {% endif %}
+{% endcall %}
+
+<dl class="ds-card log-summary log-summary--compact">
+    <div><dt>{{ _('Total Trips') }}</dt><dd>{{ trips|length }}</dd></div>
+    <div><dt>{{ _('Total Distance') }}</dt><dd>{{ distance(total_distance) }}</dd></div>
     <div>
-        <a href="{{ url_for('trips.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; {{ _('Back to trips') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ _('Trip Report') }} - {{ year }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Summary of trips by purpose for tax deductions') }}</p>
+        <dt>{{ _('Business Distance') }}</dt>
+        <dd>{{ distance(business_distance) }}</dd>
+        <p class="log-summary__meta">{{ _('Tax deductible') }}</p>
     </div>
-    <div>
-        <form method="GET" class="flex items-center gap-2">
-            <select name="year" onchange="this.form.submit()"
-                    class="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                {% for y in years %}
-                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
-</div>
+</dl>
 
-<!-- Summary Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-    <div class="surface-card bg-white dark:bg-gray-800 p-5">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Trips') }}</dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{{ trips|length }}</dd>
-    </div>
-    <div class="surface-card bg-white dark:bg-gray-800 p-5">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Distance') }}</dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(total_distance) }} <span class="text-lg font-normal text-gray-500 dark:text-gray-400">{% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</span></dd>
-    </div>
-    <div class="surface-card business-distance-surface bg-white dark:bg-gray-800 p-5">
-        <dt class="text-sm font-medium text-green-600 dark:text-green-400">{{ _('Business Distance') }}</dt>
-        <dd class="mt-1 text-3xl font-semibold text-green-600 dark:text-green-400">{{ "%.1f"|format(business_distance) }} <span class="text-lg font-normal text-green-500 dark:text-green-500">{% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</span></dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('Tax deductible') }}</dd>
-    </div>
-</div>
+{% if used %}
+<section class="ds-card exp-breakdown" aria-labelledby="by-purpose-title">
+    <h2 class="ds-card__title" id="by-purpose-title">{{ _('Breakdown by Purpose') }}</h2>
+    <ul class="exp-bars">
+        {% for purpose_code, data in used %}
+        <li class="exp-bar trip-bar">
+            <span class="exp-bar__label">{{ icon(purpose_icons.get(purpose_code, 'dots'), 14) }}{{ data.label }} <span class="ds-muted">· {{ data.count }} {{ _('trips') }}</span></span>
+            <span class="exp-bar__value">{{ "%.1f"|format(data.distance) }}{% if total_distance > 0 %} <span class="ds-muted">· {{ "%.0f"|format(data.distance / total_distance * 100) }}%</span>{% endif %}</span>
+            <span class="exp-bar__track"><span class="exp-bar__fill trip-bar__fill--{{ purpose_tones.get(purpose_code, 'neutral') }}" style="width: {{ ((data.distance / top * 100) if top else 0)|round(1) }}%"></span></span>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
 
-<!-- Breakdown by Purpose -->
-<div class="surface-card bg-white dark:bg-gray-800 mb-8">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Breakdown by Purpose') }}</h2>
-    </div>
-    <div class="p-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for purpose_code, data in summary.items() %}
-            {% if data.count > 0 %}
-            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                 {% if purpose_code == 'business' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                 {% elif purpose_code == 'personal' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                 {% elif purpose_code == 'commute' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                 {% elif purpose_code == 'medical' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                 {% elif purpose_code == 'charity' %}bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
-                                 {% else %}bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-300{% endif %}">
-                        {{ data.label }}
-                    </span>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ data.count }} {{ _('trips') }}</span>
-                </div>
-                <div class="mt-2">
-                    <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(data.distance) }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</p>
-                    {% if total_distance > 0 %}
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ "%.1f"|format(data.distance / total_distance * 100) }}% {{ _('of total') }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<!-- Chart -->
-<div class="surface-card bg-white dark:bg-gray-800 mb-8 p-6">
-    <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Distance by Purpose') }}</h2>
-    <div style="height: 300px;">
-        <canvas id="purposeChart"></canvas>
-    </div>
-</div>
-
-<!-- Trip List -->
-<div class="table-surface bg-white dark:bg-gray-800">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('All Trips') }} ({{ year }})</h2>
-    </div>
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('All Trips') }}">
+    <div class="ds-card__header"><h2 class="ds-card__title">{{ _('All Trips') }} ({{ year }})</h2></div>
     {% if trips %}
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Date') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vehicle') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Purpose') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Description') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Distance') }}</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {% for trip in trips %}
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ trip.date|format_date('short') }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ trip.vehicle.name }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                     {% if trip.purpose == 'business' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                     {% elif trip.purpose == 'personal' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                     {% elif trip.purpose == 'commute' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                     {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300{% endif %}">
-                            {{ dict(summary)[trip.purpose].label if trip.purpose in summary else trip.purpose|capitalize }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">{{ trip.description or '-' }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">{{ "%.1f"|format(trip.distance) }} {{ trip.vehicle.get_reading_unit() }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <td colspan="4" class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{{ _('Total') }}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white text-right">{{ "%.1f"|format(total_distance) }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</td>
-                </tr>
-            </tfoot>
-        </table>
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Description') }}</th>
+                <th scope="col" class="ds-num">{{ _('Distance') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trip in trips %}
+            {% set label = summary[trip.purpose].label if trip.purpose in summary else trip.purpose|capitalize %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ trip.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ trip.date|dateformat('MMM') }}</span>
+                </td>
+                <td data-cell="title">
+                    <span class="ds-log__title">{{ trip.description or label }} {{ badge(label, purpose_tones.get(trip.purpose, 'neutral')) }}</span>
+                    <span class="ds-log__sub">{{ trip.vehicle.name }}</span>
+                    <span class="ds-log__phone-meta">{{ trip.date|format_date('short') }}</span>
+                </td>
+                <td data-cell="value" class="ds-num">{{ "%.1f"|format(trip.distance) }} <span class="ds-log__unit">{{ trip.vehicle.get_reading_unit() }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="ds-log__month">
+                <th scope="row" colspan="2">{{ _('Total') }}</th>
+                <td class="ds-num">{{ distance(total_distance) }}</td>
+            </tr>
+        </tfoot>
+    </table>
     </div>
     {% else %}
-    <div class="p-6 text-center text-gray-500 dark:text-gray-400">
-        {{ _('No trips logged for') }} {{ year }}.
-    </div>
+    <div class="ds-card__body">{{ empty_state(_('All Trips'), _('No trips logged for') ~ ' ' ~ year ~ '.', 'map') }}</div>
     {% endif %}
+</section>
+
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('purposeChart').getContext('2d');
-
-    const data = {
-        {% for purpose_code, data in summary.items() %}
-        {% if data.count > 0 %}
-        '{{ data.label }}': {{ data.distance }},
-        {% endif %}
-        {% endfor %}
-    };
-
-    const colors = {
-        'Business': 'rgba(34, 197, 94, 0.8)',
-        'Personal': 'rgba(59, 130, 246, 0.8)',
-        'Commute': 'rgba(234, 179, 8, 0.8)',
-        'Medical': 'rgba(239, 68, 68, 0.8)',
-        'Charity': 'rgba(168, 85, 247, 0.8)',
-        'Other': 'rgba(107, 114, 128, 0.8)'
-    };
-
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(data),
-            datasets: [{
-                data: Object.values(data),
-                backgroundColor: Object.keys(data).map(k => colors[k] || colors['Other']),
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-});
-</script>
 {% endblock %}

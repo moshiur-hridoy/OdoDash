@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 12:05+0600\n"
+"POT-Creation-Date: 2026-11-13 12:25+0600\n"
 "PO-Revision-Date: 2026-08-12 17:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -45,8 +45,8 @@ msgstr "Rögzíthet tankolásokat és töltéseket. Minden más csak olvasható.
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "Csak olvasható. Látja az adatokat, de nem módosíthat semmit."
 
-#: app/models.py:191 app/templates/auth/create_user.html:74
-#: app/templates/auth/edit_user.html:60
+#: app/models.py:191 app/templates/auth/create_user.html:47
+#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:23
 msgid "Administrator"
 msgstr "Adminisztrátor"
 
@@ -57,7 +57,7 @@ msgstr "Motoróra"
 #: app/models.py:403 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:178
 #: app/templates/dashboard.html:204 app/templates/expenses/form.html:71
-#: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:81
+#: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
 #: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:113
 #: app/templates/notes/form.html:25 app/templates/notes/index.html:35
 #: app/templates/tires/index.html:58 app/templates/tires/index.html:76
@@ -75,7 +75,7 @@ msgstr "Óra"
 #: app/models.py:409 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52 app/templates/auth/settings.html:127
 #: app/templates/trips/form.html:85 app/templates/trips/form.html:151
-#: app/templates/trips/index.html:82 app/templates/trips/report.html:102
+#: app/templates/trips/index.html:82 app/templates/trips/report.html:63
 msgid "Distance"
 msgstr "Távolság"
 
@@ -574,7 +574,7 @@ msgstr "A jelszónak tartalmaznia kell legalább egy számjegyet"
 #: app/routes/allowance.py:62 app/routes/expenses.py:256
 #: app/routes/fuel.py:248 app/routes/fuel.py:664 app/routes/notes.py:44
 #: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
-#: app/templates/fuel/_quick_no_vehicle.html:2
+#: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Kérlek vegyél fel egy járművet először"
 
@@ -1018,17 +1018,18 @@ msgstr "Tankolás hozzáadva!"
 #: app/routes/main.py:146 app/routes/vehicles.py:229
 #: app/templates/base.html:588 app/templates/dashboard.html:74
 #: app/templates/dashboard.html:214 app/templates/partials/mobile_nav.html:23
-#: app/templates/timeline/index.html:114 app/templates/trips/index.html:81
-#: app/templates/vehicles/view.html:443 app/templates/vehicles/view.html:470
-#: app/templates/vehicles/view.html:472
+#: app/templates/timeline/index.html:15 app/templates/timeline/index.html:100
+#: app/templates/trips/index.html:81 app/templates/vehicles/view.html:443
+#: app/templates/vehicles/view.html:470 app/templates/vehicles/view.html:472
 msgid "Fuel"
 msgstr "Üzemanyag"
 
 #: app/routes/main.py:149 app/routes/vehicles.py:232
 #: app/templates/charging/_log.html:67 app/templates/dashboard.html:75
-#: app/templates/dashboard.html:215 app/templates/timeline/index.html:126
-#: app/templates/vehicles/view.html:444 app/templates/vehicles/view.html:494
-#: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:544
+#: app/templates/dashboard.html:215 app/templates/timeline/index.html:15
+#: app/templates/timeline/index.html:102 app/templates/vehicles/view.html:444
+#: app/templates/vehicles/view.html:494 app/templates/vehicles/view.html:496
+#: app/templates/vehicles/view.html:544
 msgid "Charging"
 msgstr "Töltés"
 
@@ -1037,7 +1038,7 @@ msgstr "Töltés"
 msgid "Fuel: %(volume).1f L"
 msgstr "Üzemanyag: %(volume).1f L"
 
-#: app/routes/main.py:402 app/templates/search/index.html:74
+#: app/routes/main.py:402 app/templates/search/index.html:66
 msgid "Fuel Log"
 msgstr "Tankolás"
 
@@ -1046,7 +1047,7 @@ msgstr "Tankolás"
 msgid "Charging: %(kwh).1f kWh"
 msgstr "Töltés: %(kwh).1f kWh"
 
-#: app/routes/main.py:427 app/templates/search/index.html:160
+#: app/routes/main.py:427 app/templates/search/index.html:100
 msgid "Charging Session"
 msgstr "Töltés"
 
@@ -1508,7 +1509,7 @@ msgstr ""
 "A fotókat még nem olvassuk be. Küldd el a tankolást szövegként, például: 40L"
 " 4800tk 45230km"
 
-#: app/templates/_toasts.html:114
+#: app/templates/_toasts.html:102
 msgid "Dismiss"
 msgstr "Bezárás"
 
@@ -1523,7 +1524,7 @@ msgstr "Járművek"
 #: app/templates/base.html:532 app/templates/fuel/index.html:4
 #: app/templates/fuel/index.html:14 app/templates/fuel/index.html:37
 #: app/templates/fuel/index.html:94 app/templates/import/csv_upload.html:18
-#: app/templates/search/index.html:66 app/templates/vehicles/view.html:543
+#: app/templates/search/index.html:64 app/templates/vehicles/view.html:543
 msgid "Fuel Logs"
 msgstr "Tankolások"
 
@@ -1533,8 +1534,9 @@ msgstr "Tankolások"
 #: app/templates/expenses/index.html:89 app/templates/expenses/index.html:229
 #: app/templates/import/csv_upload.html:18
 #: app/templates/partials/mobile_nav.html:24
-#: app/templates/search/index.html:43 app/templates/timeline/index.html:120
-#: app/templates/vehicles/view.html:445 app/templates/vehicles/view.html:545
+#: app/templates/search/index.html:55 app/templates/timeline/index.html:15
+#: app/templates/timeline/index.html:101 app/templates/vehicles/view.html:445
+#: app/templates/vehicles/view.html:545
 msgid "Expenses"
 msgstr "Költségek"
 
@@ -1547,7 +1549,7 @@ msgstr "Emlékeztetők"
 #: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
 #: app/templates/base.html:535 app/templates/import/csv_upload.html:19
 #: app/templates/partials/mobile_nav.html:26
-#: app/templates/search/index.html:130 app/templates/trips/index.html:4
+#: app/templates/search/index.html:89 app/templates/trips/index.html:4
 #: app/templates/trips/index.html:20 app/templates/trips/index.html:66
 #: app/templates/trips/index.html:73
 msgid "Trips"
@@ -1562,7 +1564,7 @@ msgstr "Ismétlődő"
 #: app/templates/base.html:538 app/templates/documents/index.html:4
 #: app/templates/documents/index.html:11
 #: app/templates/partials/mobile_nav.html:29
-#: app/templates/search/index.html:89
+#: app/templates/search/index.html:73
 msgid "Documents"
 msgstr "Dokumentumok"
 
@@ -1599,7 +1601,7 @@ msgstr "Gumiabroncsok"
 #: app/templates/fuel/form.html:222 app/templates/notes/index.html:4
 #: app/templates/notes/index.html:11 app/templates/notes/index.html:28
 #: app/templates/partials/mobile_nav.html:34
-#: app/templates/search/index.html:110 app/templates/stations/form.html:54
+#: app/templates/search/index.html:81 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
 #: app/templates/vehicles/form.html:187
@@ -1610,8 +1612,8 @@ msgstr "Jegyzetek"
 
 #: app/templates/base.html:568 app/templates/base.html:656
 #: app/templates/partials/mobile_nav.html:129
-#: app/templates/search/index.html:2 app/templates/search/index.html:6
-#: app/templates/search/index.html:32
+#: app/templates/search/index.html:4 app/templates/search/index.html:36
+#: app/templates/search/index.html:49
 msgid "Search"
 msgstr "Keresés"
 
@@ -1630,7 +1632,7 @@ msgid "More"
 msgstr "Továbbiak"
 
 #: app/templates/auth/settings.html:441 app/templates/base.html:587
-#: app/templates/fuel/quick.html:2 app/templates/fuel/quick.html:7
+#: app/templates/fuel/quick.html:4 app/templates/fuel/quick.html:8
 #: app/templates/partials/mobile_nav.html:149
 msgid "Quick Fuel Entry"
 msgstr "Gyors tankolás rögzítés"
@@ -1806,9 +1808,7 @@ msgid "all time %(all_time)s"
 msgstr "a kezdetektől %(all_time)s"
 
 #: app/templates/dashboard.html:142 app/templates/dashboard.html:277
-#: app/templates/trips/index.html:16 app/templates/trips/report.html:36
-#: app/templates/trips/report.html:40 app/templates/trips/report.html:68
-#: app/templates/trips/report.html:127
+#: app/templates/trips/index.html:16 app/templates/trips/report.html:10
 msgid "mixed units"
 msgstr "vegyes egységek"
 
@@ -1858,10 +1858,10 @@ msgstr "Legutóbbi tevékenység"
 #: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
 #: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:107
 #: app/templates/notes/form.html:20 app/templates/notes/index.html:33
-#: app/templates/stations/prices.html:36 app/templates/tires/index.html:55
-#: app/templates/tires/index.html:73 app/templates/trips/form.html:45
-#: app/templates/trips/index.html:78 app/templates/trips/report.html:98
-#: app/templates/vehicles/view.html:455
+#: app/templates/stations/prices.html:36 app/templates/timeline/index.html:32
+#: app/templates/tires/index.html:55 app/templates/tires/index.html:73
+#: app/templates/trips/form.html:45 app/templates/trips/index.html:78
+#: app/templates/trips/report.html:61 app/templates/vehicles/view.html:455
 msgid "Date"
 msgstr "Dátum"
 
@@ -1878,13 +1878,12 @@ msgstr "Típus"
 #: app/templates/components/forms.html:38 app/templates/dashboard.html:202
 #: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
 #: app/templates/expenses/form.html:52 app/templates/expenses/index.html:26
-#: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:47
+#: app/templates/fuel/_quick_form.html:16 app/templates/fuel/form.html:47
 #: app/templates/fuel/form.html:63 app/templates/fuel/index.html:18
 #: app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/history.html:14 app/templates/notes/index.html:14
 #: app/templates/reminders/index.html:30 app/templates/trips/index.html:28
-#: app/templates/trips/report.html:99
 msgid "Vehicle"
 msgstr "Jármű"
 
@@ -1927,7 +1926,7 @@ msgid "All time"
 msgstr "A kezdetektől"
 
 #: app/templates/charging/form.html:80 app/templates/dashboard.html:271
-#: app/templates/fuel/_quick_form.html:75 app/templates/fuel/form.html:126
+#: app/templates/fuel/_quick_form.html:62 app/templates/fuel/form.html:126
 #: app/templates/maintenance/history.html:44
 #: app/templates/vehicles/index.html:76
 msgid "Total Cost"
@@ -1942,13 +1941,12 @@ msgid "Total Charging Cost"
 msgstr "Összes töltési költség"
 
 #: app/templates/dashboard.html:277 app/templates/trips/index.html:58
-#: app/templates/trips/report.html:35 app/templates/vehicles/view.html:208
+#: app/templates/trips/report.html:31 app/templates/vehicles/view.html:208
 msgid "Total Distance"
 msgstr "Megtett távolság"
 
 #: app/templates/dashboard.html:277 app/templates/trips/index.html:16
-#: app/templates/trips/report.html:36 app/templates/trips/report.html:40
-#: app/templates/trips/report.html:68 app/templates/trips/report.html:127
+#: app/templates/trips/report.html:10
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr ""
 "Ez az összesítés távolságban és üzemórában mért járműveket is tartalmaz."
@@ -1956,6 +1954,30 @@ msgstr ""
 #: app/templates/dashboard.html:280 app/templates/vehicles/view.html:206
 msgid "Net Cost"
 msgstr "Nettó költség"
+
+#: app/templates/offline.html:10
+msgid "Offline"
+msgstr "Offline"
+
+#: app/templates/offline.html:49
+msgid "You're Offline"
+msgstr "Offline vagy"
+
+#: app/templates/offline.html:50
+msgid ""
+"It looks like you've lost your internet connection. Please check your "
+"network settings and try again."
+msgstr ""
+"Úgy tűnik, megszakadt az internetkapcsolat. Ellenőrizd a hálózati "
+"beállításokat, és próbáld újra."
+
+#: app/templates/offline.html:54
+msgid "Try Again"
+msgstr "Újra"
+
+#: app/templates/offline.html:58
+msgid "Go Back"
+msgstr "Vissza"
 
 #: app/templates/allowance/form.html:4 app/templates/allowance/form.html:13
 msgid "Edit Allowance"
@@ -1972,11 +1994,11 @@ msgid "Back to mileage allowance"
 msgstr "Vissza a keretekhez"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
-#: app/templates/documents/form.html:77 app/templates/documents/view.html:98
+#: app/templates/documents/form.html:77 app/templates/documents/view.html:32
 #: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
 #: app/templates/maintenance/form.html:56
 #: app/templates/recurring/form.html:107 app/templates/trips/form.html:124
-#: app/templates/trips/report.html:101
+#: app/templates/trips/report.html:62
 #: app/templates/trips/template_form.html:53
 msgid "Description"
 msgstr "Megjegyzés"
@@ -1995,7 +2017,7 @@ msgstr ""
 "Opcionális. Ha a megtett távolsággal együtt megadod, az összeg automatikusan"
 " kiszámításra kerül."
 
-#: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:94
+#: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:55
 #: app/templates/auth/settings.html:214 app/templates/charging/form.html:130
 #: app/templates/documents/form.html:82 app/templates/expenses/form.html:195
 #: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:146
@@ -2026,14 +2048,14 @@ msgstr "Összes jármű"
 #: app/templates/documents/index.html:21 app/templates/expenses/index.html:63
 #: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
 #: app/templates/notes/index.html:21 app/templates/reminders/index.html:47
-#: app/templates/trips/index.html:49
+#: app/templates/trips/index.html:49 app/templates/trips/report.html:24
 msgid "Filter"
 msgstr "Szűrő"
 
 #: app/templates/allowance/index.html:34 app/templates/expenses/index.html:72
 #: app/templates/expenses/index.html:229
 #: app/templates/import/backup_preview.html:41
-#: app/templates/trips/report.html:126
+#: app/templates/trips/report.html:85
 msgid "Total"
 msgstr "Összesen"
 
@@ -2049,10 +2071,11 @@ msgstr "Bejegyzések"
 msgid "Actions"
 msgstr "Lehetőségek"
 
-#: app/templates/allowance/index.html:88 app/templates/charging/_log.html:84
-#: app/templates/documents/view.html:31 app/templates/expenses/index.html:150
-#: app/templates/fuel/index.html:160 app/templates/maintenance/index.html:49
-#: app/templates/notes/index.html:77 app/templates/recurring/index.html:49
+#: app/templates/allowance/index.html:88 app/templates/auth/users.html:30
+#: app/templates/charging/_log.html:84 app/templates/documents/view.html:11
+#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:160
+#: app/templates/maintenance/index.html:49 app/templates/notes/index.html:77
+#: app/templates/recurring/index.html:49
 #: app/templates/reminders/_reminder_row.html:55
 #: app/templates/stations/index.html:39 app/templates/tires/index.html:115
 #: app/templates/trips/index.html:131
@@ -2068,7 +2091,7 @@ msgstr "Szerkesztés"
 msgid "Delete this allowance entry?"
 msgstr "Törlöd ezt a térítési bejegyzést?"
 
-#: app/templates/allowance/index.html:93
+#: app/templates/allowance/index.html:93 app/templates/auth/users.html:39
 #: app/templates/components/forms.html:56 app/templates/expenses/form.html:176
 #: app/templates/expenses/index.html:155 app/templates/fuel/form.html:235
 #: app/templates/fuel/index.html:165 app/templates/notes/index.html:82
@@ -2090,86 +2113,82 @@ msgstr "Nincs kilométer térítési bejegyzés"
 msgid "Track mileage allowance you receive for business journeys."
 msgstr "Kövesd nyomon az üzleti utakért kapott kilométer térítést."
 
-#: app/templates/api/docs.html:2
+#: app/templates/api/docs.html:3 app/templates/api/docs.html:7
 msgid "API Documentation"
 msgstr "API dokumentáció"
 
-#: app/templates/auth/create_user.html:3 app/templates/auth/create_user.html:9
-#: app/templates/auth/create_user.html:82 app/templates/auth/users.html:9
+#: app/templates/auth/_user_role.html:4 app/templates/auth/settings.html:236
+msgid "Role"
+msgstr "Szerepkör"
+
+#: app/templates/auth/_user_role.html:14
+msgid "Administrators always have full access, whatever role is set."
+msgstr ""
+"A rendszergazdák mindig teljes hozzáféréssel rendelkeznek, bármilyen "
+"szerepkör van beállítva."
+
+#: app/templates/auth/create_user.html:5
+#: app/templates/auth/create_user.html:11
+#: app/templates/auth/create_user.html:51 app/templates/auth/users.html:10
 msgid "Create User"
 msgstr "Felhasználó létrehozása"
 
-#: app/templates/auth/create_user.html:10
-msgid "Add a new user account"
-msgstr "Új felhasználó létrehozása"
-
-#: app/templates/auth/create_user.html:14 app/templates/auth/edit_user.html:14
+#: app/templates/auth/create_user.html:10 app/templates/auth/edit_user.html:10
 msgid "Back to Users"
 msgstr "Vissza a felhasználókhoz"
 
-#: app/templates/auth/create_user.html:23 app/templates/auth/edit_user.html:24
+#: app/templates/auth/create_user.html:11
+msgid "Add a new user account"
+msgstr "Új felhasználó létrehozása"
+
+#: app/templates/auth/create_user.html:16 app/templates/auth/edit_user.html:16
 msgid "Account Details"
 msgstr "Fiók adatok"
 
-#: app/templates/auth/create_user.html:28 app/templates/auth/edit_user.html:29
+#: app/templates/auth/create_user.html:19 app/templates/auth/edit_user.html:19
 #: app/templates/auth/login.html:18 app/templates/auth/register.html:11
 #: app/templates/auth/settings.html:232 app/templates/vehicles/share.html:14
 msgid "Username"
 msgstr "Felhasználónév"
 
-#: app/templates/auth/create_user.html:34 app/templates/auth/edit_user.html:34
+#: app/templates/auth/create_user.html:24 app/templates/auth/edit_user.html:23
 #: app/templates/auth/forgot_password.html:11
 #: app/templates/auth/register.html:17 app/templates/auth/settings.html:249
 #: app/templates/auth/settings.html:1471
 msgid "Email"
 msgstr "E-mail"
 
-#: app/templates/auth/create_user.html:41 app/templates/auth/login.html:24
+#: app/templates/auth/create_user.html:31 app/templates/auth/login.html:24
 #: app/templates/auth/register.html:23
 msgid "Password"
 msgstr "Jelszó"
 
-#: app/templates/auth/create_user.html:47 app/templates/auth/register.html:29
+#: app/templates/auth/create_user.html:36 app/templates/auth/register.html:29
 #: app/templates/auth/reset_password.html:18
 msgid "Confirm Password"
 msgstr "Jelszó megerősítése"
 
-#: app/templates/auth/create_user.html:56 app/templates/auth/edit_user.html:41
-#: app/templates/auth/settings.html:236 app/templates/auth/users.html:21
-msgid "Role"
-msgstr "Szerepkör"
-
-#: app/templates/auth/create_user.html:68 app/templates/auth/edit_user.html:53
-msgid "Administrators always have full access, whatever role is set."
-msgstr ""
-"A rendszergazdák mindig teljes hozzáféréssel rendelkeznek, bármilyen "
-"szerepkör van beállítva."
-
-#: app/templates/auth/edit_user.html:3
+#: app/templates/auth/edit_user.html:5 app/templates/auth/edit_user.html:11
 msgid "Edit User"
 msgstr "Felhasználó szerkesztése"
 
-#: app/templates/auth/edit_user.html:10
-msgid "Update user details and credentials"
-msgstr "Felhasználói- és bejelentkezési adatok frissítése."
-
-#: app/templates/auth/edit_user.html:69
+#: app/templates/auth/edit_user.html:38
 #: app/templates/auth/reset_password.html:4
 #: app/templates/auth/reset_password.html:23
 msgid "Reset Password"
 msgstr "Jelszó visszaállítása"
 
-#: app/templates/auth/edit_user.html:70
+#: app/templates/auth/edit_user.html:39
 msgid "Leave blank to keep the current password"
 msgstr "Hagyd üresen a jelenlegi jelszó megtartásához."
 
-#: app/templates/auth/edit_user.html:76
+#: app/templates/auth/edit_user.html:43
 #: app/templates/auth/reset_password.html:12
 #: app/templates/auth/settings.html:374
 msgid "New Password"
 msgstr "Új jelszó"
 
-#: app/templates/auth/edit_user.html:82 app/templates/auth/settings.html:381
+#: app/templates/auth/edit_user.html:48 app/templates/auth/settings.html:381
 msgid "Confirm New Password"
 msgstr "Új jelszó megerősítése"
 
@@ -2307,7 +2326,7 @@ msgstr "ÉÉÉÉ-HH-NN"
 msgid "DD.MM.YYYY"
 msgstr "NN.HH.ÉÉÉÉ"
 
-#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:57
+#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:46
 #: app/templates/fuel/form.html:105 app/templates/fuel/index.html:101
 msgid "Volume"
 msgstr "Mennyiség"
@@ -2429,7 +2448,7 @@ msgstr "Sötét téma"
 msgid "Use dark theme for the interface"
 msgstr "Sötét téma használata a felületen"
 
-#: app/templates/auth/settings.html:292
+#: app/templates/auth/settings.html:292 app/templates/auth/users.html:9
 msgid "User Management"
 msgstr "Felhasználókezelés"
 
@@ -2437,7 +2456,8 @@ msgstr "Felhasználókezelés"
 msgid "Manage users and permissions"
 msgstr "Felhasználók és jogosultságaik kezelése"
 
-#: app/templates/auth/settings.html:299 app/templates/auth/users.html:2
+#: app/templates/auth/settings.html:299 app/templates/auth/users.html:4
+#: app/templates/auth/users.html:9 app/templates/auth/users.html:13
 msgid "Users"
 msgstr "Felhasználók"
 
@@ -3575,6 +3595,27 @@ msgstr "Jelenleg nem ellenőrizhető van-e frissítés"
 msgid "Error checking for updates"
 msgstr "Hiba a frissítés keresése közben"
 
+#: app/templates/auth/users.html:22
+msgid "You"
+msgstr "Te"
+
+#: app/templates/auth/users.html:28
+#, python-format
+msgid "Joined %(date)s"
+msgstr "Csatlakozott: %(date)s"
+
+#: app/templates/auth/users.html:34
+msgid "Remove Admin"
+msgstr "Adminjog elvétele"
+
+#: app/templates/auth/users.html:34
+msgid "Make Admin"
+msgstr "Adminná tétel"
+
+#: app/templates/auth/users.html:37
+msgid "Delete this user?"
+msgstr "Biztos, hogy törlöd ezt a felhasználót?"
+
 #: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
 #: app/templates/charging/form.html:72
 msgid "Cost per kWh"
@@ -3598,8 +3639,8 @@ msgstr "kWh"
 
 #: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
 #: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
-#: app/templates/tires/form.html:61 app/templates/tires/index.html:45
-#: app/templates/vehicles/view.html:459
+#: app/templates/timeline/index.html:35 app/templates/tires/form.html:61
+#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:459
 msgid "Cost"
 msgstr "Költség"
 
@@ -3681,7 +3722,7 @@ msgid "e.g., ChargePoint, Electrify America"
 msgstr "pl.: MVM, LIDL, MOL Ionity"
 
 #: app/templates/charging/index.html:3 app/templates/charging/index.html:13
-#: app/templates/import/csv_upload.html:19 app/templates/search/index.html:152
+#: app/templates/import/csv_upload.html:19 app/templates/search/index.html:98
 msgid "Charging Sessions"
 msgstr "Töltések"
 
@@ -3739,11 +3780,11 @@ msgstr "Dokumentum szerkesztése"
 msgid "Upload Document"
 msgstr "Dokumentum feltöltése"
 
-#: app/templates/documents/form.html:14 app/templates/documents/view.html:6
+#: app/templates/documents/form.html:14 app/templates/documents/view.html:9
 msgid "Back to Documents"
 msgstr "Vissza a dokumentumokhoz"
 
-#: app/templates/documents/form.html:24 app/templates/documents/view.html:72
+#: app/templates/documents/form.html:24 app/templates/documents/view.html:27
 msgid "File"
 msgstr "Fájl"
 
@@ -3760,7 +3801,7 @@ msgstr "Cím"
 msgid "e.g., Insurance Policy 2024"
 msgstr "pl.: KGFB biztosítás 2024"
 
-#: app/templates/documents/form.html:50 app/templates/documents/view.html:66
+#: app/templates/documents/form.html:50 app/templates/documents/view.html:23
 msgid "Reference Number"
 msgstr "Referencia szám"
 
@@ -3768,11 +3809,11 @@ msgstr "Referencia szám"
 msgid "e.g., Policy number, certificate ID"
 msgstr "pl.: kötvényszám, biztosító neve"
 
-#: app/templates/documents/form.html:55 app/templates/documents/view.html:81
+#: app/templates/documents/form.html:55 app/templates/documents/view.html:24
 msgid "Issue Date"
 msgstr "Kiállítás dátuma"
 
-#: app/templates/documents/form.html:60 app/templates/documents/view.html:88
+#: app/templates/documents/form.html:60 app/templates/documents/view.html:25
 msgid "Expiry Date"
 msgstr "Lejárat dátuma"
 
@@ -3803,11 +3844,11 @@ msgstr "Biztos, hogy törlöd a dokumentumot?"
 msgid "Vehicle documents, insurance, MOT certificates"
 msgstr "Jármű dokumentumok, biztosítások, stb."
 
-#: app/templates/documents/index.html:46
+#: app/templates/documents/index.html:46 app/templates/documents/view.html:26
 msgid "Expired"
 msgstr "Lejárt"
 
-#: app/templates/documents/index.html:46
+#: app/templates/documents/index.html:46 app/templates/documents/view.html:26
 msgid "Expiring soon"
 msgstr "Hamarosan lejár"
 
@@ -3815,7 +3856,7 @@ msgstr "Hamarosan lejár"
 msgid "Expires"
 msgstr "Lejár"
 
-#: app/templates/documents/index.html:55 app/templates/documents/view.html:26
+#: app/templates/documents/index.html:55 app/templates/documents/view.html:12
 msgid "Download"
 msgstr "Letöltés"
 
@@ -3832,15 +3873,15 @@ msgid ""
 "Store your vehicle documents, insurance policies, and MOT certificates."
 msgstr "Tárold járműveid dokumentumait, biztosítási kötvényeit stb."
 
-#: app/templates/documents/view.html:46
+#: app/templates/documents/view.html:16
 msgid "This document has expired!"
 msgstr "A dokumentum lejárt!"
 
-#: app/templates/documents/view.html:57
+#: app/templates/documents/view.html:18
 msgid "This document is expiring soon."
 msgstr "A dokumentum hamarosan le fog járni!"
 
-#: app/templates/documents/view.html:106
+#: app/templates/documents/view.html:40
 msgid "Preview"
 msgstr "Előnézet"
 
@@ -3949,7 +3990,7 @@ msgid "All Categories"
 msgstr "Minden kategória"
 
 #: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
-#: app/templates/vehicles/form.html:59
+#: app/templates/trips/report.html:20 app/templates/vehicles/form.html:59
 msgid "Year"
 msgstr "Év"
 
@@ -4021,48 +4062,49 @@ msgstr "Költés szolgáltatónként"
 msgid "Vendor"
 msgstr "Gyártó"
 
-#: app/templates/fuel/_quick_form.html:9
-#: app/templates/fuel/_quick_form.html:50
+#: app/templates/fuel/_quick_form.html:11
+#: app/templates/fuel/_quick_form.html:41
 msgid "Last"
 msgstr "Utolsó"
 
-#: app/templates/fuel/_quick_form.html:9 app/templates/fuel/form.html:82
+#: app/templates/fuel/_quick_form.html:11 app/templates/fuel/form.html:82
 msgid "From Tessie"
 msgstr "Tessie-ről"
 
-#: app/templates/fuel/_quick_form.html:65 app/templates/fuel/form.html:115
+#: app/templates/fuel/_quick_form.html:53 app/templates/fuel/form.html:115
 #: app/templates/vehicles/view.html:914
 msgid "Price per"
 msgstr "Ár /"
 
-#: app/templates/fuel/_quick_form.html:87 app/templates/vehicles/view.html:153
+#: app/templates/fuel/_quick_form.html:71 app/templates/vehicles/view.html:153
 msgid "Full tank"
 msgstr "Teli tank"
 
-#: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:139
+#: app/templates/fuel/_quick_form.html:75
+#: app/templates/fuel/_quick_form.html:87 app/templates/fuel/form.html:139
 #: app/templates/fuel/index.html:100
 msgid "Station"
 msgstr "Állomás"
 
-#: app/templates/fuel/_quick_form.html:96
+#: app/templates/fuel/_quick_form.html:78
 msgid "Select station or enter manually..."
 msgstr "Válassz egy állomást vagy vidd be kézzel…"
 
-#: app/templates/fuel/_quick_form.html:106
+#: app/templates/fuel/_quick_form.html:86
 #: app/templates/maintenance/index.html:78
 #: app/templates/maintenance/index.html:89
 msgid "Optional"
 msgstr "Opcionális"
 
-#: app/templates/fuel/_quick_form.html:117
+#: app/templates/fuel/_quick_form.html:91
 msgid "Save"
 msgstr "Mentés"
 
-#: app/templates/fuel/_quick_form.html:124
+#: app/templates/fuel/_quick_form.html:92
 msgid "Save & Add Another"
 msgstr "Mentés és másik hozzáadása"
 
-#: app/templates/fuel/_quick_no_vehicle.html:4
+#: app/templates/fuel/_quick_no_vehicle.html:3
 #: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:237
 #: app/templates/vehicles/index.html:15 app/templates/vehicles/index.html:85
 msgid "Add Vehicle"
@@ -4228,7 +4270,7 @@ msgstr "Kezdd el követni a tankolásaid."
 msgid "Fast fuel logging for mobile"
 msgstr "Gyors tankolásrögzítés mobilon"
 
-#: app/templates/fuel/quick.html:15 app/templates/partials/mobile_nav.html:157
+#: app/templates/fuel/quick.html:10 app/templates/partials/mobile_nav.html:157
 msgid "Need more options? Use full form"
 msgstr "Több lehetőségre vágysz? Használd a teljes űrlapot"
 
@@ -4950,43 +4992,43 @@ msgstr "Egy emlékeztető sem felel meg ezeknek a szűrőknek."
 msgid "Get started by adding a reminder for your vehicle."
 msgstr "Kezdésként adj hozzá egy emlékeztetőt a járművedhez."
 
-#: app/templates/search/index.html:7
+#: app/templates/search/index.html:36
 msgid ""
 "Find expenses, fuel logs, documents, notes, trips, and charging sessions"
 msgstr ""
 "Keress a kiadások, tankolások, dokumentumok, jegyzetek, utak és töltések "
 "között."
 
-#: app/templates/search/index.html:13
+#: app/templates/search/index.html:39
 msgid "Search term"
 msgstr "Keresőszó"
 
-#: app/templates/search/index.html:15
+#: app/templates/search/index.html:41
 msgid "e.g. brake pads, invoice, garage name"
 msgstr "pl.: fékbetét, számla, garázs neve"
 
-#: app/templates/search/index.html:19
+#: app/templates/search/index.html:43
 msgid "From"
 msgstr "Ettől"
 
-#: app/templates/search/index.html:24
+#: app/templates/search/index.html:46
 msgid "To"
 msgstr "Eddig"
 
-#: app/templates/search/index.html:38
+#: app/templates/search/index.html:53
 #, python-format
 msgid "%(count)s results"
 msgstr "%(count)s találat"
 
-#: app/templates/search/index.html:138 app/templates/trips/index.html:79
+#: app/templates/search/index.html:91 app/templates/trips/index.html:79
 msgid "Trip"
 msgstr "Utazás"
 
-#: app/templates/search/index.html:177
+#: app/templates/search/index.html:108
 msgid "No results"
 msgstr "Nincs találat"
 
-#: app/templates/search/index.html:178
+#: app/templates/search/index.html:108
 msgid "Try a different search term or a wider date range."
 msgstr "Próbálj meg más kifejezést vagy tágabb intervallumot."
 
@@ -5131,32 +5173,29 @@ msgstr ""
 "Az árak automatikusan rögzítésre kerülnek, amikor ennél az állomásnál "
 "tankolást rögzítesz."
 
-#: app/templates/timeline/index.html:2 app/templates/vehicles/view.html:241
+#: app/templates/timeline/index.html:4 app/templates/vehicles/view.html:241
 #: app/templates/vehicles/view.html:546
 msgid "Timeline"
 msgstr "Idővonal"
 
-#: app/templates/timeline/index.html:11
-msgid "Back to"
-msgstr "Vissza a(z)"
-
-#: app/templates/timeline/index.html:12
+#: app/templates/timeline/index.html:19
 msgid "Service Timeline"
 msgstr "Szerviz idővonal"
 
-#: app/templates/timeline/index.html:13
+#: app/templates/timeline/index.html:19
 msgid "Complete history of fuel, expenses, and charging"
 msgstr "A tankolások, kiadások és töltések teljes előzménye."
 
-#: app/templates/timeline/index.html:18
+#: app/templates/timeline/index.html:22
 msgid "Monthly Costs"
 msgstr "Havi költségek"
 
-#: app/templates/timeline/index.html:27
+#: app/templates/timeline/index.html:27 app/templates/timeline/index.html:33
+#: app/templates/timeline/index.html:80
 msgid "Activity Timeline"
 msgstr "Tevékenység idővonal"
 
-#: app/templates/timeline/index.html:98
+#: app/templates/timeline/index.html:80
 msgid "No activity recorded for this vehicle yet."
 msgstr "Nincs még mentett esemény ehhez a járműhöz."
 
@@ -5292,7 +5331,7 @@ msgstr ""
 msgid "Edit Trip"
 msgstr "Utazás szerkesztése"
 
-#: app/templates/trips/form.html:16 app/templates/trips/report.html:12
+#: app/templates/trips/form.html:16 app/templates/trips/report.html:16
 #: app/templates/trips/templates_index.html:14
 msgid "Back to trips"
 msgstr "Vissza az utazásokhoz"
@@ -5306,7 +5345,6 @@ msgid "— choose a template —"
 msgstr "— válassz sablont —"
 
 #: app/templates/trips/form.html:50 app/templates/trips/index.html:35
-#: app/templates/trips/report.html:100
 #: app/templates/trips/template_form.html:26
 msgid "Purpose"
 msgstr "Cél"
@@ -5376,7 +5414,7 @@ msgstr "Jelentés"
 msgid "All Purposes"
 msgstr "Mind"
 
-#: app/templates/trips/index.html:62 app/templates/trips/report.html:39
+#: app/templates/trips/index.html:62 app/templates/trips/report.html:33
 msgid "Business Distance"
 msgstr "Üzleti felhasználás"
 
@@ -5402,43 +5440,36 @@ msgstr ""
 msgid "Log Your First Trip"
 msgstr "Vedd fel az első utazásod"
 
-#: app/templates/trips/report.html:2 app/templates/trips/report.html:13
+#: app/templates/trips/report.html:5 app/templates/trips/report.html:17
 msgid "Trip Report"
 msgstr "Utazás jelentés"
 
-#: app/templates/trips/report.html:14
+#: app/templates/trips/report.html:17
 msgid "Summary of trips by purpose for tax deductions"
 msgstr "Az utak cél szerinti összesítése az adólevonásokhoz."
 
-#: app/templates/trips/report.html:31
+#: app/templates/trips/report.html:30
 msgid "Total Trips"
 msgstr "Összes utazás"
 
-#: app/templates/trips/report.html:41
+#: app/templates/trips/report.html:35
 msgid "Tax deductible"
 msgstr "Adóból levonható"
 
-#: app/templates/trips/report.html:48
+#: app/templates/trips/report.html:41
 msgid "Breakdown by Purpose"
 msgstr "Cél szerinti bontás"
 
-#: app/templates/trips/report.html:65
+#: app/templates/trips/report.html:45
 msgid "trips"
 msgstr "utazás"
 
-#: app/templates/trips/report.html:70
-msgid "of total"
-msgstr "ennyiből"
-
-#: app/templates/trips/report.html:82
-msgid "Distance by Purpose"
-msgstr "Megtett út cél szerint"
-
-#: app/templates/trips/report.html:91
+#: app/templates/trips/report.html:54 app/templates/trips/report.html:55
+#: app/templates/trips/report.html:92
 msgid "All Trips"
 msgstr "Összes utazás"
 
-#: app/templates/trips/report.html:134
+#: app/templates/trips/report.html:92
 msgid "No trips logged for"
 msgstr "Nincs rögzített utazás"
 

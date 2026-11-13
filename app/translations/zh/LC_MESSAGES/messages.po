@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 12:05+0600\n"
+"POT-Creation-Date: 2026-11-13 12:25+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh <LL@li.org>\n"
@@ -44,8 +44,8 @@ msgstr "可以记录加油和充电。其他内容均为只读。"
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "只读。可以查看数据，但不能进行任何修改。"
 
-#: app/models.py:191 app/templates/auth/create_user.html:74
-#: app/templates/auth/edit_user.html:60
+#: app/models.py:191 app/templates/auth/create_user.html:47
+#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:23
 msgid "Administrator"
 msgstr "管理员"
 
@@ -56,7 +56,7 @@ msgstr "发动机小时"
 #: app/models.py:403 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:178
 #: app/templates/dashboard.html:204 app/templates/expenses/form.html:71
-#: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:81
+#: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
 #: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:113
 #: app/templates/notes/form.html:25 app/templates/notes/index.html:35
 #: app/templates/tires/index.html:58 app/templates/tires/index.html:76
@@ -74,7 +74,7 @@ msgstr "小时"
 #: app/models.py:409 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52 app/templates/auth/settings.html:127
 #: app/templates/trips/form.html:85 app/templates/trips/form.html:151
-#: app/templates/trips/index.html:82 app/templates/trips/report.html:102
+#: app/templates/trips/index.html:82 app/templates/trips/report.html:63
 msgid "Distance"
 msgstr "距离"
 
@@ -573,7 +573,7 @@ msgstr "密码必须至少包含一个数字"
 #: app/routes/allowance.py:62 app/routes/expenses.py:256
 #: app/routes/fuel.py:248 app/routes/fuel.py:664 app/routes/notes.py:44
 #: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
-#: app/templates/fuel/_quick_no_vehicle.html:2
+#: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "请先添加车辆"
 
@@ -993,17 +993,18 @@ msgstr "加油记录已添加！"
 #: app/routes/main.py:146 app/routes/vehicles.py:229
 #: app/templates/base.html:588 app/templates/dashboard.html:74
 #: app/templates/dashboard.html:214 app/templates/partials/mobile_nav.html:23
-#: app/templates/timeline/index.html:114 app/templates/trips/index.html:81
-#: app/templates/vehicles/view.html:443 app/templates/vehicles/view.html:470
-#: app/templates/vehicles/view.html:472
+#: app/templates/timeline/index.html:15 app/templates/timeline/index.html:100
+#: app/templates/trips/index.html:81 app/templates/vehicles/view.html:443
+#: app/templates/vehicles/view.html:470 app/templates/vehicles/view.html:472
 msgid "Fuel"
 msgstr "燃油"
 
 #: app/routes/main.py:149 app/routes/vehicles.py:232
 #: app/templates/charging/_log.html:67 app/templates/dashboard.html:75
-#: app/templates/dashboard.html:215 app/templates/timeline/index.html:126
-#: app/templates/vehicles/view.html:444 app/templates/vehicles/view.html:494
-#: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:544
+#: app/templates/dashboard.html:215 app/templates/timeline/index.html:15
+#: app/templates/timeline/index.html:102 app/templates/vehicles/view.html:444
+#: app/templates/vehicles/view.html:494 app/templates/vehicles/view.html:496
+#: app/templates/vehicles/view.html:544
 msgid "Charging"
 msgstr "充电"
 
@@ -1012,7 +1013,7 @@ msgstr "充电"
 msgid "Fuel: %(volume).1f L"
 msgstr "燃油：%(volume).1f L"
 
-#: app/routes/main.py:402 app/templates/search/index.html:74
+#: app/routes/main.py:402 app/templates/search/index.html:66
 msgid "Fuel Log"
 msgstr "加油记录"
 
@@ -1021,7 +1022,7 @@ msgstr "加油记录"
 msgid "Charging: %(kwh).1f kWh"
 msgstr "充电：%(kwh).1f kWh"
 
-#: app/routes/main.py:427 app/templates/search/index.html:160
+#: app/routes/main.py:427 app/templates/search/index.html:100
 msgid "Charging Session"
 msgstr "充电记录"
 
@@ -1461,7 +1462,7 @@ msgid ""
 "45230km"
 msgstr "暂不支持读取照片。请以文字发送加油记录，例如：40L 4800tk 45230km"
 
-#: app/templates/_toasts.html:114
+#: app/templates/_toasts.html:102
 msgid "Dismiss"
 msgstr "关闭"
 
@@ -1476,7 +1477,7 @@ msgstr "车辆"
 #: app/templates/base.html:532 app/templates/fuel/index.html:4
 #: app/templates/fuel/index.html:14 app/templates/fuel/index.html:37
 #: app/templates/fuel/index.html:94 app/templates/import/csv_upload.html:18
-#: app/templates/search/index.html:66 app/templates/vehicles/view.html:543
+#: app/templates/search/index.html:64 app/templates/vehicles/view.html:543
 msgid "Fuel Logs"
 msgstr "加油记录"
 
@@ -1486,8 +1487,9 @@ msgstr "加油记录"
 #: app/templates/expenses/index.html:89 app/templates/expenses/index.html:229
 #: app/templates/import/csv_upload.html:18
 #: app/templates/partials/mobile_nav.html:24
-#: app/templates/search/index.html:43 app/templates/timeline/index.html:120
-#: app/templates/vehicles/view.html:445 app/templates/vehicles/view.html:545
+#: app/templates/search/index.html:55 app/templates/timeline/index.html:15
+#: app/templates/timeline/index.html:101 app/templates/vehicles/view.html:445
+#: app/templates/vehicles/view.html:545
 msgid "Expenses"
 msgstr "费用"
 
@@ -1500,7 +1502,7 @@ msgstr "提醒"
 #: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
 #: app/templates/base.html:535 app/templates/import/csv_upload.html:19
 #: app/templates/partials/mobile_nav.html:26
-#: app/templates/search/index.html:130 app/templates/trips/index.html:4
+#: app/templates/search/index.html:89 app/templates/trips/index.html:4
 #: app/templates/trips/index.html:20 app/templates/trips/index.html:66
 #: app/templates/trips/index.html:73
 msgid "Trips"
@@ -1515,7 +1517,7 @@ msgstr "定期"
 #: app/templates/base.html:538 app/templates/documents/index.html:4
 #: app/templates/documents/index.html:11
 #: app/templates/partials/mobile_nav.html:29
-#: app/templates/search/index.html:89
+#: app/templates/search/index.html:73
 msgid "Documents"
 msgstr "文档"
 
@@ -1552,7 +1554,7 @@ msgstr "轮胎"
 #: app/templates/fuel/form.html:222 app/templates/notes/index.html:4
 #: app/templates/notes/index.html:11 app/templates/notes/index.html:28
 #: app/templates/partials/mobile_nav.html:34
-#: app/templates/search/index.html:110 app/templates/stations/form.html:54
+#: app/templates/search/index.html:81 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
 #: app/templates/vehicles/form.html:187
@@ -1563,8 +1565,8 @@ msgstr "备注"
 
 #: app/templates/base.html:568 app/templates/base.html:656
 #: app/templates/partials/mobile_nav.html:129
-#: app/templates/search/index.html:2 app/templates/search/index.html:6
-#: app/templates/search/index.html:32
+#: app/templates/search/index.html:4 app/templates/search/index.html:36
+#: app/templates/search/index.html:49
 msgid "Search"
 msgstr "搜索"
 
@@ -1583,7 +1585,7 @@ msgid "More"
 msgstr "更多"
 
 #: app/templates/auth/settings.html:441 app/templates/base.html:587
-#: app/templates/fuel/quick.html:2 app/templates/fuel/quick.html:7
+#: app/templates/fuel/quick.html:4 app/templates/fuel/quick.html:8
 #: app/templates/partials/mobile_nav.html:149
 msgid "Quick Fuel Entry"
 msgstr "快速加油记录"
@@ -1759,9 +1761,7 @@ msgid "all time %(all_time)s"
 msgstr "全部时间 %(all_time)s"
 
 #: app/templates/dashboard.html:142 app/templates/dashboard.html:277
-#: app/templates/trips/index.html:16 app/templates/trips/report.html:36
-#: app/templates/trips/report.html:40 app/templates/trips/report.html:68
-#: app/templates/trips/report.html:127
+#: app/templates/trips/index.html:16 app/templates/trips/report.html:10
 msgid "mixed units"
 msgstr "单位混用"
 
@@ -1811,10 +1811,10 @@ msgstr "最近动态"
 #: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
 #: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:107
 #: app/templates/notes/form.html:20 app/templates/notes/index.html:33
-#: app/templates/stations/prices.html:36 app/templates/tires/index.html:55
-#: app/templates/tires/index.html:73 app/templates/trips/form.html:45
-#: app/templates/trips/index.html:78 app/templates/trips/report.html:98
-#: app/templates/vehicles/view.html:455
+#: app/templates/stations/prices.html:36 app/templates/timeline/index.html:32
+#: app/templates/tires/index.html:55 app/templates/tires/index.html:73
+#: app/templates/trips/form.html:45 app/templates/trips/index.html:78
+#: app/templates/trips/report.html:61 app/templates/vehicles/view.html:455
 msgid "Date"
 msgstr "日期"
 
@@ -1831,13 +1831,12 @@ msgstr "类型"
 #: app/templates/components/forms.html:38 app/templates/dashboard.html:202
 #: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
 #: app/templates/expenses/form.html:52 app/templates/expenses/index.html:26
-#: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:47
+#: app/templates/fuel/_quick_form.html:16 app/templates/fuel/form.html:47
 #: app/templates/fuel/form.html:63 app/templates/fuel/index.html:18
 #: app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/history.html:14 app/templates/notes/index.html:14
 #: app/templates/reminders/index.html:30 app/templates/trips/index.html:28
-#: app/templates/trips/report.html:99
 msgid "Vehicle"
 msgstr "车辆"
 
@@ -1880,7 +1879,7 @@ msgid "All time"
 msgstr "全部时间"
 
 #: app/templates/charging/form.html:80 app/templates/dashboard.html:271
-#: app/templates/fuel/_quick_form.html:75 app/templates/fuel/form.html:126
+#: app/templates/fuel/_quick_form.html:62 app/templates/fuel/form.html:126
 #: app/templates/maintenance/history.html:44
 #: app/templates/vehicles/index.html:76
 msgid "Total Cost"
@@ -1895,19 +1894,40 @@ msgid "Total Charging Cost"
 msgstr "总充电费用"
 
 #: app/templates/dashboard.html:277 app/templates/trips/index.html:58
-#: app/templates/trips/report.html:35 app/templates/vehicles/view.html:208
+#: app/templates/trips/report.html:31 app/templates/vehicles/view.html:208
 msgid "Total Distance"
 msgstr "总里程"
 
 #: app/templates/dashboard.html:277 app/templates/trips/index.html:16
-#: app/templates/trips/report.html:36 app/templates/trips/report.html:40
-#: app/templates/trips/report.html:68 app/templates/trips/report.html:127
+#: app/templates/trips/report.html:10
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr "此合计包含按里程和按发动机小时数计量的车辆。"
 
 #: app/templates/dashboard.html:280 app/templates/vehicles/view.html:206
 msgid "Net Cost"
 msgstr "净费用"
+
+#: app/templates/offline.html:10
+msgid "Offline"
+msgstr "离线"
+
+#: app/templates/offline.html:49
+msgid "You're Offline"
+msgstr "您已离线"
+
+#: app/templates/offline.html:50
+msgid ""
+"It looks like you've lost your internet connection. Please check your "
+"network settings and try again."
+msgstr "您的网络连接似乎已断开。请检查网络设置后重试。"
+
+#: app/templates/offline.html:54
+msgid "Try Again"
+msgstr "重试"
+
+#: app/templates/offline.html:58
+msgid "Go Back"
+msgstr "返回"
 
 #: app/templates/allowance/form.html:4 app/templates/allowance/form.html:13
 msgid "Edit Allowance"
@@ -1924,11 +1944,11 @@ msgid "Back to mileage allowance"
 msgstr "返回里程补贴"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
-#: app/templates/documents/form.html:77 app/templates/documents/view.html:98
+#: app/templates/documents/form.html:77 app/templates/documents/view.html:32
 #: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
 #: app/templates/maintenance/form.html:56
 #: app/templates/recurring/form.html:107 app/templates/trips/form.html:124
-#: app/templates/trips/report.html:101
+#: app/templates/trips/report.html:62
 #: app/templates/trips/template_form.html:53
 msgid "Description"
 msgstr "描述"
@@ -1945,7 +1965,7 @@ msgstr "单位费率"
 msgid "Optional. If set with distance, the amount is calculated for you."
 msgstr "可选。如果与距离一起设置，系统将自动为您计算金额。"
 
-#: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:94
+#: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:55
 #: app/templates/auth/settings.html:214 app/templates/charging/form.html:130
 #: app/templates/documents/form.html:82 app/templates/expenses/form.html:195
 #: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:146
@@ -1974,14 +1994,14 @@ msgstr "所有车辆"
 #: app/templates/documents/index.html:21 app/templates/expenses/index.html:63
 #: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
 #: app/templates/notes/index.html:21 app/templates/reminders/index.html:47
-#: app/templates/trips/index.html:49
+#: app/templates/trips/index.html:49 app/templates/trips/report.html:24
 msgid "Filter"
 msgstr "筛选"
 
 #: app/templates/allowance/index.html:34 app/templates/expenses/index.html:72
 #: app/templates/expenses/index.html:229
 #: app/templates/import/backup_preview.html:41
-#: app/templates/trips/report.html:126
+#: app/templates/trips/report.html:85
 msgid "Total"
 msgstr "总计"
 
@@ -1997,10 +2017,11 @@ msgstr "条目"
 msgid "Actions"
 msgstr "操作"
 
-#: app/templates/allowance/index.html:88 app/templates/charging/_log.html:84
-#: app/templates/documents/view.html:31 app/templates/expenses/index.html:150
-#: app/templates/fuel/index.html:160 app/templates/maintenance/index.html:49
-#: app/templates/notes/index.html:77 app/templates/recurring/index.html:49
+#: app/templates/allowance/index.html:88 app/templates/auth/users.html:30
+#: app/templates/charging/_log.html:84 app/templates/documents/view.html:11
+#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:160
+#: app/templates/maintenance/index.html:49 app/templates/notes/index.html:77
+#: app/templates/recurring/index.html:49
 #: app/templates/reminders/_reminder_row.html:55
 #: app/templates/stations/index.html:39 app/templates/tires/index.html:115
 #: app/templates/trips/index.html:131
@@ -2016,7 +2037,7 @@ msgstr "编辑"
 msgid "Delete this allowance entry?"
 msgstr "删除此补贴记录？"
 
-#: app/templates/allowance/index.html:93
+#: app/templates/allowance/index.html:93 app/templates/auth/users.html:39
 #: app/templates/components/forms.html:56 app/templates/expenses/form.html:176
 #: app/templates/expenses/index.html:155 app/templates/fuel/form.html:235
 #: app/templates/fuel/index.html:165 app/templates/notes/index.html:82
@@ -2038,84 +2059,80 @@ msgstr "暂无补贴记录"
 msgid "Track mileage allowance you receive for business journeys."
 msgstr "记录您因商务出行获得的里程补贴。"
 
-#: app/templates/api/docs.html:2
+#: app/templates/api/docs.html:3 app/templates/api/docs.html:7
 msgid "API Documentation"
 msgstr "API文档"
 
-#: app/templates/auth/create_user.html:3 app/templates/auth/create_user.html:9
-#: app/templates/auth/create_user.html:82 app/templates/auth/users.html:9
+#: app/templates/auth/_user_role.html:4 app/templates/auth/settings.html:236
+msgid "Role"
+msgstr "角色"
+
+#: app/templates/auth/_user_role.html:14
+msgid "Administrators always have full access, whatever role is set."
+msgstr "无论设置何种角色，管理员始终拥有完全访问权限。"
+
+#: app/templates/auth/create_user.html:5
+#: app/templates/auth/create_user.html:11
+#: app/templates/auth/create_user.html:51 app/templates/auth/users.html:10
 msgid "Create User"
 msgstr "创建用户"
 
-#: app/templates/auth/create_user.html:10
-msgid "Add a new user account"
-msgstr "添加新用户账户"
-
-#: app/templates/auth/create_user.html:14 app/templates/auth/edit_user.html:14
+#: app/templates/auth/create_user.html:10 app/templates/auth/edit_user.html:10
 msgid "Back to Users"
 msgstr "返回用户列表"
 
-#: app/templates/auth/create_user.html:23 app/templates/auth/edit_user.html:24
+#: app/templates/auth/create_user.html:11
+msgid "Add a new user account"
+msgstr "添加新用户账户"
+
+#: app/templates/auth/create_user.html:16 app/templates/auth/edit_user.html:16
 msgid "Account Details"
 msgstr "账户详情"
 
-#: app/templates/auth/create_user.html:28 app/templates/auth/edit_user.html:29
+#: app/templates/auth/create_user.html:19 app/templates/auth/edit_user.html:19
 #: app/templates/auth/login.html:18 app/templates/auth/register.html:11
 #: app/templates/auth/settings.html:232 app/templates/vehicles/share.html:14
 msgid "Username"
 msgstr "用户名"
 
-#: app/templates/auth/create_user.html:34 app/templates/auth/edit_user.html:34
+#: app/templates/auth/create_user.html:24 app/templates/auth/edit_user.html:23
 #: app/templates/auth/forgot_password.html:11
 #: app/templates/auth/register.html:17 app/templates/auth/settings.html:249
 #: app/templates/auth/settings.html:1471
 msgid "Email"
 msgstr "邮箱"
 
-#: app/templates/auth/create_user.html:41 app/templates/auth/login.html:24
+#: app/templates/auth/create_user.html:31 app/templates/auth/login.html:24
 #: app/templates/auth/register.html:23
 msgid "Password"
 msgstr "密码"
 
-#: app/templates/auth/create_user.html:47 app/templates/auth/register.html:29
+#: app/templates/auth/create_user.html:36 app/templates/auth/register.html:29
 #: app/templates/auth/reset_password.html:18
 msgid "Confirm Password"
 msgstr "确认密码"
 
-#: app/templates/auth/create_user.html:56 app/templates/auth/edit_user.html:41
-#: app/templates/auth/settings.html:236 app/templates/auth/users.html:21
-msgid "Role"
-msgstr "角色"
-
-#: app/templates/auth/create_user.html:68 app/templates/auth/edit_user.html:53
-msgid "Administrators always have full access, whatever role is set."
-msgstr "无论设置何种角色，管理员始终拥有完全访问权限。"
-
-#: app/templates/auth/edit_user.html:3
+#: app/templates/auth/edit_user.html:5 app/templates/auth/edit_user.html:11
 msgid "Edit User"
 msgstr "编辑用户"
 
-#: app/templates/auth/edit_user.html:10
-msgid "Update user details and credentials"
-msgstr "更新用户信息和凭据"
-
-#: app/templates/auth/edit_user.html:69
+#: app/templates/auth/edit_user.html:38
 #: app/templates/auth/reset_password.html:4
 #: app/templates/auth/reset_password.html:23
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: app/templates/auth/edit_user.html:70
+#: app/templates/auth/edit_user.html:39
 msgid "Leave blank to keep the current password"
 msgstr "保持当前密码请留空"
 
-#: app/templates/auth/edit_user.html:76
+#: app/templates/auth/edit_user.html:43
 #: app/templates/auth/reset_password.html:12
 #: app/templates/auth/settings.html:374
 msgid "New Password"
 msgstr "新密码"
 
-#: app/templates/auth/edit_user.html:82 app/templates/auth/settings.html:381
+#: app/templates/auth/edit_user.html:48 app/templates/auth/settings.html:381
 msgid "Confirm New Password"
 msgstr "确认新密码"
 
@@ -2251,7 +2268,7 @@ msgstr "年-月-日"
 msgid "DD.MM.YYYY"
 msgstr "日.月.年"
 
-#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:57
+#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:46
 #: app/templates/fuel/form.html:105 app/templates/fuel/index.html:101
 msgid "Volume"
 msgstr "容量"
@@ -2369,7 +2386,7 @@ msgstr "深色模式"
 msgid "Use dark theme for the interface"
 msgstr "使用深色主题"
 
-#: app/templates/auth/settings.html:292
+#: app/templates/auth/settings.html:292 app/templates/auth/users.html:9
 msgid "User Management"
 msgstr "用户管理"
 
@@ -2377,7 +2394,8 @@ msgstr "用户管理"
 msgid "Manage users and permissions"
 msgstr "管理用户和权限"
 
-#: app/templates/auth/settings.html:299 app/templates/auth/users.html:2
+#: app/templates/auth/settings.html:299 app/templates/auth/users.html:4
+#: app/templates/auth/users.html:9 app/templates/auth/users.html:13
 msgid "Users"
 msgstr "用户"
 
@@ -3448,6 +3466,27 @@ msgstr "无法检查更新"
 msgid "Error checking for updates"
 msgstr "检查更新时出错"
 
+#: app/templates/auth/users.html:22
+msgid "You"
+msgstr "您"
+
+#: app/templates/auth/users.html:28
+#, python-format
+msgid "Joined %(date)s"
+msgstr "%(date)s 加入"
+
+#: app/templates/auth/users.html:34
+msgid "Remove Admin"
+msgstr "取消管理员"
+
+#: app/templates/auth/users.html:34
+msgid "Make Admin"
+msgstr "设为管理员"
+
+#: app/templates/auth/users.html:37
+msgid "Delete this user?"
+msgstr "删除此用户？"
+
 #: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
 #: app/templates/charging/form.html:72
 msgid "Cost per kWh"
@@ -3471,8 +3510,8 @@ msgstr "千瓦时 (kWh)"
 
 #: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
 #: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
-#: app/templates/tires/form.html:61 app/templates/tires/index.html:45
-#: app/templates/vehicles/view.html:459
+#: app/templates/timeline/index.html:35 app/templates/tires/form.html:61
+#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:459
 msgid "Cost"
 msgstr "费用"
 
@@ -3552,7 +3591,7 @@ msgid "e.g., ChargePoint, Electrify America"
 msgstr "例如：ChargePoint、Electrify America"
 
 #: app/templates/charging/index.html:3 app/templates/charging/index.html:13
-#: app/templates/import/csv_upload.html:19 app/templates/search/index.html:152
+#: app/templates/import/csv_upload.html:19 app/templates/search/index.html:98
 msgid "Charging Sessions"
 msgstr "充电记录"
 
@@ -3610,11 +3649,11 @@ msgstr "编辑文档"
 msgid "Upload Document"
 msgstr "上传文档"
 
-#: app/templates/documents/form.html:14 app/templates/documents/view.html:6
+#: app/templates/documents/form.html:14 app/templates/documents/view.html:9
 msgid "Back to Documents"
 msgstr "返回文档列表"
 
-#: app/templates/documents/form.html:24 app/templates/documents/view.html:72
+#: app/templates/documents/form.html:24 app/templates/documents/view.html:27
 msgid "File"
 msgstr "文件"
 
@@ -3631,7 +3670,7 @@ msgstr "标题"
 msgid "e.g., Insurance Policy 2024"
 msgstr "例如：2024年保险单"
 
-#: app/templates/documents/form.html:50 app/templates/documents/view.html:66
+#: app/templates/documents/form.html:50 app/templates/documents/view.html:23
 msgid "Reference Number"
 msgstr "参考编号"
 
@@ -3639,11 +3678,11 @@ msgstr "参考编号"
 msgid "e.g., Policy number, certificate ID"
 msgstr "例如：保单号、证书编号"
 
-#: app/templates/documents/form.html:55 app/templates/documents/view.html:81
+#: app/templates/documents/form.html:55 app/templates/documents/view.html:24
 msgid "Issue Date"
 msgstr "签发日期"
 
-#: app/templates/documents/form.html:60 app/templates/documents/view.html:88
+#: app/templates/documents/form.html:60 app/templates/documents/view.html:25
 msgid "Expiry Date"
 msgstr "到期日期"
 
@@ -3674,11 +3713,11 @@ msgstr "删除此文档？"
 msgid "Vehicle documents, insurance, MOT certificates"
 msgstr "车辆文档、保险、MOT证书"
 
-#: app/templates/documents/index.html:46
+#: app/templates/documents/index.html:46 app/templates/documents/view.html:26
 msgid "Expired"
 msgstr "已过期"
 
-#: app/templates/documents/index.html:46
+#: app/templates/documents/index.html:46 app/templates/documents/view.html:26
 msgid "Expiring soon"
 msgstr "即将过期"
 
@@ -3686,7 +3725,7 @@ msgstr "即将过期"
 msgid "Expires"
 msgstr "到期"
 
-#: app/templates/documents/index.html:55 app/templates/documents/view.html:26
+#: app/templates/documents/index.html:55 app/templates/documents/view.html:12
 msgid "Download"
 msgstr "下载"
 
@@ -3703,15 +3742,15 @@ msgid ""
 "Store your vehicle documents, insurance policies, and MOT certificates."
 msgstr "保存您的车辆文档、保险单和MOT证书。"
 
-#: app/templates/documents/view.html:46
+#: app/templates/documents/view.html:16
 msgid "This document has expired!"
 msgstr "此文档已过期！"
 
-#: app/templates/documents/view.html:57
+#: app/templates/documents/view.html:18
 msgid "This document is expiring soon."
 msgstr "此文档即将到期。"
 
-#: app/templates/documents/view.html:106
+#: app/templates/documents/view.html:40
 msgid "Preview"
 msgstr "预览"
 
@@ -3815,7 +3854,7 @@ msgid "All Categories"
 msgstr "所有类别"
 
 #: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
-#: app/templates/vehicles/form.html:59
+#: app/templates/trips/report.html:20 app/templates/vehicles/form.html:59
 msgid "Year"
 msgstr "年份"
 
@@ -3887,48 +3926,49 @@ msgstr "按商家划分的支出"
 msgid "Vendor"
 msgstr "服务商"
 
-#: app/templates/fuel/_quick_form.html:9
-#: app/templates/fuel/_quick_form.html:50
+#: app/templates/fuel/_quick_form.html:11
+#: app/templates/fuel/_quick_form.html:41
 msgid "Last"
 msgstr "上次"
 
-#: app/templates/fuel/_quick_form.html:9 app/templates/fuel/form.html:82
+#: app/templates/fuel/_quick_form.html:11 app/templates/fuel/form.html:82
 msgid "From Tessie"
 msgstr "来自Tessie"
 
-#: app/templates/fuel/_quick_form.html:65 app/templates/fuel/form.html:115
+#: app/templates/fuel/_quick_form.html:53 app/templates/fuel/form.html:115
 #: app/templates/vehicles/view.html:914
 msgid "Price per"
 msgstr "单价"
 
-#: app/templates/fuel/_quick_form.html:87 app/templates/vehicles/view.html:153
+#: app/templates/fuel/_quick_form.html:71 app/templates/vehicles/view.html:153
 msgid "Full tank"
 msgstr "加满油箱"
 
-#: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:139
+#: app/templates/fuel/_quick_form.html:75
+#: app/templates/fuel/_quick_form.html:87 app/templates/fuel/form.html:139
 #: app/templates/fuel/index.html:100
 msgid "Station"
 msgstr "加油站"
 
-#: app/templates/fuel/_quick_form.html:96
+#: app/templates/fuel/_quick_form.html:78
 msgid "Select station or enter manually..."
 msgstr "选择加油站或手动输入..."
 
-#: app/templates/fuel/_quick_form.html:106
+#: app/templates/fuel/_quick_form.html:86
 #: app/templates/maintenance/index.html:78
 #: app/templates/maintenance/index.html:89
 msgid "Optional"
 msgstr "可选"
 
-#: app/templates/fuel/_quick_form.html:117
+#: app/templates/fuel/_quick_form.html:91
 msgid "Save"
 msgstr "保存"
 
-#: app/templates/fuel/_quick_form.html:124
+#: app/templates/fuel/_quick_form.html:92
 msgid "Save & Add Another"
 msgstr "保存并继续添加"
 
-#: app/templates/fuel/_quick_no_vehicle.html:4
+#: app/templates/fuel/_quick_no_vehicle.html:3
 #: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:237
 #: app/templates/vehicles/index.html:15 app/templates/vehicles/index.html:85
 msgid "Add Vehicle"
@@ -4087,7 +4127,7 @@ msgstr "开始记录您的加油情况。"
 msgid "Fast fuel logging for mobile"
 msgstr "移动端快速加油记录"
 
-#: app/templates/fuel/quick.html:15 app/templates/partials/mobile_nav.html:157
+#: app/templates/fuel/quick.html:10 app/templates/partials/mobile_nav.html:157
 msgid "Need more options? Use full form"
 msgstr "需要更多选项？使用完整表单"
 
@@ -4787,41 +4827,41 @@ msgstr "没有符合筛选条件的提醒。"
 msgid "Get started by adding a reminder for your vehicle."
 msgstr "为您的车辆添加一个提醒，开始使用。"
 
-#: app/templates/search/index.html:7
+#: app/templates/search/index.html:36
 msgid ""
 "Find expenses, fuel logs, documents, notes, trips, and charging sessions"
 msgstr "查找支出、加油记录、文档、备注、行程和充电记录"
 
-#: app/templates/search/index.html:13
+#: app/templates/search/index.html:39
 msgid "Search term"
 msgstr "搜索词"
 
-#: app/templates/search/index.html:15
+#: app/templates/search/index.html:41
 msgid "e.g. brake pads, invoice, garage name"
 msgstr "例如：刹车片、发票、车库名称"
 
-#: app/templates/search/index.html:19
+#: app/templates/search/index.html:43
 msgid "From"
 msgstr "从"
 
-#: app/templates/search/index.html:24
+#: app/templates/search/index.html:46
 msgid "To"
 msgstr "到"
 
-#: app/templates/search/index.html:38
+#: app/templates/search/index.html:53
 #, python-format
 msgid "%(count)s results"
 msgstr "%(count)s 条结果"
 
-#: app/templates/search/index.html:138 app/templates/trips/index.html:79
+#: app/templates/search/index.html:91 app/templates/trips/index.html:79
 msgid "Trip"
 msgstr "行程"
 
-#: app/templates/search/index.html:177
+#: app/templates/search/index.html:108
 msgid "No results"
 msgstr "没有结果"
 
-#: app/templates/search/index.html:178
+#: app/templates/search/index.html:108
 msgid "Try a different search term or a wider date range."
 msgstr "请尝试其他搜索词或更宽的日期范围。"
 
@@ -4960,32 +5000,29 @@ msgstr "此加油站暂无价格历史记录。"
 msgid "Prices are automatically recorded when you log fuel at this station."
 msgstr "在此加油站记录加油时，价格会被自动记录。"
 
-#: app/templates/timeline/index.html:2 app/templates/vehicles/view.html:241
+#: app/templates/timeline/index.html:4 app/templates/vehicles/view.html:241
 #: app/templates/vehicles/view.html:546
 msgid "Timeline"
 msgstr "时间线"
 
-#: app/templates/timeline/index.html:11
-msgid "Back to"
-msgstr "返回"
-
-#: app/templates/timeline/index.html:12
+#: app/templates/timeline/index.html:19
 msgid "Service Timeline"
 msgstr "服务时间线"
 
-#: app/templates/timeline/index.html:13
+#: app/templates/timeline/index.html:19
 msgid "Complete history of fuel, expenses, and charging"
 msgstr "加油、费用和充电的完整历史"
 
-#: app/templates/timeline/index.html:18
+#: app/templates/timeline/index.html:22
 msgid "Monthly Costs"
 msgstr "月度费用"
 
-#: app/templates/timeline/index.html:27
+#: app/templates/timeline/index.html:27 app/templates/timeline/index.html:33
+#: app/templates/timeline/index.html:80
 msgid "Activity Timeline"
 msgstr "活动时间线"
 
-#: app/templates/timeline/index.html:98
+#: app/templates/timeline/index.html:80
 msgid "No activity recorded for this vehicle yet."
 msgstr "此车辆暂无活动记录。"
 
@@ -5116,7 +5153,7 @@ msgstr "添加一组轮胎，即可记录它何时装上和拆下车辆。"
 msgid "Edit Trip"
 msgstr "编辑行程"
 
-#: app/templates/trips/form.html:16 app/templates/trips/report.html:12
+#: app/templates/trips/form.html:16 app/templates/trips/report.html:16
 #: app/templates/trips/templates_index.html:14
 msgid "Back to trips"
 msgstr "返回行程列表"
@@ -5130,7 +5167,6 @@ msgid "— choose a template —"
 msgstr "— 选择模板 —"
 
 #: app/templates/trips/form.html:50 app/templates/trips/index.html:35
-#: app/templates/trips/report.html:100
 #: app/templates/trips/template_form.html:26
 msgid "Purpose"
 msgstr "用途"
@@ -5199,7 +5235,7 @@ msgstr "报告"
 msgid "All Purposes"
 msgstr "所有用途"
 
-#: app/templates/trips/index.html:62 app/templates/trips/report.html:39
+#: app/templates/trips/index.html:62 app/templates/trips/report.html:33
 msgid "Business Distance"
 msgstr "商务里程"
 
@@ -5223,43 +5259,36 @@ msgstr "开始记录行程以追踪里程和税务抵扣。"
 msgid "Log Your First Trip"
 msgstr "记录您的第一次行程"
 
-#: app/templates/trips/report.html:2 app/templates/trips/report.html:13
+#: app/templates/trips/report.html:5 app/templates/trips/report.html:17
 msgid "Trip Report"
 msgstr "行程报告"
 
-#: app/templates/trips/report.html:14
+#: app/templates/trips/report.html:17
 msgid "Summary of trips by purpose for tax deductions"
 msgstr "按用途汇总的行程报告，用于税务抵扣"
 
-#: app/templates/trips/report.html:31
+#: app/templates/trips/report.html:30
 msgid "Total Trips"
 msgstr "总行程数"
 
-#: app/templates/trips/report.html:41
+#: app/templates/trips/report.html:35
 msgid "Tax deductible"
 msgstr "可抵扣税额"
 
-#: app/templates/trips/report.html:48
+#: app/templates/trips/report.html:41
 msgid "Breakdown by Purpose"
 msgstr "按用途分类"
 
-#: app/templates/trips/report.html:65
+#: app/templates/trips/report.html:45
 msgid "trips"
 msgstr "次"
 
-#: app/templates/trips/report.html:70
-msgid "of total"
-msgstr "占总计"
-
-#: app/templates/trips/report.html:82
-msgid "Distance by Purpose"
-msgstr "按用途统计里程"
-
-#: app/templates/trips/report.html:91
+#: app/templates/trips/report.html:54 app/templates/trips/report.html:55
+#: app/templates/trips/report.html:92
 msgid "All Trips"
 msgstr "所有行程"
 
-#: app/templates/trips/report.html:134
+#: app/templates/trips/report.html:92
 msgid "No trips logged for"
 msgstr "暂无行程记录："
 

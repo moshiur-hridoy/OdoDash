@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, request, url_for, send_from_directory, current_app
 from flask_login import login_required, current_user
 from flask_babel import gettext
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from sqlalchemy import func
 from app import db
 from app.models import Vehicle, FuelLog, Expense, ChargingSession, FuelPriceHistory, FuelStation, MileageAllowance, Attachment, Reminder, Note, EXPENSE_CATEGORIES
@@ -479,7 +479,15 @@ def timeline(vehicle_id):
         chart_data['expenses'].append(round(expense_cost, 2))
         chart_data['charging'].append(round(charging_cost, 2))
 
+    from app.routes.log_helpers import group_by_month
+    month_totals = {}
+    for event in timeline_events:
+        if event['date']:
+            key = date(event['date'].year, event['date'].month, 1)
+            month_totals[key] = round(month_totals.get(key, 0) + (event['cost'] or 0), 2)
+
     return render_template('timeline/index.html',
                            vehicle=vehicle,
                            timeline_events=timeline_events,
+                           groups=group_by_month(timeline_events, lambda e: e['date'], month_totals),
                            chart_data=chart_data)

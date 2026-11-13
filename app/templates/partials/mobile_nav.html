@@ -21,6 +21,7 @@
 {% set nav_links = [
     ('vehicles', 'vehicles.index', _('Vehicles'), 'vehicles' in ep),
     ('fuel', 'fuel.index', _('Fuel'), ep.startswith('fuel.')),
+    ('charging', 'charging.index', _('EV Charging'), 'charging' in ep),
     ('expenses', 'expenses.index', _('Expenses'), 'expenses' in ep),
     ('reminders', 'reminders.index', _('Reminders'), 'reminders' in ep),
     ('trips', 'trips.index', _('Trips'), 'trips' in ep),
@@ -28,7 +29,6 @@
     ('recurring', 'recurring.index', _('Recurring'), 'recurring' in ep),
     ('documents', 'documents.index', _('Documents'), 'documents' in ep),
     ('stations', 'stations.index', _('Fuel Stations'), 'stations' in ep),
-    ('charging', 'charging.index', _('EV Charging'), 'charging' in ep),
     ('allowance', 'allowance.index', _('Mileage Allowance'), 'allowance' in ep),
     ('tires', 'tires.index', _('Tires'), 'tires' in ep),
     ('notes', 'notes.index', _('Notes'), 'notes' in ep),

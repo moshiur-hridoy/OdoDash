@@ -530,6 +530,7 @@
         {% set nav_sections = [
             ('vehicles', 'vehicles.index', _('Vehicles'), 'vehicles' in ep, 'car', True),
             ('fuel', 'fuel.index', _('Fuel Logs'), ep.startswith('fuel.'), 'fuel', True),
+            ('charging', 'charging.index', _('EV Charging'), 'charging' in ep, 'bolt', True),
             ('expenses', 'expenses.index', _('Expenses'), 'expenses' in ep, 'receipt', True),
             ('reminders', 'reminders.index', _('Reminders'), 'reminders' in ep, 'bell', True),
             ('trips', 'trips.index', _('Trips'), 'trips' in ep, 'map', True),
@@ -537,7 +538,6 @@
             ('recurring', 'recurring.index', _('Recurring'), 'recurring' in ep, 'repeat', False),
             ('documents', 'documents.index', _('Documents'), 'documents' in ep, 'document', False),
             ('stations', 'stations.index', _('Fuel Stations'), 'stations' in ep, 'pin', False),
-            ('charging', 'charging.index', _('EV Charging'), 'charging' in ep, 'bolt', False),
             ('allowance', 'allowance.index', _('Mileage Allowance'), 'allowance' in ep, 'wallet', False),
             ('tires', 'tires.index', _('Tires'), 'tires' in ep, 'tire', False),
             ('notes', 'notes.index', _('Notes'), 'notes' in ep, 'note', False),

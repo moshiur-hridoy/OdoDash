@@ -118,18 +118,19 @@ def _fuel_rows(logs):
 @bp.route('/')
 @login_required
 def index():
-    from app.models import ChargingSession
     from app.utils import utcnow
+
+    # Charging history used to be a tab here; it lives on its own page now.
+    # Old links and bookmarks land there instead of on an empty fuel tab.
+    if request.args.get('tab') == 'charging':
+        args = {k: v for k, v in request.args.items() if k in ('vehicle', 'page')}
+        return redirect(url_for('charging.index', **args))
 
     vehicles = current_user.get_all_vehicles()
     # ?vehicle= narrows the page to one vehicle; anything else shows them all.
     selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
     scope = [selected_vehicle] if selected_vehicle else vehicles
     vehicle_ids = [v.id for v in scope]
-    has_charging = any(v.uses_charging() for v in scope)
-
-    # Fuel and charging history are separate tabs.
-    active_tab = 'charging' if request.args.get('tab') == 'charging' else 'fuel'
     page = request.args.get('page', 1, type=int)
 
     now = utcnow()
@@ -137,23 +138,6 @@ def index():
     this_year = date(now.year, 1, 1)
 
     fuel_count = FuelLog.query.filter(FuelLog.vehicle_id.in_(vehicle_ids)).count()
-    charging_count = ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids)).count()
-
-    context = dict(
-        vehicles=vehicles,
-        selected_vehicle=selected_vehicle,
-        active_tab=active_tab,
-        has_charging=has_charging or charging_count > 0,
-        fuel_count=fuel_count,
-        charging_count=charging_count,
-    )
-
-    if active_tab == 'charging':
-        from app.routes.charging import charging_log
-        return render_template('fuel/index.html',
-                               logs=[], sales_tax_by_year=[],
-                               **charging_log(vehicle_ids, page, FUEL_LOGS_PER_PAGE),
-                               **context)
 
     # One page of fuel logs. Each row's consumption figure costs a few
     # queries, so rendering every log made the page grow without bound
@@ -235,8 +219,9 @@ def index():
                            sales_tax_by_year=sales_tax_by_year,
                            summary=summary,
                            mixed_fuel_vehicles=mixed_fuel_vehicles,
-                           charging_sessions=[],
-                           **context)
+                           vehicles=vehicles,
+                           selected_vehicle=selected_vehicle,
+                           fuel_count=fuel_count)
 
 
 @bp.route('/new', methods=['GET', 'POST'])

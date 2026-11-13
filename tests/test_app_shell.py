@@ -23,8 +23,8 @@ class TestSidebar:
     def test_lists_every_section_in_order(self, auth_client):
         sidebar = _sidebar(auth_client.get('/dashboard').get_data(as_text=True))
         assert _nav_hrefs(sidebar) == [
-            '/dashboard', '/vehicles/', '/fuel/', '/expenses/', '/reminders/', '/trips/',
-            '/maintenance/', '/recurring/', '/documents/', '/stations/', '/charging/',
+            '/dashboard', '/vehicles/', '/fuel/', '/charging/', '/expenses/', '/reminders/',
+            '/trips/', '/maintenance/', '/recurring/', '/documents/', '/stations/',
             '/allowance/', '/tires/', '/notes/',
         ]
 
@@ -43,7 +43,7 @@ class TestSidebar:
 
     def test_more_heading_only_when_something_sits_under_it(self, auth_client, test_user):
         assert 'ds-nav__heading' in _sidebar(auth_client.get('/dashboard').get_data(as_text=True))
-        for key in ('maintenance', 'recurring', 'documents', 'stations', 'charging',
+        for key in ('maintenance', 'recurring', 'documents', 'stations',
                     'allowance', 'tires', 'notes'):
             setattr(test_user, f'show_menu_{key}', False)
         db.session.commit()
