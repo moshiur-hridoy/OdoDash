@@ -102,3 +102,39 @@ def test_edit_shows_typed_values_and_leaves_the_log_unchanged(auth_client, sampl
     assert sample_fuel_log.odometer == 10000.0
     assert sample_fuel_log.volume == 40.0
     assert sample_fuel_log.notes is None
+
+
+def test_few_vehicles_are_picked_from_cards(auth_client, sample_vehicle):
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert re.search(r'<input type="radio" name="vehicle_id" value="%d" required checked' % sample_vehicle.id, html)
+    assert '<select name="vehicle_id"' not in html
+
+
+def test_many_vehicles_fall_back_to_a_select(auth_client, sample_vehicle, test_user):
+    from app.models import Vehicle
+    for n in range(4):
+        db.session.add(Vehicle(owner_id=test_user.id, name=f'Extra {n}', vehicle_type='car', fuel_type='petrol'))
+    db.session.commit()
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert '<select name="vehicle_id" id="vehicle_id"' in html
+    assert 'type="radio" name="vehicle_id"' not in html
+
+
+def test_saved_stations_are_offered_in_one_field(auth_client, sample_vehicle, test_user):
+    from app.models import FuelStation
+    sample_station = FuelStation(user_id=test_user.id, name='Test Station', brand='BP')
+    db.session.add(sample_station)
+    db.session.commit()
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert 'list="station-options"' in _tag(html, 'station')
+    assert f'data-id="{sample_station.id}"' in html
+    # A refused save keeps the station link it was posted with.
+    html = _post_new(auth_client, sample_vehicle, station_id=str(sample_station.id)).get_data(as_text=True)
+    assert _value(html, 'station_id') == str(sample_station.id)
+
+
+def test_more_details_opens_for_a_refused_optional_field(auth_client, sample_vehicle):
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert '<details class="ds-card form-more">' in html
+    html = _post_new(auth_client, sample_vehicle).get_data(as_text=True)  # sales tax refused
+    assert '<details class="ds-card form-more" open>' in html

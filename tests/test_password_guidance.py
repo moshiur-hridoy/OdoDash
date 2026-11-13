@@ -112,8 +112,8 @@ def test_create_user_keeps_role_and_admin_after_a_weak_password(admin_client):
     })
     html = response.get_data(as_text=True)
     assert 'value="newviewer"' in html
-    assert re.search(r'<option value="viewer"\s+selected>', html) or \
-        re.search(r'<option value="viewer" selected>', html)
+    # The role is a set of radio cards; the one sent back stays chosen.
+    assert re.search(r'name="role" value="viewer"\s+checked', html)
     assert re.search(r'name="is_admin" id="is_admin" checked', html)
 
 

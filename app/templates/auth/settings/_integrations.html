@@ -1,0 +1,301 @@
+{#- Integrations (section id "services"): a grid of services, each opening its
+    own detail panel (#services-<name>). -#}
+{% from 'auth/settings/_ui.html' import card, status %}
+{% from 'components/ui.html' import button, badge %}
+{% from 'components/icons.html' import icon %}
+
+{%- macro tile(name, title, text, icon_name, state, tone, admin=False) -%}
+<button type="button" class="ds-card integration-tile" onclick="showIntegration('{{ name }}')">
+    <span class="integration-tile__head">
+        <span class="integration-tile__icon" aria-hidden="true">{{ icon(icon_name, 18) }}</span>
+        <span class="integration-tile__title">{{ title }}</span>
+        {% if admin %}{{ badge(_('Admin'), 'accent') }}{% endif %}
+    </span>
+    <span class="integration-tile__text">{{ text }}</span>
+    <span class="integration-tile__foot">{{ badge(state, tone) }} {{ icon('arrow-right', 14) }}</span>
+</button>
+{%- endmacro -%}
+
+{%- macro detail_head(title, text, icon_name) -%}
+<button type="button" class="settings-back settings-back--inline" onclick="hideIntegration()">{{ icon('arrow-left', 16) }} {{ _('Back to Integrations') }}</button>
+<header class="integration-head">
+    <span class="integration-tile__icon" aria-hidden="true">{{ icon(icon_name, 20) }}</span>
+    <div>
+        <h2 class="integration-head__title">{{ title }}</h2>
+        <p class="settings-card__hint">{{ text }}</p>
+    </div>
+</header>
+{%- endmacro -%}
+
+{%- macro steps_list(title, items, ordered=True) -%}
+<div class="import-note integration-steps">
+    {{ icon('alert' if not ordered else 'check', 18) }}
+    <div>
+        {% if title %}<p><strong>{{ title }}</strong></p>{% endif %}
+        {% if ordered %}<ol>{% else %}<ul>{% endif %}
+        {% for item in items %}<li>{{ item }}</li>{% endfor %}
+        {% if ordered %}</ol>{% else %}</ul>{% endif %}
+    </div>
+</div>
+{%- endmacro -%}
+
+{%- macro needs_key(text) -%}
+<div class="integration-empty">
+    <span class="integration-tile__icon" aria-hidden="true">{{ icon('alert', 20) }}</span>
+    <h3 class="settings-row__title">{{ _('API Key Required') }}</h3>
+    <p class="settings-row__hint">{{ text }}</p>
+    {{ button(_('Go to API Settings'), attrs={'onclick': "showSection('api', event)"}) }}
+</div>
+{%- endmacro -%}
+
+{%- macro copy_field(id, label, hint, value) -%}
+<div class="ds-field">
+    <label class="ds-field__label" for="{{ id }}">{{ label }}</label>
+    <p class="form-hint">{{ hint }}</p>
+    <div class="form-template__row">
+        <input type="text" readonly id="{{ id }}" class="ds-control ds-mono" value="{{ value }}">
+        {{ button(_('Copy'), variant='secondary', icon_name='copy', attrs={'data-copy': id}) }}
+    </div>
+</div>
+{%- endmacro -%}
+
+<section id="section-services" class="settings-section" data-section="services" aria-labelledby="services-title" hidden>
+    <div id="integrations-list" class="settings-stack">
+        <header class="integration-intro">
+            <h2 class="settings-card__title" id="services-title">{{ _('Integrations') }}</h2>
+            <p class="settings-card__hint">{{ _('Connect May with external services and applications').replace('May', APP_NAME) }}</p>
+        </header>
+        <div class="integration-grid">
+            {{ tile('calendar', _('Calendar'), _('Subscribe to reminders in your calendar app'), 'calendar',
+                    _('Ready') if current_user.api_key else _('Requires API key'), 'success' if current_user.api_key else 'neutral') }}
+            {{ tile('homeassistant', _('Home Assistant'), _('Create sensors and automations for your vehicles'), 'home',
+                    _('Ready') if current_user.api_key else _('Requires API key'), 'success' if current_user.api_key else 'neutral') }}
+            {% if current_user.is_admin or telegram.enabled %}
+            {{ tile('telegram', _('Telegram'), _('Log fill-ups by messaging a bot'), 'send',
+                    _('Connected') if telegram.linked else (_('Not connected') if telegram.enabled else _('Not configured')),
+                    'success' if telegram.linked else ('warning' if telegram.enabled else 'neutral')) }}
+            {% endif %}
+            {% if current_user.is_admin %}
+            {{ tile('dvla', _('DVLA'), _('Look up UK vehicle MOT and tax status'), 'check',
+                    _('Configured') if dvla_settings.api_key else _('Not configured'), 'success' if dvla_settings.api_key else 'neutral', admin=True) }}
+            {{ tile('tessie', _('Tessie'), _('Sync Tesla vehicle odometer and battery'), 'bolt',
+                    _('Configured') if tessie_settings.api_token else _('Not configured'), 'success' if tessie_settings.api_token else 'neutral', admin=True) }}
+            {{ tile('uk-fuel', _('UK Fuel Prices'), _('Pull live forecourt prices for saved stations'), 'fuel',
+                    _('Enabled') if uk_fuel_settings.enabled else _('Disabled'), 'success' if uk_fuel_settings.enabled else 'neutral', admin=True) }}
+            {% endif %}
+        </div>
+    </div>
+
+    {# ---- Calendar ---- #}
+    <div id="integration-calendar" class="integration-detail settings-stack" hidden>
+        {{ detail_head(_('Calendar Subscription'), _('Subscribe to your reminders in any calendar app'), 'calendar') }}
+        <div class="ds-card settings-card"><div class="settings-card__body">
+        {% if current_user.api_key %}
+            <p class="settings-row__hint">{{ _('Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other calendar app that supports iCal subscriptions.') }}</p>
+            {{ copy_field('webcal-url', _('Webcal URL'), _('Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)'),
+                          'webcal://' ~ request.host ~ '/api/calendar/feed?token=' ~ current_user.api_key) }}
+            {{ copy_field('https-calendar-url', _('HTTPS URL'), _('Use this URL for Google Calendar'),
+                          request.url_root.rstrip('/') ~ '/api/calendar/feed?token=' ~ current_user.api_key) }}
+            <div class="import-note import-note--success integration-steps">
+                {{ icon('calendar', 18) }}
+                <div>
+                    <p><strong>{{ _('What\'s included in the calendar?') }}</strong></p>
+                    <ul>
+                        <li>{{ _('Maintenance schedules') }}</li>
+                        <li>{{ _('Recurring expense due dates') }}</li>
+                        <li>{{ _('Document expiry dates') }}</li>
+                        <li>{{ _('Custom reminders') }}</li>
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            {{ needs_key(_('Generate an API key in the API section to enable calendar integration.')) }}
+        {% endif %}
+        </div></div>
+    </div>
+
+    {# ---- Home Assistant ---- #}
+    <div id="integration-homeassistant" class="integration-detail settings-stack" hidden>
+        {{ detail_head(_('Home Assistant'), _('Create sensors and automations for your vehicles'), 'home') }}
+        <div class="ds-card settings-card"><div class="settings-card__body">
+        {% if current_user.api_key %}
+            <p class="settings-row__hint">{{ _('Add the following configuration to your Home Assistant configuration.yaml to create vehicle sensors.') }}</p>
+            <div class="ds-field">
+                <span class="ds-field__label">{{ _('REST Sensor Configuration') }}</span>
+                <pre class="settings-code settings-code--block"><code>sensor:
+  - platform: rest
+    name: "OdoDash Vehicle Stats"
+    resource: {{ request.url_root.rstrip('/') }}/api/ha/summary
+    headers:
+      Authorization: Bearer {{ current_user.api_key }}
+    value_template: "{{ '{{' }} value_json.alerts_count {{ '}}' }}"
+    json_attributes:
+      - total_vehicles
+      - total_cost
+      - total_fuel_cost
+      - vehicles</code></pre>
+                <div>{{ button(_('Copy configuration'), variant='secondary', size='sm', icon_name='copy', attrs={'onclick': 'copyHAConfig()'}) }}</div>
+            </div>
+            <div class="ds-field">
+                <span class="ds-field__label">{{ _('Available API Endpoints') }}</span>
+                <dl class="integration-endpoints">
+                    <div><dt><code>/api/ha/status</code></dt><dd>{{ _('API health check') }}</dd></div>
+                    <div><dt><code>/api/ha/vehicles</code></dt><dd>{{ _('List all vehicles') }}</dd></div>
+                    <div><dt><code>/api/ha/vehicles/{id}/stats</code></dt><dd>{{ _('Vehicle statistics') }}</dd></div>
+                    <div><dt><code>/api/ha/alerts</code></dt><dd>{{ _('Upcoming reminders') }}</dd></div>
+                    <div><dt><code>/api/ha/summary</code></dt><dd>{{ _('Combined summary') }}</dd></div>
+                </dl>
+            </div>
+        {% else %}
+            {{ needs_key(_('Generate an API key in the API section to enable Home Assistant integration.')) }}
+        {% endif %}
+        </div></div>
+    </div>
+
+    {# ---- Telegram ---- #}
+    {% if current_user.is_admin or telegram.enabled %}
+    <div id="integration-telegram" class="integration-detail settings-stack" hidden>
+        {{ detail_head(_('Telegram'), _('Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and it is saved as a fuel log.'), 'send') }}
+        {% if telegram.enabled %}
+        <div class="ds-card settings-card" id="telegram-link"><div class="settings-card__body">
+            {% if telegram.linked %}
+            <div class="settings-row">
+                <div class="settings-row__text">
+                    <h3 class="settings-row__title">{{ badge(_('Connected'), 'success') }} {{ _('Your account is connected to Telegram.') }}</h3>
+                    {% if telegram.bot_username %}<p class="settings-row__hint"><a class="api-link" href="https://t.me/{{ telegram.bot_username }}" target="_blank" rel="noopener">@{{ telegram.bot_username }}</a></p>{% endif %}
+                </div>
+                <form method="POST" action="{{ url_for('auth.telegram_unlink') }}" class="settings-row__control">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {{ button(_('Disconnect Telegram'), type='submit', variant='danger') }}
+                </form>
+            </div>
+            {% elif telegram.link_code %}
+            <p class="settings-row__hint">{{ _('Send this to the bot within 15 minutes:') }}</p>
+            <code class="settings-code settings-code--big">/start {{ telegram.link_code }}</code>
+            {% if telegram.bot_username %}<div>{{ button(_('Open in Telegram'), href='https://t.me/' ~ telegram.bot_username ~ '?start=' ~ telegram.link_code, icon_name='send', attrs={'target': '_blank', 'rel': 'noopener'}) }}</div>{% endif %}
+            {% else %}
+            <form method="POST" action="{{ url_for('auth.telegram_link') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {{ button(_('Connect Telegram'), type='submit', icon_name='link') }}
+            </form>
+            {% endif %}
+        </div></div>
+        {% endif %}
+        {% if current_user.is_admin %}
+        {% call card(_('Set up the bot (admin)'), admin=True) %}
+        {{ steps_list(None, [_('In Telegram, message @BotFather and send /newbot'), _('Copy the token it gives you and paste it below'), _('Each user then connects their own chat from this page')]) }}
+        <form method="POST" action="{{ url_for('auth.telegram_settings') }}" class="settings-stack" data-busy-submit>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="ds-field">
+                <label class="ds-field__label" for="telegram_bot_token">{{ _('Bot token') }}</label>
+                <input type="password" name="telegram_bot_token" id="telegram_bot_token" class="ds-control ds-mono" autocomplete="off" value="{{ telegram.token or '' }}">
+                <p class="form-hint">{{ _('Leave empty and save to disconnect the bot.') }}</p>
+            </div>
+            <div class="settings-actions settings-actions--inline">{{ button(_('Save Telegram Settings'), type='submit', icon_name='check') }}</div>
+        </form>
+        {% endcall %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if current_user.is_admin %}
+    {# ---- DVLA ---- #}
+    <div id="integration-dvla" class="integration-detail settings-stack" hidden>
+        {{ detail_head(_('DVLA Vehicle Lookup'), _('Look up UK vehicle MOT and tax status'), 'check') }}
+        <div class="ds-card settings-card"><div class="settings-card__body">
+            <p class="settings-row__hint">{{ _('The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax status, and vehicle details for UK registered vehicles. This enables automatic population of vehicle information when adding new vehicles.') }}</p>
+            <div class="import-note integration-steps">
+                {{ icon('check', 18) }}
+                <div>
+                    <p><strong>{{ _('How to get an API key') }}</strong></p>
+                    <ol>
+                        <li>{{ _('Visit the') }} <a class="api-link" href="https://developer-portal.driver-vehicle-licensing.api.gov.uk/" target="_blank" rel="noopener">{{ _('DVLA Developer Portal') }}</a></li>
+                        <li>{{ _('Register for a free account') }}</li>
+                        <li>{{ _('Subscribe to the Vehicle Enquiry Service API') }}</li>
+                        <li>{{ _('Copy your API key and paste it below') }}</li>
+                    </ol>
+                </div>
+            </div>
+            <form method="POST" action="{{ url_for('auth.dvla_settings') }}" class="settings-stack" data-busy-submit>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="ds-field">
+                    <label class="ds-field__label" for="dvla_api_key">{{ _('DVLA API Key') }}</label>
+                    <div class="form-template__row">
+                        <input type="password" name="dvla_api_key" id="dvla_api_key" class="ds-control ds-mono" autocomplete="off" value="{{ dvla_settings.api_key or '' }}">
+                        {{ button(_('Test'), variant='secondary', attrs={'onclick': 'testDvlaKey()'}) }}
+                    </div>
+                    {{ status('dvla-test-result') }}
+                </div>
+                <div class="settings-actions settings-actions--inline">{{ button(_('Save DVLA Settings'), type='submit', icon_name='check') }}</div>
+            </form>
+        </div></div>
+    </div>
+
+    {# ---- Tessie ---- #}
+    <div id="integration-tessie" class="integration-detail settings-stack" hidden>
+        {{ detail_head(_('Tessie Integration'), _('Sync Tesla vehicle data via Tessie'), 'bolt') }}
+        <div class="ds-card settings-card"><div class="settings-card__body">
+            <p class="settings-row__hint">{{ _('Tessie allows you to automatically sync odometer readings, battery level, and range from your Tesla vehicles. When enabled for a vehicle, odometer tracking becomes automatic.') }}</p>
+            {{ steps_list(_('Important'), [_('Tessie subscription required ($6.99/month per vehicle)'), _('Your Tesla must be connected to Tessie'), _('When enabled, manual odometer entry is disabled')], ordered=False) }}
+            <div class="import-note integration-steps">
+                {{ icon('check', 18) }}
+                <div>
+                    <p><strong>{{ _('How to get an API token') }}</strong></p>
+                    <ol>
+                        <li>{{ _('Sign up at') }} <a class="api-link" href="https://tessie.com" target="_blank" rel="noopener">tessie.com</a></li>
+                        <li>{{ _('Connect your Tesla account') }}</li>
+                        <li>{{ _('Go to Settings and create an API token') }}</li>
+                        <li>{{ _('Paste the token below') }}</li>
+                    </ol>
+                </div>
+            </div>
+            <form method="POST" action="{{ url_for('auth.tessie_settings') }}" class="settings-stack" data-busy-submit>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="ds-field">
+                    <label class="ds-field__label" for="tessie_api_token">{{ _('Tessie API Token') }}</label>
+                    <div class="form-template__row">
+                        <input type="password" name="tessie_api_token" id="tessie_api_token" class="ds-control ds-mono" autocomplete="off" value="{{ tessie_settings.api_token or '' }}">
+                        {{ button(_('Test'), variant='secondary', attrs={'onclick': 'testTessieToken()'}) }}
+                    </div>
+                    {{ status('tessie-test-result') }}
+                </div>
+                <div class="settings-actions settings-actions--inline">{{ button(_('Save Tessie Settings'), type='submit', icon_name='check') }}</div>
+            </form>
+        </div></div>
+    </div>
+
+    {# ---- UK fuel prices ---- #}
+    <div id="integration-uk-fuel" class="integration-detail settings-stack" hidden>
+        {{ detail_head(_('UK Fuel Prices'), _('Pull live forecourt prices for saved stations'), 'fuel') }}
+        <div class="ds-card settings-card"><div class="settings-card__body">
+            <p class="settings-row__hint">{{ _('UK retailers publish forecourt prices under the government fuel price transparency scheme. May matches your saved stations to those forecourts by postcode and records the prices, so price history and Cheapest Fuel stay up to date without manual entry.').replace('May', APP_NAME) }}</p>
+            <div class="import-note integration-steps">
+                {{ icon('alert', 18) }}
+                <div>
+                    <p><strong>{{ _('Before you start') }}</strong></p>
+                    <ul>
+                        <li>{{ _('No API key is needed; the feeds are open data') }}</li>
+                        <li>{{ _('Give each station a postcode so it can be matched to a forecourt') }}</li>
+                        <li>{{ _('Prices refresh automatically every few hours, or on demand from the Fuel Stations page') }}</li>
+                        <li>{{ _('See the') }} <a class="api-link" href="https://www.gov.uk/guidance/access-the-latest-fuel-prices-and-forecourt-data-via-api-or-email" target="_blank" rel="noopener">{{ _('gov.uk guidance') }}</a> {{ _('for the current retailer list') }}</li>
+                    </ul>
+                </div>
+            </div>
+            <form method="POST" action="{{ url_for('auth.uk_fuel_settings') }}" class="settings-stack" data-busy-submit>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label class="ds-switch">
+                    <input type="checkbox" name="uk_fuel_prices_enabled" id="uk_fuel_prices_enabled"{% if uk_fuel_settings.enabled %} checked{% endif %}>
+                    {{ _('Enable UK fuel price updates') }}
+                </label>
+                <div class="ds-field">
+                    <label class="ds-field__label" for="uk_fuel_feed_urls">{{ _('Retailer feeds (optional)') }}</label>
+                    <textarea name="uk_fuel_feed_urls" id="uk_fuel_feed_urls" rows="4" class="ds-control ds-mono"
+                              placeholder="Retailer name|https://example.co.uk/fuel_prices_data.json">{{ uk_fuel_settings.feed_urls or '' }}</textarea>
+                    <p class="form-hint">{{ _('One feed per line. Leave blank to use the built-in list (%(count)s retailers).', count=uk_fuel_settings.retailer_count) }}</p>
+                </div>
+                <div class="settings-actions settings-actions--inline">{{ button(_('Save UK Fuel Price Settings'), type='submit', icon_name='check') }}</div>
+            </form>
+        </div></div>
+    </div>
+    {% endif %}
+</section>

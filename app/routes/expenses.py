@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -11,6 +11,7 @@ from app.utils import parse_decimal
 from app.models import (Vehicle, Expense, Attachment, MaintenanceSchedule, Reminder,
                         EXPENSE_CATEGORIES, MAINTENANCE_GROUPS, MAINTENANCE_PART_TYPES)
 from app.routes.reminders import complete_reminder
+from app.security import get_safe_redirect_url
 
 bp = Blueprint('expenses', __name__, url_prefix='/expenses')
 
@@ -122,16 +123,44 @@ def _open_reminder(reminder_id, vehicle_ids, vehicle_id=None):
     return reminder
 
 
+EXPENSES_PER_PAGE = 50
+
+
+def _month_start(value):
+    return date(value.year, value.month, 1)
+
+
+def _next_month(value):
+    return date(value.year + value.month // 12, value.month % 12 + 1, 1)
+
+
 @bp.route('/')
 @login_required
 def index():
+    from app.utils import utcnow
+
     vehicles = current_user.get_all_vehicles()
-    vehicle_ids = [v.id for v in vehicles]
+    # ?vehicle= narrows everything on the page to one vehicle.
+    selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    vehicle_ids = [selected_vehicle.id] if selected_vehicle else [v.id for v in vehicles]
+    category_labels = dict(EXPENSE_CATEGORIES)
+    category = request.args.get('category') if request.args.get('category') in category_labels else None
+    year = request.args.get('year', type=int)
     maintenance_group = request.args.get('maintenance_group') or None
     maintenance_part = request.args.get('maintenance_part') or None
+    # Maintenance filters only mean something inside the maintenance category;
+    # switching to another category drops them rather than matching nothing.
+    if category and category != 'maintenance':
+        maintenance_group = maintenance_part = None
 
-    # Get all expenses for user's vehicles
+    # Every figure on the page -- totals, months, categories, vendors --
+    # reads from this one filtered query, so they always agree with the list.
     expense_query = Expense.query.filter(Expense.vehicle_id.in_(vehicle_ids))
+    if category:
+        expense_query = expense_query.filter(Expense.category == category)
+    if year:
+        expense_query = expense_query.filter(Expense.date >= date(year, 1, 1),
+                                             Expense.date < date(year + 1, 1, 1))
     if maintenance_group:
         expense_query = expense_query.filter(
             Expense.category == 'maintenance',
@@ -142,7 +171,49 @@ def index():
             Expense.category == 'maintenance',
             Expense.maintenance_part == maintenance_part,
         )
-    expenses = expense_query.order_by(Expense.date.desc()).all()
+
+    pagination = expense_query.order_by(Expense.date.desc(), Expense.id.desc()).paginate(
+        page=request.args.get('page', 1, type=int), per_page=EXPENSES_PER_PAGE, error_out=False)
+    expenses = pagination.items
+
+    def total_of(query):
+        return float(query.with_entities(func.sum(Expense.cost)).scalar() or 0)
+
+    this_month = _month_start(utcnow())
+    filtered_total = total_of(expense_query)
+    month_total = total_of(expense_query.filter(Expense.date >= this_month,
+                                                Expense.date < _next_month(this_month)))
+
+    # Month blocks: each month's total over every matching expense, not
+    # just the ones on this page.
+    months = sorted({_month_start(e.date) for e in expenses if e.date})
+    month_totals = {}
+    if months:
+        y, m = func.strftime('%Y', Expense.date), func.strftime('%m', Expense.date)
+        for row_year, row_month, total in expense_query.filter(
+                Expense.date >= months[0], Expense.date < _next_month(months[-1])
+        ).with_entities(y, m, func.sum(Expense.cost)).group_by(y, m).all():
+            month_totals[date(int(row_year), int(row_month), 1)] = round(total or 0, 2)
+    groups = []
+    for expense in expenses:
+        month = _month_start(expense.date) if expense.date else None
+        if not groups or groups[-1]['month'] != month:
+            groups.append({'month': month, 'total': month_totals.get(month), 'rows': []})
+        groups[-1]['rows'].append(expense)
+
+    by_category = [
+        {'key': key, 'label': category_labels.get(key, key), 'total': round(total or 0, 2), 'count': count}
+        for key, total, count in expense_query.with_entities(
+            Expense.category, func.sum(Expense.cost), func.count(Expense.id)
+        ).group_by(Expense.category).order_by(func.sum(Expense.cost).desc()).all()
+    ]
+
+    # Spend per vendor (#213)
+    vendor_rows = expense_query.filter(
+        Expense.vendor.isnot(None), Expense.vendor != '',
+    ).with_entities(
+        Expense.vendor, func.sum(Expense.cost), func.count(Expense.id)
+    ).group_by(Expense.vendor).order_by(func.sum(Expense.cost).desc()).all()
 
     part_names = [name for (name,) in db.session.query(Expense.maintenance_part).filter(
         Expense.vehicle_id.in_(vehicle_ids),
@@ -151,23 +222,29 @@ def index():
         Expense.maintenance_part != '',
     ).distinct().order_by(Expense.maintenance_part).all()]
 
-    # Spend per vendor (#213)
-    vendor_rows = db.session.query(
-        Expense.vendor, func.sum(Expense.cost), func.count(Expense.id)
-    ).filter(
-        Expense.id.in_([expense.id for expense in expenses]),
-        Expense.vendor.isnot(None),
-        Expense.vendor != '',
-    ).group_by(Expense.vendor).order_by(func.sum(Expense.cost).desc()).all()
+    year_column = func.strftime('%Y', Expense.date)
+    years = [int(y) for (y,) in db.session.query(year_column).filter(
+        Expense.vehicle_id.in_(vehicle_ids), Expense.date.isnot(None)
+    ).distinct().order_by(year_column.desc()).all() if y]
 
     return render_template('expenses/index.html', expenses=expenses, vehicles=vehicles,
+                           selected_vehicle=selected_vehicle,
+                           pagination=pagination,
+                           groups=groups,
                            vendor_totals=vendor_rows,
+                           by_category=by_category,
                            expense_attachments=_attachments_by_expense([e.id for e in expenses]),
+                           expense_categories=EXPENSE_CATEGORIES,
+                           selected_category=category,
+                           years=years,
+                           selected_year=year,
                            maintenance_groups=MAINTENANCE_GROUPS,
                            selected_maintenance_group=maintenance_group,
                            part_names=part_names,
                            selected_maintenance_part=maintenance_part,
-                           filtered_total=sum(float(expense.cost or 0) for expense in expenses))
+                           filtered_total=filtered_total,
+                           month_total=month_total,
+                           expense_count=pagination.total)
 
 
 @bp.route('/new', methods=['GET', 'POST'])
@@ -349,7 +426,9 @@ def delete(expense_id):
     if request.args.get('return_to') == 'vehicle':
         return redirect(url_for('vehicles.view', vehicle_id=vehicle_id))
 
-    return redirect(url_for('expenses.index'))
+    # The list posts its own URL, so a delete keeps the filters and page.
+    next_url = get_safe_redirect_url(request.form.get('next'), default=None)
+    return redirect(next_url or url_for('expenses.index'))
 
 
 @bp.route('/<int:expense_id>/attachments/<int:attachment_id>/delete', methods=['POST'])

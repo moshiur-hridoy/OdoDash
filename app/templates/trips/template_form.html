@@ -1,95 +1,66 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import purpose_icons %}
 {% block title %}{% if template %}{{ _('Edit Template') }}{% else %}{{ _('New Template') }}{% endif %}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('trips.templates_index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; {{ _('Back to templates') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-            {% if template %}{{ _('Edit Template') }}{% else %}{{ _('New Template') }}{% endif %}
-        </h1>
-    </div>
+{%- set chosen = vehicles|selectattr('id', 'equalto', template.vehicle_id if template and template.vehicle_id else -1)|list -%}
+{%- set chosen_purpose = template.purpose if template else purposes[0][0] -%}
+<div class="ds form-page">
+{{ back_link(_('Back to templates'), url_for('trips.templates_index')) }}
+{{ page_header(_('Edit Template') if template else _('New Template')) }}
 
-    <form method="POST" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section">
+        <div class="ds-field">
+            <label class="ds-field__label" for="name">{{ _('Template Name') }}{{ req() }}</label>
+            <input type="text" name="name" id="name" class="ds-control" required
+                   value="{{ template.name if template else '' }}" placeholder="{{ _('e.g., Office Commute, Client Visit') }}">
+        </div>
+        {{ vehicle_picker(vehicles, chosen[0] if chosen else None, required=False, any_label=_('Any vehicle'), label=_('Default Vehicle')) }}
+        <p class="form-hint">{{ _('Pre-selects this vehicle when using the template') }}</p>
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Purpose') }}{{ req() }}</legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for value, label in purposes %}
+                <label class="ds-choice">
+                    <input type="radio" name="purpose" value="{{ value }}" required{% if value == chosen_purpose %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(purpose_icons.get(value, 'dots'), 18) }}</span>
+                    <span class="ds-choice__label">{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </section>
 
-                <div class="sm:col-span-2">
-                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Template Name') }} *</label>
-                    <input type="text" name="name" id="name" required
-                           value="{{ template.name if template else '' }}"
-                           placeholder="{{ _('e.g., Office Commute, Client Visit') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Default Vehicle') }}</label>
-                    <select name="vehicle_id" id="vehicle_id"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        <option value="">{{ _('Any vehicle') }}</option>
-                        {% for vehicle in vehicles %}
-                        <option value="{{ vehicle.id }}"
-                                {% if template and template.vehicle_id == vehicle.id %}selected{% endif %}>
-                            {{ vehicle.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Pre-selects this vehicle when using the template') }}</p>
-                </div>
-
-                <div>
-                    <label for="purpose" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Purpose') }} *</label>
-                    <select name="purpose" id="purpose" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in purposes %}
-                        <option value="{{ value }}" {% if template and template.purpose == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div>
-                    <label for="start_location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Start Location') }}</label>
-                    <input type="text" name="start_location" id="start_location"
-                           value="{{ template.start_location if template else '' }}"
-                           placeholder="{{ _('e.g., Home, Office') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="end_location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('End Location') }}</label>
-                    <input type="text" name="end_location" id="end_location"
-                           value="{{ template.end_location if template else '' }}"
-                           placeholder="{{ _('e.g., Client Site, Airport') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }}</label>
-                    <input type="text" name="description" id="description"
-                           value="{{ template.description if template else '' }}"
-                           placeholder="{{ _('e.g., Weekly client meeting') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Notes') }}</label>
-                    <textarea name="notes" id="notes" rows="2"
-                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ template.notes if template else '' }}</textarea>
-                </div>
+    <section class="ds-card form-section">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="start_location">{{ _('Start Location') }}</label>
+                <input type="text" name="start_location" id="start_location" class="ds-control"
+                       value="{{ template.start_location if template and template.start_location else '' }}" placeholder="{{ _('e.g., Home, Office') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="end_location">{{ _('End Location') }}</label>
+                <input type="text" name="end_location" id="end_location" class="ds-control"
+                       value="{{ template.end_location if template and template.end_location else '' }}" placeholder="{{ _('e.g., Client Site, Airport') }}">
             </div>
         </div>
-
-        <div class="flex justify-end space-x-3">
-            <a href="{{ url_for('trips.templates_index') }}"
-               class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                {{ _('Cancel') }}
-            </a>
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {% if template %}{{ _('Save Changes') }}{% else %}{{ _('Save Template') }}{% endif %}
-            </button>
+        <div class="ds-field">
+            <label class="ds-field__label" for="description">{{ _('Description') }}</label>
+            <input type="text" name="description" id="description" class="ds-control"
+                   value="{{ template.description if template and template.description else '' }}" placeholder="{{ _('e.g., Weekly client meeting') }}">
         </div>
-    </form>
+        <div class="ds-field">
+            <label class="ds-field__label" for="notes">{{ _('Notes') }}</label>
+            <textarea name="notes" id="notes" rows="2" class="ds-control">{{ template.notes if template and template.notes else '' }}</textarea>
+        </div>
+    </section>
+
+    {{ form_actions(url_for('trips.templates_index'), _('Save Changes') if template else _('Save Template')) }}
+</form>
 </div>
 {% endblock %}

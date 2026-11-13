@@ -10,7 +10,7 @@ from sqlalchemy import func
 from werkzeug.utils import secure_filename
 from app import db
 from app.utils import parse_decimal, utcnow
-from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
+from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
 from app.services.tessie import TessieService
 
 bp = Blueprint('vehicles', __name__, url_prefix='/vehicles')
@@ -168,6 +168,22 @@ def view(vehicle_id):
     # Get recent activity
     recent_logs = vehicle.fuel_logs.order_by(FuelLog.date.desc(), FuelLog.odometer.desc()).limit(10).all()
     recent_expenses = vehicle.expenses.order_by(Expense.date.desc()).limit(10).all()
+    recent_charges = (vehicle.charging_sessions.order_by(ChargingSession.date.desc()).limit(10).all()
+                      if vehicle.uses_charging() else [])
+
+    # One log for the page, newest first: the last ten of each kind, so a
+    # filter to one kind still has ten rows to show.
+    activity = ([{'kind': 'fuel', 'date': log.date, 'entry': log} for log in recent_logs]
+                + [{'kind': 'charging', 'date': session.date, 'entry': session} for session in recent_charges]
+                + [{'kind': 'expense', 'date': expense.date, 'entry': expense} for expense in recent_expenses])
+    activity.sort(key=lambda row: _as_date(row['date']), reverse=True)
+
+    # Spending for this vehicle over the last six months, oldest first, the
+    # same columns the dashboard draws for every vehicle together.
+    from app.routes.main import _spending_between, _add_months
+    this_month = datetime(utcnow().year, utcnow().month, 1)
+    month_totals = [(month, sum(_spending_between([vehicle.id], month, _add_months(month, 1)).values()))
+                    for month in (_add_months(this_month, -i) for i in range(5, -1, -1))]
 
     # Get specifications
     specs = vehicle.specs.all()
@@ -242,6 +258,9 @@ def view(vehicle_id):
                            vehicle=vehicle,
                            recent_logs=recent_logs,
                            recent_expenses=recent_expenses,
+                           last_charge=recent_charges[0] if recent_charges else None,
+                           activity=activity,
+                           month_totals=month_totals,
                            specs=specs,
                            stats=stats,
                            expenses_by_category=expenses_by_category,
@@ -256,6 +275,11 @@ def view(vehicle_id):
                            photos=_vehicle_photos(vehicle),
                            can_edit=_owns_vehicle(vehicle),
                            annual_mileage_stats=vehicle.get_annual_mileage_stats())
+
+
+def _as_date(value):
+    """A date from a date or datetime, so the kinds of log sort together."""
+    return value.date() if isinstance(value, datetime) else value
 
 
 @bp.route('/<int:vehicle_id>/edit', methods=['GET', 'POST'])

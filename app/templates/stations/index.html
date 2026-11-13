@@ -1,125 +1,68 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Fuel Stations') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Fuel Stations') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Your favorite fuel stations') }}</p>
-    </div>
-    <div class="flex flex-wrap gap-2">
-        {% if uk_fuel_enabled %}
-        <form method="post" action="{{ url_for('stations.refresh_uk_prices') }}">
-            <button type="submit"
-                    class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    title="{{ _('Fetch live prices from UK retailer feeds') }}">
-                <svg class="-ml-1 mr-2 h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                {{ _('Update UK Prices') }}
-            </button>
-        </form>
-        {% endif %}
-        <a href="{{ url_for('stations.cheapest') }}"
-           class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <svg class="-ml-1 mr-2 h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            {{ _('Cheapest Fuel') }}
-        </a>
-        {% if can_write('stations') %}
-        <a href="{{ url_for('stations.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Station') }}
-        </a>
-        {% endif %}
-    </div>
-</div>
+<div class="ds log-page">
+
+{% call page_header(_('Fuel Stations'), subtitle=_('Your favorite fuel stations')) %}
+    {% if uk_fuel_enabled %}
+    <form method="post" action="{{ url_for('stations.refresh_uk_prices') }}" data-busy-submit>
+        {{ button(_('Update UK Prices'), type='submit', variant='secondary', icon_name='repeat', attrs={'title': _('Fetch live prices from UK retailer feeds')}) }}
+    </form>
+    {% endif %}
+    {{ button(_('Cheapest Fuel'), href=url_for('stations.cheapest'), variant='secondary', icon_name='money') }}
+    {% if can_write('stations') %}{{ button(_('Add Station'), href=url_for('stations.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
 
 {% if stations %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+<section class="ds-card ds-card--flush" aria-label="{{ _('Fuel Stations') }}">
+    <ul class="ds-list">
         {% for station in stations %}
-        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center min-w-0">
-                    <button onclick="toggleFavorite({{ station.id }})" class="mr-3 focus:outline-none" id="fav-btn-{{ station.id }}">
-                        {% if station.is_favorite %}
-                        <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                        {% else %}
-                        <svg class="h-5 w-5 text-gray-300 hover:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                        </svg>
-                        {% endif %}
-                    </button>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ station.name }}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {% if station.brand %}{{ station.brand }} &middot; {% endif %}
-                            {{ station.address or station.city or 'No address' }}
-                        </p>
-                    </div>
-                </div>
-                <div class="ml-4 flex items-center gap-4">
-                    <span class="text-xs text-gray-400 dark:text-gray-500">
-                        {{ _('Used %(count)dx', count=station.times_used or 0) }}
-                    </span>
-                    <a href="{{ url_for('stations.price_history', station_id=station.id) }}"
-                       class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="{{ _('Price History') }}">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    </a>
-                    {% if can_write('stations') %}
-                    <a href="{{ url_for('stations.edit', station_id=station.id) }}"
-                       class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="{{ _('Edit') }}">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </a>
-                    {% endif %}
-                </div>
+        <li class="ds-list__item">
+            <button type="button" class="ds-star" data-favorite="{{ url_for('stations.toggle_favorite', station_id=station.id) }}"
+                    aria-pressed="{{ 'true' if station.is_favorite else 'false' }}" title="{{ _('Mark as favorite') }}"
+                    {% if not can_write('stations') %}disabled{% endif %}>
+                {{ icon('star', 18) }}<span class="ds-sr-only">{{ _('Mark as favorite') }}</span>
+            </button>
+            <div class="ds-list__main">
+                <h3 class="ds-list__title"><a href="{{ url_for('stations.price_history', station_id=station.id) }}">{{ station.name }}</a></h3>
+                <span class="ds-list__sub">
+                    {{- [station.brand, station.address or station.city or _('No address')]|select|join(' · ') -}}
+                </span>
+            </div>
+            <div class="ds-list__meta"><small>{{ _('Used %(count)dx', count=station.times_used or 0) }}</small></div>
+            <div class="ds-list__actions">
+                {{ button(_('Price History'), href=url_for('stations.price_history', station_id=station.id), variant='ghost', size='sm', icon_name='trend-up', icon_only=true) }}
+                {% if can_write('stations') %}
+                {{ button(_('Edit'), href=url_for('stations.edit', station_id=station.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                {% endif %}
             </div>
         </li>
         {% endfor %}
     </ul>
-</div>
+</section>
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No fuel stations') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Save your favorite stations for quick access when logging fuel.') }}</p>
-    <div class="mt-6">
-        {% if can_write('stations') %}
-        <a href="{{ url_for('stations.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Station') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No fuel stations'), _('Save your favorite stations for quick access when logging fuel.'), 'pin',
+                   _('Add Station') if can_write('stations') else None, url_for('stations.new')) }}
 </div>
 {% endif %}
 
+</div>
+
 <script>
-function toggleFavorite(stationId) {
-    fetch('/stations/' + stationId + '/favorite', { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        });
-}
+// Star a station in place; favourites sort first on the next visit.
+document.querySelectorAll('[data-favorite]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var token = document.querySelector('meta[name="csrf-token"]');
+        btn.disabled = true;
+        fetch(btn.dataset.favorite, { method: 'POST', headers: { 'X-CSRFToken': token ? token.content : '' } })
+            .then(function (r) { return r.json(); })
+            .then(function (data) { if (data.success) btn.setAttribute('aria-pressed', data.is_favorite ? 'true' : 'false'); })
+            .finally(function () { btn.disabled = false; });
+    });
+});
 </script>
 {% endblock %}

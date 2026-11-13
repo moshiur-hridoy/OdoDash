@@ -107,6 +107,10 @@
         const rootStyle = document.documentElement.style;
         Object.entries(primaryPalette).forEach(([key, value]) => {
             rootStyle.setProperty(`--primary-${key}`, value);
+            // Channel form for the compiled stylesheet, whose primary-* colours
+            // are rgb(var(--primary-N-rgb) / alpha) so opacity modifiers work.
+            const rgb = value.replace('#', '').match(/../g).map(v => parseInt(v, 16)).join(' ');
+            rootStyle.setProperty(`--primary-${key}-rgb`, rgb);
         });
         window.__primaryPalette = primaryPalette;
 
@@ -173,6 +177,9 @@
         rootStyle.setProperty('--primary-ink', readableOn('#ffffff', -1));
         rootStyle.setProperty('--primary-ink-dark', readableOn('#12151c', 1));
     </script>
+    {% if not TAILWIND_CSS_URL %}
+    {# No compiled stylesheet (scripts/build_css.py has not run): compile the
+       classes in the browser instead. The image always ships the stylesheet. #}
     <script>
         window.__loadTailwindFallback = function() {
             if (window.__tailwindFallbackLoaded) {
@@ -185,6 +192,11 @@
         };
     </script>
     <script src="{{ TAILWIND_ASSET_URL }}" onerror="window.__loadTailwindFallback()"></script>
+    {% if DS_FALLBACK_CSS %}
+    {# The design-system styles (shell and components), compiled by the
+       runtime along with everything else. #}
+    <style type="text/tailwindcss">{{ DS_FALLBACK_CSS|safe }}</style>
+    {% endif %}
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -197,6 +209,7 @@
             }
         };
     </script>
+    {% endif %}
     <!-- HTMX - Non-critical, deferred, local with CDN fallback -->
     <script>
         window.__loadHtmxFallback = function() {
@@ -232,18 +245,20 @@
         /* Critical dark mode styles - renders before Tailwind JS compiles */
         html.dark { color-scheme: dark; }
 
-        /* OdoDash design tokens: dashboard is the visual source of truth. Keep
-           these semantic values stable so individual pages can migrate to
-           the same system without changing their markup first. */
+        /* Legacy page tokens. They now follow the design-system tokens in
+           app.css (--ds-*), so pages that have not been redesigned yet sit on
+           the same canvas, borders and text colours as the new shell. The
+           second value is the old colour, used only when app.css has not been
+           built and the runtime fallback is styling the page. */
         :root {
-            --color-background: #f8f8f8;
-            --color-surface: #ffffff;
-            --color-surface-muted: #fafafa;
-            --color-border: #e5e5e5;
-            --color-border-strong: #d4d4d8;
-            --color-text: #18181b;
-            --color-text-muted: #71717a;
-            --color-text-subtle: #a1a1aa;
+            --color-background: var(--ds-bg, #f8f8f8);
+            --color-surface: var(--ds-surface, #ffffff);
+            --color-surface-muted: var(--ds-surface-sunken, #fafafa);
+            --color-border: var(--ds-border, #e5e5e5);
+            --color-border-strong: #d6d4ce;
+            --color-text: var(--ds-text, #18181b);
+            --color-text-muted: var(--ds-text-muted, #71717a);
+            --color-text-subtle: var(--ds-text-subtle, #a1a1aa);
             --color-focus: var(--primary-500);
             --color-focus-soft: var(--primary-100);
 
@@ -264,20 +279,19 @@
             --control-placeholder: var(--color-text-subtle);
         }
         html.dark {
-            --color-background: #0b0d12;
-            --color-surface: #12151c;
-            --color-surface-muted: #1a1e27;
-            --color-border: #2a303c;
-            --color-border-strong: #384050;
-            --color-text: #f1f3f7;
-            --color-text-muted: #9aa3b2;
-            --color-text-subtle: #6b7482;
+            --color-background: var(--ds-bg, #0b0d12);
+            --color-surface: var(--ds-surface, #12151c);
+            --color-surface-muted: var(--ds-surface-sunken, #1a1e27);
+            --color-border: var(--ds-border, #2a303c);
+            --color-border-strong: #343a43;
+            --color-text: var(--ds-text, #f1f3f7);
+            --color-text-muted: var(--ds-text-muted, #9aa3b2);
+            --color-text-subtle: var(--ds-text-subtle, #6b7482);
             --shadow-popover: 0 10px 24px rgb(0 0 0 / 0.5);
         }
 
         html.dark body { background-color: var(--color-background); color: var(--color-text); }
         html:not(.dark) body { background-color: var(--color-background); }
-        html.dark aside, html.dark header.lg\:hidden { background-color: var(--color-surface); border-color: var(--color-border); }
         html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after { transition: none !important; }
         html.dark .dark\:bg-gray-900 { background-color: var(--color-background); }
         html.dark .dark\:bg-gray-800 { background-color: var(--color-surface); }
@@ -324,10 +338,13 @@
         /* Shared form controls: keep native HTML semantics, but give every
            page the same compact, modern treatment. Checkbox/radio controls
            stay native so their existing behaviour and accessibility remain
-           unchanged. */
-        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
-        form select,
-        form textarea,
+           unchanged. Design-system fields (.ds-control) are styled from
+           app.css instead, so these rules leave them alone. The exclusion is
+           wrapped in :where() so it adds no specificity: every existing
+           control keeps exactly the rules it won before. */
+        form input:where(:not(.ds-control)):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+        form select:where(:not(.ds-control)),
+        form textarea:where(:not(.ds-control)),
         .app-input,
         .app-select,
         .app-textarea {
@@ -338,14 +355,14 @@
             box-shadow: var(--shadow-none);
             transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
         }
-        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
-        form select,
+        form input:where(:not(.ds-control)):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+        form select:where(:not(.ds-control)),
         .app-input,
         .app-select {
             min-height: 36px;
             padding: 0 10px;
         }
-        form select,
+        form select:where(:not(.ds-control)),
         .app-select {
             appearance: none;
             padding: 0 36px 0 10px !important;
@@ -355,20 +372,20 @@
             background-repeat: no-repeat;
             background-size: 5px 5px, 5px 5px;
         }
-        form textarea,
+        form textarea:where(:not(.ds-control)),
         .app-textarea {
             min-height: 88px;
             padding: 10px 12px;
         }
-        form input::placeholder,
-        form textarea::placeholder,
+        form input:where(:not(.ds-control))::placeholder,
+        form textarea:where(:not(.ds-control))::placeholder,
         .app-input::placeholder,
         .app-textarea::placeholder {
             color: var(--control-placeholder);
         }
-        form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):focus,
-        form select:focus,
-        form textarea:focus,
+        form input:where(:not(.ds-control)):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):focus,
+        form select:where(:not(.ds-control)):focus,
+        form textarea:where(:not(.ds-control)):focus,
         .app-input:focus,
         .app-select:focus,
         .app-textarea:focus {
@@ -376,9 +393,9 @@
             border-color: var(--primary-500);
             box-shadow: var(--shadow-focus);
         }
-        form input:disabled,
-        form select:disabled,
-        form textarea:disabled,
+        form input:where(:not(.ds-control)):disabled,
+        form select:where(:not(.ds-control)):disabled,
+        form textarea:where(:not(.ds-control)):disabled,
         .app-input:disabled,
         .app-select:disabled,
         .app-textarea:disabled {
@@ -493,97 +510,92 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
     <script src="{{ url_for('static', filename='js/charts-theme.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/password-rules.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/ds.js') }}" defer></script>
+    {% if TAILWIND_CSS_URL %}
+    {# Last in <head> on purpose: the runtime it replaces appends its <style>
+       here too, so utilities keep winning the same ties against the inline
+       styles and premium.css above. #}
+    <link rel="stylesheet" href="{{ TAILWIND_CSS_URL }}">
+    {% endif %}
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900">
     {% from 'partials/logo.html' import logo_mark %}
+    {% from 'components/icons.html' import icon %}
     {% if current_user.is_authenticated %}
-    <div class="min-h-full">
-        {% macro nav_item(href, label, active, icon) -%}
-        <a href="{{ href }}" class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium {% if active %}bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-400{% else %}text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white{% endif %}"{% if active %} aria-current="page"{% endif %}>
-            <svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="{{ icon }}"/></svg>
-            <span class="truncate">{{ label }}</span>
+    <div class="ds-shell min-h-full">
+        {% set ep = request.endpoint or '' %}
+        {#- Every section in the order the sidebar lists it. The first group
+            sits at the top; the rest go under "More". Each one follows the
+            user's menu-visibility setting. -#}
+        {% set nav_sections = [
+            ('vehicles', 'vehicles.index', _('Vehicles'), 'vehicles' in ep, 'car', True),
+            ('fuel', 'fuel.index', _('Fuel Logs'), ep.startswith('fuel.'), 'fuel', True),
+            ('charging', 'charging.index', _('EV Charging'), 'charging' in ep, 'bolt', True),
+            ('expenses', 'expenses.index', _('Expenses'), 'expenses' in ep, 'receipt', True),
+            ('reminders', 'reminders.index', _('Reminders'), 'reminders' in ep, 'bell', True),
+            ('trips', 'trips.index', _('Trips'), 'trips' in ep, 'map', True),
+            ('maintenance', 'maintenance.index', _('Maintenance'), 'maintenance' in ep, 'wrench', False),
+            ('recurring', 'recurring.index', _('Recurring'), 'recurring' in ep, 'repeat', False),
+            ('documents', 'documents.index', _('Documents'), 'documents' in ep, 'document', False),
+            ('stations', 'stations.index', _('Fuel Stations'), 'stations' in ep, 'pin', False),
+            ('allowance', 'allowance.index', _('Mileage Allowance'), 'allowance' in ep, 'wallet', False),
+            ('tires', 'tires.index', _('Tires'), 'tires' in ep, 'tire', False),
+            ('notes', 'notes.index', _('Notes'), 'notes' in ep, 'note', False),
+        ] %}
+        {% set nav_visible = [] %}
+        {% for item in nav_sections %}
+            {% set flag = current_user|attr('show_menu_' ~ item[0]) %}
+            {% if flag is not defined or flag %}{% if nav_visible.append(item) %}{% endif %}{% endif %}
+        {% endfor %}
+        {% macro nav_item(href, label, active, icon_name) -%}
+        <a href="{{ href }}" class="ds-nav__item{% if active %} is-active{% endif %}"{% if active %} aria-current="page"{% endif %}>
+            {{ icon(icon_name, 18) }}<span class="ds-nav__label">{{ label }}</span>
         </a>
         {%- endmacro %}
-        {% set ep = request.endpoint or '' %}
 
         <!-- Desktop sidebar -->
-        <aside class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-64 lg:flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-            <div class="flex h-16 flex-shrink-0 items-center px-5">
-                <a href="{{ url_for('main.index') }}" class="flex items-center">
-                    {% if APP_LOGO %}
-                    <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="h-8 w-auto">
-                    {% else %}
-                    {{ logo_mark('h-8 w-8 flex-shrink-0 text-primary-600') }}
-                    <span class="ml-2 text-2xl font-bold text-primary-600">{{ APP_NAME }}</span>
-                    {% endif %}
-                </a>
-            </div>
+        <aside class="ds-side">
+            <a href="{{ url_for('main.index') }}" class="ds-brand">
+                {% if APP_LOGO %}
+                <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="ds-brand__image">
+                {% else %}
+                {{ logo_mark('ds-brand__mark') }}
+                <span class="ds-brand__name">{{ APP_NAME }}</span>
+                {% endif %}
+            </a>
 
-            <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-2">
-                {{ nav_item(url_for('main.dashboard'), _('Dashboard'), ep == 'main.dashboard', 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z') }}
-                {% if current_user.show_menu_vehicles is not defined or current_user.show_menu_vehicles %}
-                {{ nav_item(url_for('vehicles.index'), _('Vehicles'), 'vehicles' in ep, 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12') }}
-                {% endif %}
-                {% if current_user.show_menu_fuel is not defined or current_user.show_menu_fuel %}
-                {{ nav_item(url_for('fuel.index'), _('Fuel Logs'), ep.startswith('fuel.'), 'M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z') }}
-                {% endif %}
-                {% if current_user.show_menu_expenses is not defined or current_user.show_menu_expenses %}
-                {{ nav_item(url_for('expenses.index'), _('Expenses'), 'expenses' in ep, 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z') }}
-                {% endif %}
-                {% if current_user.show_menu_reminders is not defined or current_user.show_menu_reminders %}
-                {{ nav_item(url_for('reminders.index'), _('Reminders'), 'reminders' in ep, 'M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0') }}
-                {% endif %}
-                {% if current_user.show_menu_trips is not defined or current_user.show_menu_trips %}
-                {{ nav_item(url_for('trips.index'), _('Trips'), 'trips' in ep, 'M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z') }}
-                {% endif %}
+            <a href="{{ url_for('search.index') }}" class="ds-side__search{% if ep.startswith('search.') %} is-active{% endif %}">
+                {{ icon('search', 16) }}<span>{{ _('Search') }}</span>
+            </a>
 
-                {% set show_more_menu = (current_user.show_menu_maintenance is not defined or current_user.show_menu_maintenance) or
-                                        (current_user.show_menu_recurring is not defined or current_user.show_menu_recurring) or
-                                        (current_user.show_menu_documents is not defined or current_user.show_menu_documents) or
-                                        (current_user.show_menu_stations is not defined or current_user.show_menu_stations) or
-                                        (current_user.show_menu_charging is not defined or current_user.show_menu_charging) or
-                                        (current_user.show_menu_notes is not defined or current_user.show_menu_notes) or
-                                        (current_user.show_menu_allowance is not defined or current_user.show_menu_allowance) or
-                                        (current_user.show_menu_tires is not defined or current_user.show_menu_tires) %}
-                {% if show_more_menu %}
-                <p class="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{{ _('More') }}</p>
-                {% endif %}
-                {% if current_user.show_menu_maintenance is not defined or current_user.show_menu_maintenance %}
-                {{ nav_item(url_for('maintenance.index'), _('Maintenance'), 'maintenance' in ep, 'M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437') }}
-                {% endif %}
-                {% if current_user.show_menu_recurring is not defined or current_user.show_menu_recurring %}
-                {{ nav_item(url_for('recurring.index'), _('Recurring'), 'recurring' in ep, 'M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99') }}
-                {% endif %}
-                {% if current_user.show_menu_documents is not defined or current_user.show_menu_documents %}
-                {{ nav_item(url_for('documents.index'), _('Documents'), 'documents' in ep, 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z') }}
-                {% endif %}
-                {% if current_user.show_menu_stations is not defined or current_user.show_menu_stations %}
-                {{ nav_item(url_for('stations.index'), _('Fuel Stations'), 'stations' in ep, 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z') }}
-                {% endif %}
-                {% if current_user.show_menu_charging is not defined or current_user.show_menu_charging %}
-                {{ nav_item(url_for('charging.index'), _('EV Charging'), 'charging' in ep, 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z') }}
-                {% endif %}
-                {% if current_user.show_menu_allowance is not defined or current_user.show_menu_allowance %}
-                {{ nav_item(url_for('allowance.index'), _('Mileage Allowance'), 'allowance' in ep, 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z') }}
-                {% endif %}
-                {% if current_user.show_menu_tires is not defined or current_user.show_menu_tires %}
-                {{ nav_item(url_for('tires.index'), _('Tires'), 'tires' in ep, 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z M15 12a3 3 0 11-6 0 3 3 0 016 0z') }}
-                {% endif %}
-                {% if current_user.show_menu_notes is not defined or current_user.show_menu_notes %}
-                {{ nav_item(url_for('notes.index'), _('Notes'), 'notes' in ep, 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10') }}
+            <nav class="ds-nav" aria-label="{{ _('Main navigation') }}">
+                {{ nav_item(url_for('main.dashboard'), _('Dashboard'), ep in ('main.dashboard', 'main.index'), 'grid') }}
+                {% for key, endpoint, label, active, icon_name, primary in nav_visible if primary %}
+                {{ nav_item(url_for(endpoint), label, active, icon_name) }}
+                {% endfor %}
+                {% set more_sections = nav_visible|rejectattr(5)|list %}
+                {% if more_sections %}
+                <p class="ds-nav__heading">{{ _('More') }}</p>
+                {% for key, endpoint, label, active, icon_name, primary in more_sections %}
+                {{ nav_item(url_for(endpoint), label, active, icon_name) }}
+                {% endfor %}
                 {% endif %}
             </nav>
 
-            <div class="flex-shrink-0 px-5 pb-3 text-xs">
-                <a href="https://github.com/{{ GITHUB_REPO }}/releases/tag/v{{ APP_VERSION }}" target="_blank" rel="noopener"
-                   class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" title="{{ _("What's new") }}">v{{ DISPLAY_VERSION }}</a>
+            <div class="ds-side__footer">
+                {% if current_user.show_quick_entry and can_write('fuel') %}
+                <a href="{{ url_for('fuel.quick') }}" data-quick-fuel class="ds-btn ds-btn--primary ds-btn--block" title="{{ _('Quick Fuel Entry') }}">
+                    {{ icon('plus', 16) }}<span>{{ _('Fuel') }}</span>
+                </a>
+                {% endif %}
+
                 {% if current_user.is_admin and CHECK_FOR_UPDATES %}
-                <details id="update-notice" hidden class="mt-2 rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-gray-700/50 px-3 py-2">
-                    <summary class="cursor-pointer font-medium text-primary-700 dark:text-primary-400">{{ _('Update available') }} <span id="update-version"></span></summary>
-                    <div class="mt-2 space-y-2 text-gray-600 dark:text-gray-300">
-                        <a id="update-link" href="https://github.com/{{ GITHUB_REPO }}/releases" target="_blank" rel="noopener" class="font-medium text-primary-700 dark:text-primary-400 hover:underline">{{ _("What's new") }} &rarr;</a>
-                        <p class="text-gray-500 dark:text-gray-400">{{ _('How to update') }}</p>
-                        <code class="block select-all rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2 py-1.5 font-mono text-[11px] leading-snug break-all">docker compose pull &amp;&amp; docker compose up -d</code>
+                <details id="update-notice" hidden class="ds-update">
+                    <summary class="ds-update__summary">{{ _('Update available') }} <span id="update-version"></span></summary>
+                    <div class="ds-update__body">
+                        <a id="update-link" href="https://github.com/{{ GITHUB_REPO }}/releases" target="_blank" rel="noopener" class="ds-update__link">{{ _("What's new") }} &rarr;</a>
+                        <p>{{ _('How to update') }}</p>
+                        <code class="ds-update__command">docker compose pull &amp;&amp; docker compose up -d</code>
                     </div>
                 </details>
                 <script>
@@ -612,56 +624,41 @@
                 })();
                 </script>
                 {% endif %}
-            </div>
 
-            <div class="flex-shrink-0 space-y-3 border-t border-gray-200 dark:border-gray-700 p-3">
-                {% if current_user.show_quick_entry and can_write('fuel') %}
-                <a href="{{ url_for('fuel.quick') }}" data-quick-fuel class="flex items-center justify-center gap-1.5 rounded-lg bg-primary-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700" title="{{ _('Quick Fuel Entry') }}">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span>{{ _('Fuel') }}</span>
-                </a>
-                {% endif %}
-                <div class="flex items-center justify-between">
-                    <span class="truncate px-2 text-sm text-gray-500 dark:text-gray-400">{{ current_user.username }}</span>
-                    <div class="flex items-center">
-                        <button type="button" id="theme-toggle" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white" title="{{ _('Toggle dark mode') }}" aria-label="{{ _('Toggle dark mode') }}">
-                            <svg class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            <svg class="h-5 w-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.002 9.002 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                        </button>
-                        <a href="{{ url_for('search.index') }}" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white" title="{{ _('Search') }}">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        </a>
-                        <a href="{{ url_for('auth.settings') }}" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white" title="{{ _('Settings') }}">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        </a>
-                        <a href="{{ url_for('auth.logout') }}" class="p-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400" title="{{ _('Logout') }}">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        </a>
-                    </div>
+                <div class="ds-side__user">
+                    <span class="ds-avatar" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>
+                    <span class="ds-side__username">{{ current_user.username }}</span>
+                    <button type="button" id="theme-toggle" class="ds-btn ds-btn--ghost ds-btn--sm ds-btn--icon" title="{{ _('Toggle dark mode') }}" aria-label="{{ _('Toggle dark mode') }}">
+                        {{ icon('sun', 16, 'hidden dark:block') }}{{ icon('moon', 16, 'dark:hidden') }}
+                    </button>
+                    <a href="{{ url_for('auth.settings') }}" class="ds-btn ds-btn--ghost ds-btn--sm ds-btn--icon{% if ep == 'auth.settings' %} is-active{% endif %}" title="{{ _('Settings') }}" aria-label="{{ _('Settings') }}"{% if ep == 'auth.settings' %} aria-current="page"{% endif %}>
+                        {{ icon('settings', 16) }}
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="ds-btn ds-btn--ghost ds-btn--sm ds-btn--icon ds-side__logout" title="{{ _('Logout') }}" aria-label="{{ _('Logout') }}">
+                        {{ icon('logout', 16) }}
+                    </a>
                 </div>
+                <a href="https://github.com/{{ GITHUB_REPO }}/releases/tag/v{{ APP_VERSION }}" target="_blank" rel="noopener"
+                   class="ds-side__version" title="{{ _("What's new") }}">v{{ DISPLAY_VERSION }}</a>
             </div>
         </aside>
 
         <!-- Mobile / tablet top bar -->
-        <header class="mobile-topbar lg:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex h-16 items-center justify-between px-4 sm:px-6">
-                <a href="{{ url_for('main.index') }}" class="flex items-center">
-                    {% if APP_LOGO %}
-                    <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="h-8 w-auto">
-                    {% else %}
-                    {{ logo_mark('h-8 w-8 flex-shrink-0 text-primary-600') }}
-                    <span class="ml-2 text-2xl font-bold text-primary-600">{{ APP_NAME }}</span>
-                    {% endif %}
-                </a>
-                <a href="{{ url_for('search.index') }}" class="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-400" aria-label="{{ _('Search') }}">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                    </svg>
-                </a>
-            </div>
+        <header class="mobile-topbar ds-topbar">
+            <a href="{{ url_for('main.index') }}" class="ds-brand">
+                {% if APP_LOGO %}
+                <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="ds-brand__image">
+                {% else %}
+                {{ logo_mark('ds-brand__mark') }}
+                <span class="ds-brand__name">{{ APP_NAME }}</span>
+                {% endif %}
+            </a>
+            <a href="{{ url_for('search.index') }}" class="ds-btn ds-btn--ghost ds-btn--icon ds-topbar__action" aria-label="{{ _('Search') }}">
+                {{ icon('search', 20) }}
+            </a>
         </header>
 
-        <main class="py-6 lg:pl-64">
+        <main class="ds-main">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {% block content %}{% endblock %}
             </div>
@@ -670,7 +667,7 @@
         {% include 'partials/mobile_nav.html' %}
     </div>
     {% else %}
-    <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="ds-canvas min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         {% block auth_content %}{% endblock %}
     </div>
     {% endif %}
@@ -697,15 +694,6 @@
             })
             .catch(() => {});
     }
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('more-dropdown');
-        const container = document.getElementById('more-menu-container');
-        if (dropdown && container && !container.contains(event.target)) {
-            dropdown.classList.add('hidden');
-        }
-    });
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {

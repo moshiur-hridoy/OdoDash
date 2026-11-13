@@ -1,205 +1,245 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, field, empty_state, pager %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import category_icons %}
 {% block title %}{{ _('Expenses') }}{% endblock %}
 
 {% block content %}
-<div class="sm:flex sm:items-center sm:justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Expenses') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ _('Track maintenance, repairs, insurance, and other costs') }}</p>
-    </div>
-    {% if can_write('expenses') %}
-    <a href="{{ url_for('expenses.new') }}"
-       class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Expense') }}
-    </a>
-    {% endif %}
-</div>
+{%- set currency = current_user.currency -%}
+{#- The current filters, minus the page number: carried by the pager, the
+    category shortcuts and the post-delete redirect. -#}
+{%- set filter_args = request.args.to_dict() -%}
+{%- set _discard = filter_args.pop('page', None) -%}
+{%- set filtered = selected_vehicle or selected_category or selected_year or selected_maintenance_group or selected_maintenance_part -%}
+{%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
+{%- set show_maintenance = selected_category == 'maintenance' or selected_maintenance_group or selected_maintenance_part -%}
+{%- set category_labels = dict(expense_categories) -%}
+{%- set group_labels = dict(maintenance_groups) -%}
+<div class="ds log-page">
 
-<form method="GET" class="mb-6 flex flex-wrap items-end gap-3 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-    <div>
-        <label for="maintenance_group" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Maintenance Type') }}</label>
-        <select name="maintenance_group" id="maintenance_group" class="mt-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-            <option value="">{{ _('All Types') }}</option>
-            {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if selected_maintenance_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-        </select>
-    </div>
-    <div>
-        <label for="maintenance_part" class="block text-xs text-gray-500 dark:text-gray-400">{{ _('Part Name') }}</label>
-        <select name="maintenance_part" id="maintenance_part" class="mt-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-            <option value="">{{ _('All Parts') }}</option>
-            {% for part in part_names %}<option value="{{ part }}" {% if selected_maintenance_part == part %}selected{% endif %}>{{ part }}</option>{% endfor %}
-        </select>
-    </div>
-    <button type="submit" class="mt-1 rounded-md bg-primary-600 px-3 py-2 text-sm font-medium text-white hover:bg-primary-700">{{ _('Filter') }}</button>
-    {% if selected_maintenance_group or selected_maintenance_part %}
-    <a href="{{ url_for('expenses.index') }}" class="mt-1 px-2 py-2 text-sm text-primary-600 hover:underline">{{ _('Clear') }}</a>
+{% call page_header(_('Expenses'), subtitle=_('Track maintenance, repairs, insurance, and other costs')) %}
+    {% if can_write('expenses') %}{{ button(_('Add Expense'), href=url_for('expenses.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
+
+<form method="GET" class="ds-card ds-filters exp-filters{% if vehicles|length > 1 %} exp-filters--vehicle{% endif %}">
+    {% if vehicles|length > 1 %}
+    {% call field(_('Vehicle'), 'filter-vehicle') %}
+    <select id="filter-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Vehicles') }}</option>
+        {% for vehicle in vehicles %}<option value="{{ vehicle.id }}"{% if selected_vehicle and selected_vehicle.id == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% endif %}
+    {% call field(_('Category'), 'filter-category') %}
+    <select id="filter-category" name="category" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Categories') }}</option>
+        {% for value, label in expense_categories %}<option value="{{ value }}"{% if selected_category == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% if years|length > 1 or selected_year %}
+    {% call field(_('Year'), 'filter-year') %}
+    <select id="filter-year" name="year" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Years') }}</option>
+        {% for y in years %}<option value="{{ y }}"{% if selected_year == y %} selected{% endif %}>{{ y }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% endif %}
+    {% if show_maintenance %}
+    {% call field(_('Maintenance Type'), 'maintenance_group') %}
+    <select name="maintenance_group" id="maintenance_group" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Types') }}</option>
+        {% for value, label in maintenance_groups %}<option value="{{ value }}"{% if selected_maintenance_group == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% if part_names %}
+    {% call field(_('Part Name'), 'maintenance_part') %}
+    <select name="maintenance_part" id="maintenance_part" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Parts') }}</option>
+        {% for part in part_names %}<option value="{{ part }}"{% if selected_maintenance_part == part %} selected{% endif %}>{{ part }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% endif %}
+    {% endif %}
+    <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    {% if filtered %}
+    <div class="ds-filters__actions">{{ button(_('Clear filters'), href=url_for('expenses.index'), variant='ghost', icon_name='x') }}</div>
     {% endif %}
 </form>
-<p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ _('Showing %(count)s expenses', count=expenses|length) }}{% if selected_maintenance_group or selected_maintenance_part %} · {{ _('Filtered total') }}: <strong class="text-gray-900 dark:text-white">{{ filtered_total|money }} {{ current_user.currency }}</strong>{% endif %}</p>
 
+{% if expense_count %}
+<dl class="ds-card log-summary log-summary--compact">
+    <div>
+        <dt>{{ _('Filtered total') if filtered else _('Total') }}</dt>
+        <dd>{{ filtered_total|money }}<span>{{ currency }}</span></dd>
+    </div>
+    <div>
+        <dt>{{ _('This month') }}</dt>
+        <dd>{{ month_total|money }}<span>{{ currency }}</span></dd>
+    </div>
+    <div>
+        <dt>{{ _('Expenses') }}</dt>
+        <dd>{{ expense_count }}</dd>
+    </div>
+</dl>
+{% endif %}
+
+<div class="ds-row">
+<div class="ds-grow-2 exp-main">
 {% if expenses %}
-<div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="w-8 px-3 py-3"></th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Date') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vehicle') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Category') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Type') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Description') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Odometer') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Cost') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Actions') }}</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {% for expense in expenses %}
-                {% set attachments = expense_attachments.get(expense.id, []) %}
-                {% set has_details = expense.vendor or expense.notes or attachments %}
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 {% if has_details %}cursor-pointer{% endif %}"
-                    {% if has_details %}onclick="toggleExpenseDetail({{ expense.id }})"{% endif %}>
-                    <td class="px-3 py-4 text-center">
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Expenses') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Description') }}</th>
+                <th scope="col" class="ds-num">{{ _('Cost') }}</th>
+                <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+            </tr>
+        </thead>
+        {% for group in groups %}
+        <tbody>
+            {% if group.month %}
+            <tr class="ds-log__month">
+                <th scope="colgroup" colspan="2">{{ group.month|dateformat('LLLL yyyy') }}</th>
+                <td class="ds-num">{% if group.total is not none %}{{ group.total|money }} <span>{{ currency }}</span>{% endif %}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% for expense in group.rows %}
+            {% set attachments = expense_attachments.get(expense.id, []) %}
+            {% set has_details = expense.vendor or expense.notes or attachments %}
+            {% set sub = [expense.category|category_label, expense.vehicle.name if multi_vehicle else None]|select|join(' · ') %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ expense.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ expense.date|dateformat('EEE') }}</span>
+                </td>
+                <td data-cell="title">
+                    <div class="exp-item">
+                        <span class="exp-item__icon" aria-hidden="true">{{ icon(category_icons.get(expense.category, 'dots'), 16) }}</span>
+                        <div class="exp-item__text">
+                            <span class="ds-log__title">
+                                {{- expense.description -}}
+                                {%- if expense.category == 'maintenance' and expense.maintenance_group %} {{ badge(group_labels.get(expense.maintenance_group, expense.maintenance_group), 'accent') }}
+                                {%- elif expense.category == 'maintenance' %} {{ badge(_('Uncategorized')) }}{% endif -%}
+                                {%- if attachments %} <span class="exp-clip" title="{{ _('Receipts:') }} {{ attachments|length }}">{{ icon('paperclip', 14) }}{{ attachments|length }}</span>{% endif -%}
+                            </span>
+                            <span class="ds-log__sub">
+                                {{- sub }}{% if expense.category == 'maintenance' and expense.maintenance_part %} · {{ expense.maintenance_part }}{% endif -%}
+                                {%- if expense.vendor %}<span class="exp-wide"> · {{ expense.vendor }}</span>{% endif -%}
+                                {%- if expense.odometer %}<span class="exp-wide exp-odo"> · {{ expense.odometer|groupnum }} {{ expense.vehicle.get_reading_unit() }}</span>{% endif -%}
+                            </span>
+                            <span class="ds-log__phone-meta">
+                                {{- expense.date|dateformat('d MMM') }}
+                                {%- if expense.odometer %} · {{ expense.odometer|groupnum }} {{ expense.vehicle.get_reading_unit() }}{% endif -%}
+                            </span>
+                        </div>
+                    </div>
+                </td>
+                <td data-cell="value" class="ds-num">{{ expense.cost|money }} <span class="ds-log__unit">{{ currency }}</span></td>
+                <td data-cell="actions">
+                    <div class="ds-table__actions">
                         {% if has_details %}
-                        <svg id="chevron-{{ expense.id }}" class="h-4 w-4 text-gray-400 transition-transform duration-150 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ expense.date|format_date }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        <a href="{{ url_for('vehicles.view', vehicle_id=expense.vehicle_id) }}" class="text-primary-600 hover:text-primary-500" onclick="event.stopPropagation()">
-                            {{ expense.vehicle.name }}
-                        </a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ expense.category|category_label }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        {% if expense.category == 'maintenance' and expense.maintenance_group %}
-                        <span class="inline-flex rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-gray-700 dark:text-primary-300">{{ dict(maintenance_groups).get(expense.maintenance_group, expense.maintenance_group) }}</span>
-                        {% if expense.maintenance_part %}<span class="ml-1 text-xs text-gray-500 dark:text-gray-400">{{ expense.maintenance_part }}</span>{% endif %}
-                        {% elif expense.category == 'maintenance' %}
-                        <span class="inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ _('Uncategorized') }}</span>
-                        {% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ expense.description }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {% if expense.odometer %}{{ expense.odometer|groupnum }} {{ expense.vehicle.get_reading_unit() }}{% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ expense.cost|money }} {{ current_user.currency }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onclick="event.stopPropagation()">
-                        {% if can_write('expenses') %}
-                        <a href="{{ url_for('expenses.edit', expense_id=expense.id) }}" class="text-primary-600 hover:text-primary-900 mr-3">{{ _('Edit') }}</a>
+                        <button type="button" class="ds-btn ds-btn--ghost ds-btn--sm ds-btn--icon exp-toggle" data-disclosure
+                                aria-controls="detail-{{ expense.id }}" aria-expanded="false" title="{{ _('Details') }}">
+                            {{ icon('chevron-down', 16) }}<span class="ds-sr-only">{{ _('Details') }}</span>
+                        </button>
                         {% endif %}
                         {% if can_write('expenses') %}
-                        <form method="POST" action="{{ url_for('expenses.delete', expense_id=expense.id) }}" class="inline"
-                              onsubmit="return confirm('{{ _('Delete this expense?') }}');">
+                        {{ button(_('Edit'), href=url_for('expenses.edit', expense_id=expense.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                        <form method="POST" action="{{ url_for('expenses.delete', expense_id=expense.id) }}"
+                              onsubmit='return confirm({{ _("Delete this expense?")|tojson }});'>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="text-red-600 hover:text-red-900">{{ _('Delete') }}</button>
+                            <input type="hidden" name="next" value="{{ request.full_path }}">
+                            {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
                         </form>
                         {% endif %}
-                    </td>
-                </tr>
-                {% if has_details %}
-                <tr id="detail-{{ expense.id }}" class="hidden bg-gray-50 dark:bg-gray-700/50">
-                    <td></td>
-                    <td colspan="8" class="px-6 py-3">
-                        <div class="flex flex-wrap gap-6 text-sm">
-                            {% if expense.vendor %}
-                            <div>
-                                <span class="font-medium text-gray-500 dark:text-gray-400">{{ _('Vendor / Provider:') }} </span>
-                                <span class="text-gray-900 dark:text-white">{{ expense.vendor }}</span>
-                            </div>
-                            {% endif %}
-                            {% if expense.notes %}
-                            <div>
-                                <span class="font-medium text-gray-500 dark:text-gray-400">{{ _('Notes:') }} </span>
-                                <span class="text-gray-900 dark:text-white">{{ expense.notes|linkify }}</span>
-                            </div>
-                            {% endif %}
-                            {% if attachments %}
-                            <div>
-                                <span class="font-medium text-gray-500 dark:text-gray-400">{{ _('Receipts:') }} </span>
-                                {% for attachment in attachments %}
-                                <a href="{{ url_for('api.uploaded_file', filename=attachment.filename) }}"
-                                   target="_blank" rel="noopener" onclick="event.stopPropagation()"
-                                   class="text-primary-600 hover:text-primary-500 mr-3">{{ attachment.original_filename }}</a>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </td>
+            </tr>
+            {% if has_details %}
+            <tr class="exp-detail" id="detail-{{ expense.id }}" hidden>
+                <td class="ds-log__wide"></td>
+                <td colspan="3">
+                    <dl class="exp-detail__list">
+                        {% if expense.vendor %}<div><dt>{{ _('Vendor / Provider:') }}</dt><dd>{{ expense.vendor }}</dd></div>{% endif %}
+                        {% if expense.notes %}<div><dt>{{ _('Notes:') }}</dt><dd>{{ expense.notes|linkify }}</dd></div>{% endif %}
+                        {% if attachments %}
+                        <div><dt>{{ _('Receipts:') }}</dt><dd class="exp-detail__files">
+                            {% for attachment in attachments %}
+                            <a href="{{ url_for('api.uploaded_file', filename=attachment.filename) }}" target="_blank" rel="noopener">{{ icon('paperclip', 14) }}{{ attachment.original_filename }}</a>
+                            {% endfor %}
+                        </dd></div>
+                        {% endif %}
+                    </dl>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+        {% endfor %}
+    </table>
     </div>
+    {{ pager(pagination,
+             url_for('expenses.index', page=pagination.prev_num, **filter_args) if pagination.has_prev else None,
+             url_for('expenses.index', page=pagination.next_num, **filter_args) if pagination.has_next else None) }}
+</section>
+{% elif filtered %}
+<div class="ds-card">
+    {{ empty_state(_('No expenses'), _('No expenses match these filters.'), 'money', _('Clear filters'), url_for('expenses.index')) }}
 </div>
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No expenses') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Start tracking your vehicle expenses.') }}</p>
-    <div class="mt-6">
-        {% if can_write('expenses') %}
-        <a href="{{ url_for('expenses.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Expense') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No expenses'), _('Start tracking your vehicle expenses.'), 'money',
+                   _('Add Expense') if can_write('expenses') else None, url_for('expenses.new')) }}
 </div>
 {% endif %}
-
-{% if vendor_totals %}
-<!-- Spend by vendor (#213) -->
-<div class="table-surface mt-8 bg-white dark:bg-gray-800 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Spend by Vendor') }}</h2>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vendor') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Expenses') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Total') }}</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {% for vendor, total, count in vendor_totals %}
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ vendor }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ count }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 dark:text-white">{{ total|money }} {{ current_user.currency }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 </div>
-{% endif %}
 
-<script>
-function toggleExpenseDetail(id) {
-    const row = document.getElementById('detail-' + id);
-    const chevron = document.getElementById('chevron-' + id);
-    if (row.classList.contains('hidden')) {
-        row.classList.remove('hidden');
-        chevron.style.transform = 'rotate(90deg)';
-    } else {
-        row.classList.add('hidden');
-        chevron.style.transform = '';
-    }
-}
-</script>
+{% if by_category|length > 1 or vendor_totals %}
+<aside class="ds-grow-1 ds-stack exp-side">
+    {% if by_category|length > 1 %}
+    {% set top = by_category[0].total or 1 %}
+    <section class="ds-card exp-breakdown" aria-labelledby="by-category-title">
+        <h2 class="ds-card__title" id="by-category-title">{{ _('By Category') }}</h2>
+        <ul class="exp-bars">
+            {% for row in by_category %}
+            {% set cat_args = dict(filter_args, category=row.key) %}
+            {% if row.key != 'maintenance' %}{% set _g = cat_args.pop('maintenance_group', None) %}{% set _p = cat_args.pop('maintenance_part', None) %}{% endif %}
+            <li>
+                <a class="exp-bar" href="{{ url_for('expenses.index', **cat_args) }}">
+                    <span class="exp-bar__label">{{ icon(category_icons.get(row.key, 'dots'), 14) }}{{ row.label }}</span>
+                    <span class="exp-bar__value">{{ row.total|money }}</span>
+                    <span class="exp-bar__track"><span class="exp-bar__fill" style="width: {{ (row.total / top * 100)|round(1) }}%"></span></span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if vendor_totals %}
+    <!-- Spend by vendor (#213) -->
+    <section class="ds-card ds-card--flush" aria-labelledby="by-vendor-title">
+        <div class="ds-card__header"><h2 class="ds-card__title" id="by-vendor-title">{{ _('Spend by Vendor') }}</h2></div>
+        <div class="ds-card__body">
+            <div class="ds-table-wrap">
+            <table class="ds-table exp-vendors">
+                <thead><tr><th scope="col">{{ _('Vendor') }}</th><th scope="col" class="ds-num">{{ _('Expenses') }}</th><th scope="col" class="ds-num">{{ _('Total') }}</th></tr></thead>
+                <tbody>
+                    {% for vendor, total, count in vendor_totals %}
+                    <tr><td>{{ vendor }}</td><td class="ds-num ds-muted">{{ count }}</td><td class="ds-num">{{ total|money }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</aside>
+{% endif %}
+</div>
+
+</div>
 {% endblock %}

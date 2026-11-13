@@ -7,8 +7,10 @@
    ========================================================================== */
 
 :root {
-    --font-sans: "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    /* The design-system fonts (self-hosted Inter and JetBrains Mono, declared
+       in app.css), with the system stack when app.css has not been built. */
+    --font-sans: var(--ds-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif);
+    --font-mono: var(--ds-font-mono, ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace);
 
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --dur-fast: 140ms;
@@ -38,23 +40,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-}
-
-/* Soft ambient light behind the page so surfaces read as layered. */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-        radial-gradient(900px 480px at 85% -10%, color-mix(in srgb, var(--primary-400) 14%, transparent), transparent 70%),
-        radial-gradient(700px 420px at -5% 105%, color-mix(in srgb, var(--primary-600) 9%, transparent), transparent 70%);
-}
-html.dark body::before {
-    background:
-        radial-gradient(900px 480px at 85% -10%, color-mix(in srgb, var(--primary-500) 16%, transparent), transparent 70%),
-        radial-gradient(700px 420px at -5% 105%, color-mix(in srgb, var(--primary-700) 14%, transparent), transparent 70%);
 }
 
 /* ---- Headings ---------------------------------------------------------- */
@@ -153,23 +138,6 @@ html.dark .dashboard-stat-card--cost-per-distance {
 /* ---- Chart canvases ---------------------------------------------------- */
 canvas {
     max-width: 100%;
-}
-
-/* ---- Sidebar & navigation --------------------------------------------- */
-aside {
-    backdrop-filter: saturate(1.4) blur(14px);
-}
-aside nav a {
-    border-radius: 10px;
-    transition:
-        background-color var(--dur-fast) ease,
-        color var(--dur-fast) ease,
-        transform var(--dur-fast) var(--ease-out);
-}
-@media (hover: hover) {
-    aside nav a:hover {
-        transform: translateX(2px);
-    }
 }
 
 /* ---- Buttons ----------------------------------------------------------- */

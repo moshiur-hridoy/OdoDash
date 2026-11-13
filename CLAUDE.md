@@ -231,8 +231,57 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Compile the stylesheet (add --watch while editing templates)
+python scripts/build_css.py
+
 # Run development server
 python run.py
 ```
 
 Default login: `admin` / `admin`
+
+## Stylesheet
+
+Tailwind is compiled ahead of time by `scripts/build_css.py` (the standalone
+CLI, pinned to v3.4.17 and checksum-verified) from `tailwind.config.js` and
+`app/static/css/src/app.css` into `app/static/css/app.css`. That output is a
+build artefact, ignored by git like the `.mo` catalogues; the Dockerfile builds
+it in its own stage. When it is missing, `base.html` falls back to the
+in-browser runtime in `app/static/vendor/tailwindcss.js`.
+
+The build only sees classes written out in full, so never assemble one from
+template output (`bg-{{ tone }}-100`); choose between complete class names
+instead. `tests/test_css_build.py` enforces this. Design tokens for the
+redesign live in `app/static/css/src/app.css` under the `--ds-` prefix.
+
+## Design-system components
+
+New and redesigned UI is built from the Jinja macros in
+`app/templates/components/ui.html` (`page_header`, `button`, `card`, `stat`,
+`badge`, `segmented`, `split_bar`, `attention`, `odometer`, `empty_state`,
+`field`) and the icon set in `components/icons.html`. Admins can see every one
+rendered, in both themes, at `/design`.
+
+- Wrap redesigned markup in `class="ds"`; components read only the `--ds-`
+  tokens, so light and dark differ only in `app.css`.
+- Pass text through `_()` at the call site; the macros add no msgids.
+- Extra attributes (`hx-*`, `data-*`, `onclick`) go in `attrs={...}`.
+- Form controls stay plain HTML inside `field(...)` so `name`/`id` are exactly
+  what the route reads; give them `class="ds-control"`. base.html's global
+  form rules skip `.ds-control` via `:where()`, which adds no specificity.
+- Tables: `ds-table ds-table--stack` with `data-cell="title|value|meta|actions"`
+  on cells turns rows into cards below 640px.
+- The `.ds-` CSS is deliberately outside any Tailwind `@layer`: the macros
+  compose class names the build cannot see, and layered classes it cannot see
+  are dropped.
+
+The app shell is built from the same system: the sidebar (`.ds-side`), phone
+top bar (`.ds-topbar`) and page frame (`.ds-main`) in `base.html`, and the tab
+bar and sheets in `partials/mobile_nav.html`. The sidebar's section list
+(`nav_sections`) and the tab bar's (`nav_links`) are separate, so a new section
+goes in both. Shell CSS uses logical sides (`inset-inline-start`,
+`padding-inline-start`) so Arabic mirrors it; `tests/test_app_shell.py` keeps
+`left`/`right` out. The legacy `--color-*` tokens in `base.html` now read the
+`--ds-*` ones, so pages not yet redesigned share the shell's canvas and text
+colours. Without a built `app.css`, the source is handed to the runtime as
+`<style type="text/tailwindcss">`, so the shell still renders.

@@ -1,20 +1,12 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Quick Fuel Entry') }}{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto">
-    <div class="mb-6 text-center">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Quick Fuel Entry') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Fast fuel logging for mobile') }}</p>
-    </div>
-
+<div class="ds form-page quick-fuel-page">
+    {{ page_header(_('Quick Fuel Entry'), subtitle=_('Fast fuel logging for mobile')) }}
     {% include 'fuel/_quick_form.html' %}
-
-    <div class="mt-4 text-center">
-        <a href="{{ url_for('fuel.new') }}" class="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400">
-            {{ _('Need more options? Use full form') }} &rarr;
-        </a>
-    </div>
+    <a class="quick-fuel-page__more" href="{{ url_for('fuel.new') }}">{{ _('Need more options? Use full form') }} {{ icon('arrow-right', 14) }}</a>
 </div>
-
 {% endblock %}

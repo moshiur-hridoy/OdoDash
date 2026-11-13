@@ -1,182 +1,113 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, field, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Search') }}{% endblock %}
 
-{% block content %}
-<div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Search') }}</h1>
-    <p class="text-gray-500 dark:text-gray-400">{{ _('Find expenses, fuel logs, documents, notes, trips, and charging sessions') }}</p>
-</div>
+{#- One hit: a link to its edit page when the user may edit it, plain text otherwise. -#}
+{%- macro hit(icon_name, title, sub, href=None, value=None) -%}
+<li class="ds-list__item search-hit">
+    <span class="ds-list__lead" aria-hidden="true">{{ icon(icon_name, 16) }}</span>
+    <div class="ds-list__main">
+        <h3 class="ds-list__title">{% if href %}<a href="{{ href }}">{{ title }}</a>{% else %}<span>{{ title }}</span>{% endif %}</h3>
+        <span class="ds-list__sub">{{ sub }}</span>
+    </div>
+    <div class="ds-list__meta">{% if value %}<strong>{{ value }}</strong>{% endif %}</div>
+    <div class="ds-list__actions"></div>
+</li>
+{%- endmacro -%}
 
-<form method="GET" class="surface-card bg-white dark:bg-gray-800 p-6 mb-8">
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
-        <div class="sm:col-span-2">
-            <label for="q" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Search term') }}</label>
-            <input type="text" name="q" id="q" value="{{ q }}" autofocus
-                   placeholder="{{ _('e.g. brake pads, invoice, garage name') }}"
-                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-        </div>
-        <div>
-            <label for="date_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('From') }}</label>
-            <input type="text" name="date_from" id="date_from" value="{{ date_from }}" data-datepicker
-                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-        </div>
-        <div>
-            <label for="date_to" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('To') }}</label>
-            <input type="text" name="date_to" id="date_to" value="{{ date_to }}" data-datepicker
-                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-        </div>
-    </div>
-    <div class="mt-4 flex justify-end">
-        <button type="submit"
-                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            {{ _('Search') }}
-        </button>
-    </div>
+{%- macro section(title, items, icon_name) -%}
+{% if items %}
+<section class="ds-card ds-card--flush ds-section" aria-label="{{ title }}">
+    <header class="ds-section__head">
+        {{ icon(icon_name, 18) }}
+        <h2 class="ds-section__title">{{ title }}</h2>
+        {{ badge(items|length ~ ('+' if items|length == result_limit else '')) }}
+    </header>
+    <ul class="ds-list">{{ caller() }}</ul>
+</section>
+{% endif %}
+{%- endmacro -%}
+
+{% block content %}
+{%- set currency = current_user.currency -%}
+<div class="ds log-page">
+
+{{ page_header(_('Search'), subtitle=_('Find expenses, fuel logs, documents, notes, trips, and charging sessions')) }}
+
+<form method="GET" class="ds-card ds-filters search-form" role="search">
+    {% call field(_('Search term'), 'q') %}
+    <input type="search" name="q" id="q" class="ds-control" value="{{ q }}" autofocus enterkeyhint="search"
+           placeholder="{{ _('e.g. brake pads, invoice, garage name') }}">
+    {% endcall %}
+    {% call field(_('From'), 'date_from') %}
+    <input type="text" name="date_from" id="date_from" class="ds-control" value="{{ date_from }}" data-datepicker>
+    {% endcall %}
+    {% call field(_('To'), 'date_to') %}
+    <input type="text" name="date_to" id="date_to" class="ds-control" value="{{ date_to }}" data-datepicker>
+    {% endcall %}
+    <div class="ds-filters__actions">{{ button(_('Search'), type='submit', icon_name='search') }}</div>
 </form>
 
 {% if results is not none %}
-<p class="mb-6 text-sm text-gray-500 dark:text-gray-400">{{ _('%(count)s results', count=total) }}</p>
+<p class="search-count">{{ _('%(count)s results', count=total) }}</p>
 
-{% if results.expenses %}
-<div class="surface-card bg-white dark:bg-gray-800 mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Expenses') }} ({{ results.expenses|length }}{% if results.expenses|length == result_limit %}+{% endif %})</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for expense in results.expenses %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            {% if can_write('expenses') %}
-            <a href="{{ url_for('expenses.edit', expense_id=expense.id) }}" class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ expense.description }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ expense.vehicle.name }} &middot; {{ expense.category|category_label }}{% if expense.vendor %} &middot; {{ expense.vendor }}{% endif %} &middot; {{ expense.date|format_date }}</p>
-                </div>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ expense.cost|money }} {{ current_user.currency }}</span>
-            </a>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+{% call section(_('Expenses'), results.expenses, 'money') %}
+{% for expense in results.expenses %}
+{{ hit('money', expense.description,
+       [expense.vehicle.name, expense.category|category_label, expense.vendor, expense.date|format_date]|select|join(' · '),
+       url_for('expenses.edit', expense_id=expense.id) if can_write('expenses') else None,
+       expense.cost|money ~ ' ' ~ currency) }}
+{% endfor %}
+{% endcall %}
 
-{% if results.fuel_logs %}
-<div class="surface-card bg-white dark:bg-gray-800 mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Fuel Logs') }} ({{ results.fuel_logs|length }}{% if results.fuel_logs|length == result_limit %}+{% endif %})</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for log in results.fuel_logs %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            {% if can_write('fuel') %}
-            <a href="{{ url_for('fuel.edit', log_id=log.id) }}" class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ log.station or _('Fuel Log') }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ log.vehicle.name }} &middot; {{ log.date|format_date }}{% if log.volume %} &middot; {{ "%.1f"|format(log.volume) }} {{ current_user.volume_unit }}{% endif %}</p>
-                </div>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{% if log.total_cost is not none %}{{ log.total_cost|money }} {{ current_user.currency }}{% else %}-{% endif %}</span>
-            </a>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+{% call section(_('Fuel Logs'), results.fuel_logs, 'fuel') %}
+{% for log in results.fuel_logs %}
+{{ hit('fuel', log.station or _('Fuel Log'),
+       [log.vehicle.name, log.date|format_date, ("%.1f"|format(log.volume) ~ ' ' ~ current_user.volume_unit) if log.volume else None]|select|join(' · '),
+       url_for('fuel.edit', log_id=log.id) if can_write('fuel') else None,
+       (log.total_cost|money ~ ' ' ~ currency) if log.total_cost is not none else None) }}
+{% endfor %}
+{% endcall %}
 
-{% if results.documents %}
-<div class="surface-card bg-white dark:bg-gray-800 mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Documents') }} ({{ results.documents|length }}{% if results.documents|length == result_limit %}+{% endif %})</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for document in results.documents %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <a href="{{ url_for('documents.view', document_id=document.id) }}" class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ document.title }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ document.vehicle.name }}{% if document.issue_date %} &middot; {{ document.issue_date|format_date }}{% endif %}</p>
-                </div>
-                <span class="text-xs text-gray-400 uppercase">{{ document.file_type }}</span>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+{% call section(_('Documents'), results.documents, 'document') %}
+{% for document in results.documents %}
+{{ hit('document', document.title,
+       [document.vehicle.name, document.issue_date|format_date if document.issue_date else None, (document.file_type or '')|upper or None]|select|join(' · '),
+       url_for('documents.view', document_id=document.id)) }}
+{% endfor %}
+{% endcall %}
 
-{% if results.notes %}
-<div class="surface-card bg-white dark:bg-gray-800 mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Notes') }} ({{ results.notes|length }}{% if results.notes|length == result_limit %}+{% endif %})</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for note in results.notes %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            {% if can_write('notes') %}
-            <a href="{{ url_for('notes.edit', note_id=note.id) }}" class="block">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ note.title or note.content[:60] }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ note.vehicle.name }} &middot; {{ note.date|format_date }}</p>
-            </a>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+{% call section(_('Notes'), results.notes, 'note') %}
+{% for note in results.notes %}
+{{ hit('note', note.title or (note.content[:60] ~ ('…' if note.content|length > 60 else '')),
+       [note.vehicle.name, note.date|format_date]|join(' · '),
+       url_for('notes.edit', note_id=note.id) if can_write('notes') else None) }}
+{% endfor %}
+{% endcall %}
 
-{% if results.trips %}
-<div class="surface-card bg-white dark:bg-gray-800 mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Trips') }} ({{ results.trips|length }}{% if results.trips|length == result_limit %}+{% endif %})</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for trip in results.trips %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            {% if can_write('trips') %}
-            <a href="{{ url_for('trips.edit', trip_id=trip.id) }}" class="block">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">
-                    {% if trip.start_location or trip.end_location %}{{ trip.start_location or '?' }} &rarr; {{ trip.end_location or '?' }}{% else %}{{ trip.description or _('Trip') }}{% endif %}
-                </p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ trip.vehicle.name }} &middot; {{ trip.date|format_date }}{% if trip.distance %} &middot; {{ "%.1f"|format(trip.distance) }} {{ trip.vehicle.get_reading_unit() }}{% endif %}</p>
-            </a>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+{% call section(_('Trips'), results.trips, 'map') %}
+{% for trip in results.trips %}
+{{ hit('map', ((trip.start_location or '?') ~ ' → ' ~ (trip.end_location or '?')) if trip.start_location or trip.end_location else (trip.description or _('Trip')),
+       [trip.vehicle.name, trip.date|format_date]|join(' · '),
+       url_for('trips.edit', trip_id=trip.id) if can_write('trips') else None,
+       ("%.1f"|format(trip.distance) ~ ' ' ~ trip.vehicle.get_reading_unit()) if trip.distance else None) }}
+{% endfor %}
+{% endcall %}
 
-{% if results.charging %}
-<div class="surface-card bg-white dark:bg-gray-800 mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Charging Sessions') }} ({{ results.charging|length }}{% if results.charging|length == result_limit %}+{% endif %})</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for session in results.charging %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            {% if can_write('charging') %}
-            <a href="{{ url_for('charging.edit', session_id=session.id) }}" class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ session.location or _('Charging Session') }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ session.vehicle.name }} &middot; {{ session.date|format_date }}</p>
-                </div>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{% if session.total_cost is not none %}{{ session.total_cost|money }} {{ current_user.currency }}{% else %}-{% endif %}</span>
-            </a>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+{% call section(_('Charging Sessions'), results.charging, 'bolt') %}
+{% for session in results.charging %}
+{{ hit('bolt', session.location or _('Charging Session'),
+       [session.vehicle.name, session.date|format_date]|join(' · '),
+       url_for('charging.edit', session_id=session.id) if can_write('charging') else None,
+       (session.total_cost|money ~ ' ' ~ currency) if session.total_cost is not none else None) }}
+{% endfor %}
+{% endcall %}
 
 {% if total == 0 %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No results') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Try a different search term or a wider date range.') }}</p>
+<div class="ds-card">{{ empty_state(_('No results'), _('Try a different search term or a wider date range.'), 'search') }}</div>
+{% endif %}
+{% endif %}
+
 </div>
-{% endif %}
-{% endif %}
 {% endblock %}

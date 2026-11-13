@@ -1,59 +1,38 @@
-{% extends "base.html" %}
+{% extends "auth/_layout.html" %}
+{% from 'components/ui.html' import button, field, password_input %}
 {% from 'partials/password_rules.html' import password_rules, password_match %}
 {% block title %}{{ _('Register') }}{% endblock %}
 
-{% block auth_content %}
-<div class="w-full max-w-md">
-    <div class="bg-white dark:bg-gray-800 py-8 px-6 shadow-lg rounded-lg">
-        <div class="text-center mb-8">
-            {% if APP_LOGO %}
-            <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="h-12 mx-auto mb-3">
-            {% else %}
-            {% from 'partials/logo.html' import logo_mark %}
-            {{ logo_mark('h-12 w-12 mx-auto mb-3 text-primary-600') }}
-            {% endif %}
-            <h1 class="text-3xl font-bold text-primary-600">{{ APP_NAME }}</h1>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ _('Create your account') }}</p>
-        </div>
+{% block auth_title %}{{ _('Create your account') }}{% endblock %}
 
-        <form method="POST" class="space-y-6">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div>
-                <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Username') }}</label>
-                <input type="text" name="username" id="username" required autofocus value="{{ request.form.get('username', '') }}"
-                       class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-            </div>
+{% block auth_body %}
+<form method="POST" class="auth__form" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% call field(_('Username'), 'username') %}
+    <input type="text" name="username" id="username" class="ds-control" required autofocus
+           autocomplete="username" autocapitalize="none" spellcheck="false"
+           value="{{ request.form.get('username', '') }}">
+    {% endcall %}
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Email') }}</label>
-                <input type="email" name="email" id="email" required value="{{ request.form.get('email', '') }}"
-                       class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-            </div>
+    {% call field(_('Email'), 'email') %}
+    <input type="email" name="email" id="email" class="ds-control" required autocomplete="email"
+           value="{{ request.form.get('email', '') }}">
+    {% endcall %}
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Password') }}</label>
-                <input type="password" name="password" id="password" autocomplete="new-password" required
-                       class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                {{ password_rules('password', 'confirm_password') }}
-            </div>
-
-            <div>
-                <label for="confirm_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Confirm Password') }}</label>
-                <input type="password" name="confirm_password" id="confirm_password" autocomplete="new-password" required
-                       class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                {{ password_match('confirm_password') }}
-            </div>
-
-            <button type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {{ _('Create Account') }}
-            </button>
-        </form>
-
-        <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            {{ _('Already have an account?') }}
-            <a href="{{ url_for('auth.login') }}" class="font-medium text-primary-600 hover:text-primary-500">{{ _('Sign in') }}</a>
-        </p>
+    <div class="ds-field">
+        <label class="ds-field__label" for="password">{{ _('Password') }}</label>
+        {{ password_input('password', attrs={'required': true, 'autocomplete': 'new-password'}) }}
+        {{ password_rules('password', 'confirm_password') }}
     </div>
-</div>
+
+    <div class="ds-field">
+        <label class="ds-field__label" for="confirm_password">{{ _('Confirm Password') }}</label>
+        {{ password_input('confirm_password', attrs={'required': true, 'autocomplete': 'new-password'}) }}
+        {{ password_match('confirm_password') }}
+    </div>
+
+    {{ button(_('Create Account'), type='submit', block=true) }}
+</form>
 {% endblock %}
+
+{% block auth_after %}{{ _('Already have an account?') }} <a href="{{ url_for('auth.login') }}" class="auth__link">{{ _('Sign in') }}</a>{% endblock %}

@@ -258,7 +258,7 @@ class TestLogExpenseForReminder:
         assert f'name="reminder_id" id="reminder_id" value="{sample_reminder.id}"' in body
         # Description from the title, category mapped from the reminder type
         assert 'value="MOT Due"' in body
-        assert '<option value="inspection" selected>' in body
+        assert 'name="category" value="inspection" required checked' in body
 
     def test_unknown_reminder_is_ignored_on_the_form(self, auth_client, sample_vehicle):
         resp = auth_client.get('/expenses/new?reminder_id=9999')

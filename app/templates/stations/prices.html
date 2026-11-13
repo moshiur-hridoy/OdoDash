@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, empty_state %}
 {% block title %}{{ _('Price History') }} - {{ station.name }}{% endblock %}
 
 {% block extra_scripts %}
@@ -7,72 +8,71 @@
 {% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('stations.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; {{ _('Back to stations') }}</a>
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ station.name }}</h1>
-    <p class="text-sm text-gray-500 dark:text-gray-400">
-        {% if station.brand %}{{ station.brand }} &middot; {% endif %}
-        {{ station.address or station.city or _('No address') }}
-    </p>
-</div>
+{%- set unit_label = current_user.currency ~ '/' ~ current_user.volume_unit -%}
+<div class="ds log-page">
 
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Price History') }}</h2>
-        {% if uk_fuel_enabled %}
-        <form method="post" action="{{ url_for('stations.refresh_station_uk_prices', station_id=station.id) }}">
-            <button type="submit"
-                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    title="{{ _('Fetch live prices from UK retailer feeds') }}">
-                <svg class="-ml-0.5 mr-2 h-4 w-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                {{ _('Update UK Prices') }}
-            </button>
-        </form>
-        {% endif %}
-    </div>
-
-    {% if prices %}
-    <!-- Price Chart -->
-    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-        <div style="position: relative; height: 300px;">
-            <canvas id="priceChart"></canvas>
-        </div>
-    </div>
-
-    <!-- Price List -->
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for price in prices %}
-        <li class="px-6 py-4 flex items-center justify-between gap-4">
-            <div>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ price.date|format_date }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ price.fuel_type|fuel_type_label }}</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ "%.3f"|format(price.price_per_unit) }} {{ current_user.currency }}/{{ current_user.volume_unit }}</p>
-                {% if price.user_id == current_user.id %}
-                <form method="post" action="{{ url_for('stations.delete_price', price_id=price.id) }}"
-                      onsubmit="return confirm('{{ _('Delete this price entry? This cannot be undone.') }}');">
-                    <button type="submit"
-                            class="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
-                            title="{{ _('Delete this entry') }}">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
-                        </svg>
-                    </button>
-                </form>
-                {% endif %}
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <div class="p-6 text-center text-gray-500 dark:text-gray-400">
-        {{ _('No price history available for this station.') }}
-        <p class="text-sm mt-2">{{ _('Prices are automatically recorded when you log fuel at this station.') }}</p>
-    </div>
+{{ back_link(_('Back to stations'), url_for('stations.index')) }}
+{% call page_header(station.name, subtitle=[station.brand, station.address or station.city or _('No address')]|select|join(' · ')) %}
+    {% if uk_fuel_enabled %}
+    <form method="post" action="{{ url_for('stations.refresh_station_uk_prices', station_id=station.id) }}" data-busy-submit>
+        {{ button(_('Update UK Prices'), type='submit', variant='secondary', icon_name='repeat', attrs={'title': _('Fetch live prices from UK retailer feeds')}) }}
+    </form>
     {% endif %}
+{% endcall %}
+
+{% if prices %}
+<section class="ds-card" aria-labelledby="price-chart-title">
+    <div class="ds-card__header"><h2 class="ds-card__title" id="price-chart-title">{{ _('Price History') }}</h2></div>
+    <div class="ds-card__body">
+        <div class="price-chart"><canvas id="priceChart"></canvas></div>
+    </div>
+</section>
+
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Price History') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Fuel Type') }}</th>
+                <th scope="col" class="ds-num">{{ _('Price/Unit') }}</th>
+                <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for price in prices %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ price.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ price.date|dateformat('MMM yy') }}</span>
+                </td>
+                <td data-cell="title">
+                    <span class="ds-log__title">{{ price.fuel_type|fuel_type_label }}</span>
+                    <span class="ds-log__phone-meta">{{ price.date|format_date }}</span>
+                </td>
+                <td data-cell="value" class="ds-num">{{ "%.3f"|format(price.price_per_unit) }} <span class="ds-log__unit">{{ unit_label }}</span></td>
+                <td data-cell="actions">
+                    {% if price.user_id == current_user.id %}
+                    <div class="ds-table__actions">
+                        <form method="post" action="{{ url_for('stations.delete_price', price_id=price.id) }}"
+                              onsubmit='return confirm({{ _("Delete this price entry? This cannot be undone.")|tojson }});'>
+                            {{ button(_('Delete this entry'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
+                        </form>
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</section>
+{% else %}
+<div class="ds-card">
+    {{ empty_state(_('No price history available for this station.'), _('Prices are automatically recorded when you log fuel at this station.'), 'trend-up') }}
+</div>
+{% endif %}
+
 </div>
 
 {% if prices %}
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Shared, ordered set of dates so every series lines up on the x-axis.
     const dates = [...new Set(sortedPrices.map(p => p.date))];
-    const labels = dates.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    const labels = dates.map(d => new Date(d).toLocaleDateString(document.documentElement.lang || undefined, { month: 'short', day: 'numeric' }));
 
     // Group prices by fuel type: { fuelType: { date: price } }
     const byType = {};
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fuelTypes = Object.keys(byType);
     const datasets = fuelTypes.map((ft, i) => {
         const colour = typeColours[ft] || fallback[i % fallback.length];
-        const label = ft.charAt(0).toUpperCase() + ft.slice(1).replace('_', ' ');
+        const label = (sortedPrices.find(p => (p.fuel_type || 'unknown') === ft) || {}).label || ft;
         return {
             label: label,
             data: dates.map(d => (d in byType[ft]) ? byType[ft][d] : null),

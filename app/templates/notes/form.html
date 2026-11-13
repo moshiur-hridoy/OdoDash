@@ -1,105 +1,54 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
 {% block title %}{% if note %}{{ _('Edit Note') }}{% else %}{{ _('Add Note') }}{% endif %}{% endblock %}
 
 {% block content %}
 {% set selected_id = (note.vehicle_id if note else selected_vehicle_id) %}
 {% set preselected = vehicles | selectattr('id', 'equalto', selected_id if selected_id else -1) | list %}
 {% set form_vehicle = preselected[0] if preselected else (vehicles[0] if vehicles else None) %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('notes.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">&larr; {{ _('Back to notes') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{% if note %}{{ _('Edit Note') }}{% else %}{{ _('Add Note') }}{% endif %}</h1>
-    </div>
+<div class="ds form-page">
+{{ back_link(_('Back to notes'), url_for('notes.index')) }}
+{{ page_header(_('Edit Note') if note else _('Add Note')) }}
 
-    <form method="POST" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div class="sm:col-span-2">
-                    <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }} *</label>
-                    <select name="vehicle_id" id="vehicle_id" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for vehicle in vehicles %}
-                        <option value="{{ vehicle.id }}"
-                                data-odometer-unit="{{ vehicle.get_reading_unit() }}"
-                                data-reading-label="{{ vehicle.get_reading_label() }}"
-                                {% if (note and note.vehicle_id == vehicle.id) or (selected_vehicle_id == vehicle.id) %}selected{% endif %}>
-                            {{ vehicle.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Date') }} *</label>
-                    <input type="text" name="date" id="date" required data-datepicker data-default-today
-                           value="{{ note.date.strftime('%Y-%m-%d') if note else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="odometer" id="odometer-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ form_vehicle.get_reading_label() if form_vehicle else _('Odometer') }} ({{ form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit }})</label>
-                    <input type="number" name="odometer" id="odometer" step="0.1"
-                           value="{{ note.odometer if note and note.odometer is not none else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Title') }}</label>
-                    <input type="text" name="title" id="title" maxlength="200"
-                           value="{{ note.title if note and note.title else '' }}"
-                           placeholder="{{ _('e.g., DPF regeneration') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Note') }} *</label>
-                    <textarea name="content" id="content" rows="5" required
-                              placeholder="{{ _('What happened?') }}"
-                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ note.content if note else '' }}</textarea>
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section">
+        {% call(v) vehicle_picker(vehicles, form_vehicle) %}data-odometer-unit="{{ v.get_reading_unit() }}" data-reading-label="{{ v.get_reading_label() }}"{% endcall %}
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="date">{{ _('Date') }}{{ req() }}</label>
+                <input type="text" name="date" id="date" class="ds-control" required data-datepicker data-default-today
+                       value="{{ note.date.strftime('%Y-%m-%d') if note else '' }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="odometer" id="odometer-label" data-vehicle-text="readingLabel">{{ form_vehicle.get_reading_label() if form_vehicle else _('Odometer') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="odometer" id="odometer" class="ds-control" inputmode="decimal" step="0.1"
+                           value="{{ note.odometer if note and note.odometer is not none else '' }}">
+                    <span class="ds-affix__unit" data-vehicle-text="odometerUnit">{{ form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit }}</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Hidden field for return redirect -->
-        {% if request.args.get('return_to') == 'vehicle' or (request.referrer and '/vehicles/' in request.referrer) %}
-        <input type="hidden" name="return_to" value="vehicle">
-        {% endif %}
-
-        <div class="flex justify-end space-x-3">
-            <a href="{{ url_for('notes.index') }}"
-               class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                {{ _('Cancel') }}
-            </a>
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {% if note %}{{ _('Save Changes') }}{% else %}{{ _('Add Note') }}{% endif %}
-            </button>
+    <section class="ds-card form-section">
+        <div class="ds-field">
+            <label class="ds-field__label" for="title">{{ _('Title') }}</label>
+            <input type="text" name="title" id="title" class="ds-control" maxlength="200"
+                   value="{{ note.title if note and note.title else '' }}" placeholder="{{ _('e.g., DPF regeneration') }}">
         </div>
-    </form>
+        <div class="ds-field">
+            <label class="ds-field__label" for="content">{{ _('Note') }}{{ req() }}</label>
+            <textarea name="content" id="content" rows="6" class="ds-control" required placeholder="{{ _('What happened?') }}">{{ note.content if note else '' }}</textarea>
+        </div>
+    </section>
+
+    {% if request.args.get('return_to') == 'vehicle' or (request.referrer and '/vehicles/' in request.referrer) %}
+    <input type="hidden" name="return_to" value="vehicle">
+    {% endif %}
+
+    {{ form_actions(url_for('notes.index'), _('Save Changes') if note else _('Add Note')) }}
+</form>
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-    (function() {
-        const vehicleSelect = document.getElementById('vehicle_id');
-        const odometerLabel = document.getElementById('odometer-label');
-
-        function updateOdometerUnit() {
-            const selected = vehicleSelect.options[vehicleSelect.selectedIndex];
-            const unit = selected ? selected.dataset.odometerUnit : '{{ current_user.distance_unit }}';
-            // An hours-metered vehicle has no odometer to read (#324).
-            const readingLabel = selected ? selected.dataset.readingLabel : '';
-            if (readingLabel && unit) {
-                odometerLabel.textContent = readingLabel + ' (' + unit + ')';
-            } else if (unit) {
-                odometerLabel.textContent = odometerLabel.textContent.replace(/\([^)]*\)/, '(' + unit + ')');
-            }
-        }
-
-        vehicleSelect.addEventListener('change', updateOdometerUnit);
-        updateOdometerUnit();
-    })();
-</script>
 {% endblock %}

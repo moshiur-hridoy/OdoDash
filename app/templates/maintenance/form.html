@@ -1,249 +1,182 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{% if schedule %}{{ _('Edit Maintenance Schedule') }}{% else %}{{ _('New Maintenance Schedule') }}{% endif %}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('maintenance.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:text-gray-400 dark:hover:text-gray-300">&larr; {{ _('Back to Maintenance') }}</a>
-</div>
+{#- The vehicle the form opens on, so the interval fields start on the right
+    unit before any script runs (#282). -#}
+{%- set preselected = vehicles | selectattr('id', 'equalto', schedule.vehicle_id if schedule else (selected_vehicle | int if selected_vehicle else -1)) | list -%}
+{%- set form_vehicle = preselected[0] if preselected else (vehicles[0] if vehicles else None) -%}
+{%- set form_tracks_hours = form_vehicle is not none and form_vehicle.tracks_hours() -%}
+{%- set selected_group = 'engine_oil' if schedule and schedule.maintenance_type == 'oil_change' else ('parts' if schedule and schedule.maintenance_type not in ('full_service', 'custom', 'oil_change') else 'servicing') -%}
+{%- set group_icons = {'engine_oil': 'droplet', 'servicing': 'wrench', 'parts': 'settings'} -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Maintenance'), url_for('maintenance.index')) }}
+{{ page_header(_('Edit Maintenance Schedule') if schedule else _('New Maintenance Schedule'), subtitle=form_vehicle.name if schedule and form_vehicle else None) }}
 
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-            {% if schedule %}{{ _('Edit Maintenance Schedule') }}{% else %}{{ _('New Maintenance Schedule') }}{% endif %}
-        </h1>
-    </div>
+<form id="schedule-form" method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    {# The vehicle the form opens on, so the interval fields start on the right
-       unit before any script runs (#282). #}
-    {% set preselected = vehicles
-       | selectattr('id', 'equalto', schedule.vehicle_id if schedule
-                    else (selected_vehicle | int if selected_vehicle else -1))
-       | list %}
-    {% set form_vehicle = preselected[0] if preselected
-                          else (vehicles[0] if vehicles else None) %}
-    {% set form_tracks_hours = form_vehicle is not none and form_vehicle.tracks_hours() %}
-
-    <form method="POST" class="p-6 space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <!-- Vehicle Selection -->
-        <div>
-            <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }} *</label>
-            <select name="vehicle_id" id="vehicle_id" required {% if schedule %}disabled{% endif %}
-                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                {% for vehicle in vehicles %}
-                <option value="{{ vehicle.id }}" data-tracks-hours="{{ '1' if vehicle.tracks_hours() else '0' }}"
-                        {% if (schedule and schedule.vehicle_id == vehicle.id) or (selected_vehicle and selected_vehicle|int == vehicle.id) %}selected{% endif %}>
-                    {{ vehicle.name }}
-                </option>
+    <section class="ds-card form-section">
+        {% if schedule %}
+        {#- A schedule stays on its vehicle; the option keeps data-tracks-hours for the script. -#}
+        <select id="vehicle_id" class="ds-sr-only" disabled aria-hidden="true" tabindex="-1">
+            <option value="{{ form_vehicle.id }}" data-tracks-hours="{{ '1' if form_tracks_hours else '0' }}" selected>{{ form_vehicle.name }}</option>
+        </select>
+        {% else %}
+        {% call(v) vehicle_picker(vehicles, form_vehicle) %}data-tracks-hours="{{ '1' if v.tracks_hours() else '0' }}" data-reading-label="{{ v.get_reading_label() }}" data-odometer-unit="{{ v.get_reading_unit() }}"{% endcall %}
+        {% endif %}
+        <div class="ds-field">
+            <label class="ds-field__label" for="name">{{ _('Name') }}{{ req() }}</label>
+            <input type="text" name="name" id="name" class="ds-control" required
+                   value="{{ schedule.name if schedule else '' }}" placeholder="{{ _('e.g., Oil Change') }}">
+        </div>
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Main Type') }}{{ req() }}</legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for group_id, group_name in maintenance_groups %}
+                <label class="ds-choice">
+                    <input type="radio" name="maintenance_group" value="{{ group_id }}" required{% if selected_group == group_id %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(group_icons.get(group_id, 'wrench'), 18) }}</span>
+                    <span class="ds-choice__label">{{ group_name }}</span>
+                </label>
                 {% endfor %}
+            </div>
+        </fieldset>
+        <div class="ds-field" id="maintenance-part-field"{% if selected_group != 'parts' %} hidden{% endif %}>
+            <label class="ds-field__label" for="maintenance_part_type">{{ _('Part') }}</label>
+            <select name="maintenance_part_type" id="maintenance_part_type" class="ds-control">
+                <option value="custom"{% if schedule and schedule.maintenance_type == 'custom' %} selected{% endif %}>{{ _('Custom part') }}</option>
+                {% for type_id, type_name in maintenance_part_types %}<option value="{{ type_id }}"{% if schedule and schedule.maintenance_type == type_id %} selected{% endif %}>{{ type_name }}</option>{% endfor %}
             </select>
         </div>
-
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <!-- Name -->
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Name') }} *</label>
-                <input type="text" name="name" id="name" required
-                       value="{{ schedule.name if schedule else '' }}"
-                       placeholder="{{ _('e.g., Oil Change') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-            </div>
-
-            <!-- Main Type -->
-            <div>
-                {% set selected_group = 'engine_oil' if schedule and schedule.maintenance_type == 'oil_change' else ('parts' if schedule and schedule.maintenance_type not in ('full_service', 'custom', 'oil_change') else 'servicing') %}
-                <label for="maintenance_group" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Main Type') }} *</label>
-                <select name="maintenance_group" id="maintenance_group" required
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    {% for group_id, group_name in maintenance_groups %}
-                    <option value="{{ group_id }}" {% if selected_group == group_id %}selected{% endif %}>
-                        {{ group_name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div id="maintenance-part-field" class="{% if selected_group != 'parts' %}hidden{% endif %}">
-                <label for="maintenance_part_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Part') }}</label>
-                <select name="maintenance_part_type" id="maintenance_part_type"
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    <option value="custom" {% if schedule and schedule.maintenance_type == 'custom' %}selected{% endif %}>{{ _('Custom part') }}</option>
-                    {% for type_id, type_name in maintenance_part_types %}
-                    <option value="{{ type_id }}" {% if schedule and schedule.maintenance_type == type_id %}selected{% endif %}>{{ type_name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="description">{{ _('Description') }}</label>
+            <textarea name="description" id="description" rows="2" class="ds-control" placeholder="{{ _('Optional notes or instructions') }}">{{ schedule.description if schedule and schedule.description else '' }}</textarea>
         </div>
+    </section>
 
-        <!-- Description -->
+    <section class="ds-card form-section" aria-labelledby="interval-title">
         <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }}</label>
-            <textarea name="description" id="description" rows="2"
-                      class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                      placeholder="{{ _('Optional notes or instructions') }}">{{ schedule.description if schedule else '' }}</textarea>
+            <h2 class="form-section__title" id="interval-title">{{ _('Service Interval') }}</h2>
+            <p class="form-hint">{{ _('Set how often this maintenance should be performed. You can set distance, time, or both.') }}</p>
         </div>
+        <div class="form-grid form-grid--3">
+            <div class="ds-field" data-interval-hours{% if not form_tracks_hours %} hidden{% endif %}>
+                <label class="ds-field__label" for="interval_hours">{{ _('Every (hours)') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="interval_hours" id="interval_hours" class="ds-control" inputmode="numeric"
+                           value="{{ schedule.interval_hours if schedule and schedule.interval_hours else '' }}" placeholder="{{ _('e.g., 250') }}">
+                    <span class="ds-affix__unit">h</span>
+                </div>
+            </div>
+            <div class="ds-field" data-interval-distance{% if form_tracks_hours %} hidden{% endif %}>
+                <label class="ds-field__label" for="interval_km">{{ _('Every (km)') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="interval_km" id="interval_km" class="ds-control" inputmode="numeric"
+                           value="{{ schedule.interval_km if schedule and schedule.interval_km else '' }}" placeholder="{{ _('e.g., 10000') }}">
+                    <span class="ds-affix__unit">km</span>
+                </div>
+            </div>
+            <div class="ds-field" data-interval-distance{% if form_tracks_hours %} hidden{% endif %}>
+                <label class="ds-field__label" for="interval_miles">{{ _('Every (miles)') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="interval_miles" id="interval_miles" class="ds-control" inputmode="numeric"
+                           value="{{ schedule.interval_miles if schedule and schedule.interval_miles else '' }}" placeholder="{{ _('e.g., 6000') }}">
+                    <span class="ds-affix__unit">mi</span>
+                </div>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="interval_months">{{ _('Every (months)') }}</label>
+                <input type="number" name="interval_months" id="interval_months" class="ds-control" inputmode="numeric"
+                       value="{{ schedule.interval_months if schedule and schedule.interval_months else '' }}" placeholder="{{ _('e.g., 12') }}">
+            </div>
+        </div>
+        <p class="form-hint" data-interval-hours{% if not form_tracks_hours %} hidden{% endif %}>{{ _('This vehicle is metered in engine hours, so its service interval is counted in hours.') }}</p>
+    </section>
 
-        <!-- Interval Settings -->
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-4">{{ _('Service Interval') }}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ _('Set how often this maintenance should be performed. You can set distance, time, or both.') }}</p>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                <div data-interval-hours {% if not form_tracks_hours %}class="hidden"{% endif %}>
-                    <label for="interval_hours" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Every (hours)') }}</label>
-                    <input type="number" name="interval_hours" id="interval_hours"
-                           value="{{ schedule.interval_hours if schedule and schedule.interval_hours else '' }}"
-                           placeholder="{{ _('e.g., 250') }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('This vehicle is metered in engine hours, so its service interval is counted in hours.') }}</p>
-                </div>
-                <div data-interval-distance {% if form_tracks_hours %}class="hidden"{% endif %}>
-                    <label for="interval_km" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Every (km)') }}</label>
-                    <input type="number" name="interval_km" id="interval_km"
-                           value="{{ schedule.interval_km if schedule and schedule.interval_km else '' }}"
-                           placeholder="{{ _('e.g., 10000') }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                <div data-interval-distance {% if form_tracks_hours %}class="hidden"{% endif %}>
-                    <label for="interval_miles" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Every (miles)') }}</label>
-                    <input type="number" name="interval_miles" id="interval_miles"
-                           value="{{ schedule.interval_miles if schedule and schedule.interval_miles else '' }}"
-                           placeholder="{{ _('e.g., 6000') }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="interval_months" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Every (months)') }}</label>
-                    <input type="number" name="interval_months" id="interval_months"
-                           value="{{ schedule.interval_months if schedule and schedule.interval_months else '' }}"
-                           placeholder="{{ _('e.g., 12') }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+    <section class="ds-card form-section" aria-labelledby="last-title">
+        <div>
+            <h2 class="form-section__title" id="last-title">{{ _('Last Performed') }}</h2>
+            <p class="form-hint">{{ _('When was this maintenance last done? Leave blank if never.') }}</p>
+        </div>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="last_performed_date">{{ _('Date') }}</label>
+                <input type="text" name="last_performed_date" id="last_performed_date" class="ds-control" data-datepicker
+                       value="{{ schedule.last_performed_date.strftime('%Y-%m-%d') if schedule and schedule.last_performed_date else '' }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="last_performed_odometer" id="last_performed_reading_label"
+                       data-distance-label="{{ _('Odometer') }}" data-hours-label="{{ _('Engine hours') }}">{{ form_vehicle.get_reading_label() if form_vehicle else _('Odometer') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="last_performed_odometer" id="last_performed_odometer" class="ds-control" inputmode="decimal" step="0.1"
+                           value="{{ schedule.last_performed_odometer if schedule and schedule.last_performed_odometer else '' }}" placeholder="{{ _('e.g., 50000') }}">
+                    <span class="ds-affix__unit" data-vehicle-text="odometerUnit">{{ form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit }}</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Last Performed -->
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-4">{{ _('Last Performed') }}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ _('When was this maintenance last done? Leave blank if never.') }}</p>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                    <label for="last_performed_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Date') }}</label>
-                    <input type="text" name="last_performed_date" id="last_performed_date" data-datepicker
-                           value="{{ schedule.last_performed_date.strftime('%Y-%m-%d') if schedule and schedule.last_performed_date else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+    <section class="ds-card form-section" aria-labelledby="extra-title">
+        <h2 class="form-section__title" id="extra-title">{{ _('Additional Settings') }}</h2>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="estimated_cost">{{ _('Estimated Cost') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="estimated_cost" id="estimated_cost" class="ds-control" inputmode="decimal" step="0.01"
+                           value="{{ schedule.estimated_cost if schedule and schedule.estimated_cost else '' }}">
+                    <span class="ds-affix__unit">{{ current_user.currency }}</span>
                 </div>
-                <div>
-                    <label for="last_performed_odometer" id="last_performed_reading_label"
-                           data-distance-label="{{ _('Odometer') }}" data-hours-label="{{ _('Engine hours') }}"
-                           class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ form_vehicle.get_reading_label() if form_vehicle else _('Odometer') }}</label>
-                    <input type="number" name="last_performed_odometer" id="last_performed_odometer" step="0.1"
-                           value="{{ schedule.last_performed_odometer if schedule and schedule.last_performed_odometer else '' }}"
-                           placeholder="{{ _('e.g., 50000') }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="remind_days_before">{{ _('Remind Days Before') }}</label>
+                <input type="number" name="remind_days_before" id="remind_days_before" class="ds-control" inputmode="numeric"
+                       value="{{ schedule.remind_days_before if schedule and schedule.remind_days_before is not none else 14 }}">
             </div>
         </div>
+        <label class="ds-switch">
+            <input type="checkbox" name="auto_remind"{% if not schedule or schedule.auto_remind %} checked{% endif %}>
+            {{ _('Automatically create reminder when due') }}
+        </label>
+    </section>
 
-        <!-- Additional Settings -->
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-4">{{ _('Additional Settings') }}</h3>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                    <label for="estimated_cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Estimated Cost') }}</label>
-                    <input type="number" name="estimated_cost" id="estimated_cost" step="0.01"
-                           value="{{ schedule.estimated_cost if schedule and schedule.estimated_cost else '' }}"
-                           placeholder="{{ current_user.currency }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="remind_days_before" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Remind Days Before') }}</label>
-                    <input type="number" name="remind_days_before" id="remind_days_before"
-                           value="{{ schedule.remind_days_before if schedule else 14 }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <label class="flex items-center">
-                    <input type="checkbox" name="auto_remind" {% if not schedule or schedule.auto_remind %}checked{% endif %}
-                           class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded">
-                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ _('Automatically create reminder when due') }}</span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Form Actions -->
-        <div class="flex justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-            {% if schedule %}
-            <button type="button" onclick="deleteSchedule()" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm">
-                {{ _('Delete Schedule') }}
-            </button>
-            {% else %}
-            <div></div>
-            {% endif %}
-            <div class="flex gap-3">
-                <a href="{{ url_for('maintenance.index') }}"
-                   class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    {{ _('Cancel') }}
-                </a>
-                <button type="submit"
-                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                    {% if schedule %}{{ _('Save Changes') }}{% else %}{{ _('Create Schedule') }}{% endif %}
-                </button>
-            </div>
-        </div>
-    </form>
-
-    <script>
-    // A vehicle metered in engine hours has no distance interval to set, so
-    // swap the km/miles boxes for an hours one and rename the reading (#282).
-    // The server has already rendered the right pair; this keeps them in step
-    // when the vehicle dropdown changes.
-    (function () {
-        var groupSelect = document.getElementById('maintenance_group');
-        var partField = document.getElementById('maintenance-part-field');
-        if (groupSelect && partField) {
-            function applyMaintenanceGroup() {
-                partField.classList.toggle('hidden', groupSelect.value !== 'parts');
-            }
-            groupSelect.addEventListener('change', applyMaintenanceGroup);
-            applyMaintenanceGroup();
-        }
-
-        var select = document.getElementById('vehicle_id');
-        if (!select) return;
-        var hoursFields = document.querySelectorAll('[data-interval-hours]');
-        var distanceFields = document.querySelectorAll('[data-interval-distance]');
-        var label = document.getElementById('last_performed_reading_label');
-
-        function applyTrackingUnit() {
-            var option = select.options[select.selectedIndex];
-            var hours = option && option.dataset.tracksHours === '1';
-            hoursFields.forEach(function (el) { el.classList.toggle('hidden', !hours); });
-            distanceFields.forEach(function (el) { el.classList.toggle('hidden', hours); });
-            if (label) {
-                label.textContent = hours ? label.dataset.hoursLabel : label.dataset.distanceLabel;
-            }
-        }
-
-        select.addEventListener('change', applyTrackingUnit);
-        applyTrackingUnit();
-    })();
-    </script>
-
-    {% if schedule %}
-    <form id="delete-form" method="POST" action="{{ url_for('maintenance.delete', schedule_id=schedule.id) }}" class="hidden">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    </form>
-    <script>
-    function deleteSchedule() {
-        if (confirm('{{ _("Delete this maintenance schedule?") }}')) {
-            document.getElementById('delete-form').submit();
-        }
-    }
-    </script>
-    {% endif %}
+    {{ form_actions(url_for('maintenance.index'), _('Save Changes') if schedule else _('Create Schedule'),
+                    delete_form='delete-form' if schedule else None, delete_confirm=_('Delete this maintenance schedule?')) }}
+</form>
+{% if schedule %}
+<form id="delete-form" method="POST" action="{{ url_for('maintenance.delete', schedule_id=schedule.id) }}" hidden>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+{% endif %}
 </div>
+
+<script>
+// A vehicle metered in engine hours has no distance interval to set, so swap
+// the km/miles boxes for an hours one and rename the reading (#282). The server
+// has already rendered the right pair; this keeps them in step on a change.
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('schedule-form');
+    var partField = document.getElementById('maintenance-part-field');
+    form.querySelectorAll('input[name="maintenance_group"]').forEach(function (radio) {
+        radio.addEventListener('change', function () { partField.hidden = radio.value !== 'parts'; });
+    });
+    var label = document.getElementById('last_performed_reading_label');
+    function applyTrackingUnit() {
+        var v = window.dsSelectedVehicle(form) || (function () {
+            var s = document.getElementById('vehicle_id');
+            return s ? s.options[s.selectedIndex] : null;
+        })();
+        if (!v) return;
+        var hours = v.dataset.tracksHours === '1';
+        document.querySelectorAll('[data-interval-hours]').forEach(function (el) { el.hidden = !hours; });
+        document.querySelectorAll('[data-interval-distance]').forEach(function (el) { el.hidden = hours; });
+        label.textContent = hours ? label.dataset.hoursLabel : label.dataset.distanceLabel;
+    }
+    form.querySelectorAll('[name="vehicle_id"]').forEach(function (el) { el.addEventListener('change', applyTrackingUnit); });
+    applyTrackingUnit();
+});
+</script>
 {% endblock %}

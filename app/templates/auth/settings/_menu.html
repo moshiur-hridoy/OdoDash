@@ -1,0 +1,57 @@
+{#- Menu & Navigation: start page, default vehicle, quick entry, menu items. -#}
+{% from 'auth/settings/_ui.html' import card, row, switch %}
+{% from 'components/ui.html' import button %}
+{% from 'components/icons.html' import icon %}
+{%- set start_pages = [('dashboard', _('Dashboard')), ('vehicles', _('Vehicles')), ('fuel', _('Fuel Logs')), ('fuel_quick', _('Quick Fuel Entry')),
+    ('expenses', _('Expenses')), ('reminders', _('Reminders')), ('maintenance', _('Maintenance')), ('recurring', _('Recurring Expenses')),
+    ('documents', _('Documents')), ('stations', _('Fuel Stations')), ('trips', _('Trips')), ('charging', _('EV Charging')),
+    ('allowance', _('Mileage Allowance')), ('notes', _('Notes'))] -%}
+{%- set menu_items = [('vehicles', _('Vehicles'), 'car'), ('fuel', _('Fuel Logs'), 'fuel'), ('expenses', _('Expenses'), 'receipt'),
+    ('reminders', _('Reminders'), 'bell'), ('maintenance', _('Maintenance'), 'wrench'), ('recurring', _('Recurring Expenses'), 'repeat'),
+    ('documents', _('Documents'), 'document'), ('stations', _('Fuel Stations'), 'pin'), ('trips', _('Trips'), 'map'),
+    ('charging', _('EV Charging'), 'bolt'), ('allowance', _('Mileage Allowance'), 'wallet'), ('tires', _('Tires'), 'tire'), ('notes', _('Notes'), 'note')] -%}
+<section id="section-menu" class="settings-section" data-section="menu" aria-labelledby="menu-title" hidden>
+    <h2 class="ds-sr-only" id="menu-title">{{ _('Menu & Navigation') }}</h2>
+    <form method="POST" action="{{ url_for('auth.menu_preferences') }}" class="settings-form" data-busy-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        {% call card(_('Menu & Navigation'), _('Customize which menu items to show and your start page')) %}
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="start_page">{{ _('Start Page') }}</label>
+                <select name="start_page" id="start_page" class="ds-control">
+                    {% for value, label in start_pages %}<option value="{{ value }}"{% if current_user.start_page == value or (value == 'dashboard' and not current_user.start_page) %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+                <p class="form-hint">{{ _('Which page to show when you log in') }}</p>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="default_vehicle_id">{{ _('Default Vehicle') }}</label>
+                <select name="default_vehicle_id" id="default_vehicle_id" class="ds-control">
+                    <option value="">{{ _('No default') }}</option>
+                    {% for vehicle in current_user.get_all_vehicles() %}<option value="{{ vehicle.id }}"{% if current_user.default_vehicle_id == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
+                </select>
+                <p class="form-hint">{{ _('Pre-selected vehicle when adding fuel logs, expenses, trips, and charging sessions') }}</p>
+            </div>
+        </div>
+        {% call row(_('Quick Entry Button'), _('Show a quick fuel entry button in the navigation bar for rapid logging'), for_id='show_quick_entry') %}
+        {{ switch('show_quick_entry', current_user.show_quick_entry, _('Quick Entry Button'), id='show_quick_entry') }}
+        {% endcall %}
+        {% endcall %}
+
+        {% call card(_('Show Menu Items'), _('Choose which items appear in the navigation menu')) %}
+        <div class="ds-choices ds-choices--compact settings-menu-items">
+            {% for key, label, icon_name in menu_items %}
+            {%- set attr = 'show_menu_' ~ key -%}
+            <label class="ds-choice ds-choice--check">
+                <input type="checkbox" name="{{ attr }}"{% if current_user[attr] is not defined or current_user[attr] %} checked{% endif %}>
+                <span class="ds-choice__icon">{{ icon(icon_name, 18) }}</span>
+                <span class="ds-choice__label">{{ label }}</span>
+                <span class="ds-choice__tick" aria-hidden="true">{{ icon('check', 14) }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        {% endcall %}
+
+        <div class="settings-actions">{{ button(_('Save Preferences'), type='submit', icon_name='check') }}</div>
+    </form>
+</section>

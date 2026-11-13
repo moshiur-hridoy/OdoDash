@@ -1,0 +1,66 @@
+{#- Form building blocks shared by the add/edit pages.
+
+    {% from 'components/forms.html' import vehicle_picker, form_actions %}
+
+    vehicle_picker: radio cards for up to four vehicles, a select beyond that.
+    A call block adds attributes to each vehicle's input/option, e.g.
+        {% call(v) vehicle_picker(vehicles, form_vehicle) %}data-odometer-unit="{{ v.get_reading_unit() }}"{% endcall %}
+    any_label adds a "no vehicle" choice with an empty value. -#}
+{% from 'components/icons.html' import icon %}
+{% from 'components/ui.html' import button %}
+
+{%- macro vehicle_picker(vehicles, selected=None, name='vehicle_id', required=True, any_label=None, label=None, id='vehicle_id') -%}
+{%- set extra = caller is defined -%}
+{%- set selected_id = selected.id if selected else None -%}
+{%- if vehicles|length + (1 if any_label else 0) <= 4 -%}
+<fieldset class="ds-field">
+    <legend class="ds-field__label">{{ label or _('Vehicle') }}{% if required %}<span class="ds-field__required" aria-hidden="true">*</span>{% endif %}</legend>
+    <div class="vehicle-pick">
+        {% if any_label %}
+        <label class="vehicle-pick__item">
+            <input type="radio" name="{{ name }}" value=""{% if selected_id is none %} checked{% endif %}>
+            <span class="vehicle-pick__name">{{ any_label }}</span>
+        </label>
+        {% endif %}
+        {% for vehicle in vehicles %}
+        <label class="vehicle-pick__item">
+            <input type="radio" name="{{ name }}" value="{{ vehicle.id }}"{% if required %} required{% endif %}
+                   {%- if extra %} {{ caller(vehicle) }}{% endif %}
+                   {%- if vehicle.id == selected_id %} checked{% endif %}>
+            <span class="vehicle-pick__name">{{ vehicle.name }}</span>
+            <span class="vehicle-pick__meta">{{ vehicle.vehicle_type_label }}</span>
+        </label>
+        {% endfor %}
+    </div>
+</fieldset>
+{%- else -%}
+<div class="ds-field">
+    <label class="ds-field__label" for="{{ id }}">{{ label or _('Vehicle') }}{% if required %}<span class="ds-field__required" aria-hidden="true">*</span>{% endif %}</label>
+    <select name="{{ name }}" id="{{ id }}" class="ds-control"{% if required %} required{% endif %}>
+        {% if any_label %}<option value="">{{ any_label }}</option>{% endif %}
+        {% for vehicle in vehicles %}
+        <option value="{{ vehicle.id }}"{% if extra %} {{ caller(vehicle) }}{% endif %}{% if vehicle.id == selected_id %} selected{% endif %}>{{ vehicle.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+{%- endif -%}
+{%- endmacro %}
+
+{#- The Cancel / Save row; sticks to the bottom of the screen on phones.
+    delete_form names a separate <form> (outside this one) that a Delete
+    button on the left submits after delete_confirm is accepted. -#}
+{%- macro form_actions(cancel_href, submit_label, delete_form=None, delete_confirm=None) -%}
+<div class="form-actions">
+    {% if delete_form %}
+    <div class="form-actions__start">
+        {{ button(_('Delete'), type='submit', variant='danger', icon_name='trash',
+                  attrs={'form': delete_form, 'onclick': 'return confirm(' ~ (delete_confirm|tojson|forceescape) ~ ')' if delete_confirm else None}) }}
+    </div>
+    {% endif %}
+    {{ button(_('Cancel'), href=cancel_href, variant='ghost') }}
+    {{ button(submit_label, type='submit', icon_name='check') }}
+</div>
+{%- endmacro %}
+
+{#- Label text for a required field. -#}
+{%- macro req() -%}<span class="ds-field__required" aria-hidden="true">*</span>{%- endmacro %}

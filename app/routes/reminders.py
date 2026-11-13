@@ -5,6 +5,7 @@ from flask_babel import gettext as _
 from app import db, DATE_FORMATS
 from app.models import Reminder, Vehicle, REMINDER_TYPES, RECURRENCE_OPTIONS
 from app.utils import utcnow
+from app.security import get_safe_redirect_url
 
 bp = Blueprint('reminders', __name__, url_prefix='/reminders')
 
@@ -32,13 +33,17 @@ def index():
 
     if filter_vehicle:
         query = query.filter_by(vehicle_id=filter_vehicle)
+    filtered = bool(filter_type or filter_vehicle or show_completed)
 
     # Split reminders into categories
     all_reminders = query.order_by(Reminder.due_date).all()
 
-    overdue = [r for r in all_reminders if r.is_overdue()]
-    upcoming = [r for r in all_reminders if r.is_upcoming(days=30) and not r.is_overdue()]
-    later = [r for r in all_reminders if not r.is_overdue() and not r.is_upcoming(days=30)]
+    # Completed reminders only ever appear under Completed, never also in
+    # the open buckets.
+    open_reminders = [r for r in all_reminders if not r.is_completed]
+    overdue = [r for r in open_reminders if r.is_overdue()]
+    upcoming = [r for r in open_reminders if r.is_upcoming(days=30) and not r.is_overdue()]
+    later = [r for r in open_reminders if not r.is_overdue() and not r.is_upcoming(days=30)]
     completed = [r for r in all_reminders if r.is_completed] if show_completed else []
 
     return render_template('reminders/index.html',
@@ -50,7 +55,8 @@ def index():
                            reminder_types=REMINDER_TYPES,
                            show_completed=show_completed,
                            filter_type=filter_type,
-                           filter_vehicle=filter_vehicle)
+                           filter_vehicle=filter_vehicle,
+                           filtered=filtered)
 
 
 @bp.route('/new', methods=['GET', 'POST'])
@@ -223,7 +229,7 @@ def complete(reminder_id):
     if return_to == 'vehicle':
         return redirect(url_for('vehicles.view', vehicle_id=reminder.vehicle_id))
 
-    return redirect(url_for('reminders.index'))
+    return redirect(get_safe_redirect_url(request.form.get('next'), 'reminders.index'))
 
 
 @bp.route('/<int:reminder_id>/uncomplete', methods=['POST'])
@@ -242,7 +248,7 @@ def uncomplete(reminder_id):
     db.session.commit()
 
     flash(_('Reminder marked as not completed'), 'success')
-    return redirect(url_for('reminders.index'))
+    return redirect(get_safe_redirect_url(request.form.get('next'), 'reminders.index'))
 
 
 @bp.route('/<int:reminder_id>/delete', methods=['POST'])
@@ -267,7 +273,7 @@ def delete(reminder_id):
     if return_to == 'vehicle':
         return redirect(url_for('vehicles.view', vehicle_id=vehicle_id))
 
-    return redirect(url_for('reminders.index'))
+    return redirect(get_safe_redirect_url(request.form.get('next'), 'reminders.index'))
 
 
 def calculate_next_due_date(current_date, recurrence, interval=1):

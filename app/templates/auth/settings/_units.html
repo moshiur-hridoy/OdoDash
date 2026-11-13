@@ -1,0 +1,85 @@
+{#- Units & Values. Lives inside the shared settings form (with Account). -#}
+{% from 'auth/settings/_ui.html' import card, row, switch, foot %}
+{% from 'components/ui.html' import button %}
+{%- set known_currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'INR', 'JPY', 'CHF', 'NZD', 'SEK', 'NOK', 'DKK', 'PLN', 'BRL', 'MXN', 'ZAR', 'BDT'] -%}
+{%- set currency_symbols = {'USD': '$', 'EUR': '€', 'GBP': '£', 'AUD': '$', 'CAD': '$', 'INR': '₹', 'JPY': '¥', 'CHF': 'Fr', 'NZD': '$', 'SEK': 'kr', 'NOK': 'kr', 'DKK': 'kr', 'PLN': 'zł', 'BRL': 'R$', 'MXN': '$', 'ZAR': 'R', 'BDT': '৳'} -%}
+{%- set is_custom_currency = current_user.currency not in known_currencies -%}
+<section id="section-units" class="settings-section" data-section="units" aria-labelledby="units-title" hidden>
+    <h2 class="ds-sr-only" id="units-title">{{ _('Units & Values') }}</h2>
+
+    {% call card(_('Language & region'), _('Configure how measurements and currencies are displayed')) %}
+    <div class="form-grid">
+        <div class="ds-field">
+            <label class="ds-field__label" for="language">{{ _('Language') }}</label>
+            <select name="language" id="language" class="ds-control">
+                {% for code, name in LANGUAGES.items() %}<option value="{{ code }}"{% if current_user.language == code %} selected{% endif %}>{{ name }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="date_format">{{ _('Date Format') }}</label>
+            <select name="date_format" id="date_format" class="ds-control">
+                <option value="DD/MM/YYYY"{% if current_user.date_format == 'DD/MM/YYYY' %} selected{% endif %}>{{ _('DD/MM/YYYY') }} (15/01/2024)</option>
+                <option value="MM/DD/YYYY"{% if current_user.date_format == 'MM/DD/YYYY' %} selected{% endif %}>{{ _('MM/DD/YYYY') }} (01/15/2024)</option>
+                <option value="YYYY-MM-DD"{% if current_user.date_format == 'YYYY-MM-DD' %} selected{% endif %}>{{ _('YYYY-MM-DD') }} (2024-01-15)</option>
+                <option value="DD.MM.YYYY"{% if current_user.date_format == 'DD.MM.YYYY' %} selected{% endif %}>{{ _('DD.MM.YYYY') }} (15.01.2024)</option>
+            </select>
+        </div>
+    </div>
+    {% endcall %}
+
+    {% call card(_('Units & Values')) %}
+    <div class="form-grid form-grid--3">
+        <div class="ds-field">
+            <label class="ds-field__label" for="distance_unit">{{ _('Distance') }}</label>
+            <select name="distance_unit" id="distance_unit" class="ds-control">
+                <option value="km"{% if current_user.distance_unit == 'km' %} selected{% endif %}>{{ _('Kilometres (km)') }}</option>
+                <option value="mi"{% if current_user.distance_unit == 'mi' %} selected{% endif %}>{{ _('Miles (mi)') }}</option>
+            </select>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="volume_unit">{{ _('Volume') }}</label>
+            <select name="volume_unit" id="volume_unit" class="ds-control">
+                <option value="L"{% if current_user.volume_unit == 'L' %} selected{% endif %}>{{ _('Liters (L)') }}</option>
+                <option value="gal"{% if current_user.volume_unit == 'gal' %} selected{% endif %}>{{ _('UK Gallons (gal)') }}</option>
+                <option value="us_gal"{% if current_user.volume_unit == 'us_gal' %} selected{% endif %}>{{ _('US Gallons (gal)') }}</option>
+            </select>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="consumption_unit">{{ _('Fuel Consumption') }}</label>
+            <select name="consumption_unit" id="consumption_unit" class="ds-control">
+                <option value="L/100km"{% if current_user.consumption_unit == 'L/100km' %} selected{% endif %}>{{ _('L/100km') }}</option>
+                <option value="mpg"{% if current_user.consumption_unit == 'mpg' %} selected{% endif %}>{{ _('MPG (UK)') }}</option>
+                <option value="mpg_us"{% if current_user.consumption_unit == 'mpg_us' %} selected{% endif %}>{{ _('MPG (US)') }}</option>
+                <option value="km/L"{% if current_user.consumption_unit == 'km/L' %} selected{% endif %}>{{ _('km/L') }}</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-grid">
+        <div class="ds-field">
+            <label class="ds-field__label" for="currency">{{ _('Currency') }}</label>
+            <select name="currency" id="currency" class="ds-control">
+                {% for code in known_currencies %}<option value="{{ code }}"{% if current_user.currency == code %} selected{% endif %}>{{ code }} ({{ currency_symbols[code] }})</option>{% endfor %}
+                <option value="custom"{% if is_custom_currency %} selected{% endif %}>{{ _('Custom') }}</option>
+            </select>
+        </div>
+        <div class="ds-field" id="custom-currency-field"{% if not is_custom_currency %} hidden{% endif %}>
+            <label class="ds-field__label" for="custom_currency">{{ _('Custom Currency') }}</label>
+            <input type="text" name="custom_currency" id="custom_currency" class="ds-control"
+                   value="{% if is_custom_currency %}{{ current_user.currency }}{% endif %}" placeholder="{{ _('e.g. ZAR, R, CHF') }}">
+            <p class="form-hint">{{ _('Enter a currency code or symbol to display') }}</p>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="thousand_separator">{{ _('Thousand Separator') }}</label>
+            <select name="thousand_separator" id="thousand_separator" class="ds-control">
+                <option value="none"{% if current_user.thousand_separator in (None, 'none') %} selected{% endif %}>{{ _('None') }} (1000000.00)</option>
+                <option value="space"{% if current_user.thousand_separator == 'space' %} selected{% endif %}>{{ _('Space') }} (1 000 000.00)</option>
+                <option value="comma"{% if current_user.thousand_separator == 'comma' %} selected{% endif %}>{{ _('Comma') }} (1,000,000.00)</option>
+                <option value="period"{% if current_user.thousand_separator == 'period' %} selected{% endif %}>{{ _('Period') }} (1.000.000,00)</option>
+            </select>
+        </div>
+    </div>
+    {% call row(_('Round costs to whole numbers'), for_id='round_costs') %}{{ switch('round_costs', current_user.round_costs, _('Round costs to whole numbers'), id='round_costs') }}{% endcall %}
+    {% endcall %}
+
+    <div class="settings-actions">{{ button(_('Save Changes'), type='submit', icon_name='check') }}</div>
+</section>

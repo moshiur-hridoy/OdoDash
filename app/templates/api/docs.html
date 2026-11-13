@@ -1,90 +1,88 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header %}
 {% block title %}{{ _('API Documentation') }}{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">API Documentation</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-1">Integrate {{ APP_NAME }} with your applications using the REST API</p>
-    </div>
+<div class="ds api-docs">
+    {{ page_header(_('API Documentation'), subtitle='Integrate ' ~ APP_NAME ~ ' with your applications using the REST API') }}
 
     <!-- Quick Navigation -->
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-8">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quick Navigation</h2>
-        <div class="flex flex-wrap gap-2">
-            <a href="#authentication" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Authentication</a>
-            <a href="#vehicles" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Vehicles</a>
-            <a href="#fuel-logs" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Fuel Logs</a>
-            <a href="#expenses" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Expenses</a>
-            <a href="#trips" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Trips</a>
-            <a href="#charging" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Charging</a>
-            <a href="#errors" class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-md text-sm hover:bg-gray-200">Error Handling</a>
+    <div class="ds-card api-nav">
+        <h2 class="api-h3">Quick Navigation</h2>
+        <div class="api-nav__links">
+            <a href="#authentication" class="api-nav__link">Authentication</a>
+            <a href="#vehicles" class="api-nav__link">Vehicles</a>
+            <a href="#fuel-logs" class="api-nav__link">Fuel Logs</a>
+            <a href="#expenses" class="api-nav__link">Expenses</a>
+            <a href="#trips" class="api-nav__link">Trips</a>
+            <a href="#charging" class="api-nav__link">Charging</a>
+            <a href="#errors" class="api-nav__link">Error Handling</a>
         </div>
     </div>
 
     <!-- Authentication -->
-    <section id="authentication" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Authentication</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">All API requests require authentication via an API key</p>
+    <section id="authentication" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Authentication</h2>
+                <p class="api-muted">All API requests require authentication via an API key</p>
             </div>
-            <div class="p-6">
-                <p class="text-gray-700 dark:text-gray-300 mb-4">
-                    Generate an API key from <a href="{{ url_for('auth.settings') }}#integrations" class="text-primary-600 hover:underline">Settings &rarr; Integrations</a>.
+            <div class="api-endpoint__body">
+                <p class="api-p">
+                    Generate an API key from <a href="{{ url_for('auth.settings') }}#integrations" class="api-link">Settings &rarr; Integrations</a>.
                     Include your API key in every request using one of these methods:
                 </p>
 
-                <h3 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Option 1: Authorization Header (Recommended)</h3>
-                <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-                    <code class="text-green-700 dark:text-green-400 text-sm">Authorization: Bearer odo_your_api_key_here</code>
+                <h3 class="api-h4">Option 1: Authorization Header (Recommended)</h3>
+                <div class="api-code">
+                    <code>Authorization: Bearer odo_your_api_key_here</code>
                 </div>
 
-                <h3 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Option 2: X-API-Key Header</h3>
-                <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-                    <code class="text-green-700 dark:text-green-400 text-sm">X-API-Key: odo_your_api_key_here</code>
+                <h3 class="api-h4">Option 2: X-API-Key Header</h3>
+                <div class="api-code">
+                    <code>X-API-Key: odo_your_api_key_here</code>
                 </div>
 
-                <h3 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Example Request</h3>
-                <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-<pre class="text-green-700 dark:text-green-400 text-sm"><code>curl -X GET "{{ request.host_url }}api/v1/vehicles" \
+                <h3 class="api-h4">Example Request</h3>
+                <div class="api-code">
+<pre><code>curl -X GET "{{ request.host_url }}api/v1/vehicles" \
   -H "Authorization: Bearer odo_your_api_key_here"</code></pre>
                 </div>
 
-                <h3 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Roles</h3>
-                <p class="text-gray-600 dark:text-gray-400">A key carries the role of the account that created it. A Contributor key may create, update and delete fuel logs and charging sessions only; a Viewer key may read but not write. Refused writes return <code>403</code> with the code <code>permission_denied</code>.</p>
+                <h3 class="api-h4">Roles</h3>
+                <p class="api-p">A key carries the role of the account that created it. A Contributor key may create, update and delete fuel logs and charging sessions only; a Viewer key may read but not write. Refused writes return <code>403</code> with the code <code>permission_denied</code>.</p>
             </div>
         </div>
     </section>
 
     <!-- Base URL -->
-    <section class="mb-12">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 class="font-medium text-blue-900">Base URL</h3>
-            <code class="text-blue-700">{{ request.host_url }}api/v1</code>
+    <section class="api-section">
+        <div class="import-note api-note">
+            <h3 class="api-h4">Base URL</h3>
+            <code class="api-chip">{{ request.host_url }}api/v1</code>
         </div>
     </section>
 
     <!-- Vehicles -->
-    <section id="vehicles" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Vehicles</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">Manage your cars, vans, motorbikes, and scooters</p>
+    <section id="vehicles" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Vehicles</h2>
+                <p class="api-muted">Manage your cars, vans, motorbikes, and scooters</p>
             </div>
 
             <!-- List Vehicles -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <code class="api-path">/vehicles</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">List all vehicles you have access to (owned and shared)</p>
+                    <p class="api-p">List all vehicles you have access to (owned and shared)</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Response</h4>
-                    <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-<pre class="text-green-700 dark:text-green-400 text-sm"><code>{
+                    <h4 class="api-h4">Response</h4>
+                    <div class="api-code">
+<pre><code>{
   "vehicles": [
     {
       "id": 1,
@@ -112,7 +110,7 @@
   "count": 1
 }</code></pre>
                     </div>
-                    <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                    <p class="api-p api-small">
                         A vehicle whose odometer is metered in engine hours rather than distance
                         reports <code>total_distance</code> in hours and
                         <code>average_consumption</code> in litres per hour. The tracking unit is
@@ -127,53 +125,53 @@
             </div>
 
             <!-- Get Vehicle -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <code class="api-path">/vehicles/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Get details for a specific vehicle</p>
+                    <p class="api-p">Get details for a specific vehicle</p>
                 </div>
             </div>
 
             <!-- Create Vehicle -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">POST</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--post">POST</span>
+                        <code class="api-path">/vehicles</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create a new vehicle</p>
+                    <p class="api-p">Create a new vehicle</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Request Body</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Request Body</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Field</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Type</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Required</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>name</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">Display name for the vehicle</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>vehicle_type</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">car, van, motorbike, or scooter</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>make</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Manufacturer (e.g., Toyota)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>model</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Model name (e.g., Corolla)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>year</code></td><td class="py-2 pr-4">integer</td><td class="py-2 pr-4">No</td><td class="py-2">Model year</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>registration</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">License plate number</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>vin</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Vehicle Identification Number</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>fuel_type</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">petrol, diesel, electric, hybrid, plugin_hybrid, lpg, cng, hydrogen, e85, other</td></tr>
-                                <tr><td class="py-2 pr-4"><code>tank_capacity</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Fuel tank capacity in liters</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>name</code></td><td>string</td><td>Yes</td><td>Display name for the vehicle</td></tr>
+                                <tr><td><code>vehicle_type</code></td><td>string</td><td>Yes</td><td>car, van, motorbike, or scooter</td></tr>
+                                <tr><td><code>make</code></td><td>string</td><td>No</td><td>Manufacturer (e.g., Toyota)</td></tr>
+                                <tr><td><code>model</code></td><td>string</td><td>No</td><td>Model name (e.g., Corolla)</td></tr>
+                                <tr><td><code>year</code></td><td>integer</td><td>No</td><td>Model year</td></tr>
+                                <tr><td><code>registration</code></td><td>string</td><td>No</td><td>License plate number</td></tr>
+                                <tr><td><code>vin</code></td><td>string</td><td>No</td><td>Vehicle Identification Number</td></tr>
+                                <tr><td><code>fuel_type</code></td><td>string</td><td>No</td><td>petrol, diesel, electric, hybrid, plugin_hybrid, lpg, cng, hydrogen, e85, other</td></tr>
+                                <tr><td><code>tank_capacity</code></td><td>number</td><td>No</td><td>Fuel tank capacity in liters</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Example</h4>
-                    <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-<pre class="text-green-700 dark:text-green-400 text-sm"><code>curl -X POST "{{ request.host_url }}api/v1/vehicles" \
+                    <h4 class="api-h4">Example</h4>
+                    <div class="api-code">
+<pre><code>curl -X POST "{{ request.host_url }}api/v1/vehicles" \
   -H "Authorization: Bearer odo_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -189,67 +187,67 @@
             </div>
 
             <!-- Update Vehicle -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">PATCH</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--put">PATCH</span>
+                        <code class="api-path">/vehicles/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Update a vehicle. Only include fields you want to change.</p>
+                    <p class="api-p">Update a vehicle. Only include fields you want to change.</p>
                 </div>
             </div>
 
             <!-- Delete Vehicle -->
             <div>
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">DELETE</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}</code>
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--delete">DELETE</span>
+                        <code class="api-path">/vehicles/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Delete a vehicle and all associated fuel logs and expenses. This action cannot be undone.</p>
+                    <p class="api-p">Delete a vehicle and all associated fuel logs and expenses. This action cannot be undone.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Fuel Logs -->
-    <section id="fuel-logs" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Fuel Logs</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">Track fuel fill-ups and consumption</p>
+    <section id="fuel-logs" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Fuel Logs</h2>
+                <p class="api-muted">Track fuel fill-ups and consumption</p>
             </div>
 
             <!-- List Fuel Logs -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/fuel</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <code class="api-path">/vehicles/{id}/fuel</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">List fuel logs for a vehicle</p>
+                    <p class="api-p">List fuel logs for a vehicle</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Query Parameters</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Query Parameters</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Parameter</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Default</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>limit</code></td><td class="py-2 pr-4">100</td><td class="py-2">Maximum results (max: 500)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>offset</code></td><td class="py-2 pr-4">0</td><td class="py-2">Results to skip for pagination</td></tr>
-                                <tr><td class="py-2 pr-4"><code>sort</code></td><td class="py-2 pr-4">desc</td><td class="py-2">Sort by date: asc or desc</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>limit</code></td><td>100</td><td>Maximum results (max: 500)</td></tr>
+                                <tr><td><code>offset</code></td><td>0</td><td>Results to skip for pagination</td></tr>
+                                <tr><td><code>sort</code></td><td>desc</td><td>Sort by date: asc or desc</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Response</h4>
-                    <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-<pre class="text-green-700 dark:text-green-400 text-sm"><code>{
+                    <h4 class="api-h4">Response</h4>
+                    <div class="api-code">
+<pre><code>{
   "fuel_logs": [
     {
       "id": 1,
@@ -276,50 +274,50 @@
   "offset": 0
 }</code></pre>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mt-4"><code>fuel_type</code> is the fuel the fill-up actually put in; logs recorded without one report the vehicle's own fuel type. <code>fuel_distance</code> is the distance run on that fuel since the previous fill-up of it, in the vehicle's own unit, and is only needed on a vehicle that burns two fuels — the odometer cannot say which of the two propelled which part of the distance. Both can be set when creating or updating a fill-up.</p>
+                    <p class="api-p"><code>fuel_type</code> is the fuel the fill-up actually put in; logs recorded without one report the vehicle's own fuel type. <code>fuel_distance</code> is the distance run on that fuel since the previous fill-up of it, in the vehicle's own unit, and is only needed on a vehicle that burns two fuels — the odometer cannot say which of the two propelled which part of the distance. Both can be set when creating or updating a fill-up.</p>
                 </div>
             </div>
 
             <!-- Create Fuel Log -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">POST</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/fuel</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--post">POST</span>
+                        <code class="api-path">/vehicles/{id}/fuel</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create a fuel log</p>
+                    <p class="api-p">Create a fuel log</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Request Body</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Request Body</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Field</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Type</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Required</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>date</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">Date in YYYY-MM-DD format</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>odometer</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">Yes</td><td class="py-2">Current odometer reading</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>volume</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Fuel volume in liters</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>price_per_unit</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Price per liter</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>total_cost</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Total cost (auto-calculated if not provided)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>sales_tax</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Sales tax included in the total cost</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>fuel_type</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Fuel this fill-up put in; defaults to the vehicle's own fuel type</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>fuel_distance</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Distance run on this fuel since the previous fill-up of it, in the vehicle's unit (dual-fuel vehicles only)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>is_full_tank</code></td><td class="py-2 pr-4">boolean</td><td class="py-2 pr-4">No</td><td class="py-2">Was tank filled completely? (default: true)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>is_missed</code></td><td class="py-2 pr-4">boolean</td><td class="py-2 pr-4">No</td><td class="py-2">Mark as missed fill-up (default: false)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>station</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Gas station name</td></tr>
-                                <tr><td class="py-2 pr-4"><code>notes</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Additional notes</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>date</code></td><td>string</td><td>Yes</td><td>Date in YYYY-MM-DD format</td></tr>
+                                <tr><td><code>odometer</code></td><td>number</td><td>Yes</td><td>Current odometer reading</td></tr>
+                                <tr><td><code>volume</code></td><td>number</td><td>No</td><td>Fuel volume in liters</td></tr>
+                                <tr><td><code>price_per_unit</code></td><td>number</td><td>No</td><td>Price per liter</td></tr>
+                                <tr><td><code>total_cost</code></td><td>number</td><td>No</td><td>Total cost (auto-calculated if not provided)</td></tr>
+                                <tr><td><code>sales_tax</code></td><td>number</td><td>No</td><td>Sales tax included in the total cost</td></tr>
+                                <tr><td><code>fuel_type</code></td><td>string</td><td>No</td><td>Fuel this fill-up put in; defaults to the vehicle's own fuel type</td></tr>
+                                <tr><td><code>fuel_distance</code></td><td>number</td><td>No</td><td>Distance run on this fuel since the previous fill-up of it, in the vehicle's unit (dual-fuel vehicles only)</td></tr>
+                                <tr><td><code>is_full_tank</code></td><td>boolean</td><td>No</td><td>Was tank filled completely? (default: true)</td></tr>
+                                <tr><td><code>is_missed</code></td><td>boolean</td><td>No</td><td>Mark as missed fill-up (default: false)</td></tr>
+                                <tr><td><code>station</code></td><td>string</td><td>No</td><td>Gas station name</td></tr>
+                                <tr><td><code>notes</code></td><td>string</td><td>No</td><td>Additional notes</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Example</h4>
-                    <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto">
-<pre class="text-green-700 dark:text-green-400 text-sm"><code>curl -X POST "{{ request.host_url }}api/v1/vehicles/1/fuel" \
+                    <h4 class="api-h4">Example</h4>
+                    <div class="api-code">
+<pre><code>curl -X POST "{{ request.host_url }}api/v1/vehicles/1/fuel" \
   -H "Authorization: Bearer odo_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -335,52 +333,52 @@
             </div>
 
             <!-- Get/Update/Delete Fuel Log -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">PATCH</span>
-                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">DELETE</span>
-                        <code class="text-gray-900 dark:text-white">/fuel/{id}</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <span class="api-method api-method--put">PATCH</span>
+                        <span class="api-method api-method--delete">DELETE</span>
+                        <code class="api-path">/fuel/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Get, update, or delete a specific fuel log</p>
+                    <p class="api-p">Get, update, or delete a specific fuel log</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Expenses -->
-    <section id="expenses" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Expenses</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">Track maintenance, repairs, insurance, and other costs</p>
+    <section id="expenses" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Expenses</h2>
+                <p class="api-muted">Track maintenance, repairs, insurance, and other costs</p>
             </div>
 
             <!-- List Expenses -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/expenses</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <code class="api-path">/vehicles/{id}/expenses</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">List expenses for a vehicle</p>
+                    <p class="api-p">List expenses for a vehicle</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Query Parameters</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Query Parameters</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Parameter</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Default</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>limit</code></td><td class="py-2 pr-4">100</td><td class="py-2">Maximum results (max: 500)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>offset</code></td><td class="py-2 pr-4">0</td><td class="py-2">Results to skip for pagination</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>category</code></td><td class="py-2 pr-4">-</td><td class="py-2">Filter by category</td></tr>
-                                <tr><td class="py-2 pr-4"><code>sort</code></td><td class="py-2 pr-4">desc</td><td class="py-2">Sort by date: asc or desc</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>limit</code></td><td>100</td><td>Maximum results (max: 500)</td></tr>
+                                <tr><td><code>offset</code></td><td>0</td><td>Results to skip for pagination</td></tr>
+                                <tr><td><code>category</code></td><td>-</td><td>Filter by category</td></tr>
+                                <tr><td><code>sort</code></td><td>desc</td><td>Sort by date: asc or desc</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -388,100 +386,100 @@
             </div>
 
             <!-- Create Expense -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">POST</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/expenses</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--post">POST</span>
+                        <code class="api-path">/vehicles/{id}/expenses</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create an expense</p>
+                    <p class="api-p">Create an expense</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Request Body</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Request Body</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Field</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Type</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Required</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>date</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">Date in YYYY-MM-DD format</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>category</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">See categories below</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>description</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">Description of the expense</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>cost</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">Yes</td><td class="py-2">Cost amount</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>odometer</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Odometer at time of expense</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>vendor</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Vendor/service provider name</td></tr>
-                                <tr><td class="py-2 pr-4"><code>notes</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Additional notes</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>date</code></td><td>string</td><td>Yes</td><td>Date in YYYY-MM-DD format</td></tr>
+                                <tr><td><code>category</code></td><td>string</td><td>Yes</td><td>See categories below</td></tr>
+                                <tr><td><code>description</code></td><td>string</td><td>Yes</td><td>Description of the expense</td></tr>
+                                <tr><td><code>cost</code></td><td>number</td><td>Yes</td><td>Cost amount</td></tr>
+                                <tr><td><code>odometer</code></td><td>number</td><td>No</td><td>Odometer at time of expense</td></tr>
+                                <tr><td><code>vendor</code></td><td>string</td><td>No</td><td>Vendor/service provider name</td></tr>
+                                <tr><td><code>notes</code></td><td>string</td><td>No</td><td>Additional notes</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Expense Categories</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">maintenance</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">repairs</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">insurance</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">tax</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">registration</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">parking</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">tolls</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">cleaning</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">accessories</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">other</code>
+                    <h4 class="api-h4">Expense Categories</h4>
+                    <div class="api-nav__links">
+                        <code class="api-chip">maintenance</code>
+                        <code class="api-chip">repairs</code>
+                        <code class="api-chip">insurance</code>
+                        <code class="api-chip">tax</code>
+                        <code class="api-chip">registration</code>
+                        <code class="api-chip">parking</code>
+                        <code class="api-chip">tolls</code>
+                        <code class="api-chip">cleaning</code>
+                        <code class="api-chip">accessories</code>
+                        <code class="api-chip">other</code>
                     </div>
                 </div>
             </div>
 
             <!-- Get/Update/Delete Expense -->
             <div>
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">PATCH</span>
-                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">DELETE</span>
-                        <code class="text-gray-900 dark:text-white">/expenses/{id}</code>
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <span class="api-method api-method--put">PATCH</span>
+                        <span class="api-method api-method--delete">DELETE</span>
+                        <code class="api-path">/expenses/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Get, update, or delete a specific expense</p>
+                    <p class="api-p">Get, update, or delete a specific expense</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Trips -->
-    <section id="trips" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Trips</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">Log journeys for mileage and tax purposes</p>
+    <section id="trips" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Trips</h2>
+                <p class="api-muted">Log journeys for mileage and tax purposes</p>
             </div>
 
             <!-- List Trips -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/trips</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <code class="api-path">/vehicles/{id}/trips</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">List trips for a vehicle</p>
+                    <p class="api-p">List trips for a vehicle</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Query Parameters</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Query Parameters</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Parameter</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Default</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>limit</code></td><td class="py-2 pr-4">100</td><td class="py-2">Maximum results (max: 500)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>offset</code></td><td class="py-2 pr-4">0</td><td class="py-2">Results to skip for pagination</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>purpose</code></td><td class="py-2 pr-4">-</td><td class="py-2">Filter by purpose</td></tr>
-                                <tr><td class="py-2 pr-4"><code>sort</code></td><td class="py-2 pr-4">desc</td><td class="py-2">Sort by date: asc or desc</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>limit</code></td><td>100</td><td>Maximum results (max: 500)</td></tr>
+                                <tr><td><code>offset</code></td><td>0</td><td>Results to skip for pagination</td></tr>
+                                <tr><td><code>purpose</code></td><td>-</td><td>Filter by purpose</td></tr>
+                                <tr><td><code>sort</code></td><td>desc</td><td>Sort by date: asc or desc</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -489,207 +487,207 @@
             </div>
 
             <!-- Create Trip -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">POST</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/trips</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--post">POST</span>
+                        <code class="api-path">/vehicles/{id}/trips</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create a trip</p>
+                    <p class="api-p">Create a trip</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Request Body</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Request Body</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Field</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Type</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Required</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>date</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">Date in YYYY-MM-DD format</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>start_odometer</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">Yes</td><td class="py-2">Odometer at the start of the trip</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>purpose</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">See purposes below</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>end_odometer</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Odometer at the end of the trip</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>start_fuel_level</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Fuel gauge at the start, as a percentage of a full tank (0-100)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>end_fuel_level</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Fuel gauge at the end, as a percentage of a full tank (0-100)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>description</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Description of the trip</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>start_location</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Where the trip started</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>end_location</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Where the trip ended</td></tr>
-                                <tr><td class="py-2 pr-4"><code>notes</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Additional notes</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>date</code></td><td>string</td><td>Yes</td><td>Date in YYYY-MM-DD format</td></tr>
+                                <tr><td><code>start_odometer</code></td><td>number</td><td>Yes</td><td>Odometer at the start of the trip</td></tr>
+                                <tr><td><code>purpose</code></td><td>string</td><td>Yes</td><td>See purposes below</td></tr>
+                                <tr><td><code>end_odometer</code></td><td>number</td><td>No</td><td>Odometer at the end of the trip</td></tr>
+                                <tr><td><code>start_fuel_level</code></td><td>number</td><td>No</td><td>Fuel gauge at the start, as a percentage of a full tank (0-100)</td></tr>
+                                <tr><td><code>end_fuel_level</code></td><td>number</td><td>No</td><td>Fuel gauge at the end, as a percentage of a full tank (0-100)</td></tr>
+                                <tr><td><code>description</code></td><td>string</td><td>No</td><td>Description of the trip</td></tr>
+                                <tr><td><code>start_location</code></td><td>string</td><td>No</td><td>Where the trip started</td></tr>
+                                <tr><td><code>end_location</code></td><td>string</td><td>No</td><td>Where the trip ended</td></tr>
+                                <tr><td><code>notes</code></td><td>string</td><td>No</td><td>Additional notes</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Trip Purposes</h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Also available from <code>GET /v1/trip-purposes</code></p>
-                    <div class="flex flex-wrap gap-2">
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">business</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">personal</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">commute</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">medical</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">charity</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">other</code>
+                    <h4 class="api-h4">Trip Purposes</h4>
+                    <p class="api-p api-small">Also available from <code>GET /v1/trip-purposes</code></p>
+                    <div class="api-nav__links">
+                        <code class="api-chip">business</code>
+                        <code class="api-chip">personal</code>
+                        <code class="api-chip">commute</code>
+                        <code class="api-chip">medical</code>
+                        <code class="api-chip">charity</code>
+                        <code class="api-chip">other</code>
                     </div>
                 </div>
             </div>
 
             <!-- Get/Update/Delete Trip -->
             <div>
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">PATCH</span>
-                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">DELETE</span>
-                        <code class="text-gray-900 dark:text-white">/trips/{id}</code>
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <span class="api-method api-method--put">PATCH</span>
+                        <span class="api-method api-method--delete">DELETE</span>
+                        <code class="api-path">/trips/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Get, update, or delete a specific trip</p>
+                    <p class="api-p">Get, update, or delete a specific trip</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Charging -->
-    <section id="charging" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Charging</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">Record EV charging sessions with energy, state of charge, and cost</p>
+    <section id="charging" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Charging</h2>
+                <p class="api-muted">Record EV charging sessions with energy, state of charge, and cost</p>
             </div>
 
             <!-- List Charging Sessions -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/charging</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <code class="api-path">/vehicles/{id}/charging</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">List charging sessions for a vehicle</p>
+                    <p class="api-p">List charging sessions for a vehicle</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Query Parameters</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Query Parameters</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Parameter</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Default</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>limit</code></td><td class="py-2 pr-4">100</td><td class="py-2">Maximum results (max: 500)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>offset</code></td><td class="py-2 pr-4">0</td><td class="py-2">Results to skip for pagination</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>charger_type</code></td><td class="py-2 pr-4">-</td><td class="py-2">Filter by charger type</td></tr>
-                                <tr><td class="py-2 pr-4"><code>sort</code></td><td class="py-2 pr-4">desc</td><td class="py-2">Sort by date: asc or desc</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>limit</code></td><td>100</td><td>Maximum results (max: 500)</td></tr>
+                                <tr><td><code>offset</code></td><td>0</td><td>Results to skip for pagination</td></tr>
+                                <tr><td><code>charger_type</code></td><td>-</td><td>Filter by charger type</td></tr>
+                                <tr><td><code>sort</code></td><td>desc</td><td>Sort by date: asc or desc</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mt-4">Sessions are returned under a <code>charging_sessions</code> key.</p>
+                    <p class="api-p api-small">Sessions are returned under a <code>charging_sessions</code> key.</p>
                 </div>
             </div>
 
             <!-- Create Charging Session -->
-            <div class="border-b border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">POST</span>
-                        <code class="text-gray-900 dark:text-white">/vehicles/{id}/charging</code>
+            <div class="api-endpoint">
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--post">POST</span>
+                        <code class="api-path">/vehicles/{id}/charging</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create a charging session</p>
+                    <p class="api-p">Create a charging session</p>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mb-2">Request Body</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                    <h4 class="api-h4">Request Body</h4>
+                    <div class="ds-table-wrap">
+                        <table class="api-table">
                             <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Field</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Type</th>
-                                    <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Required</th>
-                                    <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-600 dark:text-gray-400">
-                                <tr class="border-b"><td class="py-2 pr-4"><code>date</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">Yes</td><td class="py-2">Date in YYYY-MM-DD format</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>start_time</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Start time in HH:MM format</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>end_time</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">End time in HH:MM format</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>odometer</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Odometer at time of charge</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>kwh_added</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Energy added in kWh</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>start_soc</code></td><td class="py-2 pr-4">integer</td><td class="py-2 pr-4">No</td><td class="py-2">State of charge at start (%)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>end_soc</code></td><td class="py-2 pr-4">integer</td><td class="py-2 pr-4">No</td><td class="py-2">State of charge at end (%)</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>cost_per_kwh</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Price per kWh</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>total_cost</code></td><td class="py-2 pr-4">number</td><td class="py-2 pr-4">No</td><td class="py-2">Calculated from kWh and price if omitted</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>charger_type</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">See charger types below</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>location</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Station name or "Home"</td></tr>
-                                <tr class="border-b"><td class="py-2 pr-4"><code>network</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Charging network name</td></tr>
-                                <tr><td class="py-2 pr-4"><code>notes</code></td><td class="py-2 pr-4">string</td><td class="py-2 pr-4">No</td><td class="py-2">Additional notes</td></tr>
+                            <tbody class="api-p">
+                                <tr><td><code>date</code></td><td>string</td><td>Yes</td><td>Date in YYYY-MM-DD format</td></tr>
+                                <tr><td><code>start_time</code></td><td>string</td><td>No</td><td>Start time in HH:MM format</td></tr>
+                                <tr><td><code>end_time</code></td><td>string</td><td>No</td><td>End time in HH:MM format</td></tr>
+                                <tr><td><code>odometer</code></td><td>number</td><td>No</td><td>Odometer at time of charge</td></tr>
+                                <tr><td><code>kwh_added</code></td><td>number</td><td>No</td><td>Energy added in kWh</td></tr>
+                                <tr><td><code>start_soc</code></td><td>integer</td><td>No</td><td>State of charge at start (%)</td></tr>
+                                <tr><td><code>end_soc</code></td><td>integer</td><td>No</td><td>State of charge at end (%)</td></tr>
+                                <tr><td><code>cost_per_kwh</code></td><td>number</td><td>No</td><td>Price per kWh</td></tr>
+                                <tr><td><code>total_cost</code></td><td>number</td><td>No</td><td>Calculated from kWh and price if omitted</td></tr>
+                                <tr><td><code>charger_type</code></td><td>string</td><td>No</td><td>See charger types below</td></tr>
+                                <tr><td><code>location</code></td><td>string</td><td>No</td><td>Station name or "Home"</td></tr>
+                                <tr><td><code>network</code></td><td>string</td><td>No</td><td>Charging network name</td></tr>
+                                <tr><td><code>notes</code></td><td>string</td><td>No</td><td>Additional notes</td></tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <h4 class="font-medium text-gray-900 dark:text-white mt-6 mb-2">Charger Types</h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Also available from <code>GET /v1/charger-types</code></p>
-                    <div class="flex flex-wrap gap-2">
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">home</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">level1</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">level2</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">dcfc</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">tesla</code>
-                        <code class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded text-sm">other</code>
+                    <h4 class="api-h4">Charger Types</h4>
+                    <p class="api-p api-small">Also available from <code>GET /v1/charger-types</code></p>
+                    <div class="api-nav__links">
+                        <code class="api-chip">home</code>
+                        <code class="api-chip">level1</code>
+                        <code class="api-chip">level2</code>
+                        <code class="api-chip">dcfc</code>
+                        <code class="api-chip">tesla</code>
+                        <code class="api-chip">other</code>
                     </div>
                 </div>
             </div>
 
             <!-- Get/Update/Delete Charging Session -->
             <div>
-                <div class="p-6">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">GET</span>
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded">PATCH</span>
-                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">DELETE</span>
-                        <code class="text-gray-900 dark:text-white">/charging/{id}</code>
+                <div class="api-endpoint__body">
+                    <div class="api-endpoint__line">
+                        <span class="api-method api-method--get">GET</span>
+                        <span class="api-method api-method--put">PATCH</span>
+                        <span class="api-method api-method--delete">DELETE</span>
+                        <code class="api-path">/charging/{id}</code>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">Get, update, or delete a specific charging session</p>
+                    <p class="api-p">Get, update, or delete a specific charging session</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Error Handling -->
-    <section id="errors" class="mb-12">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Error Handling</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">All errors return a consistent JSON format</p>
+    <section id="errors" class="api-section">
+        <div class="ds-card">
+            <div class="api-section__head">
+                <h2 class="api-section__title">Error Handling</h2>
+                <p class="api-muted">All errors return a consistent JSON format</p>
             </div>
-            <div class="p-6">
-                <h4 class="font-medium text-gray-900 dark:text-white mb-2">Error Response Format</h4>
-                <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto mb-6">
-<pre class="text-green-700 dark:text-green-400 text-sm"><code>{
+            <div class="api-endpoint__body">
+                <h4 class="api-h4">Error Response Format</h4>
+                <div class="api-code">
+<pre><code>{
   "error": "Human-readable error message",
   "code": "error_code"
 }</code></pre>
                 </div>
 
-                <h4 class="font-medium text-gray-900 dark:text-white mb-2">HTTP Status Codes</h4>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
+                <h4 class="api-h4">HTTP Status Codes</h4>
+                <div class="ds-table-wrap">
+                    <table class="api-table">
                         <thead>
-                            <tr class="border-b">
-                                <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Code</th>
-                                <th class="text-left py-2 pr-4 font-medium text-gray-900 dark:text-white">Error Code</th>
-                                <th class="text-left py-2 font-medium text-gray-900 dark:text-white">Description</th>
+                            <tr>
+                                <th>Code</th>
+                                <th>Error Code</th>
+                                <th>Description</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600 dark:text-gray-400">
-                            <tr class="border-b"><td class="py-2 pr-4">200</td><td class="py-2 pr-4">-</td><td class="py-2">Success</td></tr>
-                            <tr class="border-b"><td class="py-2 pr-4">201</td><td class="py-2 pr-4">-</td><td class="py-2">Created successfully</td></tr>
-                            <tr class="border-b"><td class="py-2 pr-4">400</td><td class="py-2 pr-4"><code>invalid_request</code>, <code>validation_error</code></td><td class="py-2">Bad request or validation failed</td></tr>
-                            <tr class="border-b"><td class="py-2 pr-4">401</td><td class="py-2 pr-4"><code>missing_api_key</code>, <code>invalid_api_key</code></td><td class="py-2">Authentication required or failed</td></tr>
-                            <tr class="border-b"><td class="py-2 pr-4">403</td><td class="py-2 pr-4"><code>forbidden</code>, <code>permission_denied</code></td><td class="py-2">Permission denied. <code>permission_denied</code> means the account's role does not allow this change</td></tr>
-                            <tr><td class="py-2 pr-4">404</td><td class="py-2 pr-4"><code>not_found</code></td><td class="py-2">Resource not found</td></tr>
+                        <tbody class="api-p">
+                            <tr><td>200</td><td>-</td><td>Success</td></tr>
+                            <tr><td>201</td><td>-</td><td>Created successfully</td></tr>
+                            <tr><td>400</td><td><code>invalid_request</code>, <code>validation_error</code></td><td>Bad request or validation failed</td></tr>
+                            <tr><td>401</td><td><code>missing_api_key</code>, <code>invalid_api_key</code></td><td>Authentication required or failed</td></tr>
+                            <tr><td>403</td><td><code>forbidden</code>, <code>permission_denied</code></td><td>Permission denied. <code>permission_denied</code> means the account's role does not allow this change</td></tr>
+                            <tr><td>404</td><td><code>not_found</code></td><td>Resource not found</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -698,10 +696,10 @@
     </section>
 
     <!-- Rate Limiting -->
-    <section class="mb-12">
-        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <h3 class="font-medium text-yellow-900">Rate Limiting</h3>
-            <p class="text-yellow-700 text-sm mt-1">Currently, there are no rate limits on the API. Please be considerate with your request frequency.</p>
+    <section class="api-section">
+        <div class="import-note import-note--warning api-note">
+            <h3 class="api-h4">Rate Limiting</h3>
+            <p class="api-p api-small">Currently, there are no rate limits on the API. Please be considerate with your request frequency.</p>
         </div>
     </section>
 

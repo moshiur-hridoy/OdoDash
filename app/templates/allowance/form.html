@@ -1,119 +1,85 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
 {% block title %}{% if allowance %}{{ _('Edit Allowance') }}{% else %}{{ _('Add Allowance') }}{% endif %}{% endblock %}
 
 {% block content %}
 {% set selected_id = (allowance.vehicle_id if allowance else selected_vehicle_id) %}
 {% set preselected = vehicles | selectattr('id', 'equalto', selected_id if selected_id else -1) | list %}
 {% set form_vehicle = preselected[0] if preselected else (vehicles[0] if vehicles else None) %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('allowance.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">&larr; {{ _('Back to mileage allowance') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{% if allowance %}{{ _('Edit Allowance') }}{% else %}{{ _('Add Allowance') }}{% endif %}</h1>
-    </div>
+{% set unit = form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit %}
+<div class="ds form-page">
+{{ back_link(_('Back to mileage allowance'), url_for('allowance.index')) }}
+{{ page_header(_('Edit Allowance') if allowance else _('Add Allowance')) }}
 
-    <form method="POST" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div class="sm:col-span-2">
-                    <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }} *</label>
-                    <select name="vehicle_id" id="vehicle_id" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for vehicle in vehicles %}
-                        <option value="{{ vehicle.id }}"
-                                data-odometer-unit="{{ vehicle.get_reading_unit() }}"
-                                data-span-label="{{ vehicle.get_span_label() }}"
-                                {% if (allowance and allowance.vehicle_id == vehicle.id) or (selected_vehicle_id == vehicle.id) %}selected{% endif %}>
-                            {{ vehicle.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section">
+        {% call(v) vehicle_picker(vehicles, form_vehicle) %}data-odometer-unit="{{ v.get_reading_unit() }}" data-span-label="{{ v.get_span_label() }}" data-rate-unit="{{ current_user.currency }}/{{ v.get_reading_unit() }}"{% endcall %}
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="date">{{ _('Date') }}{{ req() }}</label>
+                <input type="text" name="date" id="date" class="ds-control" required data-datepicker data-default-today
+                       value="{{ allowance.date.strftime('%Y-%m-%d') if allowance else '' }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="description">{{ _('Description') }}</label>
+                <input type="text" name="description" id="description" class="ds-control" maxlength="200"
+                       value="{{ allowance.description if allowance and allowance.description else '' }}" placeholder="{{ _('e.g., June client visits') }}">
+            </div>
+        </div>
+    </section>
+
+    <section class="ds-card form-section">
+        <div class="form-grid form-grid--3">
+            <div class="ds-field">
+                <label class="ds-field__label" for="distance" id="distance-label" data-vehicle-text="spanLabel">{{ form_vehicle.get_span_label() if form_vehicle else _('Distance') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="distance" id="distance" class="ds-control" inputmode="decimal" step="0.1"
+                           value="{{ allowance.distance if allowance and allowance.distance is not none else '' }}">
+                    <span class="ds-affix__unit" data-vehicle-text="odometerUnit">{{ unit }}</span>
                 </div>
-
-                <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Date') }} *</label>
-                    <input type="text" name="date" id="date" required data-datepicker data-default-today
-                           value="{{ allowance.date.strftime('%Y-%m-%d') if allowance else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="rate_per_unit">{{ _('Rate per unit') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="rate_per_unit" id="rate_per_unit" class="ds-control" inputmode="decimal" step="0.001"
+                           value="{{ allowance.rate_per_unit if allowance and allowance.rate_per_unit is not none else '' }}">
+                    <span class="ds-affix__unit" data-vehicle-text="rateUnit">{{ current_user.currency }}/{{ unit }}</span>
                 </div>
-
-                <div>
-                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Amount') }} ({{ current_user.currency }}) *</label>
-                    <input type="number" name="amount" id="amount" required step="0.01"
-                           value="{{ allowance.amount if allowance else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="distance" id="distance-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ form_vehicle.get_span_label() if form_vehicle else _('Distance') }} ({{ form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit }})</label>
-                    <input type="number" name="distance" id="distance" step="0.1"
-                           value="{{ allowance.distance if allowance and allowance.distance is not none else '' }}"
-                           onchange="calculateAmount()"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="rate_per_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Rate per unit') }} ({{ current_user.currency }})</label>
-                    <input type="number" name="rate_per_unit" id="rate_per_unit" step="0.001"
-                           value="{{ allowance.rate_per_unit if allowance and allowance.rate_per_unit is not none else '' }}"
-                           onchange="calculateAmount()"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Optional. If set with distance, the amount is calculated for you.') }}</p>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }}</label>
-                    <input type="text" name="description" id="description" maxlength="200"
-                           value="{{ allowance.description if allowance and allowance.description else '' }}"
-                           placeholder="{{ _('e.g., June client visits') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="amount">{{ _('Amount') }}{{ req() }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="amount" id="amount" class="ds-control" inputmode="decimal" required step="0.01"
+                           value="{{ allowance.amount if allowance else '' }}">
+                    <span class="ds-affix__unit">{{ current_user.currency }}</span>
                 </div>
             </div>
         </div>
+        <p class="form-hint">{{ _('Optional. If set with distance, the amount is calculated for you.') }}</p>
+    </section>
 
-        <div class="flex justify-end space-x-3">
-            <a href="{{ url_for('allowance.index') }}"
-               class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                {{ _('Cancel') }}
-            </a>
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {% if allowance %}{{ _('Save Changes') }}{% else %}{{ _('Add Allowance') }}{% endif %}
-            </button>
-        </div>
-    </form>
+    {{ form_actions(url_for('allowance.index'), _('Save Changes') if allowance else _('Add Allowance')) }}
+</form>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    function calculateAmount() {
-        const distance = parseDecimal(document.getElementById('distance').value) || 0;
-        const rate = parseDecimal(document.getElementById('rate_per_unit').value) || 0;
-        if (distance && rate) {
-            document.getElementById('amount').value = (distance * rate).toFixed(2);
-        }
+// This block renders in <head>: wait for the form before wiring it up.
+document.addEventListener('DOMContentLoaded', function () {
+    // Distance x rate fills in the amount; typing an amount yourself wins.
+    var distance = document.getElementById('distance');
+    var rate = document.getElementById('rate_per_unit');
+    var amount = document.getElementById('amount');
+    function calculate() {
+        var d = parseDecimal(distance.value) || 0;
+        var r = parseDecimal(rate.value) || 0;
+        if (d && r) amount.value = (d * r).toFixed(2);
     }
-
-    (function() {
-        const vehicleSelect = document.getElementById('vehicle_id');
-        const distanceLabel = document.getElementById('distance-label');
-
-        function updateOdometerUnit() {
-            const selected = vehicleSelect.options[vehicleSelect.selectedIndex];
-            const unit = selected ? selected.dataset.odometerUnit : '{{ current_user.distance_unit }}';
-            // An hours-metered vehicle accumulates engine hours, not
-            // distance, so the word follows the vehicle too (#324).
-            const spanLabel = selected ? selected.dataset.spanLabel : '';
-            if (spanLabel && unit) {
-                distanceLabel.textContent = spanLabel + ' (' + unit + ')';
-            } else if (unit) {
-                distanceLabel.textContent = distanceLabel.textContent.replace(/\([^)]*\)/, '(' + unit + ')');
-            }
-        }
-
-        vehicleSelect.addEventListener('change', updateOdometerUnit);
-        updateOdometerUnit();
-    })();
+    distance.addEventListener('input', calculate);
+    rate.addEventListener('input', calculate);
+});
 </script>
 {% endblock %}

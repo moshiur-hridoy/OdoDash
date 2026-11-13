@@ -1,177 +1,163 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, field, empty_state, pager %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Trips') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+{%- set filter_args = request.args.to_dict() -%}
+{%- set _discard = filter_args.pop('page', None) -%}
+{%- set filtered = selected_vehicle or purpose_filter or year_filter -%}
+{%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
+{%- set purpose_labels = dict(purposes) -%}
+{%- set purpose_tones = {'business': 'success', 'personal': 'accent', 'commute': 'warning'} -%}
+{#- The fuel column only earns its place when a trip on this page has gauge readings. -#}
+{%- set show_fuel = trips|selectattr('start_fuel_level', 'ne', none)|list or trips|selectattr('end_fuel_level', 'ne', none)|list -%}
+{%- macro distance_total(value) -%}
+{{ "%.1f"|format(value) }}{% if total_distance_unit %}<span>{{ total_distance_unit }}</span>{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}
+{%- endmacro -%}
+<div class="ds log-page">
+
+{% call page_header(_('Trips'), subtitle=_('Track your trips for mileage and tax deductions')) %}
+    {{ button(_('Templates'), href=url_for('trips.templates_index'), variant='secondary', icon_name='document') }}
+    {{ button(_('Report'), href=url_for('trips.report'), variant='secondary', icon_name='receipt') }}
+    {% if can_write('trips') %}{{ button(_('Log Trip'), href=url_for('trips.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
+
+<form method="GET" class="ds-card ds-filters exp-filters{% if vehicles|length > 1 %} exp-filters--vehicle{% endif %}">
+    {% if vehicles|length > 1 %}
+    {% call field(_('Vehicle'), 'filter-vehicle') %}
+    <select id="filter-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Vehicles') }}</option>
+        {% for vehicle in vehicles %}<option value="{{ vehicle.id }}"{% if selected_vehicle and selected_vehicle.id == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% endif %}
+    {% call field(_('Purpose'), 'filter-purpose') %}
+    <select id="filter-purpose" name="purpose" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Purposes') }}</option>
+        {% for value, label in purposes %}<option value="{{ value }}"{% if purpose_filter == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% if years|length > 1 or year_filter %}
+    {% call field(_('Year'), 'filter-year') %}
+    <select id="filter-year" name="year" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Years') }}</option>
+        {% for y in years %}<option value="{{ y }}"{% if year_filter == y %} selected{% endif %}>{{ y }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% endif %}
+    <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    {% if filtered %}
+    <div class="ds-filters__actions">{{ button(_('Clear filters'), href=url_for('trips.index'), variant='ghost', icon_name='x') }}</div>
+    {% endif %}
+</form>
+
+{% if trip_count %}
+<dl class="ds-card log-summary log-summary--compact">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Trips') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Track your trips for mileage and tax deductions') }}</p>
+        <dt>{{ _('Total Distance') }}</dt>
+        <dd>{{ distance_total(total_distance) }}</dd>
     </div>
-    <div class="flex flex-wrap gap-2">
-        <a href="{{ url_for('trips.templates_index') }}"
-           class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
-            </svg>
-            {{ _('Templates') }}
-        </a>
-        <a href="{{ url_for('trips.report') }}"
-           class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            {{ _('Report') }}
-        </a>
-        {% if can_write('trips') %}
-        <a href="{{ url_for('trips.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Log Trip') }}
-        </a>
-        {% endif %}
+    <div>
+        <dt>{{ _('Business Distance') }}</dt>
+        <dd>{{ distance_total(business_distance) }}</dd>
     </div>
-</div>
+    <div>
+        <dt>{{ _('Trips') }}</dt>
+        <dd>{{ trip_count }}</dd>
+    </div>
+</dl>
+{% endif %}
 
-<!-- Summary Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div class="surface-card bg-white dark:bg-gray-800 p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Distance') }}</dt>
-        <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(total_distance) }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
-    </div>
-    <div class="surface-card bg-white dark:bg-gray-800 p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Business Distance') }}</dt>
-        <dd class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">{{ "%.1f"|format(business_distance) }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
-    </div>
-</div>
-
-<!-- Filters -->
-<div class="surface-card bg-white dark:bg-gray-800 p-4 mb-6">
-    <form method="GET" class="flex flex-wrap gap-4 items-end">
-        <div>
-            <label for="vehicle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }}</label>
-            <select name="vehicle" id="vehicle" class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                <option value="">{{ _('All Vehicles') }}</option>
-                {% for vehicle in vehicles %}
-                <option value="{{ vehicle.id }}" {% if vehicle_filter == vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label for="purpose" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Purpose') }}</label>
-            <select name="purpose" id="purpose" class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                <option value="">{{ _('All Purposes') }}</option>
-                {% for value, label in purposes %}
-                <option value="{{ value }}" {% if purpose_filter == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Year') }}</label>
-            <select name="year" id="year" class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                <option value="">{{ _('All Years') }}</option>
-                {% for y in years %}
-                <option value="{{ y }}" {% if year_filter == y %}selected{% endif %}>{{ y }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <button type="submit" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium">
-            {{ _('Filter') }}
-        </button>
-        {% if vehicle_filter or purpose_filter or year_filter %}
-        <a href="{{ url_for('trips.index') }}" class="px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-sm">
-            {{ _('Clear') }}
-        </a>
-        {% endif %}
-    </form>
-</div>
-
-<!-- Trips List -->
 {% if trips %}
-<div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for trip in trips %}
-        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">
-                            {{ trip.date|format_date }}
-                        </p>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                     {% if trip.purpose == 'business' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                     {% elif trip.purpose == 'personal' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                     {% elif trip.purpose == 'commute' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                     {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300{% endif %}">
-                            {{ dict(purposes)[trip.purpose] if trip.purpose in dict(purposes) else trip.purpose|capitalize }}
-                        </span>
-                    </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {{ trip.vehicle.name }}
-                        {% if trip.description %}&middot; {{ trip.description }}{% endif %}
-                    </p>
-                    {% if trip.start_location or trip.end_location %}
-                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                        {{ trip.start_location or '?' }} &rarr; {{ trip.end_location or '?' }}
-                    </p>
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Trips') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Trip') }}</th>
+                <th scope="col" class="ds-num">{{ _('Odometer') }}</th>
+                {% if show_fuel %}<th scope="col" class="ds-num">{{ _('Fuel') }}</th>{% endif %}
+                <th scope="col" class="ds-num">{{ _('Distance') }}</th>
+                <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+            </tr>
+        </thead>
+        {% for group in groups %}
+        <tbody>
+            {% if group.month %}
+            <tr class="ds-log__month">
+                <th scope="colgroup" colspan="{{ 4 if show_fuel else 3 }}">{{ group.month|dateformat('LLLL yyyy') }}</th>
+                <td class="ds-num">{% if group.total is not none %}{{ "%.1f"|format(group.total) }} <span>{{ total_distance_unit }}</span>{% endif %}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% for trip in group.rows %}
+            {% set unit = trip.vehicle.get_reading_unit() %}
+            {% set has_route = trip.start_location or trip.end_location %}
+            {% set purpose = purpose_labels.get(trip.purpose, trip.purpose|capitalize) %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ trip.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ trip.date|dateformat('EEE') }}</span>
+                </td>
+                <td data-cell="title">
+                    <span class="ds-log__title">
+                        {{- trip.description or (trip.start_location ~ ' → ' ~ trip.end_location if trip.start_location and trip.end_location else purpose) }}
+                        {{ badge(purpose, purpose_tones.get(trip.purpose, 'neutral')) -}}
+                    </span>
+                    {% if multi_vehicle or (has_route and trip.description) %}
+                    <span class="ds-log__sub">
+                        {%- if multi_vehicle %}{{ trip.vehicle.name }}{% endif -%}
+                        {%- if has_route and trip.description %}{% if multi_vehicle %} · {% endif %}<span class="trip-route">{{ trip.start_location or '?' }} {{ icon('arrow-right', 12) }} {{ trip.end_location or '?' }}</span>{% endif -%}
+                    </span>
                     {% endif %}
-                </div>
-                <div class="ml-4 flex items-center gap-4">
-                    <div class="text-right">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ "%.1f"|format(trip.distance) }} {{ trip.vehicle.get_reading_unit() }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ trip.start_odometer|groupnum }} &rarr; {{ (trip.end_odometer or 0)|groupnum }}</p>
-                        {% if trip.fuel_used is not none %}
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ _('Fuel used') }}: {{ "%.1f"|format(trip.fuel_used) }} {{ current_user.volume_unit }}</p>
-                        {% elif trip.start_fuel_level is not none or trip.end_fuel_level is not none %}
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ _('Fuel') }}: {{ "%.0f%%"|format(trip.start_fuel_level) if trip.start_fuel_level is not none else '?' }} &rarr; {{ "%.0f%%"|format(trip.end_fuel_level) if trip.end_fuel_level is not none else '?' }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="flex items-center gap-2">
-                        {% if can_write('trips') %}
-                        <a href="{{ url_for('trips.edit', trip_id=trip.id) }}"
-                           class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
-                        {% endif %}
-                        {% if can_write('trips') %}
-                        <form method="POST" action="{{ url_for('trips.delete', trip_id=trip.id) }}" class="inline"
-                              onsubmit="return confirm('Delete this trip?');">
+                    <span class="ds-log__phone-meta">
+                        {{- trip.date|dateformat('d MMM') }} · {{ trip.start_odometer|groupnum }} → {{ trip.end_odometer|groupnum if trip.end_odometer is not none else '?' }}
+                    </span>
+                </td>
+                <td class="ds-num ds-muted ds-log__wide">{{ trip.start_odometer|groupnum }} → {{ trip.end_odometer|groupnum if trip.end_odometer is not none else '?' }} <span class="ds-log__unit">{{ unit }}</span></td>
+                {% if show_fuel %}
+                <td class="ds-num ds-log__wide">
+                    {%- if trip.fuel_used is not none %}{{ "%.1f"|format(trip.fuel_used) }} <span class="ds-log__unit">{{ current_user.volume_unit }}</span>
+                    {%- elif trip.start_fuel_level is not none or trip.end_fuel_level is not none %}{{ "%.0f%%"|format(trip.start_fuel_level) if trip.start_fuel_level is not none else '?' }} → {{ "%.0f%%"|format(trip.end_fuel_level) if trip.end_fuel_level is not none else '?' }}
+                    {%- else %}<span class="ds-muted">&mdash;</span>{% endif -%}
+                </td>
+                {% endif %}
+                <td data-cell="value" class="ds-num">{% if trip.end_odometer is not none %}{{ "%.1f"|format(trip.distance) }} <span class="ds-log__unit">{{ unit }}</span>{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+                <td data-cell="actions">
+                    {% if can_write('trips') %}
+                    <div class="ds-table__actions">
+                        {{ button(_('Edit'), href=url_for('trips.edit', trip_id=trip.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                        <form method="POST" action="{{ url_for('trips.delete', trip_id=trip.id) }}"
+                              onsubmit='return confirm({{ _("Delete this trip?")|tojson }});'>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="text-gray-400 hover:text-red-600">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
+                            <input type="hidden" name="next" value="{{ request.full_path }}">
+                            {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
                         </form>
-                        {% endif %}
                     </div>
-                </div>
-            </div>
-        </li>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
         {% endfor %}
-    </ul>
+    </table>
+    </div>
+    {{ pager(pagination,
+             url_for('trips.index', page=pagination.prev_num, **filter_args) if pagination.has_prev else None,
+             url_for('trips.index', page=pagination.next_num, **filter_args) if pagination.has_next else None) }}
+</section>
+{% elif filtered %}
+<div class="ds-card">
+    {{ empty_state(_('No trips logged'), _('No trips match these filters.'), 'map', _('Clear filters'), url_for('trips.index')) }}
 </div>
 {% else %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No trips logged') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Start logging your trips for mileage tracking and tax deductions.') }}</p>
-    <div class="mt-6">
-        {% if can_write('trips') %}
-        <a href="{{ url_for('trips.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Log Your First Trip') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No trips logged'), _('Start logging your trips for mileage tracking and tax deductions.'), 'map',
+                   _('Log Your First Trip') if can_write('trips') else None, url_for('trips.new')) }}
 </div>
 {% endif %}
+
+</div>
 {% endblock %}

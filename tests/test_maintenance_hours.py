@@ -192,8 +192,8 @@ class TestMaintenanceRoutes:
 
         body = auth_client.get(f'/maintenance/new?vehicle_id={vehicle.id}').data.decode()
 
-        assert 'data-interval-distance class="hidden"' in body
-        assert 'data-interval-hours class="hidden"' not in body
+        assert 'data-interval-distance hidden' in body
+        assert 'data-interval-hours hidden' not in body
         assert 'data-tracks-hours="1"' in body
         assert 'Engine hours' in body
 
@@ -201,8 +201,8 @@ class TestMaintenanceRoutes:
         body = auth_client.get(
             f'/maintenance/new?vehicle_id={sample_vehicle.id}').data.decode()
 
-        assert 'data-interval-hours class="hidden"' in body
-        assert 'data-interval-distance class="hidden"' not in body
+        assert 'data-interval-hours hidden' in body
+        assert 'data-interval-distance hidden' not in body
 
     def test_index_lists_the_interval_in_hours(self, app, auth_client, test_user):
         vehicle = _hours_vehicle(test_user)
@@ -212,8 +212,10 @@ class TestMaintenanceRoutes:
         body = auth_client.get('/maintenance/').data.decode()
 
         assert 'Every 250 h' in body
-        assert '1,250 h' in body
-        assert '1,250 mi' not in body
+        # Readings follow the account's thousands-separator preference (#134);
+        # the test user has none.
+        assert '1250 h' in body
+        assert '1250 mi' not in body
 
 
 class TestHoursDisplayLabels:

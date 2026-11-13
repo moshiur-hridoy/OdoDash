@@ -1,0 +1,239 @@
+{#- OdoDash design-system components.
+
+    {% from 'components/ui.html' import button, card, stat %}
+
+    Every macro renders markup styled by the .ds-* classes in
+    static/css/src/app.css, which read the --ds-* tokens only. Wrap a page (or
+    a region of one) in class="ds" to get the design-system type and colour.
+    The /design page renders every component in both themes.
+
+    Text arguments are plain strings: pass them through _() at the call site,
+    so the macros themselves add nothing to the translation catalogues.
+    `attrs` takes a dict of extra attributes (hx-*, data-*, id, onclick...),
+    rendered with xmlattr so values are escaped. -#}
+{%- from 'components/icons.html' import icon -%}
+
+{#- Page title row, with optional actions as the call body.
+    {% call page_header(_('Fuel logs'), subtitle=_('Every fill-up')) %}{{ button(...) }}{% endcall %} -#}
+{%- macro page_header(title, eyebrow=None, subtitle=None) -%}
+<header class="ds-page-header">
+    <div>
+        {%- if eyebrow %}<p class="ds-page-header__eyebrow">{{ eyebrow }}</p>{% endif %}
+        <h1 class="ds-page-header__title">{{ title }}</h1>
+        {%- if subtitle %}<p class="ds-page-header__subtitle">{{ subtitle }}</p>{% endif %}
+    </div>
+    {%- if caller is defined %}
+    <div class="ds-page-header__actions">{{ caller() }}</div>
+    {%- endif %}
+</header>
+{%- endmacro %}
+
+{#- Link back to the parent page, above a page header. The label is the
+    parent's name (a vehicle's, or an existing "Back to ..." string). -#}
+{%- macro back_link(label, href) -%}
+<a class="ds-back" href="{{ href }}">{{ icon('arrow-left', 16) }}<span>{{ label }}</span></a>
+{%- endmacro %}
+
+{#- A link (href given) or a <button>.
+    variant: primary | secondary | ghost | danger;  size: md | sm.
+    icon_only: shows just the icon and uses the label as its accessible name. -#}
+{%- macro button(label, href=None, variant='primary', size='md', icon_name=None, icon_only=False, type='button', disabled=False, block=False, attrs={}) -%}
+{%- set cls = ['ds-btn', 'ds-btn--' ~ variant] -%}
+{%- if size == 'sm' %}{% set cls = cls + ['ds-btn--sm'] %}{% endif -%}
+{%- if icon_only %}{% set cls = cls + ['ds-btn--icon'] %}{% endif -%}
+{%- if block %}{% set cls = cls + ['ds-btn--block'] %}{% endif -%}
+{%- set inner -%}
+{%- if icon_name %}{{ icon(icon_name, 16 if size == 'sm' else 18) }}{% endif -%}
+{%- if icon_only %}<span class="ds-sr-only">{{ label }}</span>{% else %}<span>{{ label }}</span>{% endif -%}
+{%- endset -%}
+{%- if href -%}
+<a href="{{ href }}" class="{{ cls|join(' ') }}"{% if icon_only %} title="{{ label }}"{% endif %}{% if disabled %} aria-disabled="true" tabindex="-1"{% endif %}{{ attrs|xmlattr }}>{{ inner }}</a>
+{%- else -%}
+<button type="{{ type }}" class="{{ cls|join(' ') }}"{% if icon_only %} title="{{ label }}"{% endif %}{% if disabled %} disabled{% endif %}{{ attrs|xmlattr }}>{{ inner }}</button>
+{%- endif -%}
+{%- endmacro %}
+
+{#- Surface for a group of content; the body is the call block.
+    flush: no body padding (for tables and lists that run edge to edge). -#}
+{%- macro card(title=None, action_label=None, action_href=None, flush=False, tag='section', class='', attrs={}) -%}
+<{{ tag }} class="ds-card{% if flush %} ds-card--flush{% endif %}{% if class %} {{ class }}{% endif %}"{{ attrs|xmlattr }}>
+    {%- if title or action_label %}
+    <div class="ds-card__header">
+        {%- if title %}<h2 class="ds-card__title">{{ title }}</h2>{% endif %}
+        {%- if action_label %}<a class="ds-card__action" href="{{ action_href }}">{{ action_label }}</a>{% endif %}
+    </div>
+    {%- endif %}
+    {%- if caller is defined %}
+    <div class="ds-card__body">{{ caller() }}</div>
+    {%- endif %}
+</{{ tag }}>
+{%- endmacro %}
+
+{#- Small status chip. tone: neutral | accent | success | warning | danger. -#}
+{%- macro badge(label, tone='neutral', square=False) -%}
+<span class="ds-badge ds-badge--{{ tone }}{% if square %} ds-badge--square{% endif %}">{{ label }}</span>
+{%- endmacro %}
+
+{#- A labelled figure. hero: the one large figure on a page.
+    note_tone: success | warning | danger (default muted).
+    badge_label/badge_tone: a chip beside the value, e.g. a trend. -#}
+{%- macro stat(label, value, unit=None, note=None, note_tone=None, hero=False, badge_label=None, badge_tone='neutral', extra_note=None) -%}
+<div class="ds-stat{% if hero %} ds-stat--hero{% endif %}">
+    <p class="ds-stat__label">{{ label }}</p>
+    <div class="ds-stat__row">
+        <p class="ds-stat__value">{{ value }}{% if unit %}<span class="ds-stat__unit">{{ unit }}</span>{% endif %}</p>
+        {%- if badge_label %}{{ badge(badge_label, badge_tone) }}{% endif %}
+    </div>
+    {%- if note and extra_note %}
+    {#- One line, two parts: the toned note, then the muted extra after a dot.
+        Each part keeps together, so a narrow card breaks the line at the dot. -#}
+    <p class="ds-stat__note ds-stat__note--split"><span class="{% if note_tone %}ds-stat__note--{{ note_tone }}{% endif %}">{{ note }}</span> <span aria-hidden="true">·</span> <span>{{ extra_note }}</span></p>
+    {%- elif note %}<p class="ds-stat__note{% if note_tone %} ds-stat__note--{{ note_tone }}{% endif %}">{{ note }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{#- A row of mutually exclusive links, e.g. Month / Year.
+    items: [{'label': ..., 'href': ..., 'current': bool}, ...] -#}
+{%- macro segmented(items, label) -%}
+<nav class="ds-segmented" aria-label="{{ label }}">
+    {%- for item in items %}
+    <a class="ds-segmented__item" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{{ item.label }}</a>
+    {%- endfor %}
+</nav>
+{%- endmacro %}
+
+{#- A small column chart of a few periods, labelled underneath.
+    bars: [{'label': 'Oct', 'value': 238.5, 'display': '238.50 USD', 'current': False}, ...]
+    label: what the chart shows, for screen readers.
+    Each column is focusable, so a tap on a phone shows its amount the way a
+    hover does on a desktop; the current period is drawn in the accent. -#}
+{%- macro month_bars(bars, label) -%}
+{%- set top = (bars | map(attribute='value') | max) or 1 -%}
+<div class="ds-bars" role="group" aria-label="{{ label }}">
+    {%- for b in bars %}
+    <div class="ds-bars__col{% if b.current %} ds-bars__col--current{% endif %}" tabindex="0" aria-label="{{ b.label }}: {{ b.display }}">
+        <span class="ds-bars__value" aria-hidden="true">{{ b.display }}</span>
+        <span class="ds-bars__track" aria-hidden="true"><span class="ds-bars__bar{% if not b.value %} ds-bars__bar--empty{% endif %}" style="height: {{ (b.value / top * 100) | round(1) }}%"></span></span>
+        <span class="ds-bars__label" aria-hidden="true">{{ b.label }}</span>
+    </div>
+    {%- endfor %}
+</div>
+{%- endmacro %}
+
+{#- Proportions of a whole, with a legend.
+    segments: [{'label': ..., 'value': 58, 'display': '58%', 'series': 'accent'|'charging'|'other'}, ...]
+    label: what the bar shows, for screen readers. -#}
+{%- macro split_bar(segments, label) -%}
+<div class="ds-split" role="img" aria-label="{{ label }}: {% for s in segments %}{{ s.label }} {{ s.display or s.value }}{% if not loop.last %}, {% endif %}{% endfor %}">
+    {%- for s in segments if s.value %}
+    <span class="ds-split__segment ds-series--{{ s.series or 'other' }}" style="flex: {{ s.value }}"></span>
+    {%- endfor %}
+</div>
+<ul class="ds-legend" aria-hidden="true">
+    {%- for s in segments %}
+    <li class="ds-legend__item"><span class="ds-legend__swatch ds-series--{{ s.series or 'other' }}"></span><span class="ds-legend__label">{{ s.label }}</span><span class="ds-legend__value">{{ s.display or s.value }}</span></li>
+    {%- endfor %}
+</ul>
+{%- endmacro %}
+
+{#- One item that needs the user's attention. Use inside
+    <ul class="ds-attention-list">. tone: danger | warning | neutral. -#}
+{%- macro attention(title, meta=None, tone='neutral', icon_name='alert', action_label=None, action_href=None) -%}
+<li class="ds-attention ds-attention--{{ tone }}">
+    {{ icon(icon_name) }}
+    <div class="ds-attention__body">
+        <p class="ds-attention__title">{{ title }}</p>
+        {%- if meta %}<p class="ds-attention__meta">{{ meta }}</p>{% endif %}
+    </div>
+    {%- if action_label %}<a class="ds-attention__action" href="{{ action_href }}">{{ action_label }}</a>{% endif %}
+</li>
+{%- endmacro %}
+
+{#- Odometer read-out: one box per digit, leading zeros dimmed, the last digit
+    in the accent. `label` is the accessible reading, e.g. "Odometer 85,230 km". -#}
+{%- macro odometer(value, unit='km', label=None, digits=6, size='md') -%}
+{%- set n = value|round|int -%}
+{%- set text = ('%0' ~ digits ~ 'd')|format(n) -%}
+{%- set first = text|length - (n|string)|length -%}
+<span class="ds-odometer{% if size == 'lg' %} ds-odometer--lg{% endif %}" role="img" aria-label="{{ label or ('{:,}'.format(n) ~ ' ' ~ unit) }}">
+    {%- for d in text -%}
+    <span class="ds-odometer__digit{% if loop.last %} ds-odometer__digit--last{% elif loop.index0 < first %} ds-odometer__digit--off{% endif %}" aria-hidden="true">{{ d }}</span>
+    {%- endfor -%}
+    {%- if unit %}<span class="ds-odometer__unit" aria-hidden="true">{{ unit }}</span>{% endif -%}
+</span>
+{%- endmacro %}
+
+{#- Shown in place of an empty list: what is missing and the first step. -#}
+{%- macro empty_state(title, text=None, icon_name='inbox', action_label=None, action_href=None) -%}
+<div class="ds-empty">
+    <span class="ds-empty__icon">{{ icon(icon_name, 22) }}</span>
+    <p class="ds-empty__title">{{ title }}</p>
+    {%- if text %}<p class="ds-empty__text">{{ text }}</p>{% endif %}
+    {%- if action_label %}<div class="ds-empty__action">{{ button(action_label, href=action_href, icon_name='plus') }}</div>{% endif %}
+</div>
+{%- endmacro %}
+
+{#- Label, control, help and error for one form input. The control is the
+    call body, written as plain HTML so its name/id stay exactly as the route
+    expects; give it class="ds-control" and, with an error,
+    aria-invalid="true" aria-describedby="<for_id>-error". -#}
+{#- Newer / Older pager under a paginated list. Renders nothing for one page. -#}
+{%- macro pager(pagination, prev_href=None, next_href=None) -%}
+{%- if pagination and pagination.pages > 1 %}
+<nav class="ds-pager" aria-label="{{ _('Pagination') }}">
+    <span class="ds-pager__status">{{ _('Page %(page)s of %(pages)s', page=pagination.page, pages=pagination.pages) }}</span>
+    <div class="ds-pager__links">
+        {%- if pagination.has_prev %}{{ button(_('Newer'), href=prev_href, variant='secondary', size='sm', icon_name='arrow-left') }}{% endif %}
+        {%- if pagination.has_next %}{{ button(_('Older'), href=next_href, variant='secondary', size='sm') }}{% endif %}
+    </div>
+</nav>
+{%- endif %}
+{%- endmacro %}
+
+{#- Numbered progress for a multi-step flow. `steps` is a list of labels,
+    `current` the 1-based step the page is on. -#}
+{%- macro steps(labels, current) -%}
+<ol class="ds-steps">
+    {%- for label in labels %}
+    <li class="ds-steps__item{% if loop.index < current %} is-done{% elif loop.index == current %} is-current{% endif %}"{% if loop.index == current %} aria-current="step"{% endif %}>
+        <span class="ds-steps__dot">{% if loop.index < current %}{{ icon('check', 14) }}{% else %}{{ loop.index }}{% endif %}</span>
+        <span class="ds-steps__label">{{ label }}</span>
+    </li>
+    {%- endfor %}
+</ol>
+{%- endmacro %}
+
+{#- File picker drawn as a drop zone. The real <input type="file"> covers the
+    zone, so clicking and dropping both work without script; static/js/ds.js
+    only writes the chosen file name into it. -#}
+{%- macro file_drop(id, accept, hint=None, name=None, required=True, multiple=False) -%}
+<div class="ds-drop">
+    <input type="file" id="{{ id }}" name="{{ name or id }}" accept="{{ accept }}"{% if required %} required{% endif %}{% if multiple %} multiple{% endif %}
+           class="ds-drop__input" data-file-drop{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
+    <span class="ds-drop__icon">{{ icon('upload', 22) }}</span>
+    <span class="ds-drop__text" data-file-name>{{ _('Choose a file or drag it here') }}</span>
+    {%- if hint %}<span class="ds-drop__hint" id="{{ id }}-hint">{{ hint }}</span>{% endif %}
+</div>
+{%- endmacro %}
+
+{#- Password input with a show/hide toggle (wired by static/js/ds.js).
+    Extra attributes (autocomplete, required, autofocus, value) go in `attrs`. -#}
+{%- macro password_input(id, name=None, attrs={}) -%}
+<div class="ds-password">
+    <input type="password" id="{{ id }}" name="{{ name or id }}" class="ds-control"{{ attrs|xmlattr }}>
+    <button type="button" class="ds-password__toggle" data-password-toggle="{{ id }}" aria-controls="{{ id }}"
+            aria-pressed="false" aria-label="{{ _('Show password') }}"
+            data-label-show="{{ _('Show password') }}" data-label-hide="{{ _('Hide password') }}">
+        <span data-eye="show">{{ icon('eye', 18) }}</span><span data-eye="hide" hidden>{{ icon('eye-off', 18) }}</span>
+    </button>
+</div>
+{%- endmacro %}
+
+{%- macro field(label, for_id, help=None, error=None, required=False) -%}
+<div class="ds-field">
+    <label class="ds-field__label" for="{{ for_id }}">{{ label }}{% if required %}<span class="ds-field__required" aria-hidden="true">*</span>{% endif %}</label>
+    {{ caller() }}
+    {%- if help %}<p class="ds-field__help" id="{{ for_id }}-help">{{ help }}</p>{% endif %}
+    {%- if error %}<p class="ds-field__error" id="{{ for_id }}-error">{{ error }}</p>{% endif %}
+</div>
+{%- endmacro %}

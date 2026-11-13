@@ -1,136 +1,101 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import reminder_icons %}
 {% block title %}{{ _('Edit Reminder') if reminder else _('New Reminder') }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('reminders.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 flex items-center">
-            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            {{ _('Back to Reminders') }}
-        </a>
-    </div>
+{%- set form_vehicle = reminder.vehicle if reminder else (selected_vehicle or (vehicles[0] if vehicles else None)) -%}
+{%- set chosen_type = reminder.reminder_type if reminder else reminder_types[0][0] -%}
+{%- set notify = reminder.notify_days_before if reminder else 7 -%}
+{%- set notify_options = [(0, _('On the due date')), (1, _('1 day before')), (3, _('3 days before')), (7, _('1 week before')), (14, _('2 weeks before')), (30, _('1 month before'))] -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Reminders'), url_for('reminders.index')) }}
+{{ page_header(_('Edit Reminder') if reminder else _('New Reminder'), subtitle=reminder.vehicle.name if reminder else None) }}
 
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-                {{ _('Edit Reminder') if reminder else _('New Reminder') }}
-            </h1>
+<form id="reminder-form" method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <section class="ds-card form-section">
+        {% if reminder %}
+        <input type="hidden" name="vehicle_id" value="{{ reminder.vehicle_id }}">
+        {% else %}
+        {{ vehicle_picker(vehicles, form_vehicle) }}
+        {% endif %}
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Type') }}{{ req() }}</legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for type_id, type_name in reminder_types %}
+                <label class="ds-choice">
+                    <input type="radio" name="reminder_type" value="{{ type_id }}" required data-title="{{ type_name }}"{% if type_id == chosen_type %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(reminder_icons.get(type_id, 'bell'), 18) }}</span>
+                    <span class="ds-choice__label">{{ type_name }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="title">{{ _('Title') }}{{ req() }}</label>
+                <input type="text" name="title" id="title" class="ds-control" required
+                       value="{{ reminder.title if reminder else '' }}" placeholder="{{ _('e.g., MOT Due, Insurance Renewal') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="due_date">{{ _('Due Date') }}{{ req() }}</label>
+                <input type="text" name="due_date" id="due_date" class="ds-control" required data-datepicker
+                       value="{{ reminder.due_date.strftime('%Y-%m-%d') if reminder else '' }}">
+            </div>
         </div>
+    </section>
 
-        <form method="POST" class="p-6 space-y-6">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <!-- Vehicle Selection -->
-            <div>
-                <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Vehicle') }}</label>
-                <select name="vehicle_id" id="vehicle_id" required
-                        class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                        {% if reminder %}disabled{% endif %}>
-                    {% for vehicle in vehicles %}
-                    <option value="{{ vehicle.id }}"
-                            {% if (selected_vehicle and selected_vehicle.id == vehicle.id) or (reminder and reminder.vehicle_id == vehicle.id) %}selected{% endif %}>
-                        {{ vehicle.name }}
-                    </option>
-                    {% endfor %}
-                </select>
-                {% if reminder %}
-                <input type="hidden" name="vehicle_id" value="{{ reminder.vehicle_id }}">
-                {% endif %}
-            </div>
-
-            <!-- Title -->
-            <div>
-                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Title') }}</label>
-                <input type="text" name="title" id="title" required
-                       value="{{ reminder.title if reminder else '' }}"
-                       placeholder="{{ _('e.g., MOT Due, Insurance Renewal') }}"
-                       class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-            </div>
-
-            <!-- Type -->
-            <div>
-                <label for="reminder_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Type') }}</label>
-                <select name="reminder_type" id="reminder_type" required
-                        class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    {% for type_id, type_name in reminder_types %}
-                    <option value="{{ type_id }}" {% if reminder and reminder.reminder_type == type_id %}selected{% endif %}>
-                        {{ type_name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Due Date -->
-            <div>
-                <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Due Date') }}</label>
-                <input type="text" name="due_date" id="due_date" required data-datepicker
-                       value="{{ reminder.due_date.strftime('%Y-%m-%d') if reminder else '' }}"
-                       class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-            </div>
-
-            <!-- Description -->
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Description (optional)') }}</label>
-                <textarea name="description" id="description" rows="3"
-                          placeholder="{{ _('Additional notes about this reminder') }}"
-                          class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">{{ reminder.description if reminder else '' }}</textarea>
-            </div>
-
-            <!-- Recurrence -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Recurrence') }}</label>
-                <div class="flex gap-2 items-stretch">
-                    <span class="inline-flex items-center px-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
-                        {{ _('Every') }}
-                    </span>
-                    <input type="number" name="recurrence_interval" id="recurrence_interval"
-                           min="1" step="1"
-                           value="{{ reminder.recurrence_interval if reminder and reminder.recurrence_interval else 1 }}"
-                           class="w-20 border-y border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-gray-700 dark:text-white">
-                    <select name="recurrence" id="recurrence"
-                            class="flex-1 rounded-r-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                        {% for rec_id, rec_name in recurrence_options %}
-                        <option value="{{ rec_id }}" {% if reminder and reminder.recurrence == rec_id %}selected{% endif %}>
-                            {{ rec_name }}
-                        </option>
-                        {% endfor %}
+    <section class="ds-card form-section">
+        <div class="form-grid">
+            <div class="ds-field">
+                <span class="ds-field__label" id="recurrence-label">{{ _('Recurrence') }}</span>
+                <div class="form-inline" role="group" aria-labelledby="recurrence-label">
+                    <span class="ds-muted">{{ _('Every') }}</span>
+                    <input type="number" name="recurrence_interval" id="recurrence_interval" class="ds-control form-inline__num" min="1" step="1" inputmode="numeric"
+                           aria-label="{{ _('Every') }}"
+                           value="{{ reminder.recurrence_interval if reminder and reminder.recurrence_interval else 1 }}">
+                    <select name="recurrence" id="recurrence" class="ds-control" aria-label="{{ _('Recurrence') }}">
+                        {% for rec_id, rec_name in recurrence_options %}<option value="{{ rec_id }}"{% if reminder and reminder.recurrence == rec_id %} selected{% endif %}>{{ rec_name }}</option>{% endfor %}
                     </select>
                 </div>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('e.g. \"Every 2 Year(s)\" for an MOT due every two years. When marked complete, the next occurrence is created automatically.') }}</p>
+                <p class="form-hint">{{ _('e.g. \"Every 2 Year(s)\" for an MOT due every two years. When marked complete, the next occurrence is created automatically.') }}</p>
             </div>
-
-            <!-- Notification Days -->
-            <div>
-                <label for="notify_days_before" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Notify me') }}</label>
-                <select name="notify_days_before" id="notify_days_before"
-                        class="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500">
-                    <option value="0" {% if reminder and reminder.notify_days_before == 0 %}selected{% endif %}>{{ _('On the due date') }}</option>
-                    <option value="1" {% if reminder and reminder.notify_days_before == 1 %}selected{% endif %}>{{ _('1 day before') }}</option>
-                    <option value="3" {% if reminder and reminder.notify_days_before == 3 %}selected{% endif %}>{{ _('3 days before') }}</option>
-                    <option value="7" {% if (not reminder) or reminder.notify_days_before == 7 %}selected{% endif %}>{{ _('1 week before') }}</option>
-                    <option value="14" {% if reminder and reminder.notify_days_before == 14 %}selected{% endif %}>{{ _('2 weeks before') }}</option>
-                    <option value="30" {% if reminder and reminder.notify_days_before == 30 %}selected{% endif %}>{{ _('1 month before') }}</option>
+            <div class="ds-field">
+                <label class="ds-field__label" for="notify_days_before">{{ _('Notify me') }}</label>
+                <select name="notify_days_before" id="notify_days_before" class="ds-control">
+                    {% for days, label in notify_options %}<option value="{{ days }}"{% if notify == days %} selected{% endif %}>{{ label }}</option>{% endfor %}
                 </select>
             </div>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="description">{{ _('Description (optional)') }}</label>
+            <textarea name="description" id="description" rows="3" class="ds-control" placeholder="{{ _('Additional notes about this reminder') }}">{{ reminder.description if reminder and reminder.description else '' }}</textarea>
+        </div>
+    </section>
 
-            <!-- Hidden field for return redirect -->
-            {% if request.args.get('return_to') == 'vehicle' or request.referrer and 'vehicles' in request.referrer %}
-            <input type="hidden" name="return_to" value="vehicle">
-            {% endif %}
+    {% if request.args.get('return_to') == 'vehicle' or request.referrer and 'vehicles' in request.referrer %}
+    <input type="hidden" name="return_to" value="vehicle">
+    {% endif %}
 
-            <!-- Actions -->
-            <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <a href="{{ url_for('reminders.index') }}"
-                   class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    {{ _('Cancel') }}
-                </a>
-                <button type="submit"
-                        class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                    {{ _('Update Reminder') if reminder else _('Create Reminder') }}
-                </button>
-            </div>
-        </form>
-    </div>
+    {{ form_actions(url_for('reminders.index'), _('Update Reminder') if reminder else _('Create Reminder')) }}
+</form>
 </div>
+
+<script>
+// Picking a type on a new reminder fills an empty title with its name.
+document.addEventListener('DOMContentLoaded', function () {
+    var title = document.getElementById('title');
+    var auto = {{ 'null' if reminder else "''" }};
+    if (auto === null) return;
+    document.querySelectorAll('#reminder-form input[name="reminder_type"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            if (title.value === auto) { title.value = radio.dataset.title; auto = title.value; }
+        });
+    });
+});
+</script>
 {% endblock %}

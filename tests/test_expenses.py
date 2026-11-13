@@ -3,7 +3,7 @@ import io
 import pytest
 from datetime import date
 from app import db
-from app.models import Attachment, Expense, EXPENSE_CATEGORIES
+from app.models import Attachment, Expense, Vehicle, EXPENSE_CATEGORIES
 
 
 def _upload(filename, content=b'fake-image-bytes'):
@@ -422,3 +422,66 @@ class TestExpenseRedirects:
         resp = auth_client.get('/expenses/new')
         assert resp.status_code == 200
         assert b'name="return_to"' not in resp.data
+
+
+class TestExpenseIndexLayout:
+    """The design-system expense list: filters, month blocks, paging."""
+
+    def _add(self, vehicle, user, when, category, description, cost, **extra):
+        expense = Expense(vehicle_id=vehicle.id, user_id=user.id, date=when, category=category,
+                          description=description, cost=cost, **extra)
+        db.session.add(expense)
+        return expense
+
+    def test_category_filter_narrows_list_and_totals(self, auth_client, sample_vehicle, test_user):
+        self._add(sample_vehicle, test_user, date(2026, 3, 1), 'parking', 'Garage parking', 7.5)
+        self._add(sample_vehicle, test_user, date(2026, 3, 2), 'tolls', 'Bridge toll', 3.25)
+        db.session.commit()
+        body = auth_client.get('/expenses/?category=parking').get_data(as_text=True)
+        assert 'Garage parking' in body and 'Bridge toll' not in body
+        assert 'Filtered total' in body and '7.50' in body
+
+    def test_vehicle_and_year_filters(self, auth_client, sample_vehicle, test_user):
+        other = Vehicle(owner_id=test_user.id, name='Second Car', vehicle_type='car', fuel_type='petrol')
+        db.session.add(other)
+        db.session.commit()
+        self._add(sample_vehicle, test_user, date(2025, 6, 1), 'other', 'Old one', 10)
+        self._add(sample_vehicle, test_user, date(2026, 6, 1), 'other', 'New one', 10)
+        self._add(other, test_user, date(2026, 6, 2), 'other', 'Other car', 10)
+        db.session.commit()
+        body = auth_client.get(f'/expenses/?vehicle={sample_vehicle.id}&year=2026').get_data(as_text=True)
+        assert 'New one' in body
+        assert 'Old one' not in body and 'Other car' not in body
+
+    def test_other_category_drops_maintenance_filters(self, auth_client, sample_vehicle, test_user):
+        self._add(sample_vehicle, test_user, date(2026, 3, 1), 'parking', 'Garage parking', 7.5)
+        db.session.commit()
+        body = auth_client.get('/expenses/?category=parking&maintenance_group=engine_oil').get_data(as_text=True)
+        assert 'Garage parking' in body
+
+    def test_month_blocks_and_breakdown(self, auth_client, sample_vehicle, test_user):
+        self._add(sample_vehicle, test_user, date(2026, 3, 1), 'parking', 'A', 10)
+        self._add(sample_vehicle, test_user, date(2026, 3, 9), 'tolls', 'B', 2.5)
+        db.session.commit()
+        body = auth_client.get('/expenses/').get_data(as_text=True)
+        assert 'March 2026' in body and '12.50' in body
+        assert 'By Category' in body
+        assert '/expenses/?category=parking' in body
+
+    def test_list_is_paginated(self, auth_client, sample_vehicle, test_user):
+        from datetime import timedelta
+        for i in range(55):
+            self._add(sample_vehicle, test_user, date(2026, 1, 1) + timedelta(days=i), 'other', f'Item {i}', 1)
+        db.session.commit()
+        first = auth_client.get('/expenses/').get_data(as_text=True)
+        assert 'Page 1 of 2' in first and 'page=2' in first
+        assert first.count('/edit"') == 50
+        assert auth_client.get('/expenses/?page=2').get_data(as_text=True).count('/edit"') == 5
+
+    def test_delete_returns_to_the_filtered_list(self, auth_client, sample_vehicle, test_user):
+        expense = self._add(sample_vehicle, test_user, date(2026, 3, 1), 'parking', 'Gone', 5)
+        db.session.commit()
+        resp = auth_client.post(f'/expenses/{expense.id}/delete',
+                                data={'next': '/expenses/?category=parking'})
+        assert resp.status_code == 302
+        assert resp.headers['Location'].endswith('/expenses/?category=parking')

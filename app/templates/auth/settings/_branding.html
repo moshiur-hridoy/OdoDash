@@ -1,0 +1,49 @@
+{#- Branding (admins): name, tagline, accent colour and logo for every user. -#}
+{% from 'auth/settings/_ui.html' import card %}
+{% from 'components/ui.html' import button, file_drop %}
+{%- set colour = branding.primary_color or '#0284c7' -%}
+<section id="section-branding" class="settings-section" data-section="branding" aria-labelledby="branding-title" hidden>
+    <h2 class="ds-sr-only" id="branding-title">{{ _('Branding') }}</h2>
+    <form method="POST" action="{{ url_for('auth.branding') }}" enctype="multipart/form-data" class="settings-form" data-busy-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% call card(_('Application Branding'), _('Customize how May appears to all users').replace('May', APP_NAME), admin=True) %}
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="app_name">{{ _('Application Name') }}</label>
+                <input type="text" name="app_name" id="app_name" class="ds-control" value="{{ branding.app_name or 'OdoDash' }}" placeholder="OdoDash">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="app_tagline">{{ _('Tagline') }}</label>
+                <input type="text" name="app_tagline" id="app_tagline" class="ds-control" value="{{ branding.app_tagline or 'Vehicle Management' }}" placeholder="Vehicle Management">
+            </div>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="primary_color">{{ _('Primary Color') }}</label>
+            <div class="brand-colour">
+                <input type="color" name="primary_color" id="primary_color" class="brand-colour__picker" value="{{ colour }}">
+                <input type="text" id="primary_color_hex" class="ds-control ds-mono brand-colour__hex" readonly value="{{ colour }}" aria-label="{{ _('Primary Color') }}">
+            </div>
+            <div id="primary_color_presets" class="brand-swatches" role="group" aria-label="{{ _('Primary Color') }}">
+                {% for name, hex in [('Sky', '#0284c7'), ('Blue', '#2563eb'), ('Indigo', '#4f46e5'), ('Violet', '#7c3aed'), ('Purple', '#9333ea'), ('Pink', '#db2777'), ('Rose', '#e11d48'), ('Red', '#dc2626'), ('Orange', '#ea580c'), ('Amber', '#d97706'), ('Lime', '#65a30d'), ('Green', '#16a34a'), ('Emerald', '#059669'), ('Teal', '#0d9488'), ('Cyan', '#0891b2'), ('Slate', '#475569')] %}
+                <button type="button" class="brand-swatch{% if hex == colour %} is-current{% endif %}" data-color="{{ hex }}" title="{{ name }}" aria-label="{{ name }}" style="--swatch: {{ hex }}"></button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="ds-field">
+            <span class="ds-field__label">{{ _('Logo') }}</span>
+            <div class="vehicle-photo">
+                {% if branding.logo_filename %}
+                <figure class="brand-logo">
+                    <img src="{{ url_for('api.uploaded_file', filename=branding.logo_filename) }}" alt="{{ _('Current logo') }}">
+                    <figcaption class="form-hint">{{ _('Current logo') }}</figcaption>
+                    {{ button(_('Remove Logo'), variant='ghost', size='sm', icon_name='trash',
+                              attrs={'data-remove-logo': url_for('auth.remove_logo'), 'data-confirm': _('Are you sure you want to remove the logo?')}) }}
+                </figure>
+                {% endif %}
+                {{ file_drop('logo', 'image/*', required=False) }}
+            </div>
+        </div>
+        {% endcall %}
+        <div class="settings-actions">{{ button(_('Save Branding'), type='submit', icon_name='check') }}</div>
+    </form>
+</section>

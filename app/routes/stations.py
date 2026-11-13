@@ -5,7 +5,7 @@ from sqlalchemy import func
 from flask_babel import gettext as _
 from app import db
 from app.utils import parse_decimal
-from app.models import FuelStation, FuelPriceHistory
+from app.models import FuelStation, FuelPriceHistory, fuel_type_label
 from app.services.uk_fuel_prices import UKFuelPriceService
 
 bp = Blueprint('stations', __name__, url_prefix='/stations')
@@ -149,6 +149,7 @@ def price_history(station_id):
         {
             'date': p.date.isoformat() if p.date else None,
             'fuel_type': p.fuel_type,
+            'label': fuel_type_label(p.fuel_type),
             'price_per_unit': p.price_per_unit,
         }
         for p in price_records

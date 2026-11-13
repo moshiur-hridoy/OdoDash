@@ -1,0 +1,85 @@
+{#- Import / Export (section id "integrations", kept for old links). The import
+    rows are written out rather than built with row(): tests read their
+    descriptions straight from this source (#340). -#}
+{% from 'auth/settings/_ui.html' import card, row %}
+{% from 'components/ui.html' import button, badge %}
+{% from 'components/icons.html' import icon %}
+{%- macro file_import(action, accept) -%}
+<form method="POST" action="{{ action }}" enctype="multipart/form-data" class="settings-import" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="file" name="file" accept="{{ accept }}" required class="settings-file" aria-label="{{ _('File') }}">
+    {{ button(_('Import'), type='submit', variant='secondary', size='sm', icon_name='upload') }}
+</form>
+{%- endmacro -%}
+<section id="section-integrations" class="settings-section" data-section="integrations" aria-labelledby="data-title" hidden>
+    <h2 class="ds-sr-only" id="data-title">{{ _('Import / Export') }}</h2>
+
+    {% call card(_('Export Data'), _('Download your data for backup or migration')) %}
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('Full Backup') }} {{ badge(_('Recommended'), 'success') }}</h3>
+            <p class="settings-row__hint">{{ _('Download all data and files (images, documents, attachments) as a ZIP archive') }}</p>
+        </div>
+        <div class="settings-row__control">{{ button(_('Download ZIP'), href=url_for('api.export_full_backup'), icon_name='download') }}</div>
+    </div>
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('Export as JSON') }}</h3>
+            <p class="settings-row__hint">{{ _('Download a complete backup of your data in JSON format') }}</p>
+        </div>
+        <div class="settings-row__control">{{ button(_('Download JSON'), href=url_for('api.export_json'), variant='secondary', icon_name='download') }}</div>
+    </div>
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('Export as CSV') }}</h3>
+            <p class="settings-row__hint">{{ _('Download all your vehicles, fuel logs, and expenses as CSV files (ZIP archive)') }}</p>
+        </div>
+        <div class="settings-row__control">{{ button(_('Download CSV'), href=url_for('api.export_csv'), variant='secondary', icon_name='download') }}</div>
+    </div>
+    {% endcall %}
+
+    {% call card(_('Import Data'), _('Restore a May backup, or import your data from other fuel tracking applications').replace('May', APP_NAME)) %}
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('Restore May Backup').replace('May', APP_NAME) }}</h3>
+            <p class="settings-row__hint">{{ _('Restore a JSON export (.json) or full backup (.zip) from another May instance').replace('May', APP_NAME) }}</p>
+        </div>
+        <div class="settings-row__control">{{ button(_('Restore'), href=url_for('api.backup_restore_upload'), variant='secondary', icon_name='upload') }}</div>
+    </div>
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('CSV Import') }}</h3>
+            <p class="settings-row__hint">{{ _('Import fuel logs, expenses, trips, or charging sessions from any CSV file') }}</p>
+        </div>
+        <div class="settings-row__control">{{ button(_('Import'), href=url_for('api.csv_import_upload'), variant='secondary', icon_name='upload') }}</div>
+    </div>
+    <div class="settings-row settings-row--stack">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">Hammond</h3>
+            <p class="settings-row__hint">{{ _('Import from Hammond SQLite database (.db file)') }}</p>
+        </div>
+        <div class="settings-row__control">{{ file_import(url_for('api.import_hammond'), '.db,.sqlite,.sqlite3') }}</div>
+    </div>
+    <div class="settings-row settings-row--stack">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">Clarkson</h3>
+            <p class="settings-row__hint">{{ _('Import from Clarkson MySQL dump (.sql file)') }}</p>
+        </div>
+        <div class="settings-row__control">{{ file_import(url_for('api.import_clarkson'), '.sql') }}</div>
+    </div>
+    <div class="settings-row settings-row--stack">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">Fuelly</h3>
+            <p class="settings-row__hint">{{ _('Import from Fuelly CSV export (.csv file)') }}</p>
+        </div>
+        <div class="settings-row__control">{{ file_import(url_for('api.import_fuelly'), '.csv') }}</div>
+    </div>
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">Drivvo</h3>
+            <p class="settings-row__hint">{{ _('Import from Drivvo backup files') }}</p>
+        </div>
+        <div class="settings-row__control">{{ badge(_('Soon')) }}</div>
+    </div>
+    {% endcall %}
+</section>

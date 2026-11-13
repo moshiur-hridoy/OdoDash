@@ -1,99 +1,58 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, password_input %}
+{% from 'components/forms.html' import form_actions %}
 {% from 'partials/password_rules.html' import password_rules, password_match %}
 {% block title %}{{ _('Edit User') }} - {{ user.username }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="sm:flex sm:items-center sm:justify-between mb-6">
+{%- set chosen_role = user.effective_role -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Users'), url_for('auth.settings') ~ '#users') }}
+{{ page_header(_('Edit User'), subtitle=user.username) }}
+
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section" aria-labelledby="account-title">
+        <h2 class="form-section__title" id="account-title">{{ _('Account Details') }}</h2>
+        <div class="form-grid">
+            <div class="ds-field">
+                <span class="ds-field__label">{{ _('Username') }}</span>
+                <p class="ds-control ds-control--static">{{ user.username }}</p>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="email">{{ _('Email') }}</label>
+                <input type="email" name="email" id="email" class="ds-control" autocomplete="off" value="{{ user.email }}">
+            </div>
+        </div>
+        {% include 'auth/_user_role.html' %}
+        {% if user.id != current_user.id %}
+        <label class="ds-switch">
+            <input type="checkbox" name="is_admin" id="is_admin"{% if user.is_admin %} checked{% endif %}>
+            {{ _('Administrator') }}
+        </label>
+        {% endif %}
+    </section>
+
+    <section class="ds-card form-section" aria-labelledby="password-title">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Edit User: {{ user.username }}</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Update user details and credentials') }}</p>
+            <h2 class="form-section__title" id="password-title">{{ _('Reset Password') }}</h2>
+            <p class="form-hint">{{ _('Leave blank to keep the current password') }}</p>
         </div>
-        <a href="{{ url_for('auth.users') }}"
-           class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            {{ _('Back to Users') }}
-        </a>
-    </div>
-
-    <form method="POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-        <!-- Account Details -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700 mb-6">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Account Details') }}</h2>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="new_password">{{ _('New Password') }}</label>
+                {{ password_input('new_password', attrs={'autocomplete': 'new-password'}) }}
+                {{ password_rules('new_password', 'confirm_new_password', optional=true) }}
             </div>
-
-            <div class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Username') }}</label>
-                    <p class="mt-1 text-sm text-gray-900 dark:text-white">{{ user.username }}</p>
-                </div>
-
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Email') }}</label>
-                    <input type="email" name="email" id="email" value="{{ user.email }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-
-                <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Role') }}</label>
-                    <select name="role" id="role"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in roles %}
-                        <option value="{{ value }}"{% if value == user.effective_role %} selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    <ul class="mt-2 space-y-1 text-xs text-gray-500 dark:text-gray-400">
-                        {% for value, label in roles %}
-                        <li><span class="font-medium">{{ label }}</span> — {{ role_descriptions[value] }}</li>
-                        {% endfor %}
-                    </ul>
-                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ _('Administrators always have full access, whatever role is set.') }}</p>
-                </div>
-
-                {% if user.id != current_user.id %}
-                <div class="flex items-center">
-                    <input type="checkbox" name="is_admin" id="is_admin" {% if user.is_admin %}checked{% endif %}
-                           class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-                    <label for="is_admin" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Administrator') }}</label>
-                </div>
-                {% endif %}
+            <div class="ds-field">
+                <label class="ds-field__label" for="confirm_new_password">{{ _('Confirm New Password') }}</label>
+                {{ password_input('confirm_new_password', attrs={'autocomplete': 'new-password'}) }}
+                {{ password_match('confirm_new_password') }}
             </div>
         </div>
+    </section>
 
-        <!-- Reset Password -->
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700 mb-6">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Reset Password') }}</h2>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Leave blank to keep the current password') }}</p>
-            </div>
-
-            <div class="p-6">
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div>
-                        <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('New Password') }}</label>
-                        <input type="password" name="new_password" id="new_password" autocomplete="new-password"
-                               class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {{ password_rules('new_password', 'confirm_new_password', optional=true) }}
-                    </div>
-                    <div>
-                        <label for="confirm_new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Confirm New Password') }}</label>
-                        <input type="password" name="confirm_new_password" id="confirm_new_password" autocomplete="new-password"
-                               class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {{ password_match('confirm_new_password') }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-end">
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {{ _('Save Changes') }}
-            </button>
-        </div>
-    </form>
+    {{ form_actions(url_for('auth.settings') ~ '#users', _('Save Changes')) }}
+</form>
 </div>
 {% endblock %}
