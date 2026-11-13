@@ -488,8 +488,9 @@ textarea.ds-control { height: auto; min-height: 96px; padding: 10px 12px; resize
 .ds-choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 /* base.html dims every disabled form input; a choice's radio stays invisible. */
 .ds-choice input:disabled { opacity: 0; cursor: not-allowed; }
-.ds-choice__icon { display: flex; color: var(--ds-text-muted); }
-.ds-choices--compact { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.ds-choice__icon { display: flex; flex-shrink: 0; color: var(--ds-text-muted); }
+.ds-choice__label { min-width: 0; overflow-wrap: anywhere; }
+.ds-choices--compact { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
 .ds-choices--compact .ds-choice { padding: 9px 12px; gap: 8px; }
 .ds-field[hidden], .form-grid[hidden], .import-note[hidden] { display: none; }
 .ds-choice:hover { border-color: color-mix(in srgb, var(--ds-border) 55%, var(--ds-text-subtle)); }
@@ -743,8 +744,8 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .dashboard-attention .ds-card__title { display: flex; align-items: center; gap: 8px; }
 .dashboard-attention { display: flex; flex-direction: column; }
 .dashboard-attention .ds-card__body { flex: 1; display: flex; flex-direction: column; }
-.dashboard-attention .ds-attention-list { flex: 1; }
-.dashboard-card-footer { margin-top: 12px; margin-inline-start: -10px; }
+.dashboard-attention .ds-attention-list, .dashboard-attention .ds-empty { flex: 1; }
+.dashboard-card-footer { margin-top: auto; padding-top: 12px; margin-inline-start: -12px; }
 .dashboard-stat-link { display: inline-block; margin-top: 10px; }
 .dashboard-date { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .dashboard-chart { position: relative; height: 250px; }
@@ -1056,15 +1057,15 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .ds-list__actions form { margin: 0; }
 
 /* The round "mark done" button in a list's lead column. */
-.ds-check {
+.ds-done {
   display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0;
   border: 2px solid var(--ds-border); border-radius: 50%; background: var(--ds-surface); color: transparent; cursor: pointer;
   transition: border-color var(--ds-duration-fast) ease, color var(--ds-duration-fast) ease;
 }
-.ds-check:hover { border-color: var(--ds-success); color: var(--ds-success); }
-.ds-check:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
-.ds-check--done { border-color: var(--ds-success); background: var(--ds-success); color: var(--ds-surface); }
-.ds-check--done:hover { color: var(--ds-surface); opacity: 0.85; }
+.ds-done:hover { border-color: var(--ds-success); color: var(--ds-success); }
+.ds-done:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.ds-done--done { border-color: var(--ds-success); background: var(--ds-success); color: var(--ds-surface); }
+.ds-done--done:hover { color: var(--ds-surface); opacity: 0.85; }
 
 /* A titled block of list rows, e.g. "Overdue · 2". */
 .ds-section__head { display: flex; align-items: center; gap: 8px; padding: 16px 24px 12px; border-bottom: 1px solid var(--ds-border-soft); }
