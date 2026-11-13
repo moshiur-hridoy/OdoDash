@@ -1,0 +1,13 @@
+{#- Users (admins): the same list as the standalone Users page, inside Settings. -#}
+{% from 'components/ui.html' import button %}
+{% from 'auth/settings/_ui.html' import card, row, switch %}
+<section id="section-users" class="settings-section" data-section="users" aria-labelledby="users-title" hidden>
+    <h2 class="ds-sr-only" id="users-title">{{ _('User Management') }}</h2>
+    <div class="settings-actions settings-actions--start">{{ button(_('Create User'), href=url_for('auth.create_user'), icon_name='plus') }}</div>
+    {% include 'auth/_user_list.html' %}
+    {% call card(_('Registration'), _('Control who can sign up on this instance')) %}
+    {% call row(_('Allow Registration'), _('Allow new users to create accounts'), for_id='registration_enabled') %}
+    {{ switch(None, registration_enabled, _('Allow Registration'), id='registration_enabled', attrs={'data-registration-url': url_for('auth.registration_settings'), 'data-saved': _('Registration settings updated')}) }}
+    {% endcall %}
+    {% endcall %}
+</section>

@@ -49,14 +49,6 @@
     <div class="settings-actions settings-actions--inline">{{ button(_('Update Password'), type='submit', icon_name='check') }}</div>
     {% endcall %}
 
-    {% if current_user.is_admin %}
-    {% call card(_('User Management'), _('Manage users and permissions'), admin=True) %}
-    {% call row(_('Users'), _('View and manage all users')) %}{{ button(_('Manage Users'), href=url_for('auth.users'), variant='secondary', icon_name='arrow-right') }}{% endcall %}
-    {% call row(_('Allow Registration'), _('Allow new users to create accounts'), for_id='registration_enabled') %}
-    {{ switch(None, registration_enabled, _('Allow Registration'), id='registration_enabled', attrs={'data-registration-url': url_for('auth.registration_settings'), 'data-saved': _('Registration settings updated')}) }}
-    {% endcall %}
-    {% endcall %}
-    {% endif %}
 
     {% call card(_('Danger Zone'), _('Irreversible actions'), tone='danger') %}
     {% call row(_('Delete Account'), _('Permanently delete your account and all data')) %}

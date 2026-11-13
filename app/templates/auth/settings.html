@@ -45,7 +45,7 @@
         <div class="settings-nav__group">
             <p class="settings-nav__heading">{{ _('Admin') }}</p>
             {{ nav_item('branding', _('Branding'), 'sun') }}
-            {{ nav_item('users', _('Users'), 'grid', href=url_for('auth.users')) }}
+            {{ nav_item('users', _('Users'), 'grid') }}
         </div>
         {% endif %}
         <div class="settings-nav__group">
@@ -67,7 +67,7 @@
         {% include 'auth/settings/_api.html' %}
         {% include 'auth/settings/_integrations.html' %}
         {% include 'auth/settings/_notifications.html' %}
-        {% if current_user.is_admin %}{% include 'auth/settings/_branding.html' %}{% endif %}
+        {% if current_user.is_admin %}{% include 'auth/settings/_users.html' %}{% include 'auth/settings/_branding.html' %}{% endif %}
         {% include 'auth/settings/_about.html' %}
     </div>
 </div>

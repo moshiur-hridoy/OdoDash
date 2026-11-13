@@ -7,7 +7,7 @@
 {% block content %}
 {%- set chosen_role = user.effective_role -%}
 <div class="ds form-page">
-{{ back_link(_('Back to Users'), url_for('auth.users')) }}
+{{ back_link(_('Back to Users'), url_for('auth.settings') ~ '#users') }}
 {{ page_header(_('Edit User'), subtitle=user.username) }}
 
 <form method="POST" class="form-stack" data-busy-submit>
@@ -52,7 +52,7 @@
         </div>
     </section>
 
-    {{ form_actions(url_for('auth.users'), _('Save Changes')) }}
+    {{ form_actions(url_for('auth.settings') ~ '#users', _('Save Changes')) }}
 </form>
 </div>
 {% endblock %}

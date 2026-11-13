@@ -1,0 +1,37 @@
+{#- The user list, shared by the Users page and the Users section of Settings.
+    Expects `users`. -#}
+{% from 'components/ui.html' import button, badge %}
+<section class="ds-card ds-card--flush" aria-label="{{ _('Users') }}">
+    <ul class="ds-list">
+        {% for user in users %}
+        {%- set me = user.id == current_user.id -%}
+        <li class="ds-list__item">
+            <span class="ds-list__lead user-avatar{% if user.is_admin %} ds-list__lead--accent{% endif %}" aria-hidden="true">{{ user.username[:1]|upper }}</span>
+            <div class="ds-list__main">
+                <h3 class="ds-list__title">
+                    <span>{{ user.username }}</span>
+                    {% if me %}{{ badge(_('You'), 'accent') }}{% endif %}
+                    {#- An administrator has full access whatever the role, so the role is moot. -#}
+                    {% if user.is_admin %}{{ badge(_('Administrator'), 'success') }}{% else %}{{ badge(user.role_label) }}{% endif %}
+                </h3>
+                <span class="ds-list__sub">{{ user.email }}</span>
+            </div>
+            <div class="ds-list__meta"><small>{{ _('Joined %(date)s', date=user.created_at|format_date) }}</small></div>
+            <div class="ds-list__actions">
+                {{ button(_('Edit'), href=url_for('auth.edit_user', user_id=user.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                {% if not me %}
+                <form method="POST" action="{{ url_for('auth.toggle_admin', user_id=user.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {{ button(_('Remove Admin') if user.is_admin else _('Make Admin'), type='submit', variant='ghost', size='sm', icon_name='settings', icon_only=true) }}
+                </form>
+                <form method="POST" action="{{ url_for('auth.delete_user', user_id=user.id) }}"
+                      onsubmit='return confirm({{ _("Delete this user?")|tojson }});'>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
+                </form>
+                {% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</section>

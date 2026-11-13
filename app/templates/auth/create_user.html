@@ -7,7 +7,7 @@
 {% block content %}
 {%- set chosen_role = request.form.get('role', 'editor') -%}
 <div class="ds form-page">
-{{ back_link(_('Back to Users'), url_for('auth.users')) }}
+{{ back_link(_('Back to Users'), url_for('auth.settings') ~ '#users') }}
 {{ page_header(_('Create User'), subtitle=_('Add a new user account')) }}
 
 <form method="POST" class="form-stack" data-busy-submit>
@@ -48,7 +48,7 @@
         </label>
     </section>
 
-    {{ form_actions(url_for('auth.users'), _('Create User')) }}
+    {{ form_actions(url_for('auth.settings') ~ '#users', _('Create User')) }}
 </form>
 </div>
 {% endblock %}

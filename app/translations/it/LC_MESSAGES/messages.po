@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: May 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 13:14+0600\n"
+"POT-Creation-Date: 2026-11-13 16:00+0600\n"
 "PO-Revision-Date: 2026-04-18 15:49+0100\n"
 "Last-Translator: Albano Battistella <albanobattistella@gmail.com>\n"
 "Language-Team: it\n"
@@ -46,8 +46,8 @@ msgstr ""
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "Sola lettura. Può vedere i dati ma non può modificare nulla."
 
-#: app/models.py:191 app/templates/auth/create_user.html:47
-#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:24
+#: app/models.py:191 app/templates/auth/_user_list.html:15
+#: app/templates/auth/create_user.html:47 app/templates/auth/edit_user.html:31
 msgid "Administrator"
 msgstr "Amministratore"
 
@@ -169,7 +169,7 @@ msgstr "Assicurazione"
 msgid "Road Tax"
 msgstr "Bollo Auto"
 
-#: app/models.py:1499
+#: app/models.py:1499 app/templates/auth/settings/_users.html:8
 msgid "Registration"
 msgstr "Registrazione"
 
@@ -796,7 +796,7 @@ msgid "Invalid or expired reset link. Please request a new one."
 msgstr "Link di ripristino non valido o scaduto. Richiedine uno nuovo."
 
 #: app/routes/auth.py:132 app/routes/auth.py:190 app/routes/auth.py:271
-#: app/routes/auth.py:668 app/routes/auth.py:715
+#: app/routes/auth.py:669 app/routes/auth.py:716
 #: app/templates/partials/password_rules.html:33
 #: app/templates/partials/password_rules.html:48
 msgid "Passwords do not match"
@@ -810,7 +810,7 @@ msgstr "La tua password è stata ripristinata. Effettua l'accesso."
 msgid "New account registration is currently disabled."
 msgstr "La registrazione di nuovi account è attualmente disabilitata."
 
-#: app/routes/auth.py:200 app/routes/auth.py:726
+#: app/routes/auth.py:200 app/routes/auth.py:727
 msgid "Username already exists"
 msgstr "Il nome utente esiste già"
 
@@ -826,7 +826,7 @@ msgstr "Registrazione avvenuta con successo! Effettua l'accesso."
 msgid "You have been logged out."
 msgstr "Sei stato disconnesso."
 
-#: app/routes/auth.py:262 app/routes/auth.py:659
+#: app/routes/auth.py:262 app/routes/auth.py:660
 msgid "Email already in use by another account"
 msgstr "Email già in uso da un altro account"
 
@@ -834,98 +834,98 @@ msgstr "Email già in uso da un altro account"
 msgid "Settings updated successfully"
 msgstr "Impostazioni aggiornate correttamente"
 
-#: app/routes/auth.py:386
+#: app/routes/auth.py:387
 #, python-format
 msgid "Invalid webhook URL: %(error)s"
 msgstr "URL webhook non valido: %(error)s"
 
-#: app/routes/auth.py:401
+#: app/routes/auth.py:402
 msgid "Notification preferences updated"
 msgstr "Preferenze di notifica aggiornate"
 
-#: app/routes/auth.py:427
+#: app/routes/auth.py:428
 msgid "Menu preferences updated"
 msgstr "Preferenze del menu aggiornate"
 
-#: app/routes/auth.py:452
+#: app/routes/auth.py:453
 msgid "Notification settings updated"
 msgstr "Impostazioni di notifica aggiornate"
 
-#: app/routes/auth.py:481
+#: app/routes/auth.py:482
 msgid "Branding settings updated successfully"
 msgstr "Impostazioni del marchio aggiornate correttamente"
 
-#: app/routes/auth.py:497
+#: app/routes/auth.py:498
 msgid "Logo removed successfully"
 msgstr "Logo rimosso correttamente"
 
-#: app/routes/auth.py:510
+#: app/routes/auth.py:511
 msgid "DVLA settings updated"
 msgstr "Impostazioni DVLA aggiornate"
 
-#: app/routes/auth.py:525
+#: app/routes/auth.py:526
 msgid "UK fuel price settings updated"
 msgstr "Impostazioni dei prezzi carburante britannici aggiornate"
 
-#: app/routes/auth.py:538
+#: app/routes/auth.py:539
 msgid "Tessie settings updated"
 msgstr "Impostazioni Tessie aggiornate"
 
-#: app/routes/auth.py:553
+#: app/routes/auth.py:554
 msgid "Telegram bot disconnected"
 msgstr "Bot Telegram disconnesso"
 
-#: app/routes/auth.py:558
+#: app/routes/auth.py:559
 #, python-format
 msgid "Telegram rejected that token: %(error)s"
 msgstr "Telegram ha rifiutato quel token: %(error)s"
 
-#: app/routes/auth.py:564
+#: app/routes/auth.py:565
 #, python-format
 msgid "Telegram bot @%(username)s connected"
 msgstr "Bot Telegram @%(username)s collegato"
 
-#: app/routes/auth.py:575
+#: app/routes/auth.py:576
 msgid "The Telegram bot is not set up on this instance."
 msgstr "Il bot Telegram non è configurato su questa istanza."
 
-#: app/routes/auth.py:587
+#: app/routes/auth.py:588
 msgid "Telegram disconnected"
 msgstr "Telegram disconnesso"
 
-#: app/routes/auth.py:600 app/templates/auth/settings/_account.html:56
+#: app/routes/auth.py:601 app/templates/auth/settings/_users.html:10
 msgid "Registration settings updated"
 msgstr "Impostazioni di registrazione aggiornate"
 
-#: app/routes/auth.py:624
+#: app/routes/auth.py:625
 msgid "Cannot remove admin status from the last administrator."
 msgstr ""
 "Impossibile rimuovere lo stato di amministratore dall'ultimo amministratore."
 
-#: app/routes/auth.py:629
+#: app/routes/auth.py:630
 #, python-format
 msgid "Admin status updated for %(username)s"
 msgstr "Stato amministratore aggiornato per %(username)s"
 
-#: app/routes/auth.py:642
+#: app/routes/auth.py:643
 #, python-format
 msgid "User %(username)s deleted"
 msgstr "Utente %(username)s eliminato"
 
-#: app/routes/auth.py:687
+#: app/routes/auth.py:688
 #, python-format
 msgid "User %(username)s updated successfully"
 msgstr "Utente %(username)s aggiornato correttamente"
 
-#: app/routes/auth.py:710
+#: app/routes/auth.py:711
 msgid "Username, email, and password are required"
 msgstr "Nome utente, email e password sono obbligatori"
 
-#: app/routes/auth.py:731
+#: app/routes/auth.py:732
 msgid "Email already in use"
 msgstr "Email già in uso"
 
-#: app/routes/auth.py:740
+#: app/routes/auth.py:741
 #, python-format
 msgid "User %(username)s created successfully"
 msgstr "Utente %(username)s creato correttamente"
@@ -2086,7 +2086,7 @@ msgstr "Voci"
 msgid "Actions"
 msgstr "Azioni"
 
-#: app/templates/allowance/index.html:88 app/templates/auth/users.html:30
+#: app/templates/allowance/index.html:88 app/templates/auth/_user_list.html:21
 #: app/templates/charging/_log.html:84 app/templates/documents/view.html:11
 #: app/templates/expenses/index.html:150 app/templates/fuel/index.html:148
 #: app/templates/maintenance/index.html:49 app/templates/notes/index.html:77
@@ -2106,7 +2106,7 @@ msgstr "Modifica"
 msgid "Delete this allowance entry?"
 msgstr "Eliminare questa voce di indennità?"
 
-#: app/templates/allowance/index.html:93 app/templates/auth/users.html:39
+#: app/templates/allowance/index.html:93 app/templates/auth/_user_list.html:30
 #: app/templates/components/forms.html:56 app/templates/expenses/form.html:176
 #: app/templates/expenses/index.html:155 app/templates/fuel/form.html:235
 #: app/templates/fuel/index.html:153 app/templates/notes/index.html:82
@@ -2133,6 +2133,32 @@ msgstr ""
 msgid "API Documentation"
 msgstr "Documentazione API"
 
+#: app/templates/auth/_user_list.html:4 app/templates/auth/settings.html:48
+#: app/templates/auth/users.html:4
+msgid "Users"
+msgstr "Utenti"
+
+#: app/templates/auth/_user_list.html:13
+msgid "You"
+msgstr "Tu"
+
+#: app/templates/auth/_user_list.html:19
+#, python-format
+msgid "Joined %(date)s"
+msgstr "Iscritto il %(date)s"
+
+#: app/templates/auth/_user_list.html:25
+msgid "Remove Admin"
+msgstr "Rimuovi admin"
+
+#: app/templates/auth/_user_list.html:25
+msgid "Make Admin"
+msgstr "Rendi admin"
+
+#: app/templates/auth/_user_list.html:28
+msgid "Delete this user?"
+msgstr "Eliminare questo utente?"
+
 #: app/templates/auth/_user_role.html:4
 msgid "Role"
 msgstr "Ruolo"
@@ -2145,7 +2171,8 @@ msgstr ""
 
 #: app/templates/auth/create_user.html:5
 #: app/templates/auth/create_user.html:11
-#: app/templates/auth/create_user.html:51 app/templates/auth/users.html:10
+#: app/templates/auth/create_user.html:51
+#: app/templates/auth/settings/_users.html:6 app/templates/auth/users.html:10
 msgid "Create User"
 msgstr "Crea Utente"
 
@@ -2339,12 +2366,6 @@ msgstr "Amministratore"
 msgid "Branding"
 msgstr "Marchio"
 
-#: app/templates/auth/settings.html:48
-#: app/templates/auth/settings/_account.html:54
-#: app/templates/auth/users.html:4 app/templates/auth/users.html:13
-msgid "Users"
-msgstr "Utenti"
-
 #: app/templates/auth/settings.html:52
 #: app/templates/auth/settings/_about.html:6
 #: app/templates/auth/settings/_about.html:7
@@ -2417,31 +2438,9 @@ msgstr "Impossibile verificare gli aggiornamenti"
 msgid "Error checking for updates"
 msgstr "Errore durante la verifica degli aggiornamenti"
 
-#: app/templates/auth/settings/_account.html:53
-#: app/templates/auth/users.html:9
+#: app/templates/auth/settings/_users.html:5 app/templates/auth/users.html:9
 msgid "User Management"
 msgstr "Gestione Utenti"
-
-#: app/templates/auth/users.html:22
-msgid "You"
-msgstr "Tu"
-
-#: app/templates/auth/users.html:28
-#, python-format
-msgid "Joined %(date)s"
-msgstr "Iscritto il %(date)s"
-
-#: app/templates/auth/users.html:34
-msgid "Remove Admin"
-msgstr "Rimuovi admin"
-
-#: app/templates/auth/users.html:34
-msgid "Make Admin"
-msgstr "Rendi admin"
-
-#: app/templates/auth/users.html:37
-msgid "Delete this user?"
-msgstr "Eliminare questo utente?"
 
 #: app/templates/auth/settings/_about.html:7
 msgid "Version information and updates"
@@ -2573,41 +2572,20 @@ msgid "Update Password"
 msgstr "Aggiorna Password"
 
 #: app/templates/auth/settings/_account.html:53
-msgid "Manage users and permissions"
-msgstr "Gestisci utenti e permessi"
-
-#: app/templates/auth/settings/_account.html:54
-msgid "View and manage all users"
-msgstr "Visualizza e gestisci tutti gli utenti"
-
-#: app/templates/auth/settings/_account.html:54
-msgid "Manage Users"
-msgstr "Gestisci Utenti"
-
-#: app/templates/auth/settings/_account.html:55
-#: app/templates/auth/settings/_account.html:56
-msgid "Allow Registration"
-msgstr "Consenti Registrazione"
-
-#: app/templates/auth/settings/_account.html:55
-msgid "Allow new users to create accounts"
-msgstr "Consenti ai nuovi utenti di creare account"
-
-#: app/templates/auth/settings/_account.html:61
 #: app/templates/vehicles/view.html:658
 msgid "Danger Zone"
 msgstr "Zona Pericolosa"
 
-#: app/templates/auth/settings/_account.html:61
+#: app/templates/auth/settings/_account.html:53
 msgid "Irreversible actions"
 msgstr "Azioni irreversibili"
 
-#: app/templates/auth/settings/_account.html:62
-#: app/templates/auth/settings/_account.html:63
+#: app/templates/auth/settings/_account.html:54
+#: app/templates/auth/settings/_account.html:55
 msgid "Delete Account"
 msgstr "Elimina Account"
 
-#: app/templates/auth/settings/_account.html:62
+#: app/templates/auth/settings/_account.html:54
 msgid "Permanently delete your account and all data"
 msgstr "Elimina definitivamente il tuo account e tutti i dati"
 
@@ -3728,6 +3706,19 @@ msgstr "Virgola"
 #: app/templates/auth/settings/_units.html:81
 msgid "Round costs to whole numbers"
 msgstr "Arrotonda i costi ai numeri interi"
+
+#: app/templates/auth/settings/_users.html:8
+msgid "Control who can sign up on this instance"
+msgstr "Controlla chi può registrarsi su questa istanza"
+
+#: app/templates/auth/settings/_users.html:9
+#: app/templates/auth/settings/_users.html:10
+msgid "Allow Registration"
+msgstr "Consenti Registrazione"
+
+#: app/templates/auth/settings/_users.html:9
+msgid "Allow new users to create accounts"
+msgstr "Consenti ai nuovi utenti di creare account"
 
 #: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
 #: app/templates/charging/form.html:72
