@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% from 'components/ui.html' import page_header, button, badge, field, empty_state, pager %}
 {% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import category_icons %}
 {% block title %}{{ _('Expenses') }}{% endblock %}
 
 {% block content %}
@@ -14,9 +15,6 @@
 {%- set show_maintenance = selected_category == 'maintenance' or selected_maintenance_group or selected_maintenance_part -%}
 {%- set category_labels = dict(expense_categories) -%}
 {%- set group_labels = dict(maintenance_groups) -%}
-{%- set category_icons = {'maintenance': 'wrench', 'repairs': 'settings', 'inspection': 'check', 'insurance': 'document',
-                          'tax': 'money', 'registration': 'note', 'parking': 'pin', 'tolls': 'map',
-                          'cleaning': 'droplet', 'accessories': 'car'} -%}
 <div class="ds log-page">
 
 {% call page_header(_('Expenses'), subtitle=_('Track maintenance, repairs, insurance, and other costs')) %}

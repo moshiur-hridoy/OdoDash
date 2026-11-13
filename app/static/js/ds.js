@@ -54,7 +54,8 @@
         if (!label) return;
         if (!label.dataset.prompt) label.dataset.prompt = label.textContent;
         var file = input.files && input.files[0];
-        label.textContent = file ? file.name : label.dataset.prompt;
+        var names = Array.prototype.map.call(input.files || [], function (f) { return f.name; });
+        label.textContent = file ? names.join(', ') : label.dataset.prompt;
         zone.classList.toggle('has-file', !!file);
     });
     ['dragenter', 'dragover'].forEach(function (type) {

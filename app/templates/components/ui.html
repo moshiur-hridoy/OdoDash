@@ -206,9 +206,9 @@
 {#- File picker drawn as a drop zone. The real <input type="file"> covers the
     zone, so clicking and dropping both work without script; static/js/ds.js
     only writes the chosen file name into it. -#}
-{%- macro file_drop(id, accept, hint=None, name=None, required=True) -%}
+{%- macro file_drop(id, accept, hint=None, name=None, required=True, multiple=False) -%}
 <div class="ds-drop">
-    <input type="file" id="{{ id }}" name="{{ name or id }}" accept="{{ accept }}"{% if required %} required{% endif %}
+    <input type="file" id="{{ id }}" name="{{ name or id }}" accept="{{ accept }}"{% if required %} required{% endif %}{% if multiple %} multiple{% endif %}
            class="ds-drop__input" data-file-drop{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
     <span class="ds-drop__icon">{{ icon('upload', 22) }}</span>
     <span class="ds-drop__text" data-file-name>{{ _('Choose a file or drag it here') }}</span>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 06:51+0600\n"
+"POT-Creation-Date: 2026-11-13 07:18+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: no <LL@li.org>\n"
@@ -55,8 +55,8 @@ msgstr "Motortimer"
 
 #: app/models.py:403 app/templates/charging/form.html:86
 #: app/templates/dashboard.html:175 app/templates/dashboard.html:201
-#: app/templates/expenses/form.html:99 app/templates/fuel/_quick_form.html:35
-#: app/templates/fuel/form.html:56 app/templates/fuel/index.html:104
+#: app/templates/expenses/form.html:71 app/templates/fuel/_quick_form.html:35
+#: app/templates/fuel/form.html:81 app/templates/fuel/index.html:104
 #: app/templates/fuel/index.html:226 app/templates/maintenance/form.html:138
 #: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
 #: app/templates/notes/index.html:31 app/templates/tires/index.html:92
@@ -1519,9 +1519,9 @@ msgid "Fuel Logs"
 msgstr "Drivstofflogger"
 
 #: app/templates/auth/settings.html:442 app/templates/auth/settings.html:500
-#: app/templates/base.html:533 app/templates/expenses/index.html:4
-#: app/templates/expenses/index.html:22 app/templates/expenses/index.html:82
-#: app/templates/expenses/index.html:91 app/templates/expenses/index.html:231
+#: app/templates/base.html:533 app/templates/expenses/index.html:5
+#: app/templates/expenses/index.html:20 app/templates/expenses/index.html:80
+#: app/templates/expenses/index.html:89 app/templates/expenses/index.html:229
 #: app/templates/import/csv_upload.html:18
 #: app/templates/partials/mobile_nav.html:24
 #: app/templates/search/index.html:43 app/templates/timeline/index.html:120
@@ -1582,8 +1582,8 @@ msgstr "Dekk"
 
 #: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
 #: app/templates/base.html:543 app/templates/charging/form.html:149
-#: app/templates/dashboard.html:244 app/templates/expenses/form.html:135
-#: app/templates/fuel/form.html:183 app/templates/notes/index.html:2
+#: app/templates/dashboard.html:244 app/templates/expenses/form.html:166
+#: app/templates/fuel/form.html:222 app/templates/notes/index.html:2
 #: app/templates/notes/index.html:7 app/templates/partials/mobile_nav.html:34
 #: app/templates/search/index.html:110 app/templates/stations/form.html:74
 #: app/templates/tires/form.html:83 app/templates/trips/form.html:142
@@ -1661,7 +1661,7 @@ msgstr "God ettermiddag, %(name)s"
 msgid "Good evening, %(name)s"
 msgstr "God kveld, %(name)s"
 
-#: app/templates/dashboard.html:27 app/templates/expenses/index.html:78
+#: app/templates/dashboard.html:27 app/templates/expenses/index.html:76
 #: app/templates/fuel/index.html:48 app/templates/fuel/index.html:193
 msgid "This month"
 msgstr "Denne måneden"
@@ -1838,8 +1838,8 @@ msgstr "Nylig aktivitet"
 
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
 #: app/templates/charging/form.html:37 app/templates/dashboard.html:197
-#: app/templates/expenses/form.html:44 app/templates/expenses/index.html:96
-#: app/templates/fuel/form.html:48 app/templates/fuel/index.html:99
+#: app/templates/expenses/form.html:66 app/templates/expenses/index.html:94
+#: app/templates/fuel/form.html:74 app/templates/fuel/index.html:99
 #: app/templates/fuel/index.html:221 app/templates/maintenance/form.html:131
 #: app/templates/notes/form.html:34 app/templates/notes/index.html:28
 #: app/templates/tires/index.html:87 app/templates/tires/index.html:110
@@ -1859,8 +1859,9 @@ msgstr "Type"
 #: app/templates/allowance/form.html:19 app/templates/allowance/index.html:28
 #: app/templates/charging/form.html:19 app/templates/charging/index.html:38
 #: app/templates/dashboard.html:199 app/templates/documents/form.html:21
-#: app/templates/expenses/form.html:29 app/templates/expenses/index.html:28
-#: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:24
+#: app/templates/expenses/form.html:36 app/templates/expenses/form.html:52
+#: app/templates/expenses/index.html:26 app/templates/fuel/_quick_form.html:14
+#: app/templates/fuel/form.html:47 app/templates/fuel/form.html:63
 #: app/templates/fuel/index.html:18 app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/form.html:30
@@ -1872,8 +1873,8 @@ msgstr "Type"
 msgid "Vehicle"
 msgstr "Kjøretøy"
 
-#: app/templates/dashboard.html:200 app/templates/expenses/index.html:147
-#: app/templates/expenses/index.html:148 app/templates/vehicles/view.html:457
+#: app/templates/dashboard.html:200 app/templates/expenses/index.html:145
+#: app/templates/expenses/index.html:146 app/templates/vehicles/view.html:457
 msgid "Details"
 msgstr "Detaljer"
 
@@ -1911,7 +1912,7 @@ msgstr "Siden start"
 
 #: app/templates/charging/form.html:140 app/templates/charging/index.html:28
 #: app/templates/dashboard.html:268 app/templates/fuel/_quick_form.html:75
-#: app/templates/fuel/form.html:105 app/templates/maintenance/history.html:44
+#: app/templates/fuel/form.html:126 app/templates/maintenance/history.html:44
 #: app/templates/vehicles/index.html:76
 msgid "Total Cost"
 msgstr "Total kostnad"
@@ -1964,7 +1965,7 @@ msgstr "Valgfritt. Hvis satt sammen med distanse, beregnes beløpet for deg."
 
 #: app/templates/allowance/form.html:65 app/templates/allowance/index.html:29
 #: app/templates/documents/form.html:85 app/templates/documents/view.html:98
-#: app/templates/expenses/form.html:84 app/templates/expenses/index.html:97
+#: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
 #: app/templates/maintenance/form.html:80
 #: app/templates/recurring/form.html:111 app/templates/trips/form.html:134
 #: app/templates/trips/report.html:101
@@ -1977,8 +1978,8 @@ msgid "e.g., June client visits"
 msgstr "f.eks. Kundebesøk i juni"
 
 #: app/templates/allowance/form.html:77 app/templates/charging/form.html:159
-#: app/templates/documents/form.html:116 app/templates/expenses/form.html:169
-#: app/templates/fuel/form.html:216
+#: app/templates/documents/form.html:116 app/templates/expenses/form.html:194
+#: app/templates/fuel/form.html:254
 #: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/form.html:189
@@ -1993,8 +1994,8 @@ msgstr "Avbryt"
 
 #: app/templates/allowance/form.html:81 app/templates/auth/edit_user.html:94
 #: app/templates/auth/settings.html:214 app/templates/charging/form.html:163
-#: app/templates/documents/form.html:120 app/templates/expenses/form.html:173
-#: app/templates/fuel/form.html:220 app/templates/maintenance/form.html:193
+#: app/templates/documents/form.html:120 app/templates/expenses/form.html:195
+#: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:193
 #: app/templates/notes/form.html:76 app/templates/recurring/form.html:147
 #: app/templates/stations/form.html:105 app/templates/tires/form.html:107
 #: app/templates/trips/form.html:156 app/templates/trips/template_form.html:90
@@ -2010,7 +2011,7 @@ msgstr ""
 "Registrer godtgjørelsesinntekt for jobbkjøring; den motregner løpende "
 "kostnader"
 
-#: app/templates/allowance/index.html:32 app/templates/expenses/index.html:99
+#: app/templates/allowance/index.html:32 app/templates/expenses/index.html:97
 #: app/templates/fuel/index.html:106 app/templates/fuel/index.html:228
 #: app/templates/notes/index.html:32 app/templates/tires/index.html:136
 #: app/templates/vehicles/view.html:223 app/templates/vehicles/view.html:460
@@ -2018,7 +2019,7 @@ msgid "Actions"
 msgstr "Handlinger"
 
 #: app/templates/allowance/index.html:51 app/templates/documents/view.html:31
-#: app/templates/expenses/index.html:152 app/templates/fuel/index.html:160
+#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:160
 #: app/templates/fuel/index.html:269 app/templates/maintenance/index.html:86
 #: app/templates/notes/index.html:55 app/templates/stations/index.html:80
 #: app/templates/tires/index.html:166 app/templates/vehicles/view.html:68
@@ -2033,8 +2034,8 @@ msgid "Delete this allowance entry?"
 msgstr "Slette denne godtgjørelsesoppføringen?"
 
 #: app/templates/allowance/index.html:57 app/templates/documents/form.html:108
-#: app/templates/expenses/form.html:149 app/templates/expenses/index.html:157
-#: app/templates/fuel/form.html:197 app/templates/fuel/index.html:165
+#: app/templates/expenses/form.html:176 app/templates/expenses/index.html:155
+#: app/templates/fuel/form.html:235 app/templates/fuel/index.html:165
 #: app/templates/notes/index.html:61 app/templates/recurring/form.html:135
 #: app/templates/stations/form.html:93 app/templates/tires/index.html:152
 #: app/templates/tires/index.html:170 app/templates/vehicles/view.html:488
@@ -2268,7 +2269,7 @@ msgid "DD.MM.YYYY"
 msgstr "DD.MM.ÅÅÅÅ"
 
 #: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:57
-#: app/templates/fuel/form.html:75 app/templates/fuel/index.html:101
+#: app/templates/fuel/form.html:105 app/templates/fuel/index.html:101
 msgid "Volume"
 msgstr "Volum"
 
@@ -3575,8 +3576,8 @@ msgstr "Start SOC"
 msgid "End SOC"
 msgstr "Slutt SOC"
 
-#: app/templates/charging/form.html:130 app/templates/expenses/form.html:92
-#: app/templates/expenses/index.html:98 app/templates/fuel/index.html:105
+#: app/templates/charging/form.html:130 app/templates/expenses/form.html:124
+#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
 #: app/templates/fuel/index.html:227 app/templates/tires/form.html:61
 #: app/templates/tires/index.html:62 app/templates/vehicles/view.html:459
 msgid "Cost"
@@ -3605,13 +3606,13 @@ msgid "Total Energy"
 msgstr "Total energi"
 
 #: app/templates/charging/index.html:40 app/templates/documents/index.html:25
-#: app/templates/expenses/index.html:30 app/templates/fuel/index.html:20
+#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:20
 #: app/templates/maintenance/history.html:16
 #: app/templates/reminders/index.html:29 app/templates/trips/index.html:55
 msgid "All Vehicles"
 msgstr "Alle kjøretøy"
 
-#: app/templates/charging/index.html:47 app/templates/expenses/index.html:65
+#: app/templates/charging/index.html:47 app/templates/expenses/index.html:63
 #: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
 #: app/templates/reminders/index.html:50 app/templates/trips/index.html:80
 msgid "Filter"
@@ -3767,171 +3768,179 @@ msgstr "Dette dokumentet utløper snart."
 msgid "Preview"
 msgstr "Forhåndsvisning"
 
-#: app/templates/expenses/form.html:2 app/templates/expenses/form.html:11
+#: app/templates/expenses/form.html:5 app/templates/expenses/form.html:16
 msgid "Edit Expense"
 msgstr "Rediger utgift"
 
-#: app/templates/expenses/form.html:2 app/templates/expenses/form.html:11
-#: app/templates/expenses/form.html:173 app/templates/expenses/index.html:23
-#: app/templates/expenses/index.html:197
+#: app/templates/expenses/form.html:5 app/templates/expenses/form.html:16
+#: app/templates/expenses/form.html:195 app/templates/expenses/index.html:21
+#: app/templates/expenses/index.html:195
 #: app/templates/partials/mobile_nav.html:62
 #: app/templates/vehicles/view.html:232
 msgid "Add Expense"
 msgstr "Legg til utgift"
 
-#: app/templates/expenses/form.html:10
+#: app/templates/expenses/form.html:15
 msgid "Back to expenses"
 msgstr "Tilbake til utgifter"
 
-#: app/templates/expenses/form.html:20
+#: app/templates/expenses/form.html:26
 #, python-format
 msgid "Saving this expense will also complete the reminder \"%(title)s\"."
 msgstr "Å lagre denne utgiften fullfører også påminnelsen «%(title)s»."
 
-#: app/templates/expenses/form.html:22
+#: app/templates/expenses/form.html:27
 msgid "Its next occurrence will be scheduled."
 msgstr "Neste forekomst blir planlagt."
 
-#: app/templates/expenses/form.html:51 app/templates/expenses/index.html:35
+#: app/templates/expenses/form.html:84 app/templates/expenses/index.html:33
 #: app/templates/recurring/form.html:42
 msgid "Category"
 msgstr "Kategori"
 
-#: app/templates/expenses/form.html:63 app/templates/expenses/index.html:50
+#: app/templates/expenses/form.html:98 app/templates/expenses/index.html:48
 msgid "Maintenance Type"
 msgstr "Vedlikeholdstype"
 
-#: app/templates/expenses/form.html:66 app/templates/expenses/index.html:127
+#: app/templates/expenses/form.html:100 app/templates/expenses/index.html:125
 msgid "Uncategorized"
 msgstr "Ukategorisert"
 
-#: app/templates/expenses/form.html:71 app/templates/expenses/index.html:57
+#: app/templates/expenses/form.html:105 app/templates/expenses/index.html:55
 msgid "Part Name"
 msgstr "Delnavn"
 
-#: app/templates/expenses/form.html:74
+#: app/templates/expenses/form.html:108
 msgid "Optional for parts"
 msgstr "Valgfritt for deler"
 
-#: app/templates/expenses/form.html:87
+#: app/templates/expenses/form.html:119
 msgid "e.g., Oil change, Annual service"
 msgstr "f.eks. Oljeskift, årlig service"
 
-#: app/templates/expenses/form.html:106 app/templates/recurring/form.html:79
+#: app/templates/expenses/form.html:132 app/templates/recurring/form.html:79
 msgid "Vendor / Service Provider"
 msgstr "Leverandør / verksted"
 
-#: app/templates/expenses/form.html:109 app/templates/recurring/form.html:82
+#: app/templates/expenses/form.html:135 app/templates/recurring/form.html:82
 msgid "e.g., Local Garage"
 msgstr "f.eks. Lokalt verksted"
 
-#: app/templates/expenses/form.html:122
+#: app/templates/expenses/form.html:146
 msgid "Mark Maintenance as Performed"
 msgstr "Merk vedlikehold som utført"
 
-#: app/templates/expenses/form.html:125
+#: app/templates/expenses/form.html:148
 msgid "— none —"
 msgstr "— ingen —"
 
-#: app/templates/expenses/form.html:130
+#: app/templates/expenses/form.html:153
 msgid "Optional — records the schedule as performed on the expense date"
 msgstr ""
 "Valgfritt — registrerer vedlikeholdsplanen som utført på utgiftsdatoen"
 
-#: app/templates/expenses/form.html:141
+#: app/templates/expenses/form.html:161 app/templates/fuel/form.html:186
+msgid "More details"
+msgstr "Flere detaljer"
+
+#: app/templates/expenses/form.html:161
+msgid "Notes and receipts"
+msgstr "Notater og kvitteringer"
+
+#: app/templates/expenses/form.html:170
 msgid "Receipts / Attachments"
 msgstr "Kvitteringer / vedlegg"
 
-#: app/templates/expenses/form.html:148 app/templates/fuel/form.html:196
+#: app/templates/expenses/form.html:178 app/templates/fuel/form.html:237
 msgid "Delete this attachment?"
 msgstr "Slette dette vedlegget?"
 
-#: app/templates/expenses/form.html:156
+#: app/templates/expenses/form.html:183
 msgid "You can select more than one file"
 msgstr "Du kan velge flere filer"
 
-#: app/templates/expenses/index.html:22
+#: app/templates/expenses/index.html:20
 msgid "Track maintenance, repairs, insurance, and other costs"
 msgstr "Spor vedlikehold, reparasjoner, forsikring og andre kostnader"
 
-#: app/templates/expenses/index.html:37
+#: app/templates/expenses/index.html:35
 msgid "All Categories"
 msgstr "Alle kategorier"
 
-#: app/templates/expenses/index.html:42 app/templates/trips/index.html:71
+#: app/templates/expenses/index.html:40 app/templates/trips/index.html:71
 #: app/templates/vehicles/form.html:98
 msgid "Year"
 msgstr "År"
 
-#: app/templates/expenses/index.html:44 app/templates/trips/index.html:73
+#: app/templates/expenses/index.html:42 app/templates/trips/index.html:73
 msgid "All Years"
 msgstr "Alle år"
 
-#: app/templates/expenses/index.html:52
+#: app/templates/expenses/index.html:50
 #: app/templates/maintenance/history.html:22
 #: app/templates/reminders/index.html:38
 msgid "All Types"
 msgstr "Alle typer"
 
-#: app/templates/expenses/index.html:59
+#: app/templates/expenses/index.html:57
 #: app/templates/maintenance/history.html:29
 msgid "All Parts"
 msgstr "Alle deler"
 
-#: app/templates/expenses/index.html:67 app/templates/expenses/index.html:192
+#: app/templates/expenses/index.html:65 app/templates/expenses/index.html:190
 #: app/templates/maintenance/history.html:36
 #: app/templates/reminders/index.html:53
 msgid "Clear filters"
 msgstr "Fjern filtre"
 
-#: app/templates/expenses/index.html:74
+#: app/templates/expenses/index.html:72
 #: app/templates/maintenance/history.html:44
 msgid "Filtered total"
 msgstr "Filtrert sum"
 
-#: app/templates/expenses/index.html:74 app/templates/expenses/index.html:231
+#: app/templates/expenses/index.html:72 app/templates/expenses/index.html:229
 #: app/templates/import/backup_preview.html:41
 #: app/templates/trips/report.html:126
 msgid "Total"
 msgstr "Totalt"
 
-#: app/templates/expenses/index.html:128 app/templates/expenses/index.html:171
+#: app/templates/expenses/index.html:126 app/templates/expenses/index.html:169
 msgid "Receipts:"
 msgstr "Kvitteringer:"
 
-#: app/templates/expenses/index.html:154 app/templates/vehicles/view.html:526
+#: app/templates/expenses/index.html:152 app/templates/vehicles/view.html:526
 msgid "Delete this expense?"
 msgstr "Slette denne utgiften?"
 
-#: app/templates/expenses/index.html:168
+#: app/templates/expenses/index.html:166
 msgid "Vendor / Provider:"
 msgstr "Leverandør:"
 
-#: app/templates/expenses/index.html:169
+#: app/templates/expenses/index.html:167
 msgid "Notes:"
 msgstr "Notater:"
 
-#: app/templates/expenses/index.html:192 app/templates/expenses/index.html:196
+#: app/templates/expenses/index.html:190 app/templates/expenses/index.html:194
 msgid "No expenses"
 msgstr "Ingen utgifter"
 
-#: app/templates/expenses/index.html:192
+#: app/templates/expenses/index.html:190
 msgid "No expenses match these filters."
 msgstr "Ingen utgifter samsvarer med disse filtrene."
 
-#: app/templates/expenses/index.html:196
+#: app/templates/expenses/index.html:194
 msgid "Start tracking your vehicle expenses."
 msgstr "Begynn å spore utgiftene for kjøretøyet ditt."
 
-#: app/templates/expenses/index.html:207
+#: app/templates/expenses/index.html:205
 msgid "By Category"
 msgstr "Etter kategori"
 
-#: app/templates/expenses/index.html:227
+#: app/templates/expenses/index.html:225
 msgid "Spend by Vendor"
 msgstr "Utgifter etter leverandør"
 
-#: app/templates/expenses/index.html:231
+#: app/templates/expenses/index.html:229
 #: app/templates/maintenance/index.html:152
 msgid "Vendor"
 msgstr "Leverandør"
@@ -3941,11 +3950,11 @@ msgstr "Leverandør"
 msgid "Last"
 msgstr "Siste"
 
-#: app/templates/fuel/_quick_form.html:9 app/templates/fuel/form.html:61
+#: app/templates/fuel/_quick_form.html:9 app/templates/fuel/form.html:82
 msgid "From Tessie"
 msgstr "Fra Tessie"
 
-#: app/templates/fuel/_quick_form.html:65 app/templates/fuel/form.html:84
+#: app/templates/fuel/_quick_form.html:65 app/templates/fuel/form.html:115
 #: app/templates/vehicles/view.html:914
 msgid "Price per"
 msgstr "Pris per"
@@ -3954,12 +3963,12 @@ msgstr "Pris per"
 msgid "Full tank"
 msgstr "Full tank"
 
-#: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:124
+#: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:139
 #: app/templates/fuel/index.html:100
 msgid "Station"
 msgstr "Stasjon"
 
-#: app/templates/fuel/_quick_form.html:96 app/templates/fuel/form.html:128
+#: app/templates/fuel/_quick_form.html:96
 msgid "Select station or enter manually..."
 msgstr "Velg stasjon eller skriv inn manuelt..."
 
@@ -3983,32 +3992,36 @@ msgstr "Lagre og legg til ny"
 msgid "Add Vehicle"
 msgstr "Legg til kjøretøy"
 
-#: app/templates/fuel/form.html:2 app/templates/fuel/form.html:16
+#: app/templates/fuel/form.html:4 app/templates/fuel/form.html:38
 msgid "Edit Fuel Log"
 msgstr "Rediger drivstofflogg"
 
-#: app/templates/fuel/form.html:2 app/templates/fuel/form.html:16
-#: app/templates/fuel/form.html:220 app/templates/fuel/index.html:31
+#: app/templates/fuel/form.html:4 app/templates/fuel/form.html:38
+#: app/templates/fuel/form.html:255 app/templates/fuel/index.html:31
 #: app/templates/fuel/index.html:183 app/templates/partials/mobile_nav.html:60
 #: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:540
 msgid "Add Fuel Log"
 msgstr "Legg til drivstofflogg"
 
-#: app/templates/fuel/form.html:15
+#: app/templates/fuel/form.html:37
 msgid "Back to fuel logs"
 msgstr "Tilbake til drivstofflogger"
 
-#: app/templates/fuel/form.html:44 app/templates/fuel/form.html:228
+#: app/templates/fuel/form.html:91 app/templates/fuel/form.html:262
 #: app/templates/trips/form.html:56 app/templates/trips/form.html:183
 msgid "Last engine hours"
 msgstr "Siste motortimer"
 
-#: app/templates/fuel/form.html:44 app/templates/fuel/form.html:227
+#: app/templates/fuel/form.html:91 app/templates/fuel/form.html:261
 #: app/templates/trips/form.html:56 app/templates/trips/form.html:182
 msgid "Last odometer"
 msgstr "Siste kilometerstand"
 
-#: app/templates/fuel/form.html:68
+#: app/templates/fuel/form.html:95
+msgid "Odometer is automatically tracked via Tessie for this vehicle."
+msgstr "Kilometerstand spores automatisk via Tessie for dette kjøretøyet."
+
+#: app/templates/fuel/form.html:96
 msgid ""
 "Leave blank if the reading was not recorded. Enter 0 to confirm a genuine "
 "zero reading."
@@ -4016,51 +4029,27 @@ msgstr ""
 "La feltet stå tomt hvis målerstanden ikke ble registrert. Skriv 0 for å "
 "bekrefte en faktisk nullverdi."
 
-#: app/templates/fuel/form.html:70
-msgid "Odometer is automatically tracked via Tessie for this vehicle."
-msgstr "Kilometerstand spores automatisk via Tessie for dette kjøretøyet."
-
-#: app/templates/fuel/form.html:94
-msgid "Discount per"
-msgstr "Rabatt per"
-
-#: app/templates/fuel/form.html:101
-msgid "Optional loyalty discount, subtracted from the price per unit."
-msgstr "Valgfri lojalitetsrabatt, trukket fra prisen per enhet."
-
-#: app/templates/fuel/form.html:114
-msgid "Sales Tax"
-msgstr "Merverdiavgift"
-
-#: app/templates/fuel/form.html:120
-msgid ""
-"Optional. Sales tax shown on the receipt, already included in the total "
-"cost. Add the amounts together where more than one tax applies."
-msgstr ""
-"Valgfritt. Avgift som står på kvitteringen, allerede inkludert i "
-"totalkostnaden. Legg sammen beløpene hvis flere avgifter gjelder."
-
-#: app/templates/fuel/form.html:139
+#: app/templates/fuel/form.html:146
 msgid "e.g., Shell, BP"
 msgstr "f.eks. Shell, Circle K"
 
-#: app/templates/fuel/form.html:143
+#: app/templates/fuel/form.html:155
 msgid "Add saved stations"
 msgstr "Legg til lagrede stasjoner"
 
-#: app/templates/fuel/form.html:143
+#: app/templates/fuel/form.html:155
 msgid "for quick selection and price tracking"
 msgstr "for hurtigvalg og prissporing"
 
-#: app/templates/fuel/form.html:149 app/templates/vehicles/form.html:59
+#: app/templates/fuel/form.html:160 app/templates/vehicles/form.html:59
 msgid "Fuel Type"
 msgstr "Drivstofftype"
 
-#: app/templates/fuel/form.html:157
+#: app/templates/fuel/form.html:165
 msgid "Distance on this fuel"
 msgstr "Distanse på dette drivstoffet"
 
-#: app/templates/fuel/form.html:163
+#: app/templates/fuel/form.html:172
 msgid ""
 "Distance run on this fuel since your last fill-up of it. The odometer can’t "
 "tell the fuels apart, so consumption for a dual-fuel vehicle needs this."
@@ -4069,15 +4058,39 @@ msgstr ""
 "Kilometertelleren skiller ikke drivstoffene, så forbruket for et "
 "tobrenselskjøretøy trenger dette."
 
-#: app/templates/fuel/form.html:171
+#: app/templates/fuel/form.html:179
 msgid "Full tank fill-up"
 msgstr "Full tank"
 
-#: app/templates/fuel/form.html:178
+#: app/templates/fuel/form.html:186
+msgid "Discount, sales tax, notes and receipt"
+msgstr "Rabatt, mva., notater og kvittering"
+
+#: app/templates/fuel/form.html:192
+msgid "Discount per"
+msgstr "Rabatt per"
+
+#: app/templates/fuel/form.html:200
+msgid "Optional loyalty discount, subtracted from the price per unit."
+msgstr "Valgfri lojalitetsrabatt, trukket fra prisen per enhet."
+
+#: app/templates/fuel/form.html:203
+msgid "Sales Tax"
+msgstr "Merverdiavgift"
+
+#: app/templates/fuel/form.html:211
+msgid ""
+"Optional. Sales tax shown on the receipt, already included in the total "
+"cost. Add the amounts together where more than one tax applies."
+msgstr ""
+"Valgfritt. Avgift som står på kvitteringen, allerede inkludert i "
+"totalkostnaden. Legg sammen beløpene hvis flere avgifter gjelder."
+
+#: app/templates/fuel/form.html:218
 msgid "Missed fill-up (incomplete data)"
 msgstr "Ufullstendig fylling (mangelfulle data)"
 
-#: app/templates/fuel/form.html:189
+#: app/templates/fuel/form.html:227
 msgid "Receipt / Attachment"
 msgstr "Kvittering / vedlegg"
 

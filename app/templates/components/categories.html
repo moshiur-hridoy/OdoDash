@@ -1,0 +1,5 @@
+{#- Icon for each expense category, shared by the expense list and form.
+    {% from 'components/categories.html' import category_icons %} -#}
+{%- set category_icons = {'maintenance': 'wrench', 'repairs': 'settings', 'inspection': 'check', 'insurance': 'document',
+                          'tax': 'money', 'registration': 'note', 'parking': 'pin', 'tolls': 'map',
+                          'cleaning': 'droplet', 'accessories': 'car'} -%}
