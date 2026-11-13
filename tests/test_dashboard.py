@@ -450,7 +450,7 @@ class TestDashboardLists:
     def test_vehicle_row_reads_the_odometer_as_text(self, auth_client, test_user, sample_vehicle):
         _spend(sample_vehicle, test_user, date.today(), fuel=30)
         html = auth_client.get('/dashboard').get_data(as_text=True)
-        assert 'class="ds-mono dashboard-odometer"' in html
+        assert 'class="dashboard-odometer"' in html
         assert 'ds-odometer__digit' not in html
         assert 'ds-swatch' not in html
 

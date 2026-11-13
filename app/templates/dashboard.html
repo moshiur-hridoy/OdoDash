@@ -166,20 +166,23 @@
         <ul class="ds-list">
             {% for row in vehicle_rows %}
             {% set vehicle = row.vehicle %}
+            {#- The standard list row: lead | main | meta | actions. The meta
+                cell renders even when empty so the badge keeps its column. -#}
             <li class="ds-list__item">
+                <span class="ds-list__lead" aria-hidden="true">{{ icon('car', 16) }}</span>
                 <div class="ds-list__main">
-                    <a class="ds-list__title dashboard-vehicle-link" href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}">{{ vehicle.name }}</a>
-                    <p class="ds-list__meta">{{ vehicle.make }} {{ vehicle.model }}{% if vehicle.year %} · {{ vehicle.year }}{% endif %}</p>
+                    <h3 class="ds-list__title"><a href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}">{{ vehicle.name }}</a></h3>
+                    <span class="ds-list__sub">{{ vehicle.make }} {{ vehicle.model }}{% if vehicle.year %} · {{ vehicle.year }}{% endif %}</span>
                 </div>
-                {% if row.odometer %}
-                <span class="ds-mono dashboard-odometer" title="{{ _('Odometer') }}">{{ row.odometer|groupnum }} {{ row.reading_unit }}</span>
-                {% endif %}
-                {% if row.consumption %}
-                <span class="ds-mono ds-muted dashboard-consumption">{{ '%.1f'|format(row.consumption) }} {{ row.consumption_unit }}</span>
-                {% endif %}
-                {% if row.status == 'overdue' %}{{ badge(_('Overdue'), 'danger') }}
-                {% elif row.status == 'soon' %}{{ badge(_('Due soon'), 'warning') }}
-                {% else %}{{ badge(_('All good'), 'success') }}{% endif %}
+                <div class="ds-list__meta">
+                    {%- if row.odometer %}<strong class="dashboard-odometer" title="{{ _('Odometer') }}">{{ row.odometer|groupnum }} {{ row.reading_unit }}</strong>{% endif %}
+                    {%- if row.consumption %}<small>{{ '%.1f'|format(row.consumption) }} {{ row.consumption_unit }}</small>{% endif -%}
+                </div>
+                <div class="ds-list__actions">
+                    {% if row.status == 'overdue' %}{{ badge(_('Overdue'), 'danger') }}
+                    {% elif row.status == 'soon' %}{{ badge(_('Due soon'), 'warning') }}
+                    {% else %}{{ badge(_('All good'), 'success') }}{% endif %}
+                </div>
             </li>
             {% endfor %}
         </ul>
