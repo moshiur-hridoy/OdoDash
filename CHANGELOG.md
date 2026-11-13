@@ -10,6 +10,11 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Added
+
+- Your name in Settings > Account. The dashboard greeting, the sidebar and the phone menu use it instead of the login username, which still signs you in.
+- Average monthly cost. The vehicle page shows it above Monthly Spending, over the last twelve complete months (or fewer for a newer vehicle). The dashboard's This month view adds the year's monthly average beside the yearly projection.
+
 ### Fixed
 
 - On a phone, the consumption gauge on the vehicle page sits in the middle of its card instead of hugging the left edge.

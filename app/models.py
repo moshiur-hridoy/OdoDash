@@ -88,6 +88,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
+    # What the app calls the person: the greeting, sidebar and profile. The
+    # username stays the login handle; an empty name falls back to it.
+    display_name = db.Column(db.String(64))
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(20), default=ROLE_EDITOR)  # editor, contributor, viewer (#285)
@@ -171,6 +174,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @property
+    def shown_name(self):
+        """The name to address the person by: their display name, else the username."""
+        return (self.display_name or '').strip() or self.username
 
     @property
     def effective_role(self):

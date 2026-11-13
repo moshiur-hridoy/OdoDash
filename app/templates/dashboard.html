@@ -18,9 +18,9 @@
 {#- The greeting follows the server clock first, then the browser's own
     clock (see the script below), which knows the user's time zone. -#}
 {% set greetings = {
-    'morning': _('Good morning, %(name)s', name=current_user.username),
-    'afternoon': _('Good afternoon, %(name)s', name=current_user.username),
-    'evening': _('Good evening, %(name)s', name=current_user.username),
+    'morning': _('Good morning, %(name)s', name=current_user.shown_name),
+    'afternoon': _('Good afternoon, %(name)s', name=current_user.shown_name),
+    'evening': _('Good evening, %(name)s', name=current_user.shown_name),
 } %}
 {% call page_header(greetings['morning'] if 5 <= hour < 12 else (greetings['afternoon'] if 12 <= hour < 18 else greetings['evening']), eyebrow=today|dateformat('EEEE, d MMMM')) %}
     {{ segmented([
@@ -147,8 +147,10 @@
             {% if period == 'year' %}
                 {{ stat(_('Average per month'), month_average|money, unit=currency) }}
             {% else %}
+                {% set projection_note = _('On track for %(amount)s', amount=(year_projection|money) ~ ' ' ~ currency) if year_projection else None %}
+                {% set average_note = _('avg %(amount)s a month', amount=month_average|money) if year_to_date else None %}
                 {{ stat(_('This year'), year_to_date|money, unit=currency,
-                        note=_('On track for %(amount)s', amount=(year_projection|money) ~ ' ' ~ currency) if year_projection else None) }}
+                        note=projection_note or average_note, extra_note=average_note if projection_note else None) }}
             {% endif %}
         {% endcall %}
         {#- Only when stations disagree on price (see _cheapest_price): where
