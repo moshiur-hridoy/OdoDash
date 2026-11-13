@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 12:25+0600\n"
+"POT-Creation-Date: 2026-11-13 13:14+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fi <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgid "Read-only. Can see the data but cannot change anything."
 msgstr "Vain luku. Näkee tiedot mutta ei voi muuttaa mitään."
 
 #: app/models.py:191 app/templates/auth/create_user.html:47
-#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:23
+#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:24
 msgid "Administrator"
 msgstr "Ylläpitäjä"
 
@@ -58,7 +58,7 @@ msgstr "Moottorin käyttötunnit"
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:178
 #: app/templates/dashboard.html:204 app/templates/expenses/form.html:71
 #: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
-#: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:113
+#: app/templates/fuel/index.html:92 app/templates/maintenance/form.html:113
 #: app/templates/notes/form.html:25 app/templates/notes/index.html:35
 #: app/templates/tires/index.html:58 app/templates/tires/index.html:76
 #: app/templates/trips/index.html:80 app/templates/vehicles/index.html:71
@@ -73,9 +73,10 @@ msgid "Hours"
 msgstr "Tunnit"
 
 #: app/models.py:409 app/templates/allowance/form.html:36
-#: app/templates/allowance/index.html:52 app/templates/auth/settings.html:127
-#: app/templates/trips/form.html:85 app/templates/trips/form.html:151
-#: app/templates/trips/index.html:82 app/templates/trips/report.html:63
+#: app/templates/allowance/index.html:52
+#: app/templates/auth/settings/_units.html:33 app/templates/trips/form.html:85
+#: app/templates/trips/form.html:151 app/templates/trips/index.html:82
+#: app/templates/trips/report.html:63
 msgid "Distance"
 msgstr "Matka"
 
@@ -140,13 +141,14 @@ msgid "Transmission Fluid"
 msgstr "Vaihteistoöljy"
 
 #: app/models.py:1489 app/models.py:1628 app/models.py:1693
-#: app/templates/auth/settings.html:197
+#: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "Mukautettu"
 
 #: app/models.py:1494 app/routes/maintenance.py:99
-#: app/templates/auth/settings.html:444 app/templates/auth/settings.html:510
-#: app/templates/base.html:536 app/templates/partials/mobile_nav.html:27
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10 app/templates/base.html:537
+#: app/templates/partials/mobile_nav.html:28
 msgid "Maintenance"
 msgstr "Huolto"
 
@@ -243,11 +245,11 @@ msgstr "Vene"
 msgid "Mileage (km/mi)"
 msgstr "Kilometrit (km/mi)"
 
-#: app/models.py:1532 app/templates/auth/settings.html:130
+#: app/models.py:1532 app/templates/auth/settings/_units.html:35
 msgid "Kilometres (km)"
 msgstr "Kilometrit (km)"
 
-#: app/models.py:1533 app/templates/auth/settings.html:131
+#: app/models.py:1533 app/templates/auth/settings/_units.html:36
 msgid "Miles (mi)"
 msgstr "Mailit (mi)"
 
@@ -572,7 +574,7 @@ msgid "Password must contain at least one digit"
 msgstr "Salasanassa on oltava vähintään yksi numero"
 
 #: app/routes/allowance.py:62 app/routes/expenses.py:256
-#: app/routes/fuel.py:248 app/routes/fuel.py:664 app/routes/notes.py:44
+#: app/routes/fuel.py:233 app/routes/fuel.py:649 app/routes/notes.py:44
 #: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
@@ -585,9 +587,9 @@ msgstr "Lisää ensin ajoneuvo"
 #: app/routes/documents.py:167 app/routes/documents.py:207
 #: app/routes/expenses.py:265 app/routes/expenses.py:355
 #: app/routes/expenses.py:410 app/routes/expenses.py:441
-#: app/routes/expenses.py:446 app/routes/fuel.py:257 app/routes/fuel.py:404
-#: app/routes/fuel.py:564 app/routes/fuel.py:619 app/routes/fuel.py:624
-#: app/routes/fuel.py:676 app/routes/fuel.py:677 app/routes/maintenance.py:220
+#: app/routes/expenses.py:446 app/routes/fuel.py:242 app/routes/fuel.py:389
+#: app/routes/fuel.py:549 app/routes/fuel.py:604 app/routes/fuel.py:609
+#: app/routes/fuel.py:661 app/routes/fuel.py:662 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
 #: app/routes/notes.py:53 app/routes/notes.py:100 app/routes/notes.py:141
 #: app/routes/reminders.py:78 app/routes/reminders.py:133
@@ -891,7 +893,7 @@ msgstr "Telegram-bottia ei ole määritetty tässä asennuksessa."
 msgid "Telegram disconnected"
 msgstr "Telegram irrotettu"
 
-#: app/routes/auth.py:600
+#: app/routes/auth.py:600 app/templates/auth/settings/_account.html:56
 msgid "Registration settings updated"
 msgstr "Rekisteröintiasetukset päivitetty"
 
@@ -992,23 +994,23 @@ msgstr "Kulu päivitetty"
 msgid "Expense deleted successfully"
 msgstr "Kulu poistettu"
 
-#: app/routes/expenses.py:455 app/routes/fuel.py:633
+#: app/routes/expenses.py:455 app/routes/fuel.py:618
 msgid "Attachment deleted"
 msgstr "Liite poistettu"
 
-#: app/routes/fuel.py:374
+#: app/routes/fuel.py:359
 msgid "Fuel log added successfully"
 msgstr "Polttoainekirjaus lisätty"
 
-#: app/routes/fuel.py:537
+#: app/routes/fuel.py:522
 msgid "Fuel log updated successfully"
 msgstr "Polttoainekirjaus päivitetty"
 
-#: app/routes/fuel.py:598
+#: app/routes/fuel.py:583
 msgid "Fuel log deleted successfully"
 msgstr "Polttoainekirjaus poistettu"
 
-#: app/routes/fuel.py:735 app/routes/fuel.py:738
+#: app/routes/fuel.py:720 app/routes/fuel.py:723
 msgid "Fuel log added!"
 msgstr "Polttoainekirjaus lisätty!"
 
@@ -1508,94 +1510,100 @@ msgstr ""
 msgid "Dismiss"
 msgstr "Sulje"
 
-#: app/templates/auth/settings.html:439 app/templates/auth/settings.html:490
-#: app/templates/base.html:531 app/templates/partials/mobile_nav.html:22
+#: app/templates/auth/settings/_menu.html:5
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:531
+#: app/templates/partials/mobile_nav.html:22
 #: app/templates/vehicles/index.html:3 app/templates/vehicles/index.html:7
 #: app/templates/vehicles/index.html:12
 msgid "Vehicles"
 msgstr "Ajoneuvot"
 
-#: app/templates/auth/settings.html:440 app/templates/auth/settings.html:495
-#: app/templates/base.html:532 app/templates/fuel/index.html:4
-#: app/templates/fuel/index.html:14 app/templates/fuel/index.html:37
-#: app/templates/fuel/index.html:94 app/templates/import/csv_upload.html:18
+#: app/templates/auth/settings/_menu.html:5
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:532
+#: app/templates/fuel/index.html:4 app/templates/fuel/index.html:14
+#: app/templates/fuel/index.html:82 app/templates/import/csv_upload.html:18
 #: app/templates/search/index.html:64 app/templates/vehicles/view.html:543
 msgid "Fuel Logs"
 msgstr "Polttoainekirjaukset"
 
-#: app/templates/auth/settings.html:442 app/templates/auth/settings.html:500
-#: app/templates/base.html:533 app/templates/expenses/index.html:5
-#: app/templates/expenses/index.html:20 app/templates/expenses/index.html:80
-#: app/templates/expenses/index.html:89 app/templates/expenses/index.html:229
-#: app/templates/import/csv_upload.html:18
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:533
 #: app/templates/partials/mobile_nav.html:24
+msgid "EV Charging"
+msgstr "Sähköauton lataus"
+
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:534
+#: app/templates/expenses/index.html:5 app/templates/expenses/index.html:20
+#: app/templates/expenses/index.html:80 app/templates/expenses/index.html:89
+#: app/templates/expenses/index.html:229
+#: app/templates/import/csv_upload.html:18
+#: app/templates/partials/mobile_nav.html:25
 #: app/templates/search/index.html:55 app/templates/timeline/index.html:15
 #: app/templates/timeline/index.html:101 app/templates/vehicles/view.html:445
 #: app/templates/vehicles/view.html:545
 msgid "Expenses"
 msgstr "Kulut"
 
-#: app/templates/auth/settings.html:443 app/templates/auth/settings.html:505
-#: app/templates/base.html:534 app/templates/partials/mobile_nav.html:25
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10 app/templates/base.html:535
+#: app/templates/partials/mobile_nav.html:26
 #: app/templates/reminders/index.html:4 app/templates/reminders/index.html:24
 msgid "Reminders"
 msgstr "Muistutukset"
 
-#: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
-#: app/templates/base.html:535 app/templates/import/csv_upload.html:19
-#: app/templates/partials/mobile_nav.html:26
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:536
+#: app/templates/import/csv_upload.html:19
+#: app/templates/partials/mobile_nav.html:27
 #: app/templates/search/index.html:89 app/templates/trips/index.html:4
 #: app/templates/trips/index.html:20 app/templates/trips/index.html:66
 #: app/templates/trips/index.html:73
 msgid "Trips"
 msgstr "Matkat"
 
-#: app/templates/base.html:537 app/templates/partials/mobile_nav.html:28
+#: app/templates/base.html:538 app/templates/partials/mobile_nav.html:29
 #: app/templates/reminders/_reminder_row.html:24
 msgid "Recurring"
 msgstr "Toistuvat"
 
-#: app/templates/auth/settings.html:446 app/templates/auth/settings.html:520
-#: app/templates/base.html:538 app/templates/documents/index.html:4
-#: app/templates/documents/index.html:11
-#: app/templates/partials/mobile_nav.html:29
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:539
+#: app/templates/documents/index.html:4 app/templates/documents/index.html:11
+#: app/templates/partials/mobile_nav.html:30
 #: app/templates/search/index.html:73
 msgid "Documents"
 msgstr "Asiakirjat"
 
-#: app/templates/auth/settings.html:447 app/templates/auth/settings.html:525
-#: app/templates/base.html:539 app/templates/partials/mobile_nav.html:30
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:540
+#: app/templates/partials/mobile_nav.html:31
 #: app/templates/stations/index.html:4 app/templates/stations/index.html:9
 #: app/templates/stations/index.html:20
 msgid "Fuel Stations"
 msgstr "Huoltoasemat"
 
-#: app/templates/auth/settings.html:449 app/templates/auth/settings.html:535
-#: app/templates/base.html:540 app/templates/partials/mobile_nav.html:31
-msgid "EV Charging"
-msgstr "Sähköauton lataus"
-
 #: app/templates/allowance/index.html:3 app/templates/allowance/index.html:11
 #: app/templates/allowance/index.html:45 app/templates/allowance/index.html:75
-#: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
-#: app/templates/base.html:541 app/templates/dashboard.html:279
-#: app/templates/partials/mobile_nav.html:32
+#: app/templates/auth/settings/_menu.html:8
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:541
+#: app/templates/dashboard.html:279 app/templates/partials/mobile_nav.html:32
 #: app/templates/vehicles/view.html:205
 msgid "Mileage Allowance"
 msgstr "Kilometrikorvaus"
 
-#: app/templates/auth/settings.html:545 app/templates/base.html:542
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:542
 #: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:4
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Renkaat"
 
-#: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
-#: app/templates/base.html:543 app/templates/charging/form.html:125
-#: app/templates/dashboard.html:247 app/templates/expenses/form.html:166
-#: app/templates/fuel/form.html:222 app/templates/notes/index.html:4
-#: app/templates/notes/index.html:11 app/templates/notes/index.html:28
-#: app/templates/partials/mobile_nav.html:34
+#: app/templates/auth/settings/_menu.html:8
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
+#: app/templates/charging/form.html:125 app/templates/dashboard.html:247
+#: app/templates/expenses/form.html:166 app/templates/fuel/form.html:222
+#: app/templates/notes/index.html:4 app/templates/notes/index.html:11
+#: app/templates/notes/index.html:28 app/templates/partials/mobile_nav.html:34
 #: app/templates/search/index.html:81 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
@@ -1616,7 +1624,7 @@ msgstr "Haku"
 msgid "Main navigation"
 msgstr "Päänavigaatio"
 
-#: app/templates/auth/settings.html:438 app/templates/base.html:572
+#: app/templates/auth/settings/_menu.html:5 app/templates/base.html:572
 #: app/templates/dashboard.html:4 app/templates/partials/mobile_nav.html:80
 msgid "Dashboard"
 msgstr "Kojelauta"
@@ -1626,7 +1634,7 @@ msgstr "Kojelauta"
 msgid "More"
 msgstr "Lisää"
 
-#: app/templates/auth/settings.html:441 app/templates/base.html:587
+#: app/templates/auth/settings/_menu.html:5 app/templates/base.html:587
 #: app/templates/fuel/quick.html:4 app/templates/fuel/quick.html:8
 #: app/templates/partials/mobile_nav.html:149
 msgid "Quick Fuel Entry"
@@ -1648,7 +1656,8 @@ msgstr "Päivitysohje"
 msgid "Toggle dark mode"
 msgstr "Vaihda tumma tila"
 
-#: app/templates/auth/settings.html:3 app/templates/auth/settings.html:7
+#: app/templates/auth/settings.html:4 app/templates/auth/settings.html:24
+#: app/templates/auth/settings.html:27 app/templates/auth/settings.html:57
 #: app/templates/base.html:634 app/templates/partials/mobile_nav.html:132
 msgid "Settings"
 msgstr "Asetukset"
@@ -1673,17 +1682,17 @@ msgid "Good evening, %(name)s"
 msgstr "Hyvää iltaa, %(name)s"
 
 #: app/templates/charging/_log.html:8 app/templates/dashboard.html:27
-#: app/templates/expenses/index.html:76 app/templates/fuel/index.html:48
+#: app/templates/expenses/index.html:76 app/templates/fuel/index.html:36
 msgid "This month"
 msgstr "Tämä kuukausi"
 
 #: app/templates/allowance/index.html:30 app/templates/charging/_log.html:13
 #: app/templates/dashboard.html:28 app/templates/dashboard.html:150
-#: app/templates/fuel/index.html:52
+#: app/templates/fuel/index.html:40
 msgid "This year"
 msgstr "Tämä vuosi"
 
-#: app/templates/auth/settings.html:163 app/templates/dashboard.html:29
+#: app/templates/auth/settings/_units.html:77 app/templates/dashboard.html:29
 msgid "Period"
 msgstr "Piste"
 
@@ -1851,7 +1860,7 @@ msgstr "Viimeaikainen toiminta"
 #: app/templates/charging/_log.html:36 app/templates/charging/form.html:26
 #: app/templates/dashboard.html:200 app/templates/expenses/form.html:66
 #: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
-#: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:107
+#: app/templates/fuel/index.html:87 app/templates/maintenance/form.html:107
 #: app/templates/notes/form.html:20 app/templates/notes/index.html:33
 #: app/templates/stations/prices.html:36 app/templates/timeline/index.html:32
 #: app/templates/tires/index.html:55 app/templates/tires/index.html:73
@@ -1861,7 +1870,7 @@ msgid "Date"
 msgstr "Päivämäärä"
 
 #: app/templates/dashboard.html:201 app/templates/documents/form.html:34
-#: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
+#: app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
 #: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
 #: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:456
@@ -1874,7 +1883,7 @@ msgstr "Tyyppi"
 #: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
 #: app/templates/expenses/form.html:52 app/templates/expenses/index.html:26
 #: app/templates/fuel/_quick_form.html:16 app/templates/fuel/form.html:47
-#: app/templates/fuel/form.html:63 app/templates/fuel/index.html:18
+#: app/templates/fuel/form.html:63 app/templates/fuel/index.html:17
 #: app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/history.html:14 app/templates/notes/index.html:14
@@ -2012,12 +2021,13 @@ msgstr ""
 "Valinnainen. Jos asetettu yhdessä matkan kanssa, summa lasketaan puolestasi."
 
 #: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:55
-#: app/templates/auth/settings.html:214 app/templates/charging/form.html:130
-#: app/templates/documents/form.html:82 app/templates/expenses/form.html:195
-#: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:146
-#: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
-#: app/templates/stations/form.html:63 app/templates/tires/form.html:82
-#: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
+#: app/templates/auth/settings/_units.html:84
+#: app/templates/charging/form.html:130 app/templates/documents/form.html:82
+#: app/templates/expenses/form.html:195 app/templates/fuel/form.html:255
+#: app/templates/maintenance/form.html:146 app/templates/notes/form.html:51
+#: app/templates/recurring/form.html:112 app/templates/stations/form.html:63
+#: app/templates/tires/form.html:82 app/templates/trips/form.html:134
+#: app/templates/trips/template_form.html:63
 #: app/templates/vehicles/form.html:237
 #: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
@@ -2031,7 +2041,7 @@ msgstr ""
 
 #: app/templates/allowance/index.html:16 app/templates/charging/index.html:18
 #: app/templates/documents/index.html:16 app/templates/documents/index.html:64
-#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:20
+#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:19
 #: app/templates/maintenance/history.html:16 app/templates/notes/index.html:16
 #: app/templates/reminders/index.html:32 app/templates/trips/index.html:30
 msgid "All Vehicles"
@@ -2039,7 +2049,7 @@ msgstr "Kaikki ajoneuvot"
 
 #: app/templates/allowance/index.html:21 app/templates/charging/index.html:23
 #: app/templates/documents/index.html:21 app/templates/expenses/index.html:63
-#: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
+#: app/templates/fuel/index.html:24 app/templates/maintenance/history.html:35
 #: app/templates/notes/index.html:21 app/templates/reminders/index.html:47
 #: app/templates/trips/index.html:49 app/templates/trips/report.html:24
 msgid "Filter"
@@ -2057,7 +2067,7 @@ msgid "Entries"
 msgstr "Merkinnät"
 
 #: app/templates/allowance/index.html:54 app/templates/charging/_log.html:43
-#: app/templates/expenses/index.html:97 app/templates/fuel/index.html:106
+#: app/templates/expenses/index.html:97 app/templates/fuel/index.html:94
 #: app/templates/notes/index.html:36 app/templates/stations/prices.html:39
 #: app/templates/trips/index.html:83 app/templates/vehicles/view.html:223
 #: app/templates/vehicles/view.html:460
@@ -2066,7 +2076,7 @@ msgstr "Toiminnot"
 
 #: app/templates/allowance/index.html:88 app/templates/auth/users.html:30
 #: app/templates/charging/_log.html:84 app/templates/documents/view.html:11
-#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:160
+#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:148
 #: app/templates/maintenance/index.html:49 app/templates/notes/index.html:77
 #: app/templates/recurring/index.html:49
 #: app/templates/reminders/_reminder_row.html:55
@@ -2087,7 +2097,7 @@ msgstr "Poistetaanko tämä korvausmerkintä?"
 #: app/templates/allowance/index.html:93 app/templates/auth/users.html:39
 #: app/templates/components/forms.html:56 app/templates/expenses/form.html:176
 #: app/templates/expenses/index.html:155 app/templates/fuel/form.html:235
-#: app/templates/fuel/index.html:165 app/templates/notes/index.html:82
+#: app/templates/fuel/index.html:153 app/templates/notes/index.html:82
 #: app/templates/reminders/_reminder_row.html:60
 #: app/templates/tires/index.html:105 app/templates/tires/index.html:119
 #: app/templates/trips/index.html:136
@@ -2110,7 +2120,7 @@ msgstr "Seuraa työmatkoista saamaasi kilometrikorvausta."
 msgid "API Documentation"
 msgstr "API-dokumentaatio"
 
-#: app/templates/auth/_user_role.html:4 app/templates/auth/settings.html:236
+#: app/templates/auth/_user_role.html:4
 msgid "Role"
 msgstr "Rooli"
 
@@ -2138,14 +2148,15 @@ msgstr "Tilin tiedot"
 
 #: app/templates/auth/create_user.html:19 app/templates/auth/edit_user.html:19
 #: app/templates/auth/login.html:18 app/templates/auth/register.html:11
-#: app/templates/auth/settings.html:232 app/templates/vehicles/share.html:14
+#: app/templates/vehicles/share.html:14
 msgid "Username"
 msgstr "Käyttäjänimi"
 
 #: app/templates/auth/create_user.html:24 app/templates/auth/edit_user.html:23
 #: app/templates/auth/forgot_password.html:11
-#: app/templates/auth/register.html:17 app/templates/auth/settings.html:249
-#: app/templates/auth/settings.html:1471
+#: app/templates/auth/register.html:17
+#: app/templates/auth/settings/_account.html:22
+#: app/templates/auth/settings/_notifications.html:8
 msgid "Email"
 msgstr "Sähköposti"
 
@@ -2175,11 +2186,12 @@ msgstr "Jätä tyhjäksi säilyttääksesi nykyisen salasanan"
 
 #: app/templates/auth/edit_user.html:43
 #: app/templates/auth/reset_password.html:12
-#: app/templates/auth/settings.html:374
+#: app/templates/auth/settings/_account.html:39
 msgid "New Password"
 msgstr "Uusi salasana"
 
-#: app/templates/auth/edit_user.html:48 app/templates/auth/settings.html:381
+#: app/templates/auth/edit_user.html:48
+#: app/templates/auth/settings/_account.html:44
 msgid "Confirm New Password"
 msgstr "Vahvista uusi salasana"
 
@@ -2248,1325 +2260,151 @@ msgstr "Onko sinulla jo tili?"
 msgid "Set a new password"
 msgstr "Aseta uusi salasana"
 
-#: app/templates/auth/settings.html:8
+#: app/templates/auth/settings.html:24
 msgid "Manage your preferences and account"
 msgstr "Hallitse asetuksiasi ja tiliäsi"
 
-#: app/templates/auth/settings.html:19 app/templates/auth/settings.html:99
+#: app/templates/auth/settings.html:29
+msgid "Preferences"
+msgstr "Asetukset"
+
+#: app/templates/auth/settings.html:30
+#: app/templates/auth/settings/_units.html:8
+#: app/templates/auth/settings/_units.html:30
 msgid "Units & Values"
 msgstr "Yksiköt ja arvot"
 
-#: app/templates/auth/settings.html:27
-msgid "Account & Security"
-msgstr "Tili ja turvallisuus"
-
-#: app/templates/auth/settings.html:35 app/templates/auth/settings.html:427
+#: app/templates/auth/settings.html:31
+#: app/templates/auth/settings/_menu.html:14
+#: app/templates/auth/settings/_menu.html:18
 msgid "Menu & Navigation"
 msgstr "Valikko ja navigointi"
 
-#: app/templates/auth/settings.html:43
-msgid "Import / Export"
-msgstr "Tuonti / Vienti"
-
-#: app/templates/auth/settings.html:51
-msgid "API"
-msgstr "API"
-
-#: app/templates/auth/settings.html:59 app/templates/auth/settings.html:358
-#: app/templates/auth/settings.html:800
-msgid "Integrations"
-msgstr "Integraatiot"
-
-#: app/templates/auth/settings.html:67
+#: app/templates/auth/settings.html:32
+#: app/templates/auth/settings/_notifications.html:14
 msgid "Notifications"
 msgstr "Ilmoitukset"
 
-#: app/templates/auth/settings.html:76
-msgid "Branding"
-msgstr "Brändäys"
-
-#: app/templates/auth/settings.html:85 app/templates/auth/settings.html:1879
-msgid "About"
-msgstr "Tietoja"
-
-#: app/templates/auth/settings.html:100
-msgid "Configure how measurements and currencies are displayed"
-msgstr "Määritä miten mittayksiköt ja valuutat näytetään"
-
-#: app/templates/auth/settings.html:106
-msgid "Language"
-msgstr "Kieli"
-
-#: app/templates/auth/settings.html:116
-msgid "Date Format"
-msgstr "Päivämäärämuoto"
-
-#: app/templates/auth/settings.html:119
-msgid "DD/MM/YYYY"
-msgstr "PP/KK/VVVV"
-
-#: app/templates/auth/settings.html:120
-msgid "MM/DD/YYYY"
-msgstr "KK/PP/VVVV"
-
-#: app/templates/auth/settings.html:121
-msgid "YYYY-MM-DD"
-msgstr "VVVV-KK-PP"
-
-#: app/templates/auth/settings.html:122
-msgid "DD.MM.YYYY"
-msgstr "PP.KK.VVVV"
-
-#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:46
-#: app/templates/fuel/form.html:105 app/templates/fuel/index.html:101
-msgid "Volume"
-msgstr "Tilavuus"
-
-#: app/templates/auth/settings.html:139
-#: app/templates/vehicles/part_form.html:7
-msgid "Liters (L)"
-msgstr "Litraa (L)"
-
-#: app/templates/auth/settings.html:140
-msgid "UK Gallons (gal)"
-msgstr "Brittiläiset gallonat (gal)"
-
-#: app/templates/auth/settings.html:141
-msgid "US Gallons (gal)"
-msgstr "Amerikkalaiset gallonat (gal)"
-
-#: app/templates/auth/settings.html:146
-msgid "Fuel Consumption"
-msgstr "Polttoaineenkulutus"
-
-#: app/templates/auth/settings.html:149
-msgid "L/100km"
-msgstr "l/100 km"
-
-#: app/templates/auth/settings.html:150
-msgid "MPG (UK)"
-msgstr "MPG (UK)"
-
-#: app/templates/auth/settings.html:151
-msgid "MPG (US)"
-msgstr "MPG (US)"
-
-#: app/templates/auth/settings.html:152
-msgid "km/L"
-msgstr "km/l"
-
-#: app/templates/auth/settings.html:157
-msgid "Thousand Separator"
-msgstr "Tuhaterotin"
-
-#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:99
-msgid "None"
-msgstr "Ei mitään"
-
-#: app/templates/auth/settings.html:161
-msgid "Space"
-msgstr "Välilyönti"
-
-#: app/templates/auth/settings.html:162
-msgid "Comma"
-msgstr "Pilkku"
-
-#: app/templates/auth/settings.html:171
-msgid "Round costs to whole numbers"
-msgstr "Pyöristä kulut kokonaisluvuiksi"
-
-#: app/templates/auth/settings.html:177
-msgid "Currency"
-msgstr "Valuutta"
-
-#: app/templates/auth/settings.html:200
-msgid "Custom Currency"
-msgstr "Mukautettu valuutta"
-
-#: app/templates/auth/settings.html:203
-msgid "e.g. ZAR, R, CHF"
-msgstr "esim. EUR, SEK, CHF"
-
-#: app/templates/auth/settings.html:205
-msgid "Enter a currency code or symbol to display"
-msgstr "Syötä valuuttakoodi tai symboli näytettäväksi"
-
-#: app/templates/auth/settings.html:226
-msgid "Account Information"
-msgstr "Tilin tiedot"
-
-#: app/templates/auth/settings.html:227
-msgid "Your account details"
-msgstr "Tilisi tiedot"
-
-#: app/templates/auth/settings.html:241
-msgid ""
-"Your account can see the data but cannot change it. Ask an administrator if "
-"you need more access."
-msgstr ""
-"Tilisi näkee tiedot mutta ei voi muuttaa niitä. Pyydä ylläpitäjältä "
-"laajemmat oikeudet tarvittaessa."
-
-#: app/templates/auth/settings.html:243
-msgid ""
-"Your account can record fuel fill-ups and charging sessions. Ask an "
-"administrator if you need more access."
-msgstr ""
-"Tilisi voi kirjata tankkauksia ja latauskertoja. Pyydä ylläpitäjältä "
-"laajemmat oikeudet tarvittaessa."
-
-#: app/templates/auth/settings.html:254
-msgid "Member Since"
-msgstr "Jäsen alkaen"
-
-#: app/templates/auth/settings.html:261
-msgid "Save Email"
-msgstr "Tallenna sähköposti"
-
-#: app/templates/auth/settings.html:269
-msgid "Appearance"
-msgstr "Ulkoasu"
-
-#: app/templates/auth/settings.html:270
-msgid "Customize how the app looks"
-msgstr "Mukauta sovelluksen ulkoasua"
-
-#: app/templates/auth/settings.html:276
-msgid "Dark Mode"
-msgstr "Tumma tila"
-
-#: app/templates/auth/settings.html:277
-msgid "Use dark theme for the interface"
-msgstr "Käytä tummaa teemaa käyttöliittymässä"
-
-#: app/templates/auth/settings.html:292 app/templates/auth/users.html:9
-msgid "User Management"
-msgstr "Käyttäjähallinta"
-
-#: app/templates/auth/settings.html:293
-msgid "Manage users and permissions"
-msgstr "Hallitse käyttäjiä ja oikeuksia"
-
-#: app/templates/auth/settings.html:299 app/templates/auth/users.html:4
-#: app/templates/auth/users.html:9 app/templates/auth/users.html:13
-msgid "Users"
-msgstr "Käyttäjät"
-
-#: app/templates/auth/settings.html:300
-msgid "View and manage all users"
-msgstr "Näytä ja hallitse kaikkia käyttäjiä"
-
-#: app/templates/auth/settings.html:304
-msgid "Manage Users"
-msgstr "Hallitse käyttäjiä"
-
-#: app/templates/auth/settings.html:310
-msgid "Allow Registration"
-msgstr "Salli rekisteröinti"
-
-#: app/templates/auth/settings.html:311
-msgid "Allow new users to create accounts"
-msgstr "Salli uusien käyttäjien luoda tilejä"
-
-#: app/templates/auth/settings.html:345
-msgid "Admin Settings"
-msgstr "Ylläpitoasetukset"
-
-#: app/templates/auth/settings.html:346
-msgid "Configure system-wide settings for all users:"
-msgstr "Määritä järjestelmänlaajuiset asetukset kaikille käyttäjille:"
-
-#: app/templates/auth/settings.html:350
-msgid "SMTP / Notifications"
-msgstr "SMTP / Ilmoitukset"
-
-#: app/templates/auth/settings.html:354
-msgid "Branding / Appearance"
-msgstr "Brändäys / Ulkoasu"
-
-#: app/templates/auth/settings.html:367
-msgid "Change Password"
-msgstr "Vaihda salasana"
-
-#: app/templates/auth/settings.html:368
-msgid "Update your password to keep your account secure"
-msgstr "Päivitä salasanasi pitääksesi tilisi turvassa"
-
-#: app/templates/auth/settings.html:392
-msgid "Update Password"
-msgstr "Päivitä salasana"
-
-#: app/templates/auth/settings.html:400 app/templates/vehicles/view.html:658
-msgid "Danger Zone"
-msgstr "Vaaravyöhyke"
-
-#: app/templates/auth/settings.html:401
-msgid "Irreversible actions"
-msgstr "Peruuttamattomat toiminnot"
-
-#: app/templates/auth/settings.html:407 app/templates/auth/settings.html:412
-msgid "Delete Account"
-msgstr "Poista tili"
-
-#: app/templates/auth/settings.html:408
-msgid "Permanently delete your account and all data"
-msgstr "Poista tilisi ja kaikki tiedot pysyvästi"
-
-#: app/templates/auth/settings.html:428
-msgid "Customize which menu items to show and your start page"
-msgstr "Mukauta näytettäviä valikkokohteita ja aloitussivua"
-
-#: app/templates/auth/settings.html:434
-msgid "Start Page"
-msgstr "Aloitussivu"
-
-#: app/templates/auth/settings.html:435
-msgid "Which page to show when you log in"
-msgstr "Mikä sivu näytetään kirjautuessasi sisään"
-
-#: app/templates/auth/settings.html:445 app/templates/auth/settings.html:515
-#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
-#: app/templates/recurring/index.html:16
-msgid "Recurring Expenses"
-msgstr "Toistuvat kulut"
-
-#: app/templates/auth/settings.html:457
-#: app/templates/trips/template_form.html:23
-msgid "Default Vehicle"
-msgstr "Oletusajoneuvo"
-
-#: app/templates/auth/settings.html:458
-msgid ""
-"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
-"sessions"
-msgstr ""
-"Valmiiksi valittu ajoneuvo lisättäessä polttoainekirjauksia, kuluja, matkoja"
-" ja latausistuntoja"
-
-#: app/templates/auth/settings.html:461
-msgid "No default"
-msgstr "Ei oletusta"
-
-#: app/templates/auth/settings.html:471
-msgid "Quick Entry Button"
-msgstr "Pikakirjauspainike"
-
-#: app/templates/auth/settings.html:472
-msgid "Show a quick fuel entry button in the navigation bar for rapid logging"
-msgstr "Näytä polttoaineen pikakirjauspainike navigointipalkissa"
-
-#: app/templates/auth/settings.html:483
-msgid "Show Menu Items"
-msgstr "Näytä valikkokohteet"
-
-#: app/templates/auth/settings.html:484
-msgid "Choose which items appear in the navigation menu"
-msgstr "Valitse mitkä kohteet näkyvät navigointivalikossa"
-
-#: app/templates/auth/settings.html:559 app/templates/auth/settings.html:1577
-msgid "Save Preferences"
-msgstr "Tallenna asetukset"
-
-#: app/templates/auth/settings.html:572
-msgid "Import Data"
-msgstr "Tuo tiedot"
-
-#: app/templates/auth/settings.html:573
-msgid ""
-"Restore a May backup, or import your data from other fuel tracking "
-"applications"
-msgstr ""
-"Palauta May-varmuuskopio tai tuo tietosi muista polttoaineen "
-"seurantasovelluksista"
-
-#: app/templates/auth/settings.html:579
-msgid "Restore May Backup"
-msgstr "Palauta May-varmuuskopio"
-
-#: app/templates/auth/settings.html:580
-msgid ""
-"Restore a JSON export (.json) or full backup (.zip) from another May "
-"instance"
-msgstr ""
-"Palauta JSON-vienti (.json) tai täysi varmuuskopio (.zip) toisesta May-"
-"asennuksesta"
-
-#: app/templates/auth/settings.html:584
-msgid "Restore"
-msgstr "Palauta"
-
-#: app/templates/auth/settings.html:591
-msgid "Import from Hammond SQLite database (.db file)"
-msgstr "Tuo Hammondin SQLite-tietokannasta (.db-tiedosto)"
-
-#: app/templates/auth/settings.html:599 app/templates/auth/settings.html:615
-#: app/templates/auth/settings.html:631 app/templates/auth/settings.html:643
-#: app/templates/import/csv_mapping.html:15
-#: app/templates/import/csv_mapping.html:96
-#: app/templates/import/csv_upload.html:10
-msgid "Import"
-msgstr "Tuo"
-
-#: app/templates/auth/settings.html:607
-msgid "Import from Clarkson MySQL dump (.sql file)"
-msgstr "Tuo Clarksonin MySQL-vedoksesta (.sql-tiedosto)"
-
-#: app/templates/auth/settings.html:623
-msgid "Import from Fuelly CSV export (.csv file)"
-msgstr "Tuo Fuellyn CSV-viennistä (.csv-tiedosto)"
-
-#: app/templates/auth/settings.html:638 app/templates/import/csv_upload.html:4
-msgid "CSV Import"
-msgstr "CSV-tuonti"
-
-#: app/templates/auth/settings.html:639
-msgid ""
-"Import fuel logs, expenses, trips, or charging sessions from any CSV file"
-msgstr ""
-"Tuo tankkaukset, kulut, matkat tai latauskerrat mistä tahansa CSV-"
-"tiedostosta"
-
-#: app/templates/auth/settings.html:650
-msgid "Import from Drivvo backup files"
-msgstr "Tuo Drivvon varmuuskopiotiedostoista"
-
-#: app/templates/auth/settings.html:654
-msgid "Soon"
-msgstr "Pian"
-
-#: app/templates/auth/settings.html:663
-msgid "Export Data"
-msgstr "Vie tiedot"
-
-#: app/templates/auth/settings.html:664
-msgid "Download your data for backup or migration"
-msgstr "Lataa tietosi varmuuskopiointia tai siirtoa varten"
-
-#: app/templates/auth/settings.html:670
-msgid "Export as CSV"
-msgstr "Vie CSV-muodossa"
-
-#: app/templates/auth/settings.html:671
-msgid ""
-"Download all your vehicles, fuel logs, and expenses as CSV files (ZIP "
-"archive)"
-msgstr ""
-"Lataa kaikki ajoneuvosi, polttoainekirjaukset ja kulut CSV-tiedostoina (ZIP-"
-"arkisto)"
-
-#: app/templates/auth/settings.html:675
-msgid "Download CSV"
-msgstr "Lataa CSV"
-
-#: app/templates/auth/settings.html:681
-msgid "Export as JSON"
-msgstr "Vie JSON-muodossa"
-
-#: app/templates/auth/settings.html:682
-msgid "Download a complete backup of your data in JSON format"
-msgstr "Lataa täydellinen varmuuskopio tiedoistasi JSON-muodossa"
-
-#: app/templates/auth/settings.html:686
-msgid "Download JSON"
-msgstr "Lataa JSON"
-
-#: app/templates/auth/settings.html:692
-msgid "Full Backup"
-msgstr "Täydellinen varmuuskopio"
-
-#: app/templates/auth/settings.html:693
-msgid ""
-"Download all data and files (images, documents, attachments) as a ZIP "
-"archive"
-msgstr ""
-"Lataa kaikki tiedot ja tiedostot (kuvat, asiakirjat, liitteet) ZIP-arkistona"
-
-#: app/templates/auth/settings.html:697
-msgid "Download ZIP"
-msgstr "Lataa ZIP"
-
-#: app/templates/auth/settings.html:713
-msgid "API Access"
-msgstr "API-käyttöoikeus"
-
-#: app/templates/auth/settings.html:714
-msgid "Generate API keys to connect external applications"
-msgstr "Luo API-avaimia ulkoisten sovellusten yhdistämiseksi"
-
-#: app/templates/auth/settings.html:716
-msgid "View API Docs"
-msgstr "Näytä API-dokumentaatio"
-
-#: app/templates/auth/settings.html:725
-msgid "Your API Key"
-msgstr "API-avaimesi"
-
-#: app/templates/auth/settings.html:744 app/templates/auth/settings.html:781
-#: app/templates/auth/settings.html:982 app/templates/auth/settings.html:996
-msgid "Copy"
-msgstr "Kopioi"
-
-#: app/templates/auth/settings.html:747
-msgid "Created"
-msgstr "Luotu"
-
-#: app/templates/auth/settings.html:751
-msgid "Regenerate Key"
-msgstr "Luo avain uudelleen"
-
-#: app/templates/auth/settings.html:755
-msgid "Revoke Key"
-msgstr "Peruuta avain"
-
-#: app/templates/auth/settings.html:762
-msgid "API Key"
-msgstr "API-avain"
-
-#: app/templates/auth/settings.html:763
-msgid ""
-"Generate an API key to access May programmatically. You can use it to "
-"integrate with other applications or build your own tools."
-msgstr ""
-"Luo API-avain käyttääksesi May-sovellusta ohjelmallisesti. Voit käyttää sitä"
-" integroidaksesi muiden sovellusten kanssa tai rakentaaksesi omia työkaluja."
-
-#: app/templates/auth/settings.html:766
-msgid "Generate API Key"
-msgstr "Luo API-avain"
-
-#: app/templates/auth/settings.html:775
-msgid "API Key Generated"
-msgstr "API-avain luotu"
-
-#: app/templates/auth/settings.html:776
-msgid "Copy your API key now. For security, it won't be shown in full again."
-msgstr ""
-"Kopioi API-avaimesi nyt. Turvallisuussyistä sitä ei näytetä kokonaan "
-"uudelleen."
-
-#: app/templates/auth/settings.html:787
-msgid "Done"
-msgstr "Valmis"
-
-#: app/templates/auth/settings.html:801
-msgid "Connect May with external services and applications"
-msgstr "Yhdistä May ulkoisiin palveluihin ja sovelluksiin"
-
-#: app/templates/auth/settings.html:815
-msgid "Calendar"
-msgstr "Kalenteri"
-
-#: app/templates/auth/settings.html:818
-msgid "Subscribe to reminders in your calendar app"
-msgstr "Tilaa muistutukset kalenterisovellukseesi"
-
-#: app/templates/auth/settings.html:820 app/templates/auth/settings.html:841
-msgid "Ready"
-msgstr "Valmis"
-
-#: app/templates/auth/settings.html:822 app/templates/auth/settings.html:843
-msgid "Requires API key"
-msgstr "Vaatii API-avaimen"
-
-#: app/templates/auth/settings.html:836 app/templates/auth/settings.html:1048
-msgid "Home Assistant"
-msgstr "Home Assistant"
-
-#: app/templates/auth/settings.html:839 app/templates/auth/settings.html:1049
-msgid "Create sensors and automations for your vehicles"
-msgstr "Luo antureita ja automaatioita ajoneuvoillesi"
-
-#: app/templates/auth/settings.html:858 app/templates/auth/settings.html:1136
-msgid "Telegram"
-msgstr "Telegram"
-
-#: app/templates/auth/settings.html:861
-msgid "Log fill-ups by messaging a bot"
-msgstr "Kirjaa tankkaukset viestillä botille"
-
-#: app/templates/auth/settings.html:863
-msgid "Connected"
-msgstr "Yhdistetty"
-
-#: app/templates/auth/settings.html:865
-msgid "Not connected"
-msgstr "Ei yhdistetty"
-
-#: app/templates/auth/settings.html:867 app/templates/auth/settings.html:891
-#: app/templates/auth/settings.html:913
-msgid "Not configured"
-msgstr "Ei määritetty"
-
-#: app/templates/auth/settings.html:883
-msgid "DVLA"
-msgstr "DVLA"
-
-#: app/templates/auth/settings.html:884 app/templates/auth/settings.html:906
-#: app/templates/auth/settings.html:928 app/templates/auth/settings.html:1593
+#: app/templates/auth/settings.html:35
+msgid "Account"
+msgstr "Tili"
+
+#: app/templates/auth/settings.html:36
+#: app/templates/auth/settings/_account.html:6
+msgid "Account & Security"
+msgstr "Tili ja turvallisuus"
+
+#: app/templates/auth/settings.html:37 app/templates/auth/settings/_api.html:6
+msgid "API"
+msgstr "API"
+
+#: app/templates/auth/settings.html:40
+#: app/templates/import/backup_preview.html:22
+msgid "Data"
+msgstr "Tiedot"
+
+#: app/templates/auth/settings.html:41
+#: app/templates/auth/settings/_data.html:15
+msgid "Import / Export"
+msgstr "Tuonti / Vienti"
+
+#: app/templates/auth/settings.html:42
+#: app/templates/auth/settings/_integrations.html:65
+msgid "Integrations"
+msgstr "Integraatiot"
+
+#: app/templates/auth/settings.html:46
+#: app/templates/auth/settings/_integrations.html:12
+#: app/templates/auth/settings/_ui.html:13
 msgid "Admin"
 msgstr "Ylläpitäjä"
 
-#: app/templates/auth/settings.html:887 app/templates/auth/settings.html:1216
-msgid "Look up UK vehicle MOT and tax status"
-msgstr "Hae Britannian ajoneuvojen MOT- ja verotiedot"
+#: app/templates/auth/settings.html:47
+#: app/templates/auth/settings/_branding.html:6
+msgid "Branding"
+msgstr "Brändäys"
 
-#: app/templates/auth/settings.html:889 app/templates/auth/settings.html:911
-msgid "Configured"
-msgstr "Määritetty"
+#: app/templates/auth/settings.html:48
+#: app/templates/auth/settings/_account.html:54
+#: app/templates/auth/users.html:4 app/templates/auth/users.html:13
+msgid "Users"
+msgstr "Käyttäjät"
 
-#: app/templates/auth/settings.html:905
-msgid "Tessie"
-msgstr "Tessie"
+#: app/templates/auth/settings.html:52
+#: app/templates/auth/settings/_about.html:6
+#: app/templates/auth/settings/_about.html:7
+msgid "About"
+msgstr "Tietoja"
 
-#: app/templates/auth/settings.html:909
-msgid "Sync Tesla vehicle odometer and battery"
-msgstr "Synkronoi Tesla-ajoneuvon mittarilukema ja akku"
+#: app/templates/auth/settings.html:81
+msgid "Copied to clipboard"
+msgstr "Kopioitu leikepöydälle"
 
-#: app/templates/auth/settings.html:927 app/templates/auth/settings.html:1366
-msgid "UK Fuel Prices"
-msgstr "Ison-Britannian polttoainehinnat"
+#: app/templates/auth/settings.html:82
+msgid "Sending..."
+msgstr "Lähetetään…"
 
-#: app/templates/auth/settings.html:931 app/templates/auth/settings.html:1367
-msgid "Pull live forecourt prices for saved stations"
-msgstr "Hae reaaliaikaiset asemahinnat tallennetuille asemille"
+#: app/templates/auth/settings.html:82
+msgid "Testing..."
+msgstr "Testataan…"
 
-#: app/templates/auth/settings.html:933
-msgid "Enabled"
-msgstr "Käytössä"
+#: app/templates/auth/settings.html:83
+msgid "Something went wrong. Please try again."
+msgstr "Jokin meni vikaan. Yritä uudelleen."
 
-#: app/templates/auth/settings.html:935
-msgid "Disabled"
-msgstr "Pois käytöstä"
-
-#: app/templates/auth/settings.html:949 app/templates/auth/settings.html:1035
-#: app/templates/auth/settings.html:1130 app/templates/auth/settings.html:1202
-#: app/templates/auth/settings.html:1273 app/templates/auth/settings.html:1353
-msgid "Back to Integrations"
-msgstr "Takaisin integraatioihin"
-
-#: app/templates/auth/settings.html:962
-msgid "Calendar Subscription"
-msgstr "Kalenteritilaus"
-
-#: app/templates/auth/settings.html:963
-msgid "Subscribe to your reminders in any calendar app"
-msgstr "Tilaa muistutuksesi missä tahansa kalenterisovelluksessa"
-
-#: app/templates/auth/settings.html:971
+#: app/templates/auth/settings.html:84
 msgid ""
-"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
-"calendar app that supports iCal subscriptions."
+"Are you sure you want to regenerate your API key? The current key will stop "
+"working immediately."
 msgstr ""
-"Lisää tämä kalenteri Apple Calendariin, Google Calendariin, Outlookiin tai "
-"mihin tahansa muuhun kalenterisovellukseen, joka tukee iCal-tilauksia."
+"Haluatko varmasti luoda uuden API-avaimen? Nykyinen avain lakkaa toimimasta "
+"heti."
 
-#: app/templates/auth/settings.html:974
-msgid "Webcal URL"
-msgstr "Webcal-URL"
-
-#: app/templates/auth/settings.html:975
-msgid "Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)"
-msgstr ""
-"Käytä tätä URL-osoitetta useimmissa kalenterisovelluksissa (Apple Calendar, "
-"Outlook jne.)"
-
-#: app/templates/auth/settings.html:988
-msgid "HTTPS URL"
-msgstr "HTTPS-URL"
-
-#: app/templates/auth/settings.html:989
-msgid "Use this URL for Google Calendar"
-msgstr "Käytä tätä URL-osoitetta Google Calendarissa"
-
-#: app/templates/auth/settings.html:1002
-msgid "What's included in the calendar?"
-msgstr "Mitä kalenteri sisältää?"
-
-#: app/templates/auth/settings.html:1004
-msgid "Maintenance schedules"
-msgstr "Huoltoaikataulut"
-
-#: app/templates/auth/settings.html:1005
-msgid "Recurring expense due dates"
-msgstr "Toistuvien kulujen eräpäivät"
-
-#: app/templates/auth/settings.html:1006
-msgid "Document expiry dates"
-msgstr "Asiakirjojen vanhenemispäivät"
-
-#: app/templates/auth/settings.html:1007
-msgid "Custom reminders"
-msgstr "Mukautetut muistutukset"
-
-#: app/templates/auth/settings.html:1016 app/templates/auth/settings.html:1110
-msgid "API Key Required"
-msgstr "API-avain vaaditaan"
-
-#: app/templates/auth/settings.html:1017
-msgid "Generate an API key in the API section to enable calendar integration."
-msgstr "Luo API-avain API-osiossa ottaaksesi kalenteriintegraation käyttöön."
-
-#: app/templates/auth/settings.html:1020 app/templates/auth/settings.html:1114
-msgid "Go to API Settings"
-msgstr "Siirry API-asetuksiin"
-
-#: app/templates/auth/settings.html:1057
+#: app/templates/auth/settings.html:85
 msgid ""
-"Add the following configuration to your Home Assistant configuration.yaml to"
-" create vehicle sensors."
-msgstr ""
-"Lisää seuraava määritys Home Assistantin configuration.yaml-tiedostoon "
-"luodaksesi ajoneuvoanturit."
+"Are you sure you want to revoke your API key? This action cannot be undone."
+msgstr "Haluatko varmasti peruuttaa API-avaimen? Toimintoa ei voi kumota."
 
-#: app/templates/auth/settings.html:1060
-msgid "REST Sensor Configuration"
-msgstr "REST-anturimääritys"
+#: app/templates/auth/settings.html:86
+msgid "Please enter an API token"
+msgstr "Anna API-tunnus"
 
-#: app/templates/auth/settings.html:1076
-msgid "Copy configuration"
-msgstr "Kopioi määritys"
+#: app/templates/auth/settings.html:87
+msgid "Test notification sent!"
+msgstr "Testi-ilmoitus lähetetty!"
 
-#: app/templates/auth/settings.html:1080
-msgid "Available API Endpoints"
-msgstr "Käytettävissä olevat API-päätepisteet"
+#: app/templates/auth/settings.html:87
+msgid "Test email sent!"
+msgstr "Testisähköposti lähetetty!"
 
-#: app/templates/auth/settings.html:1084
-msgid "API health check"
-msgstr "API-terveystarkistus"
+#: app/templates/auth/settings.html:88
+msgid "API key is valid!"
+msgstr "API-avain on kelvollinen!"
 
-#: app/templates/auth/settings.html:1088
-msgid "List all vehicles"
-msgstr "Listaa kaikki ajoneuvot"
-
-#: app/templates/auth/settings.html:1092
-msgid "Vehicle statistics"
-msgstr "Ajoneuvotilastot"
-
-#: app/templates/auth/settings.html:1096
-msgid "Upcoming reminders"
-msgstr "Tulevat muistutukset"
-
-#: app/templates/auth/settings.html:1100
-msgid "Combined summary"
-msgstr "Yhdistetty yhteenveto"
-
-#: app/templates/auth/settings.html:1111
-msgid ""
-"Generate an API key in the API section to enable Home Assistant integration."
-msgstr ""
-"Luo API-avain API-osiossa ottaaksesi Home Assistant -integraation käyttöön."
-
-#: app/templates/auth/settings.html:1137
-msgid ""
-"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
-"it is saved as a fuel log."
-msgstr ""
-"Lähetä botille tankkaus yhdellä rivillä, esimerkiksi 40L 4800tk 45230km, "
-"niin se tallennetaan tankkauksena."
-
-#: app/templates/auth/settings.html:1143
-msgid "Your account is connected to Telegram."
-msgstr "Tilisi on yhdistetty Telegramiin."
-
-#: app/templates/auth/settings.html:1147
-msgid "Disconnect Telegram"
-msgstr "Irrota Telegram"
-
-#: app/templates/auth/settings.html:1150
-msgid "Send this to the bot within 15 minutes:"
-msgstr "Lähetä tämä botille 15 minuutin kuluessa:"
-
-#: app/templates/auth/settings.html:1154
-msgid "Open in Telegram"
-msgstr "Avaa Telegramissa"
-
-#: app/templates/auth/settings.html:1159
-msgid "Connect Telegram"
-msgstr "Yhdistä Telegram"
-
-#: app/templates/auth/settings.html:1168
-msgid "Set up the bot (admin)"
-msgstr "Määritä botti (ylläpitäjä)"
-
-#: app/templates/auth/settings.html:1170
-msgid "In Telegram, message @BotFather and send /newbot"
-msgstr "Lähetä Telegramissa viesti @BotFather-botille ja lähetä /newbot"
-
-#: app/templates/auth/settings.html:1171
-msgid "Copy the token it gives you and paste it below"
-msgstr "Kopioi saamasi tunnus ja liitä se alle"
-
-#: app/templates/auth/settings.html:1172
-msgid "Each user then connects their own chat from this page"
-msgstr "Jokainen käyttäjä yhdistää sitten oman keskustelunsa tältä sivulta"
-
-#: app/templates/auth/settings.html:1178
-msgid "Bot token"
-msgstr "Botin tunnus"
-
-#: app/templates/auth/settings.html:1182
-msgid "Leave empty and save to disconnect the bot."
-msgstr "Jätä tyhjäksi ja tallenna irrottaaksesi botin."
-
-#: app/templates/auth/settings.html:1185
-msgid "Save Telegram Settings"
-msgstr "Tallenna Telegram-asetukset"
-
-#: app/templates/auth/settings.html:1215
-msgid "DVLA Vehicle Lookup"
-msgstr "DVLA-ajoneuvohaku"
-
-#: app/templates/auth/settings.html:1224
-msgid ""
-"The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax "
-"status, and vehicle details for UK registered vehicles. This enables "
-"automatic population of vehicle information when adding new vehicles."
-msgstr ""
-"DVLA Vehicle Enquiry Service mahdollistaa MOT-tilan, verotilan ja "
-"ajoneuvotietojen haun Britanniassa rekisteröidyille ajoneuvoille. Tämä "
-"mahdollistaa ajoneuvotietojen automaattisen täytön uusia ajoneuvoja "
-"lisättäessä."
-
-#: app/templates/auth/settings.html:1228
-msgid "How to get an API key"
-msgstr "Kuinka hankkia API-avain"
-
-#: app/templates/auth/settings.html:1230
-msgid "Visit the"
-msgstr "Käy osoitteessa"
-
-#: app/templates/auth/settings.html:1230
-msgid "DVLA Developer Portal"
-msgstr "DVLA Developer Portal"
-
-#: app/templates/auth/settings.html:1231
-msgid "Register for a free account"
-msgstr "Rekisteröi ilmainen tili"
-
-#: app/templates/auth/settings.html:1232
-msgid "Subscribe to the Vehicle Enquiry Service API"
-msgstr "Tilaa Vehicle Enquiry Service API"
-
-#: app/templates/auth/settings.html:1233
-msgid "Copy your API key and paste it below"
-msgstr "Kopioi API-avaimesi ja liitä se alle"
-
-#: app/templates/auth/settings.html:1240
-msgid "DVLA API Key"
-msgstr "DVLA API -avain"
-
-#: app/templates/auth/settings.html:1248 app/templates/auth/settings.html:1328
-#: app/templates/auth/settings.html:1678
-msgid "Test"
-msgstr "Testaa"
-
-#: app/templates/auth/settings.html:1257
-msgid "Save DVLA Settings"
-msgstr "Tallenna DVLA-asetukset"
-
-#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:162
-msgid "Tessie Integration"
-msgstr "Tessie-integraatio"
-
-#: app/templates/auth/settings.html:1287
-msgid "Sync Tesla vehicle data via Tessie"
-msgstr "Synkronoi Tesla-ajoneuvotiedot Tessien kautta"
-
-#: app/templates/auth/settings.html:1295
-msgid ""
-"Tessie allows you to automatically sync odometer readings, battery level, "
-"and range from your Tesla vehicles. When enabled for a vehicle, odometer "
-"tracking becomes automatic."
-msgstr ""
-"Tessie mahdollistaa mittarilukemien, akun varaustason ja toimintasäteen "
-"automaattisen synkronoinnin Tesla-ajoneuvoistasi. Kun se on käytössä "
-"ajoneuvolle, mittarilukeman seuranta muuttuu automaattiseksi."
-
-#: app/templates/auth/settings.html:1299
-msgid "Important"
-msgstr "Tärkeää"
-
-#: app/templates/auth/settings.html:1301
-msgid "Tessie subscription required ($6.99/month per vehicle)"
-msgstr "Tessie-tilaus vaaditaan (6,99 $/kk per ajoneuvo)"
-
-#: app/templates/auth/settings.html:1302
-msgid "Your Tesla must be connected to Tessie"
-msgstr "Teslasi täytyy olla yhdistettynä Tessieen"
-
-#: app/templates/auth/settings.html:1303
-msgid "When enabled, manual odometer entry is disabled"
-msgstr "Kun käytössä, manuaalinen mittarilukeman syöttö on poistettu käytöstä"
-
-#: app/templates/auth/settings.html:1308
-msgid "How to get an API token"
-msgstr "Kuinka hankkia API-tunnus"
-
-#: app/templates/auth/settings.html:1310
-msgid "Sign up at"
-msgstr "Rekisteröidy osoitteessa"
-
-#: app/templates/auth/settings.html:1311
-msgid "Connect your Tesla account"
-msgstr "Yhdistä Tesla-tilisi"
-
-#: app/templates/auth/settings.html:1312
-msgid "Go to Settings and create an API token"
-msgstr "Siirry Asetuksiin ja luo API-tunnus"
-
-#: app/templates/auth/settings.html:1313
-msgid "Paste the token below"
-msgstr "Liitä tunnus alle"
-
-#: app/templates/auth/settings.html:1320
-msgid "Tessie API Token"
-msgstr "Tessie API -tunnus"
-
-#: app/templates/auth/settings.html:1337
-msgid "Save Tessie Settings"
-msgstr "Tallenna Tessie-asetukset"
-
-#: app/templates/auth/settings.html:1375
-msgid ""
-"UK retailers publish forecourt prices under the government fuel price "
-"transparency scheme. May matches your saved stations to those forecourts by "
-"postcode and records the prices, so price history and Cheapest Fuel stay up "
-"to date without manual entry."
-msgstr ""
-"Britannialaiset jälleenmyyjät julkaisevat asemahinnat valtion hintojen "
-"läpinäkyvyysohjelman puitteissa. May yhdistää tallentamasi asemat näihin "
-"asemiin postinumeron perusteella ja tallentaa hinnat, joten hintahistoria ja"
-" halvin polttoaine pysyvät ajan tasalla ilman käsin syöttöä."
-
-#: app/templates/auth/settings.html:1379
-msgid "Before you start"
-msgstr "Ennen kuin aloitat"
-
-#: app/templates/auth/settings.html:1381
-msgid "No API key is needed; the feeds are open data"
-msgstr "API-avainta ei tarvita; syötteet ovat avointa dataa"
-
-#: app/templates/auth/settings.html:1382
-msgid "Give each station a postcode so it can be matched to a forecourt"
-msgstr ""
-"Anna jokaiselle asemalle postinumero, jotta se voidaan yhdistää "
-"huoltoasemaan"
-
-#: app/templates/auth/settings.html:1383
-msgid ""
-"Prices refresh automatically every few hours, or on demand from the Fuel "
-"Stations page"
-msgstr ""
-"Hinnat päivittyvät automaattisesti muutaman tunnin välein tai pyynnöstä "
-"Huoltoasemat-sivulta"
-
-#: app/templates/auth/settings.html:1384
-msgid "See the"
-msgstr "Katso"
-
-#: app/templates/auth/settings.html:1384
-msgid "gov.uk guidance"
-msgstr "gov.uk-ohjeet"
-
-#: app/templates/auth/settings.html:1384
-msgid "for the current retailer list"
-msgstr "nähdäksesi ajantasaisen jälleenmyyjälistan"
-
-#: app/templates/auth/settings.html:1394
-msgid "Enable UK fuel price updates"
-msgstr "Ota Ison-Britannian polttoainehintojen päivitykset käyttöön"
-
-#: app/templates/auth/settings.html:1398
-msgid "Retailer feeds (optional)"
-msgstr "Jälleenmyyjien syötteet (valinnainen)"
-
-#: app/templates/auth/settings.html:1403
-#, python-format
-msgid ""
-"One feed per line. Leave blank to use the built-in list (%(count)s "
-"retailers)."
-msgstr ""
-"Yksi syöte riviä kohden. Jätä tyhjäksi käyttääksesi sisäänrakennettua listaa"
-" (%(count)s jälleenmyyjää)."
-
-#: app/templates/auth/settings.html:1410
-msgid "Save UK Fuel Price Settings"
-msgstr "Tallenna Ison-Britannian polttoainehintojen asetukset"
-
-#: app/templates/auth/settings.html:1429
-msgid "Notification Preferences"
-msgstr "Ilmoitusasetukset"
-
-#: app/templates/auth/settings.html:1430
-msgid "Configure how you receive reminders about your vehicles"
-msgstr "Määritä miten saat muistutuksia ajoneuvoistasi"
-
-#: app/templates/auth/settings.html:1437
-msgid "Enable Reminders"
-msgstr "Ota muistutukset käyttöön"
-
-#: app/templates/auth/settings.html:1438
-msgid "Receive notifications for upcoming reminders"
-msgstr "Vastaanota ilmoituksia tulevista muistutuksista"
-
-#: app/templates/auth/settings.html:1450
-msgid "Default Reminder Lead Time"
-msgstr "Oletusmuistutuksen ennakkoaika"
-
-#: app/templates/auth/settings.html:1451
-msgid "How many days before the due date should you be notified?"
-msgstr "Kuinka monta päivää ennen eräpäivää sinulle ilmoitetaan?"
-
-#: app/templates/auth/settings.html:1454 app/templates/reminders/form.html:12
-msgid "On the due date"
-msgstr "Eräpäivänä"
-
-#: app/templates/auth/settings.html:1455 app/templates/reminders/form.html:12
-msgid "1 day before"
-msgstr "1 päivä ennen"
-
-#: app/templates/auth/settings.html:1456 app/templates/reminders/form.html:12
-msgid "3 days before"
-msgstr "3 päivää ennen"
-
-#: app/templates/auth/settings.html:1457 app/templates/reminders/form.html:12
-msgid "1 week before"
-msgstr "1 viikko ennen"
-
-#: app/templates/auth/settings.html:1458 app/templates/reminders/form.html:12
-msgid "2 weeks before"
-msgstr "2 viikkoa ennen"
-
-#: app/templates/auth/settings.html:1459 app/templates/reminders/form.html:12
-msgid "1 month before"
-msgstr "1 kuukausi ennen"
-
-#: app/templates/auth/settings.html:1465
-msgid "Notification Method"
-msgstr "Ilmoitustapa"
-
-#: app/templates/auth/settings.html:1466
-msgid "Choose how you want to receive notifications"
-msgstr "Valitse miten haluat vastaanottaa ilmoituksia"
-
-#: app/templates/auth/settings.html:1471 app/templates/auth/settings.html:1475
-msgid "not configured"
-msgstr "ei määritetty"
-
-#: app/templates/auth/settings.html:1473
-msgid "ntfy (Push Notifications)"
-msgstr "ntfy (push-ilmoitukset)"
-
-#: app/templates/auth/settings.html:1475 app/templates/auth/settings.html:1691
-msgid "Pushover"
-msgstr "Pushover"
-
-#: app/templates/auth/settings.html:1477
-msgid "Webhook (HTTP POST)"
-msgstr "Webhook (HTTP POST)"
-
-#: app/templates/auth/settings.html:1487
-msgid "Notifications will be sent to"
-msgstr "Ilmoitukset lähetetään osoitteeseen"
-
-#: app/templates/auth/settings.html:1494
-msgid "Email not configured. Ask an administrator to configure SMTP settings."
-msgstr ""
-"Sähköposti ei ole määritetty. Pyydä ylläpitäjää määrittämään SMTP-asetukset."
-
-#: app/templates/auth/settings.html:1503
-msgid "is a simple pub-sub notification service. Enter your topic below."
-msgstr "on yksinkertainen pub-sub-ilmoituspalvelu. Syötä aiheesi alle."
-
-#: app/templates/auth/settings.html:1506
-msgid "ntfy Topic or Server URL"
-msgstr "ntfy-aihe tai palvelimen URL"
-
-#: app/templates/auth/settings.html:1511
-msgid ""
-"For ntfy.sh, just enter your topic name. For self-hosted, enter the full "
-"URL."
-msgstr ""
-"ntfy.sh-palvelulle syötä vain aiheen nimi. Itse hostetulle palvelulle syötä "
-"koko URL-osoite."
-
-#: app/templates/auth/settings.html:1514
-msgid "ntfy Access Token"
-msgstr "ntfy-käyttöoikeustunnus"
-
-#: app/templates/auth/settings.html:1516
-msgid "Token saved — enter a new one to replace it"
-msgstr "Tunnus tallennettu — anna uusi korvataksesi sen"
-
-#: app/templates/auth/settings.html:1519
-msgid ""
-"Optional — only needed for self-hosted ntfy servers with authentication "
-"enabled. Leave blank to keep the saved token."
-msgstr ""
-"Valinnainen — tarvitaan vain itseisännöidyillä ntfy-palvelimilla, joilla "
-"todennus on käytössä. Jätä tyhjäksi säilyttääksesi tallennetun tunnuksen."
-
-#: app/templates/auth/settings.html:1524
-msgid "Remove the saved token"
-msgstr "Poista tallennettu tunnus"
-
-#: app/templates/auth/settings.html:1534
-msgid "sends notifications to your devices. Enter your User Key below."
-msgstr "lähettää ilmoituksia laitteillesi. Syötä käyttäjäavaimesi alle."
-
-#: app/templates/auth/settings.html:1537
-msgid "Pushover User Key"
-msgstr "Pushover-käyttäjäavain"
-
-#: app/templates/auth/settings.html:1542
-msgid "Find your User Key on your Pushover dashboard."
-msgstr "Löydät käyttäjäavaimesi Pushover-kojelaudaltasi."
-
-#: app/templates/auth/settings.html:1549
-msgid "Notifications will be sent as JSON POST requests to your webhook URL."
-msgstr ""
-"Ilmoitukset lähetetään JSON POST -pyyntöinä webhook-URL-osoitteeseesi."
-
-#: app/templates/auth/settings.html:1552
-msgid "Webhook URL"
-msgstr "Webhook-URL"
-
-#: app/templates/auth/settings.html:1557
-#, python-brace-format
-msgid "JSON payload: {title, message, reminder_id, vehicle_name, due_date}"
-msgstr "JSON-sisältö: {title, message, reminder_id, vehicle_name, due_date}"
-
-#: app/templates/auth/settings.html:1568
-msgid "Send Test Notification"
-msgstr "Lähetä testi-ilmoitus"
-
-#: app/templates/auth/settings.html:1592
-msgid "Notification Services"
-msgstr "Ilmoituspalvelut"
-
-#: app/templates/auth/settings.html:1595
-msgid "Configure notification services available to all users"
-msgstr "Määritä kaikille käyttäjille saatavilla olevat ilmoituspalvelut"
-
-#: app/templates/auth/settings.html:1608
-msgid "Email (SMTP)"
-msgstr "Sähköposti (SMTP)"
-
-#: app/templates/auth/settings.html:1620
-msgid "SMTP Host"
-msgstr "SMTP-palvelin"
-
-#: app/templates/auth/settings.html:1627
-msgid "SMTP Port"
-msgstr "SMTP-portti"
-
-#: app/templates/auth/settings.html:1634
-msgid "SMTP Username"
-msgstr "SMTP-käyttäjänimi"
-
-#: app/templates/auth/settings.html:1641
-msgid "SMTP Password"
-msgstr "SMTP-salasana"
-
-#: app/templates/auth/settings.html:1648
-msgid "Sender Email"
-msgstr "Lähettäjän sähköposti"
-
-#: app/templates/auth/settings.html:1655
-msgid "Sender Name"
-msgstr "Lähettäjän nimi"
-
-#: app/templates/auth/settings.html:1668
-msgid "Use TLS"
-msgstr "Käytä TLS:ää"
-
-#: app/templates/auth/settings.html:1674
-msgid "Use SSL"
-msgstr "Käytä SSL:ää"
-
-#: app/templates/auth/settings.html:1702
-msgid "sends push notifications to iOS and Android devices."
-msgstr "lähettää push-ilmoituksia iOS- ja Android-laitteille."
-
-#: app/templates/auth/settings.html:1705
-msgid "Application Token"
-msgstr "Sovellustunnus"
-
-#: app/templates/auth/settings.html:1710
-msgid "Create an application at pushover.net to get your token"
-msgstr "Luo sovellus osoitteessa pushover.net saadaksesi tunnuksesi"
-
-#: app/templates/auth/settings.html:1720
-msgid "ntfy"
-msgstr "ntfy"
-
-#: app/templates/auth/settings.html:1721 app/templates/auth/settings.html:1736
-msgid "Always available"
-msgstr "Aina saatavilla"
-
-#: app/templates/auth/settings.html:1725
-msgid ""
-"is a free, open-source notification service that requires no admin "
-"configuration. Users can set their own topic."
-msgstr ""
-"on ilmainen, avoimen lähdekoodin ilmoituspalvelu, joka ei vaadi ylläpitäjän "
-"määrityksiä. Käyttäjät voivat asettaa oman aiheensa."
-
-#: app/templates/auth/settings.html:1735
-msgid "Webhook"
-msgstr "Webhook"
-
-#: app/templates/auth/settings.html:1739
-msgid ""
-"Webhooks allow users to integrate with any service that accepts HTTP POST "
-"requests (Home Assistant, Discord, Slack, etc.)"
-msgstr ""
-"Webhookit mahdollistavat integroinnin mihin tahansa palveluun, joka hyväksyy"
-" HTTP POST -pyyntöjä (Home Assistant, Discord, Slack jne.)"
-
-#: app/templates/auth/settings.html:1746
-msgid "Save Notification Settings"
-msgstr "Tallenna ilmoitusasetukset"
-
-#: app/templates/auth/settings.html:1757
-msgid "Manage Reminders"
-msgstr "Hallitse muistutuksia"
-
-#: app/templates/auth/settings.html:1758
-msgid "View and manage your upcoming reminders"
-msgstr "Näytä ja hallitse tulevia muistutuksiasi"
-
-#: app/templates/auth/settings.html:1763
-msgid "View all reminders"
-msgstr "Näytä kaikki muistutukset"
-
-#: app/templates/auth/settings.html:1780
-msgid "Application Branding"
-msgstr "Sovelluksen brändäys"
-
-#: app/templates/auth/settings.html:1781
-msgid "Customize how May appears to all users"
-msgstr "Mukauta miten May näkyy kaikille käyttäjille"
-
-#: app/templates/auth/settings.html:1787
-msgid "Application Name"
-msgstr "Sovelluksen nimi"
-
-#: app/templates/auth/settings.html:1795
-msgid "Tagline"
-msgstr "Iskulause"
-
-#: app/templates/auth/settings.html:1803
-msgid "Primary Color"
-msgstr "Pääväri"
-
-#: app/templates/auth/settings.html:1822
-msgid "Logo"
-msgstr "Logo"
-
-#: app/templates/auth/settings.html:1826 app/templates/auth/settings.html:1827
-msgid "Current logo"
-msgstr "Nykyinen logo"
-
-#: app/templates/auth/settings.html:1839
-msgid "Remove Logo"
-msgstr "Poista logo"
-
-#: app/templates/auth/settings.html:1844
-msgid "Are you sure you want to remove the logo?"
-msgstr "Haluatko varmasti poistaa logon?"
-
-#: app/templates/auth/settings.html:1867
-msgid "Save Branding"
-msgstr "Tallenna brändäys"
-
-#: app/templates/auth/settings.html:1880
-msgid "Version information and updates"
-msgstr "Versiotiedot ja päivitykset"
-
-#: app/templates/auth/settings.html:1887
-msgid "Current Version"
-msgstr "Nykyinen versio"
-
-#: app/templates/auth/settings.html:1910
-msgid "Check for Updates"
-msgstr "Tarkista päivitykset"
-
-#: app/templates/auth/settings.html:1911
-msgid "Click to check for newer versions"
-msgstr "Napsauta tarkistaaksesi uudemmat versiot"
-
-#: app/templates/auth/settings.html:1918
-msgid "Check Now"
-msgstr "Tarkista nyt"
-
-#: app/templates/auth/settings.html:1929
-msgid "Update Available"
-msgstr "Päivitys saatavilla"
-
-#: app/templates/auth/settings.html:1931
-msgid "Version"
-msgstr "Versio"
-
-#: app/templates/auth/settings.html:1931
-msgid "is available"
-msgstr "on saatavilla"
-
-#: app/templates/auth/settings.html:1935
-msgid "View Release Notes"
-msgstr "Näytä julkaisutiedot"
-
-#: app/templates/auth/settings.html:1942
-msgid "To update (Docker):"
-msgstr "Päivittäminen (Docker):"
-
-#: app/templates/auth/settings.html:1945
-msgid "Or use Watchtower for automatic updates."
-msgstr "Tai käytä Watchtoweria automaattisiin päivityksiin."
-
-#: app/templates/auth/settings.html:1957
-msgid "You are running the latest version"
-msgstr "Käytössäsi on uusin versio"
-
-#: app/templates/auth/settings.html:1964
-msgid "Resources"
-msgstr "Resurssit"
-
-#: app/templates/auth/settings.html:1971
-msgid "Source Code"
-msgstr "Lähdekoodi"
-
-#: app/templates/auth/settings.html:1978
-msgid "Report an Issue"
-msgstr "Ilmoita ongelmasta"
-
-#: app/templates/auth/settings.html:1985
-msgid "All Releases"
-msgstr "Kaikki julkaisut"
-
-#: app/templates/auth/settings.html:1992
-msgid "Documentation"
-msgstr "Dokumentaatio"
-
-#: app/templates/auth/settings.html:2407
+#: app/templates/auth/settings.html:272
 msgid "Checking..."
 msgstr "Tarkistetaan..."
 
-#: app/templates/auth/settings.html:2426
+#: app/templates/auth/settings.html:288
 msgid "A newer version is available"
 msgstr "Uudempi versio on saatavilla"
 
-#: app/templates/auth/settings.html:2431
+#: app/templates/auth/settings.html:293
 msgid "Last checked just now"
 msgstr "Viimeksi tarkistettu juuri nyt"
 
-#: app/templates/auth/settings.html:2435
+#: app/templates/auth/settings.html:297
 msgid "Could not check for updates"
 msgstr "Päivitysten tarkistus epäonnistui"
 
-#: app/templates/auth/settings.html:2440
+#: app/templates/auth/settings.html:302
 msgid "Error checking for updates"
 msgstr "Virhe päivitysten tarkistuksessa"
+
+#: app/templates/auth/settings/_account.html:53
+#: app/templates/auth/users.html:9
+msgid "User Management"
+msgstr "Käyttäjähallinta"
 
 #: app/templates/auth/users.html:22
 msgid "You"
@@ -3589,6 +2427,1282 @@ msgstr "Tee ylläpitäjäksi"
 msgid "Delete this user?"
 msgstr "Poistetaanko tämä käyttäjä?"
 
+#: app/templates/auth/settings/_about.html:7
+msgid "Version information and updates"
+msgstr "Versiotiedot ja päivitykset"
+
+#: app/templates/auth/settings/_about.html:10
+msgid "Current Version"
+msgstr "Nykyinen versio"
+
+#: app/templates/auth/settings/_about.html:18
+msgid "Check for Updates"
+msgstr "Tarkista päivitykset"
+
+#: app/templates/auth/settings/_about.html:19
+msgid "Click to check for newer versions"
+msgstr "Napsauta tarkistaaksesi uudemmat versiot"
+
+#: app/templates/auth/settings/_about.html:22
+msgid "Check Now"
+msgstr "Tarkista nyt"
+
+#: app/templates/auth/settings/_about.html:28
+msgid "Update Available"
+msgstr "Päivitys saatavilla"
+
+#: app/templates/auth/settings/_about.html:29
+msgid "Version"
+msgstr "Versio"
+
+#: app/templates/auth/settings/_about.html:29
+msgid "is available"
+msgstr "on saatavilla"
+
+#: app/templates/auth/settings/_about.html:29
+msgid "View Release Notes"
+msgstr "Näytä julkaisutiedot"
+
+#: app/templates/auth/settings/_about.html:30
+msgid "To update (Docker):"
+msgstr "Päivittäminen (Docker):"
+
+#: app/templates/auth/settings/_about.html:33
+msgid "Or use Watchtower for automatic updates."
+msgstr "Tai käytä Watchtoweria automaattisiin päivityksiin."
+
+#: app/templates/auth/settings/_about.html:36
+msgid "You are running the latest version"
+msgstr "Käytössäsi on uusin versio"
+
+#: app/templates/auth/settings/_about.html:39
+msgid "Resources"
+msgstr "Resurssit"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "Source Code"
+msgstr "Lähdekoodi"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "Report an Issue"
+msgstr "Ilmoita ongelmasta"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "All Releases"
+msgstr "Kaikki julkaisut"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "Documentation"
+msgstr "Dokumentaatio"
+
+#: app/templates/auth/settings/_account.html:8
+msgid "Account Information"
+msgstr "Tilin tiedot"
+
+#: app/templates/auth/settings/_account.html:8
+msgid "Your account details"
+msgstr "Tilisi tiedot"
+
+#: app/templates/auth/settings/_account.html:13
+msgid "Member Since"
+msgstr "Jäsen alkaen"
+
+#: app/templates/auth/settings/_account.html:18
+msgid ""
+"Your account can see the data but cannot change it. Ask an administrator if "
+"you need more access."
+msgstr ""
+"Tilisi näkee tiedot mutta ei voi muuttaa niitä. Pyydä ylläpitäjältä "
+"laajemmat oikeudet tarvittaessa."
+
+#: app/templates/auth/settings/_account.html:18
+msgid ""
+"Your account can record fuel fill-ups and charging sessions. Ask an "
+"administrator if you need more access."
+msgstr ""
+"Tilisi voi kirjata tankkauksia ja latauskertoja. Pyydä ylläpitäjältä "
+"laajemmat oikeudet tarvittaessa."
+
+#: app/templates/auth/settings/_account.html:25
+msgid "Save Email"
+msgstr "Tallenna sähköposti"
+
+#: app/templates/auth/settings/_account.html:30
+msgid "Appearance"
+msgstr "Ulkoasu"
+
+#: app/templates/auth/settings/_account.html:30
+msgid "Customize how the app looks"
+msgstr "Mukauta sovelluksen ulkoasua"
+
+#: app/templates/auth/settings/_account.html:31
+#: app/templates/auth/settings/_account.html:32
+msgid "Dark Mode"
+msgstr "Tumma tila"
+
+#: app/templates/auth/settings/_account.html:31
+msgid "Use dark theme for the interface"
+msgstr "Käytä tummaa teemaa käyttöliittymässä"
+
+#: app/templates/auth/settings/_account.html:36
+msgid "Change Password"
+msgstr "Vaihda salasana"
+
+#: app/templates/auth/settings/_account.html:36
+msgid "Update your password to keep your account secure"
+msgstr "Päivitä salasanasi pitääksesi tilisi turvassa"
+
+#: app/templates/auth/settings/_account.html:49
+msgid "Update Password"
+msgstr "Päivitä salasana"
+
+#: app/templates/auth/settings/_account.html:53
+msgid "Manage users and permissions"
+msgstr "Hallitse käyttäjiä ja oikeuksia"
+
+#: app/templates/auth/settings/_account.html:54
+msgid "View and manage all users"
+msgstr "Näytä ja hallitse kaikkia käyttäjiä"
+
+#: app/templates/auth/settings/_account.html:54
+msgid "Manage Users"
+msgstr "Hallitse käyttäjiä"
+
+#: app/templates/auth/settings/_account.html:55
+#: app/templates/auth/settings/_account.html:56
+msgid "Allow Registration"
+msgstr "Salli rekisteröinti"
+
+#: app/templates/auth/settings/_account.html:55
+msgid "Allow new users to create accounts"
+msgstr "Salli uusien käyttäjien luoda tilejä"
+
+#: app/templates/auth/settings/_account.html:61
+#: app/templates/vehicles/view.html:658
+msgid "Danger Zone"
+msgstr "Vaaravyöhyke"
+
+#: app/templates/auth/settings/_account.html:61
+msgid "Irreversible actions"
+msgstr "Peruuttamattomat toiminnot"
+
+#: app/templates/auth/settings/_account.html:62
+#: app/templates/auth/settings/_account.html:63
+msgid "Delete Account"
+msgstr "Poista tili"
+
+#: app/templates/auth/settings/_account.html:62
+msgid "Permanently delete your account and all data"
+msgstr "Poista tilisi ja kaikki tiedot pysyvästi"
+
+#: app/templates/auth/settings/_api.html:8
+msgid "API Access"
+msgstr "API-käyttöoikeus"
+
+#: app/templates/auth/settings/_api.html:8
+msgid "Generate API keys to connect external applications"
+msgstr "Luo API-avaimia ulkoisten sovellusten yhdistämiseksi"
+
+#: app/templates/auth/settings/_api.html:12
+msgid "Your API Key"
+msgstr "API-avaimesi"
+
+#: app/templates/auth/settings/_api.html:17
+#: app/templates/components/ui.html:225 app/templates/components/ui.html:226
+msgid "Show password"
+msgstr "Näytä salasana"
+
+#: app/templates/auth/settings/_api.html:17
+#: app/templates/components/ui.html:226
+msgid "Hide password"
+msgstr "Piilota salasana"
+
+#: app/templates/auth/settings/_api.html:21
+#: app/templates/auth/settings/_api.html:45
+#: app/templates/auth/settings/_integrations.html:57
+msgid "Copy"
+msgstr "Kopioi"
+
+#: app/templates/auth/settings/_api.html:23
+msgid "Created"
+msgstr "Luotu"
+
+#: app/templates/auth/settings/_api.html:26
+msgid "Regenerate Key"
+msgstr "Luo avain uudelleen"
+
+#: app/templates/auth/settings/_api.html:27
+msgid "Revoke Key"
+msgstr "Peruuta avain"
+
+#: app/templates/auth/settings/_api.html:30
+msgid ""
+"Generate an API key to access May programmatically. You can use it to "
+"integrate with other applications or build your own tools."
+msgstr ""
+"Luo API-avain käyttääksesi May-sovellusta ohjelmallisesti. Voit käyttää sitä"
+" integroidaksesi muiden sovellusten kanssa tai rakentaaksesi omia työkaluja."
+
+#: app/templates/auth/settings/_api.html:31
+msgid "Generate API Key"
+msgstr "Luo API-avain"
+
+#: app/templates/auth/settings/_api.html:39
+msgid "API Key Generated"
+msgstr "API-avain luotu"
+
+#: app/templates/auth/settings/_api.html:40
+msgid "Copy your API key now. For security, it won't be shown in full again."
+msgstr ""
+"Kopioi API-avaimesi nyt. Turvallisuussyistä sitä ei näytetä kokonaan "
+"uudelleen."
+
+#: app/templates/auth/settings/_api.html:47
+msgid "Done"
+msgstr "Valmis"
+
+#: app/templates/auth/settings/_api.html:53
+msgid "View API Docs"
+msgstr "Näytä API-dokumentaatio"
+
+#: app/templates/auth/settings/_branding.html:9
+msgid "Application Branding"
+msgstr "Sovelluksen brändäys"
+
+#: app/templates/auth/settings/_branding.html:9
+msgid "Customize how May appears to all users"
+msgstr "Mukauta miten May näkyy kaikille käyttäjille"
+
+#: app/templates/auth/settings/_branding.html:12
+msgid "Application Name"
+msgstr "Sovelluksen nimi"
+
+#: app/templates/auth/settings/_branding.html:16
+msgid "Tagline"
+msgstr "Iskulause"
+
+#: app/templates/auth/settings/_branding.html:21
+#: app/templates/auth/settings/_branding.html:24
+#: app/templates/auth/settings/_branding.html:26
+msgid "Primary Color"
+msgstr "Pääväri"
+
+#: app/templates/auth/settings/_branding.html:33
+msgid "Logo"
+msgstr "Logo"
+
+#: app/templates/auth/settings/_branding.html:37
+#: app/templates/auth/settings/_branding.html:38
+msgid "Current logo"
+msgstr "Nykyinen logo"
+
+#: app/templates/auth/settings/_branding.html:39
+msgid "Remove Logo"
+msgstr "Poista logo"
+
+#: app/templates/auth/settings/_branding.html:40
+msgid "Are you sure you want to remove the logo?"
+msgstr "Haluatko varmasti poistaa logon?"
+
+#: app/templates/auth/settings/_branding.html:47
+msgid "Save Branding"
+msgstr "Tallenna brändäys"
+
+#: app/templates/auth/settings/_data.html:10
+#: app/templates/documents/form.html:24 app/templates/documents/view.html:27
+msgid "File"
+msgstr "Tiedosto"
+
+#: app/templates/auth/settings/_data.html:11
+#: app/templates/auth/settings/_data.html:54
+#: app/templates/import/csv_mapping.html:15
+#: app/templates/import/csv_mapping.html:96
+#: app/templates/import/csv_upload.html:10
+msgid "Import"
+msgstr "Tuo"
+
+#: app/templates/auth/settings/_data.html:17
+msgid "Export Data"
+msgstr "Vie tiedot"
+
+#: app/templates/auth/settings/_data.html:17
+msgid "Download your data for backup or migration"
+msgstr "Lataa tietosi varmuuskopiointia tai siirtoa varten"
+
+#: app/templates/auth/settings/_data.html:20
+msgid "Full Backup"
+msgstr "Täydellinen varmuuskopio"
+
+#: app/templates/auth/settings/_data.html:20
+msgid "Recommended"
+msgstr "Suositeltu"
+
+#: app/templates/auth/settings/_data.html:21
+msgid ""
+"Download all data and files (images, documents, attachments) as a ZIP "
+"archive"
+msgstr ""
+"Lataa kaikki tiedot ja tiedostot (kuvat, asiakirjat, liitteet) ZIP-arkistona"
+
+#: app/templates/auth/settings/_data.html:23
+msgid "Download ZIP"
+msgstr "Lataa ZIP"
+
+#: app/templates/auth/settings/_data.html:27
+msgid "Export as JSON"
+msgstr "Vie JSON-muodossa"
+
+#: app/templates/auth/settings/_data.html:28
+msgid "Download a complete backup of your data in JSON format"
+msgstr "Lataa täydellinen varmuuskopio tiedoistasi JSON-muodossa"
+
+#: app/templates/auth/settings/_data.html:30
+msgid "Download JSON"
+msgstr "Lataa JSON"
+
+#: app/templates/auth/settings/_data.html:34
+msgid "Export as CSV"
+msgstr "Vie CSV-muodossa"
+
+#: app/templates/auth/settings/_data.html:35
+msgid ""
+"Download all your vehicles, fuel logs, and expenses as CSV files (ZIP "
+"archive)"
+msgstr ""
+"Lataa kaikki ajoneuvosi, polttoainekirjaukset ja kulut CSV-tiedostoina (ZIP-"
+"arkisto)"
+
+#: app/templates/auth/settings/_data.html:37
+msgid "Download CSV"
+msgstr "Lataa CSV"
+
+#: app/templates/auth/settings/_data.html:41
+msgid "Import Data"
+msgstr "Tuo tiedot"
+
+#: app/templates/auth/settings/_data.html:41
+msgid ""
+"Restore a May backup, or import your data from other fuel tracking "
+"applications"
+msgstr ""
+"Palauta May-varmuuskopio tai tuo tietosi muista polttoaineen "
+"seurantasovelluksista"
+
+#: app/templates/auth/settings/_data.html:44
+msgid "Restore May Backup"
+msgstr "Palauta May-varmuuskopio"
+
+#: app/templates/auth/settings/_data.html:45
+msgid ""
+"Restore a JSON export (.json) or full backup (.zip) from another May "
+"instance"
+msgstr ""
+"Palauta JSON-vienti (.json) tai täysi varmuuskopio (.zip) toisesta May-"
+"asennuksesta"
+
+#: app/templates/auth/settings/_data.html:47
+msgid "Restore"
+msgstr "Palauta"
+
+#: app/templates/auth/settings/_data.html:51
+#: app/templates/import/csv_upload.html:4
+msgid "CSV Import"
+msgstr "CSV-tuonti"
+
+#: app/templates/auth/settings/_data.html:52
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file"
+msgstr ""
+"Tuo tankkaukset, kulut, matkat tai latauskerrat mistä tahansa CSV-"
+"tiedostosta"
+
+#: app/templates/auth/settings/_data.html:59
+msgid "Import from Hammond SQLite database (.db file)"
+msgstr "Tuo Hammondin SQLite-tietokannasta (.db-tiedosto)"
+
+#: app/templates/auth/settings/_data.html:66
+msgid "Import from Clarkson MySQL dump (.sql file)"
+msgstr "Tuo Clarksonin MySQL-vedoksesta (.sql-tiedosto)"
+
+#: app/templates/auth/settings/_data.html:73
+msgid "Import from Fuelly CSV export (.csv file)"
+msgstr "Tuo Fuellyn CSV-viennistä (.csv-tiedosto)"
+
+#: app/templates/auth/settings/_data.html:80
+msgid "Import from Drivvo backup files"
+msgstr "Tuo Drivvon varmuuskopiotiedostoista"
+
+#: app/templates/auth/settings/_data.html:82
+msgid "Soon"
+msgstr "Pian"
+
+#: app/templates/auth/settings/_integrations.html:20
+msgid "Back to Integrations"
+msgstr "Takaisin integraatioihin"
+
+#: app/templates/auth/settings/_integrations.html:45
+msgid "API Key Required"
+msgstr "API-avain vaaditaan"
+
+#: app/templates/auth/settings/_integrations.html:47
+msgid "Go to API Settings"
+msgstr "Siirry API-asetuksiin"
+
+#: app/templates/auth/settings/_integrations.html:66
+msgid "Connect May with external services and applications"
+msgstr "Yhdistä May ulkoisiin palveluihin ja sovelluksiin"
+
+#: app/templates/auth/settings/_integrations.html:69
+msgid "Calendar"
+msgstr "Kalenteri"
+
+#: app/templates/auth/settings/_integrations.html:69
+msgid "Subscribe to reminders in your calendar app"
+msgstr "Tilaa muistutukset kalenterisovellukseesi"
+
+#: app/templates/auth/settings/_integrations.html:70
+#: app/templates/auth/settings/_integrations.html:72
+msgid "Ready"
+msgstr "Valmis"
+
+#: app/templates/auth/settings/_integrations.html:70
+#: app/templates/auth/settings/_integrations.html:72
+msgid "Requires API key"
+msgstr "Vaatii API-avaimen"
+
+#: app/templates/auth/settings/_integrations.html:71
+#: app/templates/auth/settings/_integrations.html:119
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+#: app/templates/auth/settings/_integrations.html:71
+#: app/templates/auth/settings/_integrations.html:119
+msgid "Create sensors and automations for your vehicles"
+msgstr "Luo antureita ja automaatioita ajoneuvoillesi"
+
+#: app/templates/auth/settings/_integrations.html:74
+#: app/templates/auth/settings/_integrations.html:158
+msgid "Telegram"
+msgstr "Telegram"
+
+#: app/templates/auth/settings/_integrations.html:74
+msgid "Log fill-ups by messaging a bot"
+msgstr "Kirjaa tankkaukset viestillä botille"
+
+#: app/templates/auth/settings/_integrations.html:75
+#: app/templates/auth/settings/_integrations.html:164
+msgid "Connected"
+msgstr "Yhdistetty"
+
+#: app/templates/auth/settings/_integrations.html:75
+msgid "Not connected"
+msgstr "Ei yhdistetty"
+
+#: app/templates/auth/settings/_integrations.html:75
+#: app/templates/auth/settings/_integrations.html:80
+#: app/templates/auth/settings/_integrations.html:82
+msgid "Not configured"
+msgstr "Ei määritetty"
+
+#: app/templates/auth/settings/_integrations.html:79
+msgid "DVLA"
+msgstr "DVLA"
+
+#: app/templates/auth/settings/_integrations.html:79
+#: app/templates/auth/settings/_integrations.html:204
+msgid "Look up UK vehicle MOT and tax status"
+msgstr "Hae Britannian ajoneuvojen MOT- ja verotiedot"
+
+#: app/templates/auth/settings/_integrations.html:80
+#: app/templates/auth/settings/_integrations.html:82
+msgid "Configured"
+msgstr "Määritetty"
+
+#: app/templates/auth/settings/_integrations.html:81
+msgid "Tessie"
+msgstr "Tessie"
+
+#: app/templates/auth/settings/_integrations.html:81
+msgid "Sync Tesla vehicle odometer and battery"
+msgstr "Synkronoi Tesla-ajoneuvon mittarilukema ja akku"
+
+#: app/templates/auth/settings/_integrations.html:83
+#: app/templates/auth/settings/_integrations.html:269
+msgid "UK Fuel Prices"
+msgstr "Ison-Britannian polttoainehinnat"
+
+#: app/templates/auth/settings/_integrations.html:83
+#: app/templates/auth/settings/_integrations.html:269
+msgid "Pull live forecourt prices for saved stations"
+msgstr "Hae reaaliaikaiset asemahinnat tallennetuille asemille"
+
+#: app/templates/auth/settings/_integrations.html:84
+msgid "Enabled"
+msgstr "Käytössä"
+
+#: app/templates/auth/settings/_integrations.html:84
+msgid "Disabled"
+msgstr "Pois käytöstä"
+
+#: app/templates/auth/settings/_integrations.html:91
+msgid "Calendar Subscription"
+msgstr "Kalenteritilaus"
+
+#: app/templates/auth/settings/_integrations.html:91
+msgid "Subscribe to your reminders in any calendar app"
+msgstr "Tilaa muistutuksesi missä tahansa kalenterisovelluksessa"
+
+#: app/templates/auth/settings/_integrations.html:94
+msgid ""
+"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
+"calendar app that supports iCal subscriptions."
+msgstr ""
+"Lisää tämä kalenteri Apple Calendariin, Google Calendariin, Outlookiin tai "
+"mihin tahansa muuhun kalenterisovellukseen, joka tukee iCal-tilauksia."
+
+#: app/templates/auth/settings/_integrations.html:95
+msgid "Webcal URL"
+msgstr "Webcal-URL"
+
+#: app/templates/auth/settings/_integrations.html:95
+msgid "Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)"
+msgstr ""
+"Käytä tätä URL-osoitetta useimmissa kalenterisovelluksissa (Apple Calendar, "
+"Outlook jne.)"
+
+#: app/templates/auth/settings/_integrations.html:97
+msgid "HTTPS URL"
+msgstr "HTTPS-URL"
+
+#: app/templates/auth/settings/_integrations.html:97
+msgid "Use this URL for Google Calendar"
+msgstr "Käytä tätä URL-osoitetta Google Calendarissa"
+
+#: app/templates/auth/settings/_integrations.html:102
+msgid "What's included in the calendar?"
+msgstr "Mitä kalenteri sisältää?"
+
+#: app/templates/auth/settings/_integrations.html:104
+msgid "Maintenance schedules"
+msgstr "Huoltoaikataulut"
+
+#: app/templates/auth/settings/_integrations.html:105
+msgid "Recurring expense due dates"
+msgstr "Toistuvien kulujen eräpäivät"
+
+#: app/templates/auth/settings/_integrations.html:106
+msgid "Document expiry dates"
+msgstr "Asiakirjojen vanhenemispäivät"
+
+#: app/templates/auth/settings/_integrations.html:107
+msgid "Custom reminders"
+msgstr "Mukautetut muistutukset"
+
+#: app/templates/auth/settings/_integrations.html:112
+msgid "Generate an API key in the API section to enable calendar integration."
+msgstr "Luo API-avain API-osiossa ottaaksesi kalenteriintegraation käyttöön."
+
+#: app/templates/auth/settings/_integrations.html:122
+msgid ""
+"Add the following configuration to your Home Assistant configuration.yaml to"
+" create vehicle sensors."
+msgstr ""
+"Lisää seuraava määritys Home Assistantin configuration.yaml-tiedostoon "
+"luodaksesi ajoneuvoanturit."
+
+#: app/templates/auth/settings/_integrations.html:124
+msgid "REST Sensor Configuration"
+msgstr "REST-anturimääritys"
+
+#: app/templates/auth/settings/_integrations.html:137
+msgid "Copy configuration"
+msgstr "Kopioi määritys"
+
+#: app/templates/auth/settings/_integrations.html:140
+msgid "Available API Endpoints"
+msgstr "Käytettävissä olevat API-päätepisteet"
+
+#: app/templates/auth/settings/_integrations.html:142
+msgid "API health check"
+msgstr "API-terveystarkistus"
+
+#: app/templates/auth/settings/_integrations.html:143
+msgid "List all vehicles"
+msgstr "Listaa kaikki ajoneuvot"
+
+#: app/templates/auth/settings/_integrations.html:144
+msgid "Vehicle statistics"
+msgstr "Ajoneuvotilastot"
+
+#: app/templates/auth/settings/_integrations.html:145
+msgid "Upcoming reminders"
+msgstr "Tulevat muistutukset"
+
+#: app/templates/auth/settings/_integrations.html:146
+msgid "Combined summary"
+msgstr "Yhdistetty yhteenveto"
+
+#: app/templates/auth/settings/_integrations.html:150
+msgid ""
+"Generate an API key in the API section to enable Home Assistant integration."
+msgstr ""
+"Luo API-avain API-osiossa ottaaksesi Home Assistant -integraation käyttöön."
+
+#: app/templates/auth/settings/_integrations.html:158
+msgid ""
+"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
+"it is saved as a fuel log."
+msgstr ""
+"Lähetä botille tankkaus yhdellä rivillä, esimerkiksi 40L 4800tk 45230km, "
+"niin se tallennetaan tankkauksena."
+
+#: app/templates/auth/settings/_integrations.html:164
+msgid "Your account is connected to Telegram."
+msgstr "Tilisi on yhdistetty Telegramiin."
+
+#: app/templates/auth/settings/_integrations.html:169
+msgid "Disconnect Telegram"
+msgstr "Irrota Telegram"
+
+#: app/templates/auth/settings/_integrations.html:173
+msgid "Send this to the bot within 15 minutes:"
+msgstr "Lähetä tämä botille 15 minuutin kuluessa:"
+
+#: app/templates/auth/settings/_integrations.html:175
+msgid "Open in Telegram"
+msgstr "Avaa Telegramissa"
+
+#: app/templates/auth/settings/_integrations.html:179
+msgid "Connect Telegram"
+msgstr "Yhdistä Telegram"
+
+#: app/templates/auth/settings/_integrations.html:185
+msgid "Set up the bot (admin)"
+msgstr "Määritä botti (ylläpitäjä)"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "In Telegram, message @BotFather and send /newbot"
+msgstr "Lähetä Telegramissa viesti @BotFather-botille ja lähetä /newbot"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "Copy the token it gives you and paste it below"
+msgstr "Kopioi saamasi tunnus ja liitä se alle"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "Each user then connects their own chat from this page"
+msgstr "Jokainen käyttäjä yhdistää sitten oman keskustelunsa tältä sivulta"
+
+#: app/templates/auth/settings/_integrations.html:190
+msgid "Bot token"
+msgstr "Botin tunnus"
+
+#: app/templates/auth/settings/_integrations.html:192
+msgid "Leave empty and save to disconnect the bot."
+msgstr "Jätä tyhjäksi ja tallenna irrottaaksesi botin."
+
+#: app/templates/auth/settings/_integrations.html:194
+msgid "Save Telegram Settings"
+msgstr "Tallenna Telegram-asetukset"
+
+#: app/templates/auth/settings/_integrations.html:204
+msgid "DVLA Vehicle Lookup"
+msgstr "DVLA-ajoneuvohaku"
+
+#: app/templates/auth/settings/_integrations.html:206
+msgid ""
+"The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax "
+"status, and vehicle details for UK registered vehicles. This enables "
+"automatic population of vehicle information when adding new vehicles."
+msgstr ""
+"DVLA Vehicle Enquiry Service mahdollistaa MOT-tilan, verotilan ja "
+"ajoneuvotietojen haun Britanniassa rekisteröidyille ajoneuvoille. Tämä "
+"mahdollistaa ajoneuvotietojen automaattisen täytön uusia ajoneuvoja "
+"lisättäessä."
+
+#: app/templates/auth/settings/_integrations.html:210
+msgid "How to get an API key"
+msgstr "Kuinka hankkia API-avain"
+
+#: app/templates/auth/settings/_integrations.html:212
+msgid "Visit the"
+msgstr "Käy osoitteessa"
+
+#: app/templates/auth/settings/_integrations.html:212
+msgid "DVLA Developer Portal"
+msgstr "DVLA Developer Portal"
+
+#: app/templates/auth/settings/_integrations.html:213
+msgid "Register for a free account"
+msgstr "Rekisteröi ilmainen tili"
+
+#: app/templates/auth/settings/_integrations.html:214
+msgid "Subscribe to the Vehicle Enquiry Service API"
+msgstr "Tilaa Vehicle Enquiry Service API"
+
+#: app/templates/auth/settings/_integrations.html:215
+msgid "Copy your API key and paste it below"
+msgstr "Kopioi API-avaimesi ja liitä se alle"
+
+#: app/templates/auth/settings/_integrations.html:222
+msgid "DVLA API Key"
+msgstr "DVLA API -avain"
+
+#: app/templates/auth/settings/_integrations.html:225
+#: app/templates/auth/settings/_integrations.html:258
+#: app/templates/auth/settings/_notifications.html:143
+msgid "Test"
+msgstr "Testaa"
+
+#: app/templates/auth/settings/_integrations.html:229
+msgid "Save DVLA Settings"
+msgstr "Tallenna DVLA-asetukset"
+
+#: app/templates/auth/settings/_integrations.html:236
+#: app/templates/vehicles/form.html:162
+msgid "Tessie Integration"
+msgstr "Tessie-integraatio"
+
+#: app/templates/auth/settings/_integrations.html:236
+msgid "Sync Tesla vehicle data via Tessie"
+msgstr "Synkronoi Tesla-ajoneuvotiedot Tessien kautta"
+
+#: app/templates/auth/settings/_integrations.html:238
+msgid ""
+"Tessie allows you to automatically sync odometer readings, battery level, "
+"and range from your Tesla vehicles. When enabled for a vehicle, odometer "
+"tracking becomes automatic."
+msgstr ""
+"Tessie mahdollistaa mittarilukemien, akun varaustason ja toimintasäteen "
+"automaattisen synkronoinnin Tesla-ajoneuvoistasi. Kun se on käytössä "
+"ajoneuvolle, mittarilukeman seuranta muuttuu automaattiseksi."
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "Important"
+msgstr "Tärkeää"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "Tessie subscription required ($6.99/month per vehicle)"
+msgstr "Tessie-tilaus vaaditaan (6,99 $/kk per ajoneuvo)"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "Your Tesla must be connected to Tessie"
+msgstr "Teslasi täytyy olla yhdistettynä Tessieen"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "When enabled, manual odometer entry is disabled"
+msgstr "Kun käytössä, manuaalinen mittarilukeman syöttö on poistettu käytöstä"
+
+#: app/templates/auth/settings/_integrations.html:243
+msgid "How to get an API token"
+msgstr "Kuinka hankkia API-tunnus"
+
+#: app/templates/auth/settings/_integrations.html:245
+msgid "Sign up at"
+msgstr "Rekisteröidy osoitteessa"
+
+#: app/templates/auth/settings/_integrations.html:246
+msgid "Connect your Tesla account"
+msgstr "Yhdistä Tesla-tilisi"
+
+#: app/templates/auth/settings/_integrations.html:247
+msgid "Go to Settings and create an API token"
+msgstr "Siirry Asetuksiin ja luo API-tunnus"
+
+#: app/templates/auth/settings/_integrations.html:248
+msgid "Paste the token below"
+msgstr "Liitä tunnus alle"
+
+#: app/templates/auth/settings/_integrations.html:255
+msgid "Tessie API Token"
+msgstr "Tessie API -tunnus"
+
+#: app/templates/auth/settings/_integrations.html:262
+msgid "Save Tessie Settings"
+msgstr "Tallenna Tessie-asetukset"
+
+#: app/templates/auth/settings/_integrations.html:271
+msgid ""
+"UK retailers publish forecourt prices under the government fuel price "
+"transparency scheme. May matches your saved stations to those forecourts by "
+"postcode and records the prices, so price history and Cheapest Fuel stay up "
+"to date without manual entry."
+msgstr ""
+"Britannialaiset jälleenmyyjät julkaisevat asemahinnat valtion hintojen "
+"läpinäkyvyysohjelman puitteissa. May yhdistää tallentamasi asemat näihin "
+"asemiin postinumeron perusteella ja tallentaa hinnat, joten hintahistoria ja"
+" halvin polttoaine pysyvät ajan tasalla ilman käsin syöttöä."
+
+#: app/templates/auth/settings/_integrations.html:275
+msgid "Before you start"
+msgstr "Ennen kuin aloitat"
+
+#: app/templates/auth/settings/_integrations.html:277
+msgid "No API key is needed; the feeds are open data"
+msgstr "API-avainta ei tarvita; syötteet ovat avointa dataa"
+
+#: app/templates/auth/settings/_integrations.html:278
+msgid "Give each station a postcode so it can be matched to a forecourt"
+msgstr ""
+"Anna jokaiselle asemalle postinumero, jotta se voidaan yhdistää "
+"huoltoasemaan"
+
+#: app/templates/auth/settings/_integrations.html:279
+msgid ""
+"Prices refresh automatically every few hours, or on demand from the Fuel "
+"Stations page"
+msgstr ""
+"Hinnat päivittyvät automaattisesti muutaman tunnin välein tai pyynnöstä "
+"Huoltoasemat-sivulta"
+
+#: app/templates/auth/settings/_integrations.html:280
+msgid "See the"
+msgstr "Katso"
+
+#: app/templates/auth/settings/_integrations.html:280
+msgid "gov.uk guidance"
+msgstr "gov.uk-ohjeet"
+
+#: app/templates/auth/settings/_integrations.html:280
+msgid "for the current retailer list"
+msgstr "nähdäksesi ajantasaisen jälleenmyyjälistan"
+
+#: app/templates/auth/settings/_integrations.html:288
+msgid "Enable UK fuel price updates"
+msgstr "Ota Ison-Britannian polttoainehintojen päivitykset käyttöön"
+
+#: app/templates/auth/settings/_integrations.html:291
+msgid "Retailer feeds (optional)"
+msgstr "Jälleenmyyjien syötteet (valinnainen)"
+
+#: app/templates/auth/settings/_integrations.html:294
+#, python-format
+msgid ""
+"One feed per line. Leave blank to use the built-in list (%(count)s "
+"retailers)."
+msgstr ""
+"Yksi syöte riviä kohden. Jätä tyhjäksi käyttääksesi sisäänrakennettua listaa"
+" (%(count)s jälleenmyyjää)."
+
+#: app/templates/auth/settings/_integrations.html:296
+msgid "Save UK Fuel Price Settings"
+msgstr "Tallenna Ison-Britannian polttoainehintojen asetukset"
+
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10
+#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
+#: app/templates/recurring/index.html:16
+msgid "Recurring Expenses"
+msgstr "Toistuvat kulut"
+
+#: app/templates/auth/settings/_menu.html:18
+msgid "Customize which menu items to show and your start page"
+msgstr "Mukauta näytettäviä valikkokohteita ja aloitussivua"
+
+#: app/templates/auth/settings/_menu.html:21
+msgid "Start Page"
+msgstr "Aloitussivu"
+
+#: app/templates/auth/settings/_menu.html:25
+msgid "Which page to show when you log in"
+msgstr "Mikä sivu näytetään kirjautuessasi sisään"
+
+#: app/templates/auth/settings/_menu.html:28
+#: app/templates/trips/template_form.html:23
+msgid "Default Vehicle"
+msgstr "Oletusajoneuvo"
+
+#: app/templates/auth/settings/_menu.html:30
+msgid "No default"
+msgstr "Ei oletusta"
+
+#: app/templates/auth/settings/_menu.html:33
+msgid ""
+"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
+"sessions"
+msgstr ""
+"Valmiiksi valittu ajoneuvo lisättäessä polttoainekirjauksia, kuluja, matkoja"
+" ja latausistuntoja"
+
+#: app/templates/auth/settings/_menu.html:36
+#: app/templates/auth/settings/_menu.html:37
+msgid "Quick Entry Button"
+msgstr "Pikakirjauspainike"
+
+#: app/templates/auth/settings/_menu.html:36
+msgid "Show a quick fuel entry button in the navigation bar for rapid logging"
+msgstr "Näytä polttoaineen pikakirjauspainike navigointipalkissa"
+
+#: app/templates/auth/settings/_menu.html:41
+msgid "Show Menu Items"
+msgstr "Näytä valikkokohteet"
+
+#: app/templates/auth/settings/_menu.html:41
+msgid "Choose which items appear in the navigation menu"
+msgstr "Valitse mitkä kohteet näkyvät navigointivalikossa"
+
+#: app/templates/auth/settings/_menu.html:55
+#: app/templates/auth/settings/_notifications.html:102
+msgid "Save Preferences"
+msgstr "Tallenna asetukset"
+
+#: app/templates/auth/settings/_notifications.html:9
+msgid "ntfy (Push Notifications)"
+msgstr "ntfy (push-ilmoitukset)"
+
+#: app/templates/auth/settings/_notifications.html:10
+#: app/templates/auth/settings/_notifications.html:148
+#: app/templates/auth/settings/_notifications.html:149
+msgid "Pushover"
+msgstr "Pushover"
+
+#: app/templates/auth/settings/_notifications.html:11
+msgid "Webhook (HTTP POST)"
+msgstr "Webhook (HTTP POST)"
+
+#: app/templates/auth/settings/_notifications.html:18
+msgid "Notification Preferences"
+msgstr "Ilmoitusasetukset"
+
+#: app/templates/auth/settings/_notifications.html:18
+msgid "Configure how you receive reminders about your vehicles"
+msgstr "Määritä miten saat muistutuksia ajoneuvoistasi"
+
+#: app/templates/auth/settings/_notifications.html:19
+#: app/templates/auth/settings/_notifications.html:20
+msgid "Enable Reminders"
+msgstr "Ota muistutukset käyttöön"
+
+#: app/templates/auth/settings/_notifications.html:19
+msgid "Receive notifications for upcoming reminders"
+msgstr "Vastaanota ilmoituksia tulevista muistutuksista"
+
+#: app/templates/auth/settings/_notifications.html:23
+msgid "Default Reminder Lead Time"
+msgstr "Oletusmuistutuksen ennakkoaika"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "On the due date"
+msgstr "Eräpäivänä"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "1 day before"
+msgstr "1 päivä ennen"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "3 days before"
+msgstr "3 päivää ennen"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "1 week before"
+msgstr "1 viikko ennen"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "2 weeks before"
+msgstr "2 viikkoa ennen"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "1 month before"
+msgstr "1 kuukausi ennen"
+
+#: app/templates/auth/settings/_notifications.html:29
+msgid "How many days before the due date should you be notified?"
+msgstr "Kuinka monta päivää ennen eräpäivää sinulle ilmoitetaan?"
+
+#: app/templates/auth/settings/_notifications.html:33
+msgid "Notification Method"
+msgstr "Ilmoitustapa"
+
+#: app/templates/auth/settings/_notifications.html:34
+msgid "Choose how you want to receive notifications"
+msgstr "Valitse miten haluat vastaanottaa ilmoituksia"
+
+#: app/templates/auth/settings/_notifications.html:41
+msgid "not configured"
+msgstr "ei määritetty"
+
+#: app/templates/auth/settings/_notifications.html:53
+msgid "Notifications will be sent to"
+msgstr "Ilmoitukset lähetetään osoitteeseen"
+
+#: app/templates/auth/settings/_notifications.html:54
+msgid "Email not configured. Ask an administrator to configure SMTP settings."
+msgstr ""
+"Sähköposti ei ole määritetty. Pyydä ylläpitäjää määrittämään SMTP-asetukset."
+
+#: app/templates/auth/settings/_notifications.html:59
+msgid "is a simple pub-sub notification service. Enter your topic below."
+msgstr "on yksinkertainen pub-sub-ilmoituspalvelu. Syötä aiheesi alle."
+
+#: app/templates/auth/settings/_notifications.html:61
+msgid "ntfy Topic or Server URL"
+msgstr "ntfy-aihe tai palvelimen URL"
+
+#: app/templates/auth/settings/_notifications.html:64
+msgid ""
+"For ntfy.sh, just enter your topic name. For self-hosted, enter the full "
+"URL."
+msgstr ""
+"ntfy.sh-palvelulle syötä vain aiheen nimi. Itse hostetulle palvelulle syötä "
+"koko URL-osoite."
+
+#: app/templates/auth/settings/_notifications.html:67
+msgid "ntfy Access Token"
+msgstr "ntfy-käyttöoikeustunnus"
+
+#: app/templates/auth/settings/_notifications.html:69
+msgid "Token saved — enter a new one to replace it"
+msgstr "Tunnus tallennettu — anna uusi korvataksesi sen"
+
+#: app/templates/auth/settings/_notifications.html:70
+msgid ""
+"Optional — only needed for self-hosted ntfy servers with authentication "
+"enabled. Leave blank to keep the saved token."
+msgstr ""
+"Valinnainen — tarvitaan vain itseisännöidyillä ntfy-palvelimilla, joilla "
+"todennus on käytössä. Jätä tyhjäksi säilyttääksesi tallennetun tunnuksen."
+
+#: app/templates/auth/settings/_notifications.html:72
+msgid "Remove the saved token"
+msgstr "Poista tallennettu tunnus"
+
+#: app/templates/auth/settings/_notifications.html:77
+msgid "sends notifications to your devices. Enter your User Key below."
+msgstr "lähettää ilmoituksia laitteillesi. Syötä käyttäjäavaimesi alle."
+
+#: app/templates/auth/settings/_notifications.html:79
+msgid "Pushover User Key"
+msgstr "Pushover-käyttäjäavain"
+
+#: app/templates/auth/settings/_notifications.html:82
+msgid "Find your User Key on your Pushover dashboard."
+msgstr "Löydät käyttäjäavaimesi Pushover-kojelaudaltasi."
+
+#: app/templates/auth/settings/_notifications.html:86
+msgid "Notifications will be sent as JSON POST requests to your webhook URL."
+msgstr ""
+"Ilmoitukset lähetetään JSON POST -pyyntöinä webhook-URL-osoitteeseesi."
+
+#: app/templates/auth/settings/_notifications.html:88
+msgid "Webhook URL"
+msgstr "Webhook-URL"
+
+#: app/templates/auth/settings/_notifications.html:91
+#, python-brace-format
+msgid "JSON payload: {title, message, reminder_id, vehicle_name, due_date}"
+msgstr "JSON-sisältö: {title, message, reminder_id, vehicle_name, due_date}"
+
+#: app/templates/auth/settings/_notifications.html:96
+msgid "Send Test Notification"
+msgstr "Lähetä testi-ilmoitus"
+
+#: app/templates/auth/settings/_notifications.html:101
+msgid "View all reminders"
+msgstr "Näytä kaikki muistutukset"
+
+#: app/templates/auth/settings/_notifications.html:109
+msgid "Notification Services"
+msgstr "Ilmoituspalvelut"
+
+#: app/templates/auth/settings/_notifications.html:109
+msgid "Configure notification services available to all users"
+msgstr "Määritä kaikille käyttäjille saatavilla olevat ilmoituspalvelut"
+
+#: app/templates/auth/settings/_notifications.html:110
+#: app/templates/auth/settings/_notifications.html:111
+msgid "Email (SMTP)"
+msgstr "Sähköposti (SMTP)"
+
+#: app/templates/auth/settings/_notifications.html:115
+msgid "SMTP Host"
+msgstr "SMTP-palvelin"
+
+#: app/templates/auth/settings/_notifications.html:119
+msgid "SMTP Port"
+msgstr "SMTP-portti"
+
+#: app/templates/auth/settings/_notifications.html:123
+msgid "SMTP Username"
+msgstr "SMTP-käyttäjänimi"
+
+#: app/templates/auth/settings/_notifications.html:127
+msgid "SMTP Password"
+msgstr "SMTP-salasana"
+
+#: app/templates/auth/settings/_notifications.html:132
+msgid "Sender Email"
+msgstr "Lähettäjän sähköposti"
+
+#: app/templates/auth/settings/_notifications.html:136
+msgid "Sender Name"
+msgstr "Lähettäjän nimi"
+
+#: app/templates/auth/settings/_notifications.html:141
+msgid "Use TLS"
+msgstr "Käytä TLS:ää"
+
+#: app/templates/auth/settings/_notifications.html:142
+msgid "Use SSL"
+msgstr "Käytä SSL:ää"
+
+#: app/templates/auth/settings/_notifications.html:151
+msgid "sends push notifications to iOS and Android devices."
+msgstr "lähettää push-ilmoituksia iOS- ja Android-laitteille."
+
+#: app/templates/auth/settings/_notifications.html:153
+msgid "Application Token"
+msgstr "Sovellustunnus"
+
+#: app/templates/auth/settings/_notifications.html:155
+msgid "Create an application at pushover.net to get your token"
+msgstr "Luo sovellus osoitteessa pushover.net saadaksesi tunnuksesi"
+
+#: app/templates/auth/settings/_notifications.html:161
+msgid "ntfy"
+msgstr "ntfy"
+
+#: app/templates/auth/settings/_notifications.html:161
+#: app/templates/auth/settings/_notifications.html:167
+msgid "Always available"
+msgstr "Aina saatavilla"
+
+#: app/templates/auth/settings/_notifications.html:162
+msgid ""
+"is a free, open-source notification service that requires no admin "
+"configuration. Users can set their own topic."
+msgstr ""
+"on ilmainen, avoimen lähdekoodin ilmoituspalvelu, joka ei vaadi ylläpitäjän "
+"määrityksiä. Käyttäjät voivat asettaa oman aiheensa."
+
+#: app/templates/auth/settings/_notifications.html:167
+msgid "Webhook"
+msgstr "Webhook"
+
+#: app/templates/auth/settings/_notifications.html:168
+msgid ""
+"Webhooks allow users to integrate with any service that accepts HTTP POST "
+"requests (Home Assistant, Discord, Slack, etc.)"
+msgstr ""
+"Webhookit mahdollistavat integroinnin mihin tahansa palveluun, joka hyväksyy"
+" HTTP POST -pyyntöjä (Home Assistant, Discord, Slack jne.)"
+
+#: app/templates/auth/settings/_notifications.html:172
+msgid "Save Notification Settings"
+msgstr "Tallenna ilmoitusasetukset"
+
+#: app/templates/auth/settings/_units.html:10
+msgid "Language & region"
+msgstr "Kieli ja alue"
+
+#: app/templates/auth/settings/_units.html:10
+msgid "Configure how measurements and currencies are displayed"
+msgstr "Määritä miten mittayksiköt ja valuutat näytetään"
+
+#: app/templates/auth/settings/_units.html:13
+msgid "Language"
+msgstr "Kieli"
+
+#: app/templates/auth/settings/_units.html:19
+msgid "Date Format"
+msgstr "Päivämäärämuoto"
+
+#: app/templates/auth/settings/_units.html:21
+msgid "DD/MM/YYYY"
+msgstr "PP/KK/VVVV"
+
+#: app/templates/auth/settings/_units.html:22
+msgid "MM/DD/YYYY"
+msgstr "KK/PP/VVVV"
+
+#: app/templates/auth/settings/_units.html:23
+msgid "YYYY-MM-DD"
+msgstr "VVVV-KK-PP"
+
+#: app/templates/auth/settings/_units.html:24
+msgid "DD.MM.YYYY"
+msgstr "PP.KK.VVVV"
+
+#: app/templates/auth/settings/_units.html:40
+#: app/templates/fuel/_quick_form.html:46 app/templates/fuel/form.html:105
+#: app/templates/fuel/index.html:89
+msgid "Volume"
+msgstr "Tilavuus"
+
+#: app/templates/auth/settings/_units.html:42
+#: app/templates/vehicles/part_form.html:7
+msgid "Liters (L)"
+msgstr "Litraa (L)"
+
+#: app/templates/auth/settings/_units.html:43
+msgid "UK Gallons (gal)"
+msgstr "Brittiläiset gallonat (gal)"
+
+#: app/templates/auth/settings/_units.html:44
+msgid "US Gallons (gal)"
+msgstr "Amerikkalaiset gallonat (gal)"
+
+#: app/templates/auth/settings/_units.html:48
+msgid "Fuel Consumption"
+msgstr "Polttoaineenkulutus"
+
+#: app/templates/auth/settings/_units.html:50
+msgid "L/100km"
+msgstr "l/100 km"
+
+#: app/templates/auth/settings/_units.html:51
+msgid "MPG (UK)"
+msgstr "MPG (UK)"
+
+#: app/templates/auth/settings/_units.html:52
+msgid "MPG (US)"
+msgstr "MPG (US)"
+
+#: app/templates/auth/settings/_units.html:53
+msgid "km/L"
+msgstr "km/l"
+
+#: app/templates/auth/settings/_units.html:59
+msgid "Currency"
+msgstr "Valuutta"
+
+#: app/templates/auth/settings/_units.html:66
+msgid "Custom Currency"
+msgstr "Mukautettu valuutta"
+
+#: app/templates/auth/settings/_units.html:68
+msgid "e.g. ZAR, R, CHF"
+msgstr "esim. EUR, SEK, CHF"
+
+#: app/templates/auth/settings/_units.html:69
+msgid "Enter a currency code or symbol to display"
+msgstr "Syötä valuuttakoodi tai symboli näytettäväksi"
+
+#: app/templates/auth/settings/_units.html:72
+msgid "Thousand Separator"
+msgstr "Tuhaterotin"
+
+#: app/templates/auth/settings/_units.html:74
+#: app/templates/vehicles/form.html:99
+msgid "None"
+msgstr "Ei mitään"
+
+#: app/templates/auth/settings/_units.html:75
+msgid "Space"
+msgstr "Välilyönti"
+
+#: app/templates/auth/settings/_units.html:76
+msgid "Comma"
+msgstr "Pilkku"
+
+#: app/templates/auth/settings/_units.html:81
+msgid "Round costs to whole numbers"
+msgstr "Pyöristä kulut kokonaisluvuiksi"
+
 #: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
 #: app/templates/charging/form.html:72
 msgid "Cost per kWh"
@@ -3598,7 +3712,7 @@ msgstr "Hinta per kWh"
 msgid "Last charge"
 msgstr "Viimeisin lataus"
 
-#: app/templates/charging/_log.html:31 app/templates/fuel/index.html:38
+#: app/templates/charging/_log.html:31
 msgid "Charging History"
 msgstr "Lataushistoria"
 
@@ -3611,7 +3725,7 @@ msgid "kWh"
 msgstr "kWh"
 
 #: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
-#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
+#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:93
 #: app/templates/timeline/index.html:35 app/templates/tires/form.html:61
 #: app/templates/tires/index.html:45 app/templates/vehicles/view.html:459
 msgid "Cost"
@@ -3627,7 +3741,7 @@ msgstr ""
 "Aloita sähköauton latauksen seuranta energiankulutuksen ja kustannusten "
 "seuraamiseksi."
 
-#: app/templates/charging/_log.html:101 app/templates/fuel/index.html:29
+#: app/templates/charging/_log.html:101
 #: app/templates/partials/mobile_nav.html:58
 #: app/templates/partials/mobile_nav.html:64
 msgid "Add Charging Session"
@@ -3737,14 +3851,6 @@ msgstr "Vanhemmat"
 msgid "Choose a file or drag it here"
 msgstr "Valitse tiedosto tai vedä se tähän"
 
-#: app/templates/components/ui.html:225 app/templates/components/ui.html:226
-msgid "Show password"
-msgstr "Näytä salasana"
-
-#: app/templates/components/ui.html:226
-msgid "Hide password"
-msgstr "Piilota salasana"
-
 #: app/templates/documents/form.html:5 app/templates/documents/form.html:15
 msgid "Edit Document"
 msgstr "Muokkaa asiakirjaa"
@@ -3757,10 +3863,6 @@ msgstr "Lataa asiakirja"
 #: app/templates/documents/form.html:14 app/templates/documents/view.html:9
 msgid "Back to Documents"
 msgstr "Takaisin asiakirjoihin"
-
-#: app/templates/documents/form.html:24 app/templates/documents/view.html:27
-msgid "File"
-msgstr "Tiedosto"
 
 #: app/templates/documents/form.html:25
 msgid "PDF, images, Word, Excel, text files, or ePub (max 300MB)"
@@ -4053,7 +4155,7 @@ msgstr "Täysi tankki"
 
 #: app/templates/fuel/_quick_form.html:75
 #: app/templates/fuel/_quick_form.html:87 app/templates/fuel/form.html:139
-#: app/templates/fuel/index.html:100
+#: app/templates/fuel/index.html:88
 msgid "Station"
 msgstr "Asema"
 
@@ -4086,8 +4188,8 @@ msgid "Edit Fuel Log"
 msgstr "Muokkaa polttoainekirjausta"
 
 #: app/templates/fuel/form.html:4 app/templates/fuel/form.html:38
-#: app/templates/fuel/form.html:255 app/templates/fuel/index.html:31
-#: app/templates/fuel/index.html:183 app/templates/partials/mobile_nav.html:60
+#: app/templates/fuel/form.html:255 app/templates/fuel/index.html:28
+#: app/templates/fuel/index.html:171 app/templates/partials/mobile_nav.html:60
 #: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:540
 msgid "Add Fuel Log"
 msgstr "Lisää polttoainekirjaus"
@@ -4184,56 +4286,56 @@ msgstr "Kuitti / Liite"
 msgid "Track your fuel fill-ups and consumption"
 msgstr "Seuraa tankkauksiasi ja kulutustasi"
 
-#: app/templates/fuel/index.html:57 app/templates/vehicles/view.html:106
+#: app/templates/fuel/index.html:45 app/templates/vehicles/view.html:106
 msgid "Avg. Consumption"
 msgstr "Keskikulutus"
 
-#: app/templates/fuel/index.html:63 app/templates/vehicles/view.html:152
+#: app/templates/fuel/index.html:51 app/templates/vehicles/view.html:152
 msgid "Last fill"
 msgstr "Viimeisin tankkaus"
 
-#: app/templates/fuel/index.html:84
+#: app/templates/fuel/index.html:72
 msgid "Sales Tax Paid"
 msgstr "Maksettu vero"
 
-#: app/templates/fuel/index.html:102 app/templates/stations/prices.html:38
+#: app/templates/fuel/index.html:90 app/templates/stations/prices.html:38
 msgid "Price/Unit"
 msgstr "Hinta/yksikkö"
 
-#: app/templates/fuel/index.html:103
+#: app/templates/fuel/index.html:91
 msgid "Consumption"
 msgstr "Kulutus"
 
-#: app/templates/fuel/index.html:124
+#: app/templates/fuel/index.html:112
 msgid "Better than average"
 msgstr "Keskiarvoa parempi"
 
-#: app/templates/fuel/index.html:124
+#: app/templates/fuel/index.html:112
 msgid "Worse than average"
 msgstr "Keskiarvoa huonompi"
 
-#: app/templates/fuel/index.html:133
+#: app/templates/fuel/index.html:121
 msgid "Partial"
 msgstr "Osittainen"
 
-#: app/templates/fuel/index.html:134
+#: app/templates/fuel/index.html:122
 msgid "Missed"
 msgstr "Väliin jäänyt"
 
-#: app/templates/fuel/index.html:155
+#: app/templates/fuel/index.html:143
 #, python-format
 msgid "incl. tax %(amount)s"
 msgstr "sis. veron %(amount)s"
 
-#: app/templates/fuel/index.html:162 app/templates/vehicles/view.html:485
+#: app/templates/fuel/index.html:150 app/templates/vehicles/view.html:485
 msgid "Delete this fuel log?"
 msgstr "Poistetaanko tämä polttoainekirjaus?"
 
-#: app/templates/fuel/index.html:182
+#: app/templates/fuel/index.html:170
 msgid "No fuel logs"
 msgstr "Ei polttoainekirjauksia"
 
-#: app/templates/fuel/index.html:182
+#: app/templates/fuel/index.html:170
 msgid "Start tracking your fuel fill-ups."
 msgstr "Aloita tankkausten kirjaaminen."
 
@@ -4289,10 +4391,6 @@ msgstr "Tuntematon"
 #: app/templates/import/backup_preview.html:14
 msgid "Exported by"
 msgstr "Viejä"
-
-#: app/templates/import/backup_preview.html:22
-msgid "Data"
-msgstr "Tiedot"
 
 #: app/templates/import/backup_preview.html:23
 msgid "Will be added"

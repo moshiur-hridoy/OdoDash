@@ -163,9 +163,10 @@ class TestConsumptionUnitTranslation:
     """
 
     def _settings_source(self):
+        # The units dropdowns live in the settings section partial.
         path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            'app', 'templates', 'auth', 'settings.html',
+            'app', 'templates', 'auth', 'settings', '_units.html',
         )
         with open(path, encoding='utf-8') as f:
             return f.read()

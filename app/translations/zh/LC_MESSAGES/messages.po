@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 12:25+0600\n"
+"POT-Creation-Date: 2026-11-13 13:14+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgid "Read-only. Can see the data but cannot change anything."
 msgstr "只读。可以查看数据，但不能进行任何修改。"
 
 #: app/models.py:191 app/templates/auth/create_user.html:47
-#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:23
+#: app/templates/auth/edit_user.html:31 app/templates/auth/users.html:24
 msgid "Administrator"
 msgstr "管理员"
 
@@ -57,7 +57,7 @@ msgstr "发动机小时"
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:178
 #: app/templates/dashboard.html:204 app/templates/expenses/form.html:71
 #: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
-#: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:113
+#: app/templates/fuel/index.html:92 app/templates/maintenance/form.html:113
 #: app/templates/notes/form.html:25 app/templates/notes/index.html:35
 #: app/templates/tires/index.html:58 app/templates/tires/index.html:76
 #: app/templates/trips/index.html:80 app/templates/vehicles/index.html:71
@@ -72,9 +72,10 @@ msgid "Hours"
 msgstr "小时"
 
 #: app/models.py:409 app/templates/allowance/form.html:36
-#: app/templates/allowance/index.html:52 app/templates/auth/settings.html:127
-#: app/templates/trips/form.html:85 app/templates/trips/form.html:151
-#: app/templates/trips/index.html:82 app/templates/trips/report.html:63
+#: app/templates/allowance/index.html:52
+#: app/templates/auth/settings/_units.html:33 app/templates/trips/form.html:85
+#: app/templates/trips/form.html:151 app/templates/trips/index.html:82
+#: app/templates/trips/report.html:63
 msgid "Distance"
 msgstr "距离"
 
@@ -139,13 +140,14 @@ msgid "Transmission Fluid"
 msgstr "变速箱油"
 
 #: app/models.py:1489 app/models.py:1628 app/models.py:1693
-#: app/templates/auth/settings.html:197
+#: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "自定义"
 
 #: app/models.py:1494 app/routes/maintenance.py:99
-#: app/templates/auth/settings.html:444 app/templates/auth/settings.html:510
-#: app/templates/base.html:536 app/templates/partials/mobile_nav.html:27
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10 app/templates/base.html:537
+#: app/templates/partials/mobile_nav.html:28
 msgid "Maintenance"
 msgstr "保养"
 
@@ -242,11 +244,11 @@ msgstr "船"
 msgid "Mileage (km/mi)"
 msgstr "里程 (公里/英里)"
 
-#: app/models.py:1532 app/templates/auth/settings.html:130
+#: app/models.py:1532 app/templates/auth/settings/_units.html:35
 msgid "Kilometres (km)"
 msgstr "公里 (km)"
 
-#: app/models.py:1533 app/templates/auth/settings.html:131
+#: app/models.py:1533 app/templates/auth/settings/_units.html:36
 msgid "Miles (mi)"
 msgstr "英里 (mi)"
 
@@ -571,7 +573,7 @@ msgid "Password must contain at least one digit"
 msgstr "密码必须至少包含一个数字"
 
 #: app/routes/allowance.py:62 app/routes/expenses.py:256
-#: app/routes/fuel.py:248 app/routes/fuel.py:664 app/routes/notes.py:44
+#: app/routes/fuel.py:233 app/routes/fuel.py:649 app/routes/notes.py:44
 #: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
@@ -584,9 +586,9 @@ msgstr "请先添加车辆"
 #: app/routes/documents.py:167 app/routes/documents.py:207
 #: app/routes/expenses.py:265 app/routes/expenses.py:355
 #: app/routes/expenses.py:410 app/routes/expenses.py:441
-#: app/routes/expenses.py:446 app/routes/fuel.py:257 app/routes/fuel.py:404
-#: app/routes/fuel.py:564 app/routes/fuel.py:619 app/routes/fuel.py:624
-#: app/routes/fuel.py:676 app/routes/fuel.py:677 app/routes/maintenance.py:220
+#: app/routes/expenses.py:446 app/routes/fuel.py:242 app/routes/fuel.py:389
+#: app/routes/fuel.py:549 app/routes/fuel.py:604 app/routes/fuel.py:609
+#: app/routes/fuel.py:661 app/routes/fuel.py:662 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
 #: app/routes/notes.py:53 app/routes/notes.py:100 app/routes/notes.py:141
 #: app/routes/reminders.py:78 app/routes/reminders.py:133
@@ -870,7 +872,7 @@ msgstr "此实例尚未设置 Telegram 机器人。"
 msgid "Telegram disconnected"
 msgstr "Telegram 已断开"
 
-#: app/routes/auth.py:600
+#: app/routes/auth.py:600 app/templates/auth/settings/_account.html:56
 msgid "Registration settings updated"
 msgstr "注册设置已更新"
 
@@ -970,23 +972,23 @@ msgstr "费用已成功更新"
 msgid "Expense deleted successfully"
 msgstr "费用已成功删除"
 
-#: app/routes/expenses.py:455 app/routes/fuel.py:633
+#: app/routes/expenses.py:455 app/routes/fuel.py:618
 msgid "Attachment deleted"
 msgstr "附件已删除"
 
-#: app/routes/fuel.py:374
+#: app/routes/fuel.py:359
 msgid "Fuel log added successfully"
 msgstr "加油记录已成功添加"
 
-#: app/routes/fuel.py:537
+#: app/routes/fuel.py:522
 msgid "Fuel log updated successfully"
 msgstr "加油记录已成功更新"
 
-#: app/routes/fuel.py:598
+#: app/routes/fuel.py:583
 msgid "Fuel log deleted successfully"
 msgstr "加油记录已成功删除"
 
-#: app/routes/fuel.py:735 app/routes/fuel.py:738
+#: app/routes/fuel.py:720 app/routes/fuel.py:723
 msgid "Fuel log added!"
 msgstr "加油记录已添加！"
 
@@ -1466,94 +1468,100 @@ msgstr "暂不支持读取照片。请以文字发送加油记录，例如：40L
 msgid "Dismiss"
 msgstr "关闭"
 
-#: app/templates/auth/settings.html:439 app/templates/auth/settings.html:490
-#: app/templates/base.html:531 app/templates/partials/mobile_nav.html:22
+#: app/templates/auth/settings/_menu.html:5
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:531
+#: app/templates/partials/mobile_nav.html:22
 #: app/templates/vehicles/index.html:3 app/templates/vehicles/index.html:7
 #: app/templates/vehicles/index.html:12
 msgid "Vehicles"
 msgstr "车辆"
 
-#: app/templates/auth/settings.html:440 app/templates/auth/settings.html:495
-#: app/templates/base.html:532 app/templates/fuel/index.html:4
-#: app/templates/fuel/index.html:14 app/templates/fuel/index.html:37
-#: app/templates/fuel/index.html:94 app/templates/import/csv_upload.html:18
+#: app/templates/auth/settings/_menu.html:5
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:532
+#: app/templates/fuel/index.html:4 app/templates/fuel/index.html:14
+#: app/templates/fuel/index.html:82 app/templates/import/csv_upload.html:18
 #: app/templates/search/index.html:64 app/templates/vehicles/view.html:543
 msgid "Fuel Logs"
 msgstr "加油记录"
 
-#: app/templates/auth/settings.html:442 app/templates/auth/settings.html:500
-#: app/templates/base.html:533 app/templates/expenses/index.html:5
-#: app/templates/expenses/index.html:20 app/templates/expenses/index.html:80
-#: app/templates/expenses/index.html:89 app/templates/expenses/index.html:229
-#: app/templates/import/csv_upload.html:18
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:533
 #: app/templates/partials/mobile_nav.html:24
+msgid "EV Charging"
+msgstr "电动车充电"
+
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:534
+#: app/templates/expenses/index.html:5 app/templates/expenses/index.html:20
+#: app/templates/expenses/index.html:80 app/templates/expenses/index.html:89
+#: app/templates/expenses/index.html:229
+#: app/templates/import/csv_upload.html:18
+#: app/templates/partials/mobile_nav.html:25
 #: app/templates/search/index.html:55 app/templates/timeline/index.html:15
 #: app/templates/timeline/index.html:101 app/templates/vehicles/view.html:445
 #: app/templates/vehicles/view.html:545
 msgid "Expenses"
 msgstr "费用"
 
-#: app/templates/auth/settings.html:443 app/templates/auth/settings.html:505
-#: app/templates/base.html:534 app/templates/partials/mobile_nav.html:25
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10 app/templates/base.html:535
+#: app/templates/partials/mobile_nav.html:26
 #: app/templates/reminders/index.html:4 app/templates/reminders/index.html:24
 msgid "Reminders"
 msgstr "提醒"
 
-#: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
-#: app/templates/base.html:535 app/templates/import/csv_upload.html:19
-#: app/templates/partials/mobile_nav.html:26
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:536
+#: app/templates/import/csv_upload.html:19
+#: app/templates/partials/mobile_nav.html:27
 #: app/templates/search/index.html:89 app/templates/trips/index.html:4
 #: app/templates/trips/index.html:20 app/templates/trips/index.html:66
 #: app/templates/trips/index.html:73
 msgid "Trips"
 msgstr "行程"
 
-#: app/templates/base.html:537 app/templates/partials/mobile_nav.html:28
+#: app/templates/base.html:538 app/templates/partials/mobile_nav.html:29
 #: app/templates/reminders/_reminder_row.html:24
 msgid "Recurring"
 msgstr "定期"
 
-#: app/templates/auth/settings.html:446 app/templates/auth/settings.html:520
-#: app/templates/base.html:538 app/templates/documents/index.html:4
-#: app/templates/documents/index.html:11
-#: app/templates/partials/mobile_nav.html:29
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:539
+#: app/templates/documents/index.html:4 app/templates/documents/index.html:11
+#: app/templates/partials/mobile_nav.html:30
 #: app/templates/search/index.html:73
 msgid "Documents"
 msgstr "文档"
 
-#: app/templates/auth/settings.html:447 app/templates/auth/settings.html:525
-#: app/templates/base.html:539 app/templates/partials/mobile_nav.html:30
+#: app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:540
+#: app/templates/partials/mobile_nav.html:31
 #: app/templates/stations/index.html:4 app/templates/stations/index.html:9
 #: app/templates/stations/index.html:20
 msgid "Fuel Stations"
 msgstr "加油站"
 
-#: app/templates/auth/settings.html:449 app/templates/auth/settings.html:535
-#: app/templates/base.html:540 app/templates/partials/mobile_nav.html:31
-msgid "EV Charging"
-msgstr "电动车充电"
-
 #: app/templates/allowance/index.html:3 app/templates/allowance/index.html:11
 #: app/templates/allowance/index.html:45 app/templates/allowance/index.html:75
-#: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
-#: app/templates/base.html:541 app/templates/dashboard.html:279
-#: app/templates/partials/mobile_nav.html:32
+#: app/templates/auth/settings/_menu.html:8
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:541
+#: app/templates/dashboard.html:279 app/templates/partials/mobile_nav.html:32
 #: app/templates/vehicles/view.html:205
 msgid "Mileage Allowance"
 msgstr "里程补贴"
 
-#: app/templates/auth/settings.html:545 app/templates/base.html:542
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:542
 #: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:4
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "轮胎"
 
-#: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
-#: app/templates/base.html:543 app/templates/charging/form.html:125
-#: app/templates/dashboard.html:247 app/templates/expenses/form.html:166
-#: app/templates/fuel/form.html:222 app/templates/notes/index.html:4
-#: app/templates/notes/index.html:11 app/templates/notes/index.html:28
-#: app/templates/partials/mobile_nav.html:34
+#: app/templates/auth/settings/_menu.html:8
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
+#: app/templates/charging/form.html:125 app/templates/dashboard.html:247
+#: app/templates/expenses/form.html:166 app/templates/fuel/form.html:222
+#: app/templates/notes/index.html:4 app/templates/notes/index.html:11
+#: app/templates/notes/index.html:28 app/templates/partials/mobile_nav.html:34
 #: app/templates/search/index.html:81 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
@@ -1574,7 +1582,7 @@ msgstr "搜索"
 msgid "Main navigation"
 msgstr "主导航"
 
-#: app/templates/auth/settings.html:438 app/templates/base.html:572
+#: app/templates/auth/settings/_menu.html:5 app/templates/base.html:572
 #: app/templates/dashboard.html:4 app/templates/partials/mobile_nav.html:80
 msgid "Dashboard"
 msgstr "仪表盘"
@@ -1584,7 +1592,7 @@ msgstr "仪表盘"
 msgid "More"
 msgstr "更多"
 
-#: app/templates/auth/settings.html:441 app/templates/base.html:587
+#: app/templates/auth/settings/_menu.html:5 app/templates/base.html:587
 #: app/templates/fuel/quick.html:4 app/templates/fuel/quick.html:8
 #: app/templates/partials/mobile_nav.html:149
 msgid "Quick Fuel Entry"
@@ -1606,7 +1614,8 @@ msgstr "如何更新"
 msgid "Toggle dark mode"
 msgstr "切换深色模式"
 
-#: app/templates/auth/settings.html:3 app/templates/auth/settings.html:7
+#: app/templates/auth/settings.html:4 app/templates/auth/settings.html:24
+#: app/templates/auth/settings.html:27 app/templates/auth/settings.html:57
 #: app/templates/base.html:634 app/templates/partials/mobile_nav.html:132
 msgid "Settings"
 msgstr "设置"
@@ -1631,17 +1640,17 @@ msgid "Good evening, %(name)s"
 msgstr "晚上好，%(name)s"
 
 #: app/templates/charging/_log.html:8 app/templates/dashboard.html:27
-#: app/templates/expenses/index.html:76 app/templates/fuel/index.html:48
+#: app/templates/expenses/index.html:76 app/templates/fuel/index.html:36
 msgid "This month"
 msgstr "本月"
 
 #: app/templates/allowance/index.html:30 app/templates/charging/_log.html:13
 #: app/templates/dashboard.html:28 app/templates/dashboard.html:150
-#: app/templates/fuel/index.html:52
+#: app/templates/fuel/index.html:40
 msgid "This year"
 msgstr "今年"
 
-#: app/templates/auth/settings.html:163 app/templates/dashboard.html:29
+#: app/templates/auth/settings/_units.html:77 app/templates/dashboard.html:29
 msgid "Period"
 msgstr "句点"
 
@@ -1809,7 +1818,7 @@ msgstr "最近动态"
 #: app/templates/charging/_log.html:36 app/templates/charging/form.html:26
 #: app/templates/dashboard.html:200 app/templates/expenses/form.html:66
 #: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
-#: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:107
+#: app/templates/fuel/index.html:87 app/templates/maintenance/form.html:107
 #: app/templates/notes/form.html:20 app/templates/notes/index.html:33
 #: app/templates/stations/prices.html:36 app/templates/timeline/index.html:32
 #: app/templates/tires/index.html:55 app/templates/tires/index.html:73
@@ -1819,7 +1828,7 @@ msgid "Date"
 msgstr "日期"
 
 #: app/templates/dashboard.html:201 app/templates/documents/form.html:34
-#: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
+#: app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
 #: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
 #: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:456
@@ -1832,7 +1841,7 @@ msgstr "类型"
 #: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
 #: app/templates/expenses/form.html:52 app/templates/expenses/index.html:26
 #: app/templates/fuel/_quick_form.html:16 app/templates/fuel/form.html:47
-#: app/templates/fuel/form.html:63 app/templates/fuel/index.html:18
+#: app/templates/fuel/form.html:63 app/templates/fuel/index.html:17
 #: app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/history.html:14 app/templates/notes/index.html:14
@@ -1966,12 +1975,13 @@ msgid "Optional. If set with distance, the amount is calculated for you."
 msgstr "可选。如果与距离一起设置，系统将自动为您计算金额。"
 
 #: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:55
-#: app/templates/auth/settings.html:214 app/templates/charging/form.html:130
-#: app/templates/documents/form.html:82 app/templates/expenses/form.html:195
-#: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:146
-#: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
-#: app/templates/stations/form.html:63 app/templates/tires/form.html:82
-#: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
+#: app/templates/auth/settings/_units.html:84
+#: app/templates/charging/form.html:130 app/templates/documents/form.html:82
+#: app/templates/expenses/form.html:195 app/templates/fuel/form.html:255
+#: app/templates/maintenance/form.html:146 app/templates/notes/form.html:51
+#: app/templates/recurring/form.html:112 app/templates/stations/form.html:63
+#: app/templates/tires/form.html:82 app/templates/trips/form.html:134
+#: app/templates/trips/template_form.html:63
 #: app/templates/vehicles/form.html:237
 #: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
@@ -1984,7 +1994,7 @@ msgstr "记录用于商务用途的补贴收入，用以抵消您的运营成本
 
 #: app/templates/allowance/index.html:16 app/templates/charging/index.html:18
 #: app/templates/documents/index.html:16 app/templates/documents/index.html:64
-#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:20
+#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:19
 #: app/templates/maintenance/history.html:16 app/templates/notes/index.html:16
 #: app/templates/reminders/index.html:32 app/templates/trips/index.html:30
 msgid "All Vehicles"
@@ -1992,7 +2002,7 @@ msgstr "所有车辆"
 
 #: app/templates/allowance/index.html:21 app/templates/charging/index.html:23
 #: app/templates/documents/index.html:21 app/templates/expenses/index.html:63
-#: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
+#: app/templates/fuel/index.html:24 app/templates/maintenance/history.html:35
 #: app/templates/notes/index.html:21 app/templates/reminders/index.html:47
 #: app/templates/trips/index.html:49 app/templates/trips/report.html:24
 msgid "Filter"
@@ -2010,7 +2020,7 @@ msgid "Entries"
 msgstr "条目"
 
 #: app/templates/allowance/index.html:54 app/templates/charging/_log.html:43
-#: app/templates/expenses/index.html:97 app/templates/fuel/index.html:106
+#: app/templates/expenses/index.html:97 app/templates/fuel/index.html:94
 #: app/templates/notes/index.html:36 app/templates/stations/prices.html:39
 #: app/templates/trips/index.html:83 app/templates/vehicles/view.html:223
 #: app/templates/vehicles/view.html:460
@@ -2019,7 +2029,7 @@ msgstr "操作"
 
 #: app/templates/allowance/index.html:88 app/templates/auth/users.html:30
 #: app/templates/charging/_log.html:84 app/templates/documents/view.html:11
-#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:160
+#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:148
 #: app/templates/maintenance/index.html:49 app/templates/notes/index.html:77
 #: app/templates/recurring/index.html:49
 #: app/templates/reminders/_reminder_row.html:55
@@ -2040,7 +2050,7 @@ msgstr "删除此补贴记录？"
 #: app/templates/allowance/index.html:93 app/templates/auth/users.html:39
 #: app/templates/components/forms.html:56 app/templates/expenses/form.html:176
 #: app/templates/expenses/index.html:155 app/templates/fuel/form.html:235
-#: app/templates/fuel/index.html:165 app/templates/notes/index.html:82
+#: app/templates/fuel/index.html:153 app/templates/notes/index.html:82
 #: app/templates/reminders/_reminder_row.html:60
 #: app/templates/tires/index.html:105 app/templates/tires/index.html:119
 #: app/templates/trips/index.html:136
@@ -2063,7 +2073,7 @@ msgstr "记录您因商务出行获得的里程补贴。"
 msgid "API Documentation"
 msgstr "API文档"
 
-#: app/templates/auth/_user_role.html:4 app/templates/auth/settings.html:236
+#: app/templates/auth/_user_role.html:4
 msgid "Role"
 msgstr "角色"
 
@@ -2091,14 +2101,15 @@ msgstr "账户详情"
 
 #: app/templates/auth/create_user.html:19 app/templates/auth/edit_user.html:19
 #: app/templates/auth/login.html:18 app/templates/auth/register.html:11
-#: app/templates/auth/settings.html:232 app/templates/vehicles/share.html:14
+#: app/templates/vehicles/share.html:14
 msgid "Username"
 msgstr "用户名"
 
 #: app/templates/auth/create_user.html:24 app/templates/auth/edit_user.html:23
 #: app/templates/auth/forgot_password.html:11
-#: app/templates/auth/register.html:17 app/templates/auth/settings.html:249
-#: app/templates/auth/settings.html:1471
+#: app/templates/auth/register.html:17
+#: app/templates/auth/settings/_account.html:22
+#: app/templates/auth/settings/_notifications.html:8
 msgid "Email"
 msgstr "邮箱"
 
@@ -2128,11 +2139,12 @@ msgstr "保持当前密码请留空"
 
 #: app/templates/auth/edit_user.html:43
 #: app/templates/auth/reset_password.html:12
-#: app/templates/auth/settings.html:374
+#: app/templates/auth/settings/_account.html:39
 msgid "New Password"
 msgstr "新密码"
 
-#: app/templates/auth/edit_user.html:48 app/templates/auth/settings.html:381
+#: app/templates/auth/edit_user.html:48
+#: app/templates/auth/settings/_account.html:44
 msgid "Confirm New Password"
 msgstr "确认新密码"
 
@@ -2199,1272 +2211,149 @@ msgstr "已有账户？"
 msgid "Set a new password"
 msgstr "设置新密码"
 
-#: app/templates/auth/settings.html:8
+#: app/templates/auth/settings.html:24
 msgid "Manage your preferences and account"
 msgstr "管理您的偏好设置和账户"
 
-#: app/templates/auth/settings.html:19 app/templates/auth/settings.html:99
+#: app/templates/auth/settings.html:29
+msgid "Preferences"
+msgstr "偏好设置"
+
+#: app/templates/auth/settings.html:30
+#: app/templates/auth/settings/_units.html:8
+#: app/templates/auth/settings/_units.html:30
 msgid "Units & Values"
 msgstr "单位和数值"
 
-#: app/templates/auth/settings.html:27
-msgid "Account & Security"
-msgstr "账户和安全"
-
-#: app/templates/auth/settings.html:35 app/templates/auth/settings.html:427
+#: app/templates/auth/settings.html:31
+#: app/templates/auth/settings/_menu.html:14
+#: app/templates/auth/settings/_menu.html:18
 msgid "Menu & Navigation"
 msgstr "菜单和导航"
 
-#: app/templates/auth/settings.html:43
-msgid "Import / Export"
-msgstr "导入 / 导出"
-
-#: app/templates/auth/settings.html:51
-msgid "API"
-msgstr "API"
-
-#: app/templates/auth/settings.html:59 app/templates/auth/settings.html:358
-#: app/templates/auth/settings.html:800
-msgid "Integrations"
-msgstr "集成"
-
-#: app/templates/auth/settings.html:67
+#: app/templates/auth/settings.html:32
+#: app/templates/auth/settings/_notifications.html:14
 msgid "Notifications"
 msgstr "通知"
 
-#: app/templates/auth/settings.html:76
-msgid "Branding"
-msgstr "品牌"
-
-#: app/templates/auth/settings.html:85 app/templates/auth/settings.html:1879
-msgid "About"
-msgstr "关于"
-
-#: app/templates/auth/settings.html:100
-msgid "Configure how measurements and currencies are displayed"
-msgstr "配置计量单位和货币的显示方式"
-
-#: app/templates/auth/settings.html:106
-msgid "Language"
-msgstr "语言"
-
-#: app/templates/auth/settings.html:116
-msgid "Date Format"
-msgstr "日期格式"
-
-#: app/templates/auth/settings.html:119
-msgid "DD/MM/YYYY"
-msgstr "日/月/年"
-
-#: app/templates/auth/settings.html:120
-msgid "MM/DD/YYYY"
-msgstr "月/日/年"
-
-#: app/templates/auth/settings.html:121
-msgid "YYYY-MM-DD"
-msgstr "年-月-日"
-
-#: app/templates/auth/settings.html:122
-msgid "DD.MM.YYYY"
-msgstr "日.月.年"
-
-#: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:46
-#: app/templates/fuel/form.html:105 app/templates/fuel/index.html:101
-msgid "Volume"
-msgstr "容量"
-
-#: app/templates/auth/settings.html:139
-#: app/templates/vehicles/part_form.html:7
-msgid "Liters (L)"
-msgstr "升 (L)"
-
-#: app/templates/auth/settings.html:140
-msgid "UK Gallons (gal)"
-msgstr "英制加仑 (gal)"
-
-#: app/templates/auth/settings.html:141
-msgid "US Gallons (gal)"
-msgstr "美制加仑 (gal)"
-
-#: app/templates/auth/settings.html:146
-msgid "Fuel Consumption"
-msgstr "油耗"
-
-#: app/templates/auth/settings.html:149
-msgid "L/100km"
-msgstr "L/100km"
-
-#: app/templates/auth/settings.html:150
-msgid "MPG (UK)"
-msgstr "MPG（英制）"
-
-#: app/templates/auth/settings.html:151
-msgid "MPG (US)"
-msgstr "MPG（美制）"
-
-#: app/templates/auth/settings.html:152
-msgid "km/L"
-msgstr "km/L"
-
-#: app/templates/auth/settings.html:157
-msgid "Thousand Separator"
-msgstr "千位分隔符"
-
-#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:99
-msgid "None"
-msgstr "无"
-
-#: app/templates/auth/settings.html:161
-msgid "Space"
-msgstr "空格"
-
-#: app/templates/auth/settings.html:162
-msgid "Comma"
-msgstr "逗号"
-
-#: app/templates/auth/settings.html:171
-msgid "Round costs to whole numbers"
-msgstr "将费用四舍五入为整数"
-
-#: app/templates/auth/settings.html:177
-msgid "Currency"
-msgstr "货币"
-
-#: app/templates/auth/settings.html:200
-msgid "Custom Currency"
-msgstr "自定义货币"
-
-#: app/templates/auth/settings.html:203
-msgid "e.g. ZAR, R, CHF"
-msgstr "例如 ZAR、R、CHF"
-
-#: app/templates/auth/settings.html:205
-msgid "Enter a currency code or symbol to display"
-msgstr "输入要显示的货币代码或符号"
-
-#: app/templates/auth/settings.html:226
-msgid "Account Information"
-msgstr "账户信息"
-
-#: app/templates/auth/settings.html:227
-msgid "Your account details"
-msgstr "您的账户详情"
-
-#: app/templates/auth/settings.html:241
-msgid ""
-"Your account can see the data but cannot change it. Ask an administrator if "
-"you need more access."
-msgstr "您的账号可以查看数据但不能修改。如需更多权限，请联系管理员。"
-
-#: app/templates/auth/settings.html:243
-msgid ""
-"Your account can record fuel fill-ups and charging sessions. Ask an "
-"administrator if you need more access."
-msgstr "您的账号可以记录加油和充电。如需更多权限，请联系管理员。"
-
-#: app/templates/auth/settings.html:254
-msgid "Member Since"
-msgstr "注册时间"
-
-#: app/templates/auth/settings.html:261
-msgid "Save Email"
-msgstr "保存邮箱"
-
-#: app/templates/auth/settings.html:269
-msgid "Appearance"
-msgstr "外观"
-
-#: app/templates/auth/settings.html:270
-msgid "Customize how the app looks"
-msgstr "自定义应用外观"
-
-#: app/templates/auth/settings.html:276
-msgid "Dark Mode"
-msgstr "深色模式"
-
-#: app/templates/auth/settings.html:277
-msgid "Use dark theme for the interface"
-msgstr "使用深色主题"
-
-#: app/templates/auth/settings.html:292 app/templates/auth/users.html:9
-msgid "User Management"
-msgstr "用户管理"
-
-#: app/templates/auth/settings.html:293
-msgid "Manage users and permissions"
-msgstr "管理用户和权限"
-
-#: app/templates/auth/settings.html:299 app/templates/auth/users.html:4
-#: app/templates/auth/users.html:9 app/templates/auth/users.html:13
-msgid "Users"
-msgstr "用户"
-
-#: app/templates/auth/settings.html:300
-msgid "View and manage all users"
-msgstr "查看和管理所有用户"
-
-#: app/templates/auth/settings.html:304
-msgid "Manage Users"
-msgstr "管理用户"
-
-#: app/templates/auth/settings.html:310
-msgid "Allow Registration"
-msgstr "允许注册"
-
-#: app/templates/auth/settings.html:311
-msgid "Allow new users to create accounts"
-msgstr "允许新用户创建账户"
-
-#: app/templates/auth/settings.html:345
-msgid "Admin Settings"
-msgstr "管理员设置"
-
-#: app/templates/auth/settings.html:346
-msgid "Configure system-wide settings for all users:"
-msgstr "配置所有用户的系统级设置："
-
-#: app/templates/auth/settings.html:350
-msgid "SMTP / Notifications"
-msgstr "SMTP / 通知"
-
-#: app/templates/auth/settings.html:354
-msgid "Branding / Appearance"
-msgstr "品牌 / 外观"
-
-#: app/templates/auth/settings.html:367
-msgid "Change Password"
-msgstr "修改密码"
-
-#: app/templates/auth/settings.html:368
-msgid "Update your password to keep your account secure"
-msgstr "更新密码以保护您的账户安全"
-
-#: app/templates/auth/settings.html:392
-msgid "Update Password"
-msgstr "更新密码"
-
-#: app/templates/auth/settings.html:400 app/templates/vehicles/view.html:658
-msgid "Danger Zone"
-msgstr "危险操作"
-
-#: app/templates/auth/settings.html:401
-msgid "Irreversible actions"
-msgstr "不可撤销的操作"
-
-#: app/templates/auth/settings.html:407 app/templates/auth/settings.html:412
-msgid "Delete Account"
-msgstr "删除账户"
-
-#: app/templates/auth/settings.html:408
-msgid "Permanently delete your account and all data"
-msgstr "永久删除您的账户和所有数据"
-
-#: app/templates/auth/settings.html:428
-msgid "Customize which menu items to show and your start page"
-msgstr "自定义显示的菜单项和起始页面"
-
-#: app/templates/auth/settings.html:434
-msgid "Start Page"
-msgstr "起始页面"
-
-#: app/templates/auth/settings.html:435
-msgid "Which page to show when you log in"
-msgstr "登录后显示的页面"
-
-#: app/templates/auth/settings.html:445 app/templates/auth/settings.html:515
-#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
-#: app/templates/recurring/index.html:16
-msgid "Recurring Expenses"
-msgstr "定期费用"
-
-#: app/templates/auth/settings.html:457
-#: app/templates/trips/template_form.html:23
-msgid "Default Vehicle"
-msgstr "默认车辆"
-
-#: app/templates/auth/settings.html:458
-msgid ""
-"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
-"sessions"
-msgstr "添加加油记录、费用、行程和充电记录时预先选中的车辆"
-
-#: app/templates/auth/settings.html:461
-msgid "No default"
-msgstr "无默认"
-
-#: app/templates/auth/settings.html:471
-msgid "Quick Entry Button"
-msgstr "快速录入按钮"
-
-#: app/templates/auth/settings.html:472
-msgid "Show a quick fuel entry button in the navigation bar for rapid logging"
-msgstr "在导航栏中显示快速加油录入按钮"
-
-#: app/templates/auth/settings.html:483
-msgid "Show Menu Items"
-msgstr "显示菜单项"
-
-#: app/templates/auth/settings.html:484
-msgid "Choose which items appear in the navigation menu"
-msgstr "选择在导航菜单中显示的项目"
-
-#: app/templates/auth/settings.html:559 app/templates/auth/settings.html:1577
-msgid "Save Preferences"
-msgstr "保存偏好设置"
-
-#: app/templates/auth/settings.html:572
-msgid "Import Data"
-msgstr "导入数据"
-
-#: app/templates/auth/settings.html:573
-msgid ""
-"Restore a May backup, or import your data from other fuel tracking "
-"applications"
-msgstr "恢复 May 备份，或从其他燃油记录应用导入您的数据"
-
-#: app/templates/auth/settings.html:579
-msgid "Restore May Backup"
-msgstr "恢复 May 备份"
-
-#: app/templates/auth/settings.html:580
-msgid ""
-"Restore a JSON export (.json) or full backup (.zip) from another May "
-"instance"
-msgstr "恢复来自其他 May 实例的 JSON 导出文件（.json）或完整备份（.zip）"
-
-#: app/templates/auth/settings.html:584
-msgid "Restore"
-msgstr "恢复"
-
-#: app/templates/auth/settings.html:591
-msgid "Import from Hammond SQLite database (.db file)"
-msgstr "从 Hammond SQLite 数据库导入（.db 文件）"
-
-#: app/templates/auth/settings.html:599 app/templates/auth/settings.html:615
-#: app/templates/auth/settings.html:631 app/templates/auth/settings.html:643
-#: app/templates/import/csv_mapping.html:15
-#: app/templates/import/csv_mapping.html:96
-#: app/templates/import/csv_upload.html:10
-msgid "Import"
-msgstr "导入"
-
-#: app/templates/auth/settings.html:607
-msgid "Import from Clarkson MySQL dump (.sql file)"
-msgstr "从 Clarkson MySQL 转储导入（.sql 文件）"
-
-#: app/templates/auth/settings.html:623
-msgid "Import from Fuelly CSV export (.csv file)"
-msgstr "从 Fuelly CSV 导出文件导入（.csv 文件）"
-
-#: app/templates/auth/settings.html:638 app/templates/import/csv_upload.html:4
-msgid "CSV Import"
-msgstr "CSV导入"
-
-#: app/templates/auth/settings.html:639
-msgid ""
-"Import fuel logs, expenses, trips, or charging sessions from any CSV file"
-msgstr "从任意 CSV 文件导入加油、支出、行程或充电记录"
-
-#: app/templates/auth/settings.html:650
-msgid "Import from Drivvo backup files"
-msgstr "从 Drivvo 备份文件导入"
-
-#: app/templates/auth/settings.html:654
-msgid "Soon"
-msgstr "即将推出"
-
-#: app/templates/auth/settings.html:663
-msgid "Export Data"
-msgstr "导出数据"
-
-#: app/templates/auth/settings.html:664
-msgid "Download your data for backup or migration"
-msgstr "下载数据用于备份或迁移"
-
-#: app/templates/auth/settings.html:670
-msgid "Export as CSV"
-msgstr "导出为CSV"
-
-#: app/templates/auth/settings.html:671
-msgid ""
-"Download all your vehicles, fuel logs, and expenses as CSV files (ZIP "
-"archive)"
-msgstr "将所有车辆、加油记录和费用下载为CSV文件（ZIP压缩包）"
-
-#: app/templates/auth/settings.html:675
-msgid "Download CSV"
-msgstr "下载CSV"
-
-#: app/templates/auth/settings.html:681
-msgid "Export as JSON"
-msgstr "导出为JSON"
-
-#: app/templates/auth/settings.html:682
-msgid "Download a complete backup of your data in JSON format"
-msgstr "以JSON格式下载数据的完整备份"
-
-#: app/templates/auth/settings.html:686
-msgid "Download JSON"
-msgstr "下载JSON"
-
-#: app/templates/auth/settings.html:692
-msgid "Full Backup"
-msgstr "完整备份"
-
-#: app/templates/auth/settings.html:693
-msgid ""
-"Download all data and files (images, documents, attachments) as a ZIP "
-"archive"
-msgstr "将所有数据和文件（图片、文档、附件）下载为ZIP压缩包"
-
-#: app/templates/auth/settings.html:697
-msgid "Download ZIP"
-msgstr "下载ZIP"
-
-#: app/templates/auth/settings.html:713
-msgid "API Access"
-msgstr "API访问"
-
-#: app/templates/auth/settings.html:714
-msgid "Generate API keys to connect external applications"
-msgstr "生成API密钥以连接外部应用"
-
-#: app/templates/auth/settings.html:716
-msgid "View API Docs"
-msgstr "查看API文档"
-
-#: app/templates/auth/settings.html:725
-msgid "Your API Key"
-msgstr "您的API密钥"
-
-#: app/templates/auth/settings.html:744 app/templates/auth/settings.html:781
-#: app/templates/auth/settings.html:982 app/templates/auth/settings.html:996
-msgid "Copy"
-msgstr "复制"
-
-#: app/templates/auth/settings.html:747
-msgid "Created"
-msgstr "创建时间"
-
-#: app/templates/auth/settings.html:751
-msgid "Regenerate Key"
-msgstr "重新生成密钥"
-
-#: app/templates/auth/settings.html:755
-msgid "Revoke Key"
-msgstr "撤销密钥"
-
-#: app/templates/auth/settings.html:762
-msgid "API Key"
-msgstr "API密钥"
-
-#: app/templates/auth/settings.html:763
-msgid ""
-"Generate an API key to access May programmatically. You can use it to "
-"integrate with other applications or build your own tools."
-msgstr "生成API密钥以便通过编程方式访问May。您可以用它与其他应用集成或构建自己的工具。"
-
-#: app/templates/auth/settings.html:766
-msgid "Generate API Key"
-msgstr "生成API密钥"
-
-#: app/templates/auth/settings.html:775
-msgid "API Key Generated"
-msgstr "API密钥已生成"
-
-#: app/templates/auth/settings.html:776
-msgid "Copy your API key now. For security, it won't be shown in full again."
-msgstr "请立即复制您的API密钥。出于安全考虑，密钥不会再次完整显示。"
-
-#: app/templates/auth/settings.html:787
-msgid "Done"
-msgstr "完成"
-
-#: app/templates/auth/settings.html:801
-msgid "Connect May with external services and applications"
-msgstr "将May与外部服务和应用连接"
-
-#: app/templates/auth/settings.html:815
-msgid "Calendar"
-msgstr "日历"
-
-#: app/templates/auth/settings.html:818
-msgid "Subscribe to reminders in your calendar app"
-msgstr "在日历应用中订阅提醒"
-
-#: app/templates/auth/settings.html:820 app/templates/auth/settings.html:841
-msgid "Ready"
-msgstr "就绪"
-
-#: app/templates/auth/settings.html:822 app/templates/auth/settings.html:843
-msgid "Requires API key"
-msgstr "需要API密钥"
-
-#: app/templates/auth/settings.html:836 app/templates/auth/settings.html:1048
-msgid "Home Assistant"
-msgstr "Home Assistant"
-
-#: app/templates/auth/settings.html:839 app/templates/auth/settings.html:1049
-msgid "Create sensors and automations for your vehicles"
-msgstr "为您的车辆创建传感器和自动化"
-
-#: app/templates/auth/settings.html:858 app/templates/auth/settings.html:1136
-msgid "Telegram"
-msgstr "Telegram"
-
-#: app/templates/auth/settings.html:861
-msgid "Log fill-ups by messaging a bot"
-msgstr "通过给机器人发消息记录加油"
-
-#: app/templates/auth/settings.html:863
-msgid "Connected"
-msgstr "已连接"
-
-#: app/templates/auth/settings.html:865
-msgid "Not connected"
-msgstr "未连接"
-
-#: app/templates/auth/settings.html:867 app/templates/auth/settings.html:891
-#: app/templates/auth/settings.html:913
-msgid "Not configured"
-msgstr "未配置"
-
-#: app/templates/auth/settings.html:883
-msgid "DVLA"
-msgstr "DVLA"
-
-#: app/templates/auth/settings.html:884 app/templates/auth/settings.html:906
-#: app/templates/auth/settings.html:928 app/templates/auth/settings.html:1593
+#: app/templates/auth/settings.html:35
+msgid "Account"
+msgstr "账户"
+
+#: app/templates/auth/settings.html:36
+#: app/templates/auth/settings/_account.html:6
+msgid "Account & Security"
+msgstr "账户和安全"
+
+#: app/templates/auth/settings.html:37 app/templates/auth/settings/_api.html:6
+msgid "API"
+msgstr "API"
+
+#: app/templates/auth/settings.html:40
+#: app/templates/import/backup_preview.html:22
+msgid "Data"
+msgstr "数据"
+
+#: app/templates/auth/settings.html:41
+#: app/templates/auth/settings/_data.html:15
+msgid "Import / Export"
+msgstr "导入 / 导出"
+
+#: app/templates/auth/settings.html:42
+#: app/templates/auth/settings/_integrations.html:65
+msgid "Integrations"
+msgstr "集成"
+
+#: app/templates/auth/settings.html:46
+#: app/templates/auth/settings/_integrations.html:12
+#: app/templates/auth/settings/_ui.html:13
 msgid "Admin"
 msgstr "管理员"
 
-#: app/templates/auth/settings.html:887 app/templates/auth/settings.html:1216
-msgid "Look up UK vehicle MOT and tax status"
-msgstr "查询英国车辆MOT和税务状态"
+#: app/templates/auth/settings.html:47
+#: app/templates/auth/settings/_branding.html:6
+msgid "Branding"
+msgstr "品牌"
 
-#: app/templates/auth/settings.html:889 app/templates/auth/settings.html:911
-msgid "Configured"
-msgstr "已配置"
+#: app/templates/auth/settings.html:48
+#: app/templates/auth/settings/_account.html:54
+#: app/templates/auth/users.html:4 app/templates/auth/users.html:13
+msgid "Users"
+msgstr "用户"
 
-#: app/templates/auth/settings.html:905
-msgid "Tessie"
-msgstr "Tessie"
+#: app/templates/auth/settings.html:52
+#: app/templates/auth/settings/_about.html:6
+#: app/templates/auth/settings/_about.html:7
+msgid "About"
+msgstr "关于"
 
-#: app/templates/auth/settings.html:909
-msgid "Sync Tesla vehicle odometer and battery"
-msgstr "同步Tesla车辆里程表和电池"
+#: app/templates/auth/settings.html:81
+msgid "Copied to clipboard"
+msgstr "已复制到剪贴板"
 
-#: app/templates/auth/settings.html:927 app/templates/auth/settings.html:1366
-msgid "UK Fuel Prices"
-msgstr "英国燃油价格"
+#: app/templates/auth/settings.html:82
+msgid "Sending..."
+msgstr "正在发送…"
 
-#: app/templates/auth/settings.html:931 app/templates/auth/settings.html:1367
-msgid "Pull live forecourt prices for saved stations"
-msgstr "为已保存的加油站获取实时价格"
+#: app/templates/auth/settings.html:82
+msgid "Testing..."
+msgstr "正在测试…"
 
-#: app/templates/auth/settings.html:933
-msgid "Enabled"
-msgstr "已启用"
+#: app/templates/auth/settings.html:83
+msgid "Something went wrong. Please try again."
+msgstr "出错了，请重试。"
 
-#: app/templates/auth/settings.html:935
-msgid "Disabled"
-msgstr "已停用"
-
-#: app/templates/auth/settings.html:949 app/templates/auth/settings.html:1035
-#: app/templates/auth/settings.html:1130 app/templates/auth/settings.html:1202
-#: app/templates/auth/settings.html:1273 app/templates/auth/settings.html:1353
-msgid "Back to Integrations"
-msgstr "返回集成"
-
-#: app/templates/auth/settings.html:962
-msgid "Calendar Subscription"
-msgstr "日历订阅"
-
-#: app/templates/auth/settings.html:963
-msgid "Subscribe to your reminders in any calendar app"
-msgstr "在任意日历应用中订阅您的提醒"
-
-#: app/templates/auth/settings.html:971
+#: app/templates/auth/settings.html:84
 msgid ""
-"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
-"calendar app that supports iCal subscriptions."
-msgstr "将此日历添加到Apple日历、Google日历、Outlook或其他支持iCal订阅的日历应用。"
+"Are you sure you want to regenerate your API key? The current key will stop "
+"working immediately."
+msgstr "确定要重新生成 API 密钥吗？当前密钥将立即失效。"
 
-#: app/templates/auth/settings.html:974
-msgid "Webcal URL"
-msgstr "Webcal URL"
-
-#: app/templates/auth/settings.html:975
-msgid "Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)"
-msgstr "大多数日历应用（Apple日历、Outlook等）请使用此URL"
-
-#: app/templates/auth/settings.html:988
-msgid "HTTPS URL"
-msgstr "HTTPS URL"
-
-#: app/templates/auth/settings.html:989
-msgid "Use this URL for Google Calendar"
-msgstr "Google日历请使用此URL"
-
-#: app/templates/auth/settings.html:1002
-msgid "What's included in the calendar?"
-msgstr "日历包含哪些内容？"
-
-#: app/templates/auth/settings.html:1004
-msgid "Maintenance schedules"
-msgstr "保养计划"
-
-#: app/templates/auth/settings.html:1005
-msgid "Recurring expense due dates"
-msgstr "定期费用到期日"
-
-#: app/templates/auth/settings.html:1006
-msgid "Document expiry dates"
-msgstr "文档到期日"
-
-#: app/templates/auth/settings.html:1007
-msgid "Custom reminders"
-msgstr "自定义提醒"
-
-#: app/templates/auth/settings.html:1016 app/templates/auth/settings.html:1110
-msgid "API Key Required"
-msgstr "需要API密钥"
-
-#: app/templates/auth/settings.html:1017
-msgid "Generate an API key in the API section to enable calendar integration."
-msgstr "请在API部分生成API密钥以启用日历集成。"
-
-#: app/templates/auth/settings.html:1020 app/templates/auth/settings.html:1114
-msgid "Go to API Settings"
-msgstr "前往API设置"
-
-#: app/templates/auth/settings.html:1057
+#: app/templates/auth/settings.html:85
 msgid ""
-"Add the following configuration to your Home Assistant configuration.yaml to"
-" create vehicle sensors."
-msgstr "将以下配置添加到您的Home Assistant configuration.yaml以创建车辆传感器。"
+"Are you sure you want to revoke your API key? This action cannot be undone."
+msgstr "确定要撤销 API 密钥吗？此操作无法撤销。"
 
-#: app/templates/auth/settings.html:1060
-msgid "REST Sensor Configuration"
-msgstr "REST传感器配置"
+#: app/templates/auth/settings.html:86
+msgid "Please enter an API token"
+msgstr "请输入 API 令牌"
 
-#: app/templates/auth/settings.html:1076
-msgid "Copy configuration"
-msgstr "复制配置"
+#: app/templates/auth/settings.html:87
+msgid "Test notification sent!"
+msgstr "测试通知已发送！"
 
-#: app/templates/auth/settings.html:1080
-msgid "Available API Endpoints"
-msgstr "可用API端点"
+#: app/templates/auth/settings.html:87
+msgid "Test email sent!"
+msgstr "测试邮件已发送！"
 
-#: app/templates/auth/settings.html:1084
-msgid "API health check"
-msgstr "API健康检查"
+#: app/templates/auth/settings.html:88
+msgid "API key is valid!"
+msgstr "API 密钥有效！"
 
-#: app/templates/auth/settings.html:1088
-msgid "List all vehicles"
-msgstr "列出所有车辆"
-
-#: app/templates/auth/settings.html:1092
-msgid "Vehicle statistics"
-msgstr "车辆统计"
-
-#: app/templates/auth/settings.html:1096
-msgid "Upcoming reminders"
-msgstr "即将到来的提醒"
-
-#: app/templates/auth/settings.html:1100
-msgid "Combined summary"
-msgstr "综合摘要"
-
-#: app/templates/auth/settings.html:1111
-msgid ""
-"Generate an API key in the API section to enable Home Assistant integration."
-msgstr "请在API部分生成API密钥以启用Home Assistant集成。"
-
-#: app/templates/auth/settings.html:1137
-msgid ""
-"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
-"it is saved as a fuel log."
-msgstr "用一行向机器人发送加油记录，例如 40L 4800tk 45230km，即可保存为加油记录。"
-
-#: app/templates/auth/settings.html:1143
-msgid "Your account is connected to Telegram."
-msgstr "您的账户已连接到 Telegram。"
-
-#: app/templates/auth/settings.html:1147
-msgid "Disconnect Telegram"
-msgstr "断开 Telegram"
-
-#: app/templates/auth/settings.html:1150
-msgid "Send this to the bot within 15 minutes:"
-msgstr "请在 15 分钟内将此内容发送给机器人："
-
-#: app/templates/auth/settings.html:1154
-msgid "Open in Telegram"
-msgstr "在 Telegram 中打开"
-
-#: app/templates/auth/settings.html:1159
-msgid "Connect Telegram"
-msgstr "连接 Telegram"
-
-#: app/templates/auth/settings.html:1168
-msgid "Set up the bot (admin)"
-msgstr "设置机器人（管理员）"
-
-#: app/templates/auth/settings.html:1170
-msgid "In Telegram, message @BotFather and send /newbot"
-msgstr "在 Telegram 中向 @BotFather 发消息并发送 /newbot"
-
-#: app/templates/auth/settings.html:1171
-msgid "Copy the token it gives you and paste it below"
-msgstr "复制它提供的令牌并粘贴到下方"
-
-#: app/templates/auth/settings.html:1172
-msgid "Each user then connects their own chat from this page"
-msgstr "之后每位用户在此页面连接自己的聊天"
-
-#: app/templates/auth/settings.html:1178
-msgid "Bot token"
-msgstr "机器人令牌"
-
-#: app/templates/auth/settings.html:1182
-msgid "Leave empty and save to disconnect the bot."
-msgstr "留空并保存即可断开机器人。"
-
-#: app/templates/auth/settings.html:1185
-msgid "Save Telegram Settings"
-msgstr "保存 Telegram 设置"
-
-#: app/templates/auth/settings.html:1215
-msgid "DVLA Vehicle Lookup"
-msgstr "DVLA车辆查询"
-
-#: app/templates/auth/settings.html:1224
-msgid ""
-"The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax "
-"status, and vehicle details for UK registered vehicles. This enables "
-"automatic population of vehicle information when adding new vehicles."
-msgstr "DVLA车辆查询服务允许您查询英国注册车辆的MOT状态、税务状态和车辆详情。添加新车辆时可自动填充车辆信息。"
-
-#: app/templates/auth/settings.html:1228
-msgid "How to get an API key"
-msgstr "如何获取API密钥"
-
-#: app/templates/auth/settings.html:1230
-msgid "Visit the"
-msgstr "访问"
-
-#: app/templates/auth/settings.html:1230
-msgid "DVLA Developer Portal"
-msgstr "DVLA开发者门户"
-
-#: app/templates/auth/settings.html:1231
-msgid "Register for a free account"
-msgstr "注册免费账户"
-
-#: app/templates/auth/settings.html:1232
-msgid "Subscribe to the Vehicle Enquiry Service API"
-msgstr "订阅Vehicle Enquiry Service API"
-
-#: app/templates/auth/settings.html:1233
-msgid "Copy your API key and paste it below"
-msgstr "复制您的API密钥并粘贴到下方"
-
-#: app/templates/auth/settings.html:1240
-msgid "DVLA API Key"
-msgstr "DVLA API密钥"
-
-#: app/templates/auth/settings.html:1248 app/templates/auth/settings.html:1328
-#: app/templates/auth/settings.html:1678
-msgid "Test"
-msgstr "测试"
-
-#: app/templates/auth/settings.html:1257
-msgid "Save DVLA Settings"
-msgstr "保存DVLA设置"
-
-#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:162
-msgid "Tessie Integration"
-msgstr "Tessie集成"
-
-#: app/templates/auth/settings.html:1287
-msgid "Sync Tesla vehicle data via Tessie"
-msgstr "通过Tessie同步Tesla车辆数据"
-
-#: app/templates/auth/settings.html:1295
-msgid ""
-"Tessie allows you to automatically sync odometer readings, battery level, "
-"and range from your Tesla vehicles. When enabled for a vehicle, odometer "
-"tracking becomes automatic."
-msgstr "Tessie允许您自动同步Tesla车辆的里程表读数、电池电量和续航里程。为车辆启用后，里程表追踪将变为自动。"
-
-#: app/templates/auth/settings.html:1299
-msgid "Important"
-msgstr "重要"
-
-#: app/templates/auth/settings.html:1301
-msgid "Tessie subscription required ($6.99/month per vehicle)"
-msgstr "需要Tessie订阅（每辆车$6.99/月）"
-
-#: app/templates/auth/settings.html:1302
-msgid "Your Tesla must be connected to Tessie"
-msgstr "您的Tesla必须已连接到Tessie"
-
-#: app/templates/auth/settings.html:1303
-msgid "When enabled, manual odometer entry is disabled"
-msgstr "启用后，将禁止手动输入里程表"
-
-#: app/templates/auth/settings.html:1308
-msgid "How to get an API token"
-msgstr "如何获取API令牌"
-
-#: app/templates/auth/settings.html:1310
-msgid "Sign up at"
-msgstr "注册地址："
-
-#: app/templates/auth/settings.html:1311
-msgid "Connect your Tesla account"
-msgstr "连接您的Tesla账户"
-
-#: app/templates/auth/settings.html:1312
-msgid "Go to Settings and create an API token"
-msgstr "前往设置并创建API令牌"
-
-#: app/templates/auth/settings.html:1313
-msgid "Paste the token below"
-msgstr "将令牌粘贴到下方"
-
-#: app/templates/auth/settings.html:1320
-msgid "Tessie API Token"
-msgstr "Tessie API令牌"
-
-#: app/templates/auth/settings.html:1337
-msgid "Save Tessie Settings"
-msgstr "保存Tessie设置"
-
-#: app/templates/auth/settings.html:1375
-msgid ""
-"UK retailers publish forecourt prices under the government fuel price "
-"transparency scheme. May matches your saved stations to those forecourts by "
-"postcode and records the prices, so price history and Cheapest Fuel stay up "
-"to date without manual entry."
-msgstr ""
-"英国零售商依据政府燃油价格透明计划公布加油站价格。May "
-"通过邮政编码将您保存的加油站与这些加油站匹配并记录价格，因此价格历史和最便宜燃油无需手动录入即可保持最新。"
-
-#: app/templates/auth/settings.html:1379
-msgid "Before you start"
-msgstr "开始之前"
-
-#: app/templates/auth/settings.html:1381
-msgid "No API key is needed; the feeds are open data"
-msgstr "无需 API 密钥；这些数据源为开放数据"
-
-#: app/templates/auth/settings.html:1382
-msgid "Give each station a postcode so it can be matched to a forecourt"
-msgstr "为每个加油站填写邮政编码，才能与实际加油站匹配"
-
-#: app/templates/auth/settings.html:1383
-msgid ""
-"Prices refresh automatically every few hours, or on demand from the Fuel "
-"Stations page"
-msgstr "价格每隔几小时自动刷新，也可在加油站页面手动更新"
-
-#: app/templates/auth/settings.html:1384
-msgid "See the"
-msgstr "参见"
-
-#: app/templates/auth/settings.html:1384
-msgid "gov.uk guidance"
-msgstr "gov.uk 指南"
-
-#: app/templates/auth/settings.html:1384
-msgid "for the current retailer list"
-msgstr "查看当前零售商名单"
-
-#: app/templates/auth/settings.html:1394
-msgid "Enable UK fuel price updates"
-msgstr "启用英国燃油价格更新"
-
-#: app/templates/auth/settings.html:1398
-msgid "Retailer feeds (optional)"
-msgstr "零售商数据源（可选）"
-
-#: app/templates/auth/settings.html:1403
-#, python-format
-msgid ""
-"One feed per line. Leave blank to use the built-in list (%(count)s "
-"retailers)."
-msgstr "每行一个数据源。留空则使用内置名单（%(count)s 家零售商）。"
-
-#: app/templates/auth/settings.html:1410
-msgid "Save UK Fuel Price Settings"
-msgstr "保存英国燃油价格设置"
-
-#: app/templates/auth/settings.html:1429
-msgid "Notification Preferences"
-msgstr "通知偏好"
-
-#: app/templates/auth/settings.html:1430
-msgid "Configure how you receive reminders about your vehicles"
-msgstr "配置您接收车辆提醒的方式"
-
-#: app/templates/auth/settings.html:1437
-msgid "Enable Reminders"
-msgstr "启用提醒"
-
-#: app/templates/auth/settings.html:1438
-msgid "Receive notifications for upcoming reminders"
-msgstr "接收即将到来的提醒通知"
-
-#: app/templates/auth/settings.html:1450
-msgid "Default Reminder Lead Time"
-msgstr "默认提醒提前时间"
-
-#: app/templates/auth/settings.html:1451
-msgid "How many days before the due date should you be notified?"
-msgstr "您希望在到期前多少天收到通知？"
-
-#: app/templates/auth/settings.html:1454 app/templates/reminders/form.html:12
-msgid "On the due date"
-msgstr "到期当天"
-
-#: app/templates/auth/settings.html:1455 app/templates/reminders/form.html:12
-msgid "1 day before"
-msgstr "1天前"
-
-#: app/templates/auth/settings.html:1456 app/templates/reminders/form.html:12
-msgid "3 days before"
-msgstr "3天前"
-
-#: app/templates/auth/settings.html:1457 app/templates/reminders/form.html:12
-msgid "1 week before"
-msgstr "1周前"
-
-#: app/templates/auth/settings.html:1458 app/templates/reminders/form.html:12
-msgid "2 weeks before"
-msgstr "2周前"
-
-#: app/templates/auth/settings.html:1459 app/templates/reminders/form.html:12
-msgid "1 month before"
-msgstr "1个月前"
-
-#: app/templates/auth/settings.html:1465
-msgid "Notification Method"
-msgstr "通知方式"
-
-#: app/templates/auth/settings.html:1466
-msgid "Choose how you want to receive notifications"
-msgstr "选择您希望接收通知的方式"
-
-#: app/templates/auth/settings.html:1471 app/templates/auth/settings.html:1475
-msgid "not configured"
-msgstr "未配置"
-
-#: app/templates/auth/settings.html:1473
-msgid "ntfy (Push Notifications)"
-msgstr "ntfy（推送通知）"
-
-#: app/templates/auth/settings.html:1475 app/templates/auth/settings.html:1691
-msgid "Pushover"
-msgstr "Pushover"
-
-#: app/templates/auth/settings.html:1477
-msgid "Webhook (HTTP POST)"
-msgstr "Webhook (HTTP POST)"
-
-#: app/templates/auth/settings.html:1487
-msgid "Notifications will be sent to"
-msgstr "通知将发送至"
-
-#: app/templates/auth/settings.html:1494
-msgid "Email not configured. Ask an administrator to configure SMTP settings."
-msgstr "邮件未配置。请联系管理员配置SMTP设置。"
-
-#: app/templates/auth/settings.html:1503
-msgid "is a simple pub-sub notification service. Enter your topic below."
-msgstr "是一个简单的发布-订阅通知服务。请在下方输入您的主题。"
-
-#: app/templates/auth/settings.html:1506
-msgid "ntfy Topic or Server URL"
-msgstr "ntfy主题或服务器URL"
-
-#: app/templates/auth/settings.html:1511
-msgid ""
-"For ntfy.sh, just enter your topic name. For self-hosted, enter the full "
-"URL."
-msgstr "使用ntfy.sh时只需输入主题名称。自建服务器请输入完整URL。"
-
-#: app/templates/auth/settings.html:1514
-msgid "ntfy Access Token"
-msgstr "ntfy 访问令牌"
-
-#: app/templates/auth/settings.html:1516
-msgid "Token saved — enter a new one to replace it"
-msgstr "令牌已保存——输入新令牌以替换"
-
-#: app/templates/auth/settings.html:1519
-msgid ""
-"Optional — only needed for self-hosted ntfy servers with authentication "
-"enabled. Leave blank to keep the saved token."
-msgstr "可选——仅在自建的ntfy服务器启用了身份验证时需要。留空以保留已保存的令牌。"
-
-#: app/templates/auth/settings.html:1524
-msgid "Remove the saved token"
-msgstr "移除已保存的令牌"
-
-#: app/templates/auth/settings.html:1534
-msgid "sends notifications to your devices. Enter your User Key below."
-msgstr "向您的设备发送通知。请在下方输入您的User Key。"
-
-#: app/templates/auth/settings.html:1537
-msgid "Pushover User Key"
-msgstr "Pushover User Key"
-
-#: app/templates/auth/settings.html:1542
-msgid "Find your User Key on your Pushover dashboard."
-msgstr "在您的Pushover仪表盘上查找User Key。"
-
-#: app/templates/auth/settings.html:1549
-msgid "Notifications will be sent as JSON POST requests to your webhook URL."
-msgstr "通知将以JSON POST请求的形式发送到您的Webhook URL。"
-
-#: app/templates/auth/settings.html:1552
-msgid "Webhook URL"
-msgstr "Webhook URL"
-
-#: app/templates/auth/settings.html:1557
-#, python-brace-format
-msgid "JSON payload: {title, message, reminder_id, vehicle_name, due_date}"
-msgstr "JSON负载：{title, message, reminder_id, vehicle_name, due_date}"
-
-#: app/templates/auth/settings.html:1568
-msgid "Send Test Notification"
-msgstr "发送测试通知"
-
-#: app/templates/auth/settings.html:1592
-msgid "Notification Services"
-msgstr "通知服务"
-
-#: app/templates/auth/settings.html:1595
-msgid "Configure notification services available to all users"
-msgstr "配置所有用户可用的通知服务"
-
-#: app/templates/auth/settings.html:1608
-msgid "Email (SMTP)"
-msgstr "邮件 (SMTP)"
-
-#: app/templates/auth/settings.html:1620
-msgid "SMTP Host"
-msgstr "SMTP主机"
-
-#: app/templates/auth/settings.html:1627
-msgid "SMTP Port"
-msgstr "SMTP端口"
-
-#: app/templates/auth/settings.html:1634
-msgid "SMTP Username"
-msgstr "SMTP用户名"
-
-#: app/templates/auth/settings.html:1641
-msgid "SMTP Password"
-msgstr "SMTP密码"
-
-#: app/templates/auth/settings.html:1648
-msgid "Sender Email"
-msgstr "发件人邮箱"
-
-#: app/templates/auth/settings.html:1655
-msgid "Sender Name"
-msgstr "发件人名称"
-
-#: app/templates/auth/settings.html:1668
-msgid "Use TLS"
-msgstr "使用TLS"
-
-#: app/templates/auth/settings.html:1674
-msgid "Use SSL"
-msgstr "使用SSL"
-
-#: app/templates/auth/settings.html:1702
-msgid "sends push notifications to iOS and Android devices."
-msgstr "向iOS和Android设备发送推送通知。"
-
-#: app/templates/auth/settings.html:1705
-msgid "Application Token"
-msgstr "应用令牌"
-
-#: app/templates/auth/settings.html:1710
-msgid "Create an application at pushover.net to get your token"
-msgstr "在pushover.net创建应用以获取令牌"
-
-#: app/templates/auth/settings.html:1720
-msgid "ntfy"
-msgstr "ntfy"
-
-#: app/templates/auth/settings.html:1721 app/templates/auth/settings.html:1736
-msgid "Always available"
-msgstr "始终可用"
-
-#: app/templates/auth/settings.html:1725
-msgid ""
-"is a free, open-source notification service that requires no admin "
-"configuration. Users can set their own topic."
-msgstr "是一个免费的开源通知服务，无需管理员配置。用户可以设置自己的主题。"
-
-#: app/templates/auth/settings.html:1735
-msgid "Webhook"
-msgstr "Webhook"
-
-#: app/templates/auth/settings.html:1739
-msgid ""
-"Webhooks allow users to integrate with any service that accepts HTTP POST "
-"requests (Home Assistant, Discord, Slack, etc.)"
-msgstr "Webhook允许用户与任何接受HTTP POST请求的服务集成（Home Assistant、Discord、Slack等）"
-
-#: app/templates/auth/settings.html:1746
-msgid "Save Notification Settings"
-msgstr "保存通知设置"
-
-#: app/templates/auth/settings.html:1757
-msgid "Manage Reminders"
-msgstr "管理提醒"
-
-#: app/templates/auth/settings.html:1758
-msgid "View and manage your upcoming reminders"
-msgstr "查看和管理即将到来的提醒"
-
-#: app/templates/auth/settings.html:1763
-msgid "View all reminders"
-msgstr "查看所有提醒"
-
-#: app/templates/auth/settings.html:1780
-msgid "Application Branding"
-msgstr "应用品牌"
-
-#: app/templates/auth/settings.html:1781
-msgid "Customize how May appears to all users"
-msgstr "自定义May对所有用户的外观"
-
-#: app/templates/auth/settings.html:1787
-msgid "Application Name"
-msgstr "应用名称"
-
-#: app/templates/auth/settings.html:1795
-msgid "Tagline"
-msgstr "标语"
-
-#: app/templates/auth/settings.html:1803
-msgid "Primary Color"
-msgstr "主色调"
-
-#: app/templates/auth/settings.html:1822
-msgid "Logo"
-msgstr "Logo"
-
-#: app/templates/auth/settings.html:1826 app/templates/auth/settings.html:1827
-msgid "Current logo"
-msgstr "当前Logo"
-
-#: app/templates/auth/settings.html:1839
-msgid "Remove Logo"
-msgstr "移除Logo"
-
-#: app/templates/auth/settings.html:1844
-msgid "Are you sure you want to remove the logo?"
-msgstr "您确定要移除Logo吗？"
-
-#: app/templates/auth/settings.html:1867
-msgid "Save Branding"
-msgstr "保存品牌设置"
-
-#: app/templates/auth/settings.html:1880
-msgid "Version information and updates"
-msgstr "版本信息和更新"
-
-#: app/templates/auth/settings.html:1887
-msgid "Current Version"
-msgstr "当前版本"
-
-#: app/templates/auth/settings.html:1910
-msgid "Check for Updates"
-msgstr "检查更新"
-
-#: app/templates/auth/settings.html:1911
-msgid "Click to check for newer versions"
-msgstr "点击检查新版本"
-
-#: app/templates/auth/settings.html:1918
-msgid "Check Now"
-msgstr "立即检查"
-
-#: app/templates/auth/settings.html:1929
-msgid "Update Available"
-msgstr "有可用更新"
-
-#: app/templates/auth/settings.html:1931
-msgid "Version"
-msgstr "版本"
-
-#: app/templates/auth/settings.html:1931
-msgid "is available"
-msgstr "可用"
-
-#: app/templates/auth/settings.html:1935
-msgid "View Release Notes"
-msgstr "查看发布说明"
-
-#: app/templates/auth/settings.html:1942
-msgid "To update (Docker):"
-msgstr "更新方法（Docker）："
-
-#: app/templates/auth/settings.html:1945
-msgid "Or use Watchtower for automatic updates."
-msgstr "或使用Watchtower进行自动更新。"
-
-#: app/templates/auth/settings.html:1957
-msgid "You are running the latest version"
-msgstr "您正在运行最新版本"
-
-#: app/templates/auth/settings.html:1964
-msgid "Resources"
-msgstr "资源"
-
-#: app/templates/auth/settings.html:1971
-msgid "Source Code"
-msgstr "源代码"
-
-#: app/templates/auth/settings.html:1978
-msgid "Report an Issue"
-msgstr "报告问题"
-
-#: app/templates/auth/settings.html:1985
-msgid "All Releases"
-msgstr "所有版本"
-
-#: app/templates/auth/settings.html:1992
-msgid "Documentation"
-msgstr "文档"
-
-#: app/templates/auth/settings.html:2407
+#: app/templates/auth/settings.html:272
 msgid "Checking..."
 msgstr "检查中..."
 
-#: app/templates/auth/settings.html:2426
+#: app/templates/auth/settings.html:288
 msgid "A newer version is available"
 msgstr "有新版本可用"
 
-#: app/templates/auth/settings.html:2431
+#: app/templates/auth/settings.html:293
 msgid "Last checked just now"
 msgstr "刚刚检查过"
 
-#: app/templates/auth/settings.html:2435
+#: app/templates/auth/settings.html:297
 msgid "Could not check for updates"
 msgstr "无法检查更新"
 
-#: app/templates/auth/settings.html:2440
+#: app/templates/auth/settings.html:302
 msgid "Error checking for updates"
 msgstr "检查更新时出错"
+
+#: app/templates/auth/settings/_account.html:53
+#: app/templates/auth/users.html:9
+msgid "User Management"
+msgstr "用户管理"
 
 #: app/templates/auth/users.html:22
 msgid "You"
@@ -3487,6 +2376,1229 @@ msgstr "设为管理员"
 msgid "Delete this user?"
 msgstr "删除此用户？"
 
+#: app/templates/auth/settings/_about.html:7
+msgid "Version information and updates"
+msgstr "版本信息和更新"
+
+#: app/templates/auth/settings/_about.html:10
+msgid "Current Version"
+msgstr "当前版本"
+
+#: app/templates/auth/settings/_about.html:18
+msgid "Check for Updates"
+msgstr "检查更新"
+
+#: app/templates/auth/settings/_about.html:19
+msgid "Click to check for newer versions"
+msgstr "点击检查新版本"
+
+#: app/templates/auth/settings/_about.html:22
+msgid "Check Now"
+msgstr "立即检查"
+
+#: app/templates/auth/settings/_about.html:28
+msgid "Update Available"
+msgstr "有可用更新"
+
+#: app/templates/auth/settings/_about.html:29
+msgid "Version"
+msgstr "版本"
+
+#: app/templates/auth/settings/_about.html:29
+msgid "is available"
+msgstr "可用"
+
+#: app/templates/auth/settings/_about.html:29
+msgid "View Release Notes"
+msgstr "查看发布说明"
+
+#: app/templates/auth/settings/_about.html:30
+msgid "To update (Docker):"
+msgstr "更新方法（Docker）："
+
+#: app/templates/auth/settings/_about.html:33
+msgid "Or use Watchtower for automatic updates."
+msgstr "或使用Watchtower进行自动更新。"
+
+#: app/templates/auth/settings/_about.html:36
+msgid "You are running the latest version"
+msgstr "您正在运行最新版本"
+
+#: app/templates/auth/settings/_about.html:39
+msgid "Resources"
+msgstr "资源"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "Source Code"
+msgstr "源代码"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "Report an Issue"
+msgstr "报告问题"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "All Releases"
+msgstr "所有版本"
+
+#: app/templates/auth/settings/_about.html:41
+msgid "Documentation"
+msgstr "文档"
+
+#: app/templates/auth/settings/_account.html:8
+msgid "Account Information"
+msgstr "账户信息"
+
+#: app/templates/auth/settings/_account.html:8
+msgid "Your account details"
+msgstr "您的账户详情"
+
+#: app/templates/auth/settings/_account.html:13
+msgid "Member Since"
+msgstr "注册时间"
+
+#: app/templates/auth/settings/_account.html:18
+msgid ""
+"Your account can see the data but cannot change it. Ask an administrator if "
+"you need more access."
+msgstr "您的账号可以查看数据但不能修改。如需更多权限，请联系管理员。"
+
+#: app/templates/auth/settings/_account.html:18
+msgid ""
+"Your account can record fuel fill-ups and charging sessions. Ask an "
+"administrator if you need more access."
+msgstr "您的账号可以记录加油和充电。如需更多权限，请联系管理员。"
+
+#: app/templates/auth/settings/_account.html:25
+msgid "Save Email"
+msgstr "保存邮箱"
+
+#: app/templates/auth/settings/_account.html:30
+msgid "Appearance"
+msgstr "外观"
+
+#: app/templates/auth/settings/_account.html:30
+msgid "Customize how the app looks"
+msgstr "自定义应用外观"
+
+#: app/templates/auth/settings/_account.html:31
+#: app/templates/auth/settings/_account.html:32
+msgid "Dark Mode"
+msgstr "深色模式"
+
+#: app/templates/auth/settings/_account.html:31
+msgid "Use dark theme for the interface"
+msgstr "使用深色主题"
+
+#: app/templates/auth/settings/_account.html:36
+msgid "Change Password"
+msgstr "修改密码"
+
+#: app/templates/auth/settings/_account.html:36
+msgid "Update your password to keep your account secure"
+msgstr "更新密码以保护您的账户安全"
+
+#: app/templates/auth/settings/_account.html:49
+msgid "Update Password"
+msgstr "更新密码"
+
+#: app/templates/auth/settings/_account.html:53
+msgid "Manage users and permissions"
+msgstr "管理用户和权限"
+
+#: app/templates/auth/settings/_account.html:54
+msgid "View and manage all users"
+msgstr "查看和管理所有用户"
+
+#: app/templates/auth/settings/_account.html:54
+msgid "Manage Users"
+msgstr "管理用户"
+
+#: app/templates/auth/settings/_account.html:55
+#: app/templates/auth/settings/_account.html:56
+msgid "Allow Registration"
+msgstr "允许注册"
+
+#: app/templates/auth/settings/_account.html:55
+msgid "Allow new users to create accounts"
+msgstr "允许新用户创建账户"
+
+#: app/templates/auth/settings/_account.html:61
+#: app/templates/vehicles/view.html:658
+msgid "Danger Zone"
+msgstr "危险操作"
+
+#: app/templates/auth/settings/_account.html:61
+msgid "Irreversible actions"
+msgstr "不可撤销的操作"
+
+#: app/templates/auth/settings/_account.html:62
+#: app/templates/auth/settings/_account.html:63
+msgid "Delete Account"
+msgstr "删除账户"
+
+#: app/templates/auth/settings/_account.html:62
+msgid "Permanently delete your account and all data"
+msgstr "永久删除您的账户和所有数据"
+
+#: app/templates/auth/settings/_api.html:8
+msgid "API Access"
+msgstr "API访问"
+
+#: app/templates/auth/settings/_api.html:8
+msgid "Generate API keys to connect external applications"
+msgstr "生成API密钥以连接外部应用"
+
+#: app/templates/auth/settings/_api.html:12
+msgid "Your API Key"
+msgstr "您的API密钥"
+
+#: app/templates/auth/settings/_api.html:17
+#: app/templates/components/ui.html:225 app/templates/components/ui.html:226
+msgid "Show password"
+msgstr "显示密码"
+
+#: app/templates/auth/settings/_api.html:17
+#: app/templates/components/ui.html:226
+msgid "Hide password"
+msgstr "隐藏密码"
+
+#: app/templates/auth/settings/_api.html:21
+#: app/templates/auth/settings/_api.html:45
+#: app/templates/auth/settings/_integrations.html:57
+msgid "Copy"
+msgstr "复制"
+
+#: app/templates/auth/settings/_api.html:23
+msgid "Created"
+msgstr "创建时间"
+
+#: app/templates/auth/settings/_api.html:26
+msgid "Regenerate Key"
+msgstr "重新生成密钥"
+
+#: app/templates/auth/settings/_api.html:27
+msgid "Revoke Key"
+msgstr "撤销密钥"
+
+#: app/templates/auth/settings/_api.html:30
+msgid ""
+"Generate an API key to access May programmatically. You can use it to "
+"integrate with other applications or build your own tools."
+msgstr "生成API密钥以便通过编程方式访问May。您可以用它与其他应用集成或构建自己的工具。"
+
+#: app/templates/auth/settings/_api.html:31
+msgid "Generate API Key"
+msgstr "生成API密钥"
+
+#: app/templates/auth/settings/_api.html:39
+msgid "API Key Generated"
+msgstr "API密钥已生成"
+
+#: app/templates/auth/settings/_api.html:40
+msgid "Copy your API key now. For security, it won't be shown in full again."
+msgstr "请立即复制您的API密钥。出于安全考虑，密钥不会再次完整显示。"
+
+#: app/templates/auth/settings/_api.html:47
+msgid "Done"
+msgstr "完成"
+
+#: app/templates/auth/settings/_api.html:53
+msgid "View API Docs"
+msgstr "查看API文档"
+
+#: app/templates/auth/settings/_branding.html:9
+msgid "Application Branding"
+msgstr "应用品牌"
+
+#: app/templates/auth/settings/_branding.html:9
+msgid "Customize how May appears to all users"
+msgstr "自定义May对所有用户的外观"
+
+#: app/templates/auth/settings/_branding.html:12
+msgid "Application Name"
+msgstr "应用名称"
+
+#: app/templates/auth/settings/_branding.html:16
+msgid "Tagline"
+msgstr "标语"
+
+#: app/templates/auth/settings/_branding.html:21
+#: app/templates/auth/settings/_branding.html:24
+#: app/templates/auth/settings/_branding.html:26
+msgid "Primary Color"
+msgstr "主色调"
+
+#: app/templates/auth/settings/_branding.html:33
+msgid "Logo"
+msgstr "Logo"
+
+#: app/templates/auth/settings/_branding.html:37
+#: app/templates/auth/settings/_branding.html:38
+msgid "Current logo"
+msgstr "当前Logo"
+
+#: app/templates/auth/settings/_branding.html:39
+msgid "Remove Logo"
+msgstr "移除Logo"
+
+#: app/templates/auth/settings/_branding.html:40
+msgid "Are you sure you want to remove the logo?"
+msgstr "您确定要移除Logo吗？"
+
+#: app/templates/auth/settings/_branding.html:47
+msgid "Save Branding"
+msgstr "保存品牌设置"
+
+#: app/templates/auth/settings/_data.html:10
+#: app/templates/documents/form.html:24 app/templates/documents/view.html:27
+msgid "File"
+msgstr "文件"
+
+#: app/templates/auth/settings/_data.html:11
+#: app/templates/auth/settings/_data.html:54
+#: app/templates/import/csv_mapping.html:15
+#: app/templates/import/csv_mapping.html:96
+#: app/templates/import/csv_upload.html:10
+msgid "Import"
+msgstr "导入"
+
+#: app/templates/auth/settings/_data.html:17
+msgid "Export Data"
+msgstr "导出数据"
+
+#: app/templates/auth/settings/_data.html:17
+msgid "Download your data for backup or migration"
+msgstr "下载数据用于备份或迁移"
+
+#: app/templates/auth/settings/_data.html:20
+msgid "Full Backup"
+msgstr "完整备份"
+
+#: app/templates/auth/settings/_data.html:20
+msgid "Recommended"
+msgstr "推荐"
+
+#: app/templates/auth/settings/_data.html:21
+msgid ""
+"Download all data and files (images, documents, attachments) as a ZIP "
+"archive"
+msgstr "将所有数据和文件（图片、文档、附件）下载为ZIP压缩包"
+
+#: app/templates/auth/settings/_data.html:23
+msgid "Download ZIP"
+msgstr "下载ZIP"
+
+#: app/templates/auth/settings/_data.html:27
+msgid "Export as JSON"
+msgstr "导出为JSON"
+
+#: app/templates/auth/settings/_data.html:28
+msgid "Download a complete backup of your data in JSON format"
+msgstr "以JSON格式下载数据的完整备份"
+
+#: app/templates/auth/settings/_data.html:30
+msgid "Download JSON"
+msgstr "下载JSON"
+
+#: app/templates/auth/settings/_data.html:34
+msgid "Export as CSV"
+msgstr "导出为CSV"
+
+#: app/templates/auth/settings/_data.html:35
+msgid ""
+"Download all your vehicles, fuel logs, and expenses as CSV files (ZIP "
+"archive)"
+msgstr "将所有车辆、加油记录和费用下载为CSV文件（ZIP压缩包）"
+
+#: app/templates/auth/settings/_data.html:37
+msgid "Download CSV"
+msgstr "下载CSV"
+
+#: app/templates/auth/settings/_data.html:41
+msgid "Import Data"
+msgstr "导入数据"
+
+#: app/templates/auth/settings/_data.html:41
+msgid ""
+"Restore a May backup, or import your data from other fuel tracking "
+"applications"
+msgstr "恢复 May 备份，或从其他燃油记录应用导入您的数据"
+
+#: app/templates/auth/settings/_data.html:44
+msgid "Restore May Backup"
+msgstr "恢复 May 备份"
+
+#: app/templates/auth/settings/_data.html:45
+msgid ""
+"Restore a JSON export (.json) or full backup (.zip) from another May "
+"instance"
+msgstr "恢复来自其他 May 实例的 JSON 导出文件（.json）或完整备份（.zip）"
+
+#: app/templates/auth/settings/_data.html:47
+msgid "Restore"
+msgstr "恢复"
+
+#: app/templates/auth/settings/_data.html:51
+#: app/templates/import/csv_upload.html:4
+msgid "CSV Import"
+msgstr "CSV导入"
+
+#: app/templates/auth/settings/_data.html:52
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file"
+msgstr "从任意 CSV 文件导入加油、支出、行程或充电记录"
+
+#: app/templates/auth/settings/_data.html:59
+msgid "Import from Hammond SQLite database (.db file)"
+msgstr "从 Hammond SQLite 数据库导入（.db 文件）"
+
+#: app/templates/auth/settings/_data.html:66
+msgid "Import from Clarkson MySQL dump (.sql file)"
+msgstr "从 Clarkson MySQL 转储导入（.sql 文件）"
+
+#: app/templates/auth/settings/_data.html:73
+msgid "Import from Fuelly CSV export (.csv file)"
+msgstr "从 Fuelly CSV 导出文件导入（.csv 文件）"
+
+#: app/templates/auth/settings/_data.html:80
+msgid "Import from Drivvo backup files"
+msgstr "从 Drivvo 备份文件导入"
+
+#: app/templates/auth/settings/_data.html:82
+msgid "Soon"
+msgstr "即将推出"
+
+#: app/templates/auth/settings/_integrations.html:20
+msgid "Back to Integrations"
+msgstr "返回集成"
+
+#: app/templates/auth/settings/_integrations.html:45
+msgid "API Key Required"
+msgstr "需要API密钥"
+
+#: app/templates/auth/settings/_integrations.html:47
+msgid "Go to API Settings"
+msgstr "前往API设置"
+
+#: app/templates/auth/settings/_integrations.html:66
+msgid "Connect May with external services and applications"
+msgstr "将May与外部服务和应用连接"
+
+#: app/templates/auth/settings/_integrations.html:69
+msgid "Calendar"
+msgstr "日历"
+
+#: app/templates/auth/settings/_integrations.html:69
+msgid "Subscribe to reminders in your calendar app"
+msgstr "在日历应用中订阅提醒"
+
+#: app/templates/auth/settings/_integrations.html:70
+#: app/templates/auth/settings/_integrations.html:72
+msgid "Ready"
+msgstr "就绪"
+
+#: app/templates/auth/settings/_integrations.html:70
+#: app/templates/auth/settings/_integrations.html:72
+msgid "Requires API key"
+msgstr "需要API密钥"
+
+#: app/templates/auth/settings/_integrations.html:71
+#: app/templates/auth/settings/_integrations.html:119
+msgid "Home Assistant"
+msgstr "Home Assistant"
+
+#: app/templates/auth/settings/_integrations.html:71
+#: app/templates/auth/settings/_integrations.html:119
+msgid "Create sensors and automations for your vehicles"
+msgstr "为您的车辆创建传感器和自动化"
+
+#: app/templates/auth/settings/_integrations.html:74
+#: app/templates/auth/settings/_integrations.html:158
+msgid "Telegram"
+msgstr "Telegram"
+
+#: app/templates/auth/settings/_integrations.html:74
+msgid "Log fill-ups by messaging a bot"
+msgstr "通过给机器人发消息记录加油"
+
+#: app/templates/auth/settings/_integrations.html:75
+#: app/templates/auth/settings/_integrations.html:164
+msgid "Connected"
+msgstr "已连接"
+
+#: app/templates/auth/settings/_integrations.html:75
+msgid "Not connected"
+msgstr "未连接"
+
+#: app/templates/auth/settings/_integrations.html:75
+#: app/templates/auth/settings/_integrations.html:80
+#: app/templates/auth/settings/_integrations.html:82
+msgid "Not configured"
+msgstr "未配置"
+
+#: app/templates/auth/settings/_integrations.html:79
+msgid "DVLA"
+msgstr "DVLA"
+
+#: app/templates/auth/settings/_integrations.html:79
+#: app/templates/auth/settings/_integrations.html:204
+msgid "Look up UK vehicle MOT and tax status"
+msgstr "查询英国车辆MOT和税务状态"
+
+#: app/templates/auth/settings/_integrations.html:80
+#: app/templates/auth/settings/_integrations.html:82
+msgid "Configured"
+msgstr "已配置"
+
+#: app/templates/auth/settings/_integrations.html:81
+msgid "Tessie"
+msgstr "Tessie"
+
+#: app/templates/auth/settings/_integrations.html:81
+msgid "Sync Tesla vehicle odometer and battery"
+msgstr "同步Tesla车辆里程表和电池"
+
+#: app/templates/auth/settings/_integrations.html:83
+#: app/templates/auth/settings/_integrations.html:269
+msgid "UK Fuel Prices"
+msgstr "英国燃油价格"
+
+#: app/templates/auth/settings/_integrations.html:83
+#: app/templates/auth/settings/_integrations.html:269
+msgid "Pull live forecourt prices for saved stations"
+msgstr "为已保存的加油站获取实时价格"
+
+#: app/templates/auth/settings/_integrations.html:84
+msgid "Enabled"
+msgstr "已启用"
+
+#: app/templates/auth/settings/_integrations.html:84
+msgid "Disabled"
+msgstr "已停用"
+
+#: app/templates/auth/settings/_integrations.html:91
+msgid "Calendar Subscription"
+msgstr "日历订阅"
+
+#: app/templates/auth/settings/_integrations.html:91
+msgid "Subscribe to your reminders in any calendar app"
+msgstr "在任意日历应用中订阅您的提醒"
+
+#: app/templates/auth/settings/_integrations.html:94
+msgid ""
+"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
+"calendar app that supports iCal subscriptions."
+msgstr "将此日历添加到Apple日历、Google日历、Outlook或其他支持iCal订阅的日历应用。"
+
+#: app/templates/auth/settings/_integrations.html:95
+msgid "Webcal URL"
+msgstr "Webcal URL"
+
+#: app/templates/auth/settings/_integrations.html:95
+msgid "Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)"
+msgstr "大多数日历应用（Apple日历、Outlook等）请使用此URL"
+
+#: app/templates/auth/settings/_integrations.html:97
+msgid "HTTPS URL"
+msgstr "HTTPS URL"
+
+#: app/templates/auth/settings/_integrations.html:97
+msgid "Use this URL for Google Calendar"
+msgstr "Google日历请使用此URL"
+
+#: app/templates/auth/settings/_integrations.html:102
+msgid "What's included in the calendar?"
+msgstr "日历包含哪些内容？"
+
+#: app/templates/auth/settings/_integrations.html:104
+msgid "Maintenance schedules"
+msgstr "保养计划"
+
+#: app/templates/auth/settings/_integrations.html:105
+msgid "Recurring expense due dates"
+msgstr "定期费用到期日"
+
+#: app/templates/auth/settings/_integrations.html:106
+msgid "Document expiry dates"
+msgstr "文档到期日"
+
+#: app/templates/auth/settings/_integrations.html:107
+msgid "Custom reminders"
+msgstr "自定义提醒"
+
+#: app/templates/auth/settings/_integrations.html:112
+msgid "Generate an API key in the API section to enable calendar integration."
+msgstr "请在API部分生成API密钥以启用日历集成。"
+
+#: app/templates/auth/settings/_integrations.html:122
+msgid ""
+"Add the following configuration to your Home Assistant configuration.yaml to"
+" create vehicle sensors."
+msgstr "将以下配置添加到您的Home Assistant configuration.yaml以创建车辆传感器。"
+
+#: app/templates/auth/settings/_integrations.html:124
+msgid "REST Sensor Configuration"
+msgstr "REST传感器配置"
+
+#: app/templates/auth/settings/_integrations.html:137
+msgid "Copy configuration"
+msgstr "复制配置"
+
+#: app/templates/auth/settings/_integrations.html:140
+msgid "Available API Endpoints"
+msgstr "可用API端点"
+
+#: app/templates/auth/settings/_integrations.html:142
+msgid "API health check"
+msgstr "API健康检查"
+
+#: app/templates/auth/settings/_integrations.html:143
+msgid "List all vehicles"
+msgstr "列出所有车辆"
+
+#: app/templates/auth/settings/_integrations.html:144
+msgid "Vehicle statistics"
+msgstr "车辆统计"
+
+#: app/templates/auth/settings/_integrations.html:145
+msgid "Upcoming reminders"
+msgstr "即将到来的提醒"
+
+#: app/templates/auth/settings/_integrations.html:146
+msgid "Combined summary"
+msgstr "综合摘要"
+
+#: app/templates/auth/settings/_integrations.html:150
+msgid ""
+"Generate an API key in the API section to enable Home Assistant integration."
+msgstr "请在API部分生成API密钥以启用Home Assistant集成。"
+
+#: app/templates/auth/settings/_integrations.html:158
+msgid ""
+"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
+"it is saved as a fuel log."
+msgstr "用一行向机器人发送加油记录，例如 40L 4800tk 45230km，即可保存为加油记录。"
+
+#: app/templates/auth/settings/_integrations.html:164
+msgid "Your account is connected to Telegram."
+msgstr "您的账户已连接到 Telegram。"
+
+#: app/templates/auth/settings/_integrations.html:169
+msgid "Disconnect Telegram"
+msgstr "断开 Telegram"
+
+#: app/templates/auth/settings/_integrations.html:173
+msgid "Send this to the bot within 15 minutes:"
+msgstr "请在 15 分钟内将此内容发送给机器人："
+
+#: app/templates/auth/settings/_integrations.html:175
+msgid "Open in Telegram"
+msgstr "在 Telegram 中打开"
+
+#: app/templates/auth/settings/_integrations.html:179
+msgid "Connect Telegram"
+msgstr "连接 Telegram"
+
+#: app/templates/auth/settings/_integrations.html:185
+msgid "Set up the bot (admin)"
+msgstr "设置机器人（管理员）"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "In Telegram, message @BotFather and send /newbot"
+msgstr "在 Telegram 中向 @BotFather 发消息并发送 /newbot"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "Copy the token it gives you and paste it below"
+msgstr "复制它提供的令牌并粘贴到下方"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "Each user then connects their own chat from this page"
+msgstr "之后每位用户在此页面连接自己的聊天"
+
+#: app/templates/auth/settings/_integrations.html:190
+msgid "Bot token"
+msgstr "机器人令牌"
+
+#: app/templates/auth/settings/_integrations.html:192
+msgid "Leave empty and save to disconnect the bot."
+msgstr "留空并保存即可断开机器人。"
+
+#: app/templates/auth/settings/_integrations.html:194
+msgid "Save Telegram Settings"
+msgstr "保存 Telegram 设置"
+
+#: app/templates/auth/settings/_integrations.html:204
+msgid "DVLA Vehicle Lookup"
+msgstr "DVLA车辆查询"
+
+#: app/templates/auth/settings/_integrations.html:206
+msgid ""
+"The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax "
+"status, and vehicle details for UK registered vehicles. This enables "
+"automatic population of vehicle information when adding new vehicles."
+msgstr "DVLA车辆查询服务允许您查询英国注册车辆的MOT状态、税务状态和车辆详情。添加新车辆时可自动填充车辆信息。"
+
+#: app/templates/auth/settings/_integrations.html:210
+msgid "How to get an API key"
+msgstr "如何获取API密钥"
+
+#: app/templates/auth/settings/_integrations.html:212
+msgid "Visit the"
+msgstr "访问"
+
+#: app/templates/auth/settings/_integrations.html:212
+msgid "DVLA Developer Portal"
+msgstr "DVLA开发者门户"
+
+#: app/templates/auth/settings/_integrations.html:213
+msgid "Register for a free account"
+msgstr "注册免费账户"
+
+#: app/templates/auth/settings/_integrations.html:214
+msgid "Subscribe to the Vehicle Enquiry Service API"
+msgstr "订阅Vehicle Enquiry Service API"
+
+#: app/templates/auth/settings/_integrations.html:215
+msgid "Copy your API key and paste it below"
+msgstr "复制您的API密钥并粘贴到下方"
+
+#: app/templates/auth/settings/_integrations.html:222
+msgid "DVLA API Key"
+msgstr "DVLA API密钥"
+
+#: app/templates/auth/settings/_integrations.html:225
+#: app/templates/auth/settings/_integrations.html:258
+#: app/templates/auth/settings/_notifications.html:143
+msgid "Test"
+msgstr "测试"
+
+#: app/templates/auth/settings/_integrations.html:229
+msgid "Save DVLA Settings"
+msgstr "保存DVLA设置"
+
+#: app/templates/auth/settings/_integrations.html:236
+#: app/templates/vehicles/form.html:162
+msgid "Tessie Integration"
+msgstr "Tessie集成"
+
+#: app/templates/auth/settings/_integrations.html:236
+msgid "Sync Tesla vehicle data via Tessie"
+msgstr "通过Tessie同步Tesla车辆数据"
+
+#: app/templates/auth/settings/_integrations.html:238
+msgid ""
+"Tessie allows you to automatically sync odometer readings, battery level, "
+"and range from your Tesla vehicles. When enabled for a vehicle, odometer "
+"tracking becomes automatic."
+msgstr "Tessie允许您自动同步Tesla车辆的里程表读数、电池电量和续航里程。为车辆启用后，里程表追踪将变为自动。"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "Important"
+msgstr "重要"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "Tessie subscription required ($6.99/month per vehicle)"
+msgstr "需要Tessie订阅（每辆车$6.99/月）"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "Your Tesla must be connected to Tessie"
+msgstr "您的Tesla必须已连接到Tessie"
+
+#: app/templates/auth/settings/_integrations.html:239
+msgid "When enabled, manual odometer entry is disabled"
+msgstr "启用后，将禁止手动输入里程表"
+
+#: app/templates/auth/settings/_integrations.html:243
+msgid "How to get an API token"
+msgstr "如何获取API令牌"
+
+#: app/templates/auth/settings/_integrations.html:245
+msgid "Sign up at"
+msgstr "注册地址："
+
+#: app/templates/auth/settings/_integrations.html:246
+msgid "Connect your Tesla account"
+msgstr "连接您的Tesla账户"
+
+#: app/templates/auth/settings/_integrations.html:247
+msgid "Go to Settings and create an API token"
+msgstr "前往设置并创建API令牌"
+
+#: app/templates/auth/settings/_integrations.html:248
+msgid "Paste the token below"
+msgstr "将令牌粘贴到下方"
+
+#: app/templates/auth/settings/_integrations.html:255
+msgid "Tessie API Token"
+msgstr "Tessie API令牌"
+
+#: app/templates/auth/settings/_integrations.html:262
+msgid "Save Tessie Settings"
+msgstr "保存Tessie设置"
+
+#: app/templates/auth/settings/_integrations.html:271
+msgid ""
+"UK retailers publish forecourt prices under the government fuel price "
+"transparency scheme. May matches your saved stations to those forecourts by "
+"postcode and records the prices, so price history and Cheapest Fuel stay up "
+"to date without manual entry."
+msgstr ""
+"英国零售商依据政府燃油价格透明计划公布加油站价格。May "
+"通过邮政编码将您保存的加油站与这些加油站匹配并记录价格，因此价格历史和最便宜燃油无需手动录入即可保持最新。"
+
+#: app/templates/auth/settings/_integrations.html:275
+msgid "Before you start"
+msgstr "开始之前"
+
+#: app/templates/auth/settings/_integrations.html:277
+msgid "No API key is needed; the feeds are open data"
+msgstr "无需 API 密钥；这些数据源为开放数据"
+
+#: app/templates/auth/settings/_integrations.html:278
+msgid "Give each station a postcode so it can be matched to a forecourt"
+msgstr "为每个加油站填写邮政编码，才能与实际加油站匹配"
+
+#: app/templates/auth/settings/_integrations.html:279
+msgid ""
+"Prices refresh automatically every few hours, or on demand from the Fuel "
+"Stations page"
+msgstr "价格每隔几小时自动刷新，也可在加油站页面手动更新"
+
+#: app/templates/auth/settings/_integrations.html:280
+msgid "See the"
+msgstr "参见"
+
+#: app/templates/auth/settings/_integrations.html:280
+msgid "gov.uk guidance"
+msgstr "gov.uk 指南"
+
+#: app/templates/auth/settings/_integrations.html:280
+msgid "for the current retailer list"
+msgstr "查看当前零售商名单"
+
+#: app/templates/auth/settings/_integrations.html:288
+msgid "Enable UK fuel price updates"
+msgstr "启用英国燃油价格更新"
+
+#: app/templates/auth/settings/_integrations.html:291
+msgid "Retailer feeds (optional)"
+msgstr "零售商数据源（可选）"
+
+#: app/templates/auth/settings/_integrations.html:294
+#, python-format
+msgid ""
+"One feed per line. Leave blank to use the built-in list (%(count)s "
+"retailers)."
+msgstr "每行一个数据源。留空则使用内置名单（%(count)s 家零售商）。"
+
+#: app/templates/auth/settings/_integrations.html:296
+msgid "Save UK Fuel Price Settings"
+msgstr "保存英国燃油价格设置"
+
+#: app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10
+#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
+#: app/templates/recurring/index.html:16
+msgid "Recurring Expenses"
+msgstr "定期费用"
+
+#: app/templates/auth/settings/_menu.html:18
+msgid "Customize which menu items to show and your start page"
+msgstr "自定义显示的菜单项和起始页面"
+
+#: app/templates/auth/settings/_menu.html:21
+msgid "Start Page"
+msgstr "起始页面"
+
+#: app/templates/auth/settings/_menu.html:25
+msgid "Which page to show when you log in"
+msgstr "登录后显示的页面"
+
+#: app/templates/auth/settings/_menu.html:28
+#: app/templates/trips/template_form.html:23
+msgid "Default Vehicle"
+msgstr "默认车辆"
+
+#: app/templates/auth/settings/_menu.html:30
+msgid "No default"
+msgstr "无默认"
+
+#: app/templates/auth/settings/_menu.html:33
+msgid ""
+"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
+"sessions"
+msgstr "添加加油记录、费用、行程和充电记录时预先选中的车辆"
+
+#: app/templates/auth/settings/_menu.html:36
+#: app/templates/auth/settings/_menu.html:37
+msgid "Quick Entry Button"
+msgstr "快速录入按钮"
+
+#: app/templates/auth/settings/_menu.html:36
+msgid "Show a quick fuel entry button in the navigation bar for rapid logging"
+msgstr "在导航栏中显示快速加油录入按钮"
+
+#: app/templates/auth/settings/_menu.html:41
+msgid "Show Menu Items"
+msgstr "显示菜单项"
+
+#: app/templates/auth/settings/_menu.html:41
+msgid "Choose which items appear in the navigation menu"
+msgstr "选择在导航菜单中显示的项目"
+
+#: app/templates/auth/settings/_menu.html:55
+#: app/templates/auth/settings/_notifications.html:102
+msgid "Save Preferences"
+msgstr "保存偏好设置"
+
+#: app/templates/auth/settings/_notifications.html:9
+msgid "ntfy (Push Notifications)"
+msgstr "ntfy（推送通知）"
+
+#: app/templates/auth/settings/_notifications.html:10
+#: app/templates/auth/settings/_notifications.html:148
+#: app/templates/auth/settings/_notifications.html:149
+msgid "Pushover"
+msgstr "Pushover"
+
+#: app/templates/auth/settings/_notifications.html:11
+msgid "Webhook (HTTP POST)"
+msgstr "Webhook (HTTP POST)"
+
+#: app/templates/auth/settings/_notifications.html:18
+msgid "Notification Preferences"
+msgstr "通知偏好"
+
+#: app/templates/auth/settings/_notifications.html:18
+msgid "Configure how you receive reminders about your vehicles"
+msgstr "配置您接收车辆提醒的方式"
+
+#: app/templates/auth/settings/_notifications.html:19
+#: app/templates/auth/settings/_notifications.html:20
+msgid "Enable Reminders"
+msgstr "启用提醒"
+
+#: app/templates/auth/settings/_notifications.html:19
+msgid "Receive notifications for upcoming reminders"
+msgstr "接收即将到来的提醒通知"
+
+#: app/templates/auth/settings/_notifications.html:23
+msgid "Default Reminder Lead Time"
+msgstr "默认提醒提前时间"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "On the due date"
+msgstr "到期当天"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "1 day before"
+msgstr "1天前"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "3 days before"
+msgstr "3天前"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "1 week before"
+msgstr "1周前"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "2 weeks before"
+msgstr "2周前"
+
+#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/reminders/form.html:12
+msgid "1 month before"
+msgstr "1个月前"
+
+#: app/templates/auth/settings/_notifications.html:29
+msgid "How many days before the due date should you be notified?"
+msgstr "您希望在到期前多少天收到通知？"
+
+#: app/templates/auth/settings/_notifications.html:33
+msgid "Notification Method"
+msgstr "通知方式"
+
+#: app/templates/auth/settings/_notifications.html:34
+msgid "Choose how you want to receive notifications"
+msgstr "选择您希望接收通知的方式"
+
+#: app/templates/auth/settings/_notifications.html:41
+msgid "not configured"
+msgstr "未配置"
+
+#: app/templates/auth/settings/_notifications.html:53
+msgid "Notifications will be sent to"
+msgstr "通知将发送至"
+
+#: app/templates/auth/settings/_notifications.html:54
+msgid "Email not configured. Ask an administrator to configure SMTP settings."
+msgstr "邮件未配置。请联系管理员配置SMTP设置。"
+
+#: app/templates/auth/settings/_notifications.html:59
+msgid "is a simple pub-sub notification service. Enter your topic below."
+msgstr "是一个简单的发布-订阅通知服务。请在下方输入您的主题。"
+
+#: app/templates/auth/settings/_notifications.html:61
+msgid "ntfy Topic or Server URL"
+msgstr "ntfy主题或服务器URL"
+
+#: app/templates/auth/settings/_notifications.html:64
+msgid ""
+"For ntfy.sh, just enter your topic name. For self-hosted, enter the full "
+"URL."
+msgstr "使用ntfy.sh时只需输入主题名称。自建服务器请输入完整URL。"
+
+#: app/templates/auth/settings/_notifications.html:67
+msgid "ntfy Access Token"
+msgstr "ntfy 访问令牌"
+
+#: app/templates/auth/settings/_notifications.html:69
+msgid "Token saved — enter a new one to replace it"
+msgstr "令牌已保存——输入新令牌以替换"
+
+#: app/templates/auth/settings/_notifications.html:70
+msgid ""
+"Optional — only needed for self-hosted ntfy servers with authentication "
+"enabled. Leave blank to keep the saved token."
+msgstr "可选——仅在自建的ntfy服务器启用了身份验证时需要。留空以保留已保存的令牌。"
+
+#: app/templates/auth/settings/_notifications.html:72
+msgid "Remove the saved token"
+msgstr "移除已保存的令牌"
+
+#: app/templates/auth/settings/_notifications.html:77
+msgid "sends notifications to your devices. Enter your User Key below."
+msgstr "向您的设备发送通知。请在下方输入您的User Key。"
+
+#: app/templates/auth/settings/_notifications.html:79
+msgid "Pushover User Key"
+msgstr "Pushover User Key"
+
+#: app/templates/auth/settings/_notifications.html:82
+msgid "Find your User Key on your Pushover dashboard."
+msgstr "在您的Pushover仪表盘上查找User Key。"
+
+#: app/templates/auth/settings/_notifications.html:86
+msgid "Notifications will be sent as JSON POST requests to your webhook URL."
+msgstr "通知将以JSON POST请求的形式发送到您的Webhook URL。"
+
+#: app/templates/auth/settings/_notifications.html:88
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+#: app/templates/auth/settings/_notifications.html:91
+#, python-brace-format
+msgid "JSON payload: {title, message, reminder_id, vehicle_name, due_date}"
+msgstr "JSON负载：{title, message, reminder_id, vehicle_name, due_date}"
+
+#: app/templates/auth/settings/_notifications.html:96
+msgid "Send Test Notification"
+msgstr "发送测试通知"
+
+#: app/templates/auth/settings/_notifications.html:101
+msgid "View all reminders"
+msgstr "查看所有提醒"
+
+#: app/templates/auth/settings/_notifications.html:109
+msgid "Notification Services"
+msgstr "通知服务"
+
+#: app/templates/auth/settings/_notifications.html:109
+msgid "Configure notification services available to all users"
+msgstr "配置所有用户可用的通知服务"
+
+#: app/templates/auth/settings/_notifications.html:110
+#: app/templates/auth/settings/_notifications.html:111
+msgid "Email (SMTP)"
+msgstr "邮件 (SMTP)"
+
+#: app/templates/auth/settings/_notifications.html:115
+msgid "SMTP Host"
+msgstr "SMTP主机"
+
+#: app/templates/auth/settings/_notifications.html:119
+msgid "SMTP Port"
+msgstr "SMTP端口"
+
+#: app/templates/auth/settings/_notifications.html:123
+msgid "SMTP Username"
+msgstr "SMTP用户名"
+
+#: app/templates/auth/settings/_notifications.html:127
+msgid "SMTP Password"
+msgstr "SMTP密码"
+
+#: app/templates/auth/settings/_notifications.html:132
+msgid "Sender Email"
+msgstr "发件人邮箱"
+
+#: app/templates/auth/settings/_notifications.html:136
+msgid "Sender Name"
+msgstr "发件人名称"
+
+#: app/templates/auth/settings/_notifications.html:141
+msgid "Use TLS"
+msgstr "使用TLS"
+
+#: app/templates/auth/settings/_notifications.html:142
+msgid "Use SSL"
+msgstr "使用SSL"
+
+#: app/templates/auth/settings/_notifications.html:151
+msgid "sends push notifications to iOS and Android devices."
+msgstr "向iOS和Android设备发送推送通知。"
+
+#: app/templates/auth/settings/_notifications.html:153
+msgid "Application Token"
+msgstr "应用令牌"
+
+#: app/templates/auth/settings/_notifications.html:155
+msgid "Create an application at pushover.net to get your token"
+msgstr "在pushover.net创建应用以获取令牌"
+
+#: app/templates/auth/settings/_notifications.html:161
+msgid "ntfy"
+msgstr "ntfy"
+
+#: app/templates/auth/settings/_notifications.html:161
+#: app/templates/auth/settings/_notifications.html:167
+msgid "Always available"
+msgstr "始终可用"
+
+#: app/templates/auth/settings/_notifications.html:162
+msgid ""
+"is a free, open-source notification service that requires no admin "
+"configuration. Users can set their own topic."
+msgstr "是一个免费的开源通知服务，无需管理员配置。用户可以设置自己的主题。"
+
+#: app/templates/auth/settings/_notifications.html:167
+msgid "Webhook"
+msgstr "Webhook"
+
+#: app/templates/auth/settings/_notifications.html:168
+msgid ""
+"Webhooks allow users to integrate with any service that accepts HTTP POST "
+"requests (Home Assistant, Discord, Slack, etc.)"
+msgstr "Webhook允许用户与任何接受HTTP POST请求的服务集成（Home Assistant、Discord、Slack等）"
+
+#: app/templates/auth/settings/_notifications.html:172
+msgid "Save Notification Settings"
+msgstr "保存通知设置"
+
+#: app/templates/auth/settings/_units.html:10
+msgid "Language & region"
+msgstr "语言和地区"
+
+#: app/templates/auth/settings/_units.html:10
+msgid "Configure how measurements and currencies are displayed"
+msgstr "配置计量单位和货币的显示方式"
+
+#: app/templates/auth/settings/_units.html:13
+msgid "Language"
+msgstr "语言"
+
+#: app/templates/auth/settings/_units.html:19
+msgid "Date Format"
+msgstr "日期格式"
+
+#: app/templates/auth/settings/_units.html:21
+msgid "DD/MM/YYYY"
+msgstr "日/月/年"
+
+#: app/templates/auth/settings/_units.html:22
+msgid "MM/DD/YYYY"
+msgstr "月/日/年"
+
+#: app/templates/auth/settings/_units.html:23
+msgid "YYYY-MM-DD"
+msgstr "年-月-日"
+
+#: app/templates/auth/settings/_units.html:24
+msgid "DD.MM.YYYY"
+msgstr "日.月.年"
+
+#: app/templates/auth/settings/_units.html:40
+#: app/templates/fuel/_quick_form.html:46 app/templates/fuel/form.html:105
+#: app/templates/fuel/index.html:89
+msgid "Volume"
+msgstr "容量"
+
+#: app/templates/auth/settings/_units.html:42
+#: app/templates/vehicles/part_form.html:7
+msgid "Liters (L)"
+msgstr "升 (L)"
+
+#: app/templates/auth/settings/_units.html:43
+msgid "UK Gallons (gal)"
+msgstr "英制加仑 (gal)"
+
+#: app/templates/auth/settings/_units.html:44
+msgid "US Gallons (gal)"
+msgstr "美制加仑 (gal)"
+
+#: app/templates/auth/settings/_units.html:48
+msgid "Fuel Consumption"
+msgstr "油耗"
+
+#: app/templates/auth/settings/_units.html:50
+msgid "L/100km"
+msgstr "L/100km"
+
+#: app/templates/auth/settings/_units.html:51
+msgid "MPG (UK)"
+msgstr "MPG（英制）"
+
+#: app/templates/auth/settings/_units.html:52
+msgid "MPG (US)"
+msgstr "MPG（美制）"
+
+#: app/templates/auth/settings/_units.html:53
+msgid "km/L"
+msgstr "km/L"
+
+#: app/templates/auth/settings/_units.html:59
+msgid "Currency"
+msgstr "货币"
+
+#: app/templates/auth/settings/_units.html:66
+msgid "Custom Currency"
+msgstr "自定义货币"
+
+#: app/templates/auth/settings/_units.html:68
+msgid "e.g. ZAR, R, CHF"
+msgstr "例如 ZAR、R、CHF"
+
+#: app/templates/auth/settings/_units.html:69
+msgid "Enter a currency code or symbol to display"
+msgstr "输入要显示的货币代码或符号"
+
+#: app/templates/auth/settings/_units.html:72
+msgid "Thousand Separator"
+msgstr "千位分隔符"
+
+#: app/templates/auth/settings/_units.html:74
+#: app/templates/vehicles/form.html:99
+msgid "None"
+msgstr "无"
+
+#: app/templates/auth/settings/_units.html:75
+msgid "Space"
+msgstr "空格"
+
+#: app/templates/auth/settings/_units.html:76
+msgid "Comma"
+msgstr "逗号"
+
+#: app/templates/auth/settings/_units.html:81
+msgid "Round costs to whole numbers"
+msgstr "将费用四舍五入为整数"
+
 #: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
 #: app/templates/charging/form.html:72
 msgid "Cost per kWh"
@@ -3496,7 +3608,7 @@ msgstr "每kWh费用"
 msgid "Last charge"
 msgstr "上次充电"
 
-#: app/templates/charging/_log.html:31 app/templates/fuel/index.html:38
+#: app/templates/charging/_log.html:31
 msgid "Charging History"
 msgstr "充电历史"
 
@@ -3509,7 +3621,7 @@ msgid "kWh"
 msgstr "千瓦时 (kWh)"
 
 #: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
-#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
+#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:93
 #: app/templates/timeline/index.html:35 app/templates/tires/form.html:61
 #: app/templates/tires/index.html:45 app/templates/vehicles/view.html:459
 msgid "Cost"
@@ -3523,7 +3635,7 @@ msgstr "暂无充电记录"
 msgid "Start tracking your EV charging to monitor energy usage and costs."
 msgstr "开始追踪电动车充电以监控用电量和费用。"
 
-#: app/templates/charging/_log.html:101 app/templates/fuel/index.html:29
+#: app/templates/charging/_log.html:101
 #: app/templates/partials/mobile_nav.html:58
 #: app/templates/partials/mobile_nav.html:64
 msgid "Add Charging Session"
@@ -3632,14 +3744,6 @@ msgstr "较早"
 msgid "Choose a file or drag it here"
 msgstr "选择文件或拖到此处"
 
-#: app/templates/components/ui.html:225 app/templates/components/ui.html:226
-msgid "Show password"
-msgstr "显示密码"
-
-#: app/templates/components/ui.html:226
-msgid "Hide password"
-msgstr "隐藏密码"
-
 #: app/templates/documents/form.html:5 app/templates/documents/form.html:15
 msgid "Edit Document"
 msgstr "编辑文档"
@@ -3652,10 +3756,6 @@ msgstr "上传文档"
 #: app/templates/documents/form.html:14 app/templates/documents/view.html:9
 msgid "Back to Documents"
 msgstr "返回文档列表"
-
-#: app/templates/documents/form.html:24 app/templates/documents/view.html:27
-msgid "File"
-msgstr "文件"
 
 #: app/templates/documents/form.html:25
 msgid "PDF, images, Word, Excel, text files, or ePub (max 300MB)"
@@ -3946,7 +4046,7 @@ msgstr "加满油箱"
 
 #: app/templates/fuel/_quick_form.html:75
 #: app/templates/fuel/_quick_form.html:87 app/templates/fuel/form.html:139
-#: app/templates/fuel/index.html:100
+#: app/templates/fuel/index.html:88
 msgid "Station"
 msgstr "加油站"
 
@@ -3979,8 +4079,8 @@ msgid "Edit Fuel Log"
 msgstr "编辑加油记录"
 
 #: app/templates/fuel/form.html:4 app/templates/fuel/form.html:38
-#: app/templates/fuel/form.html:255 app/templates/fuel/index.html:31
-#: app/templates/fuel/index.html:183 app/templates/partials/mobile_nav.html:60
+#: app/templates/fuel/form.html:255 app/templates/fuel/index.html:28
+#: app/templates/fuel/index.html:171 app/templates/partials/mobile_nav.html:60
 #: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:540
 msgid "Add Fuel Log"
 msgstr "添加加油记录"
@@ -4070,56 +4170,56 @@ msgstr "收据/附件"
 msgid "Track your fuel fill-ups and consumption"
 msgstr "记录您的加油和油耗情况"
 
-#: app/templates/fuel/index.html:57 app/templates/vehicles/view.html:106
+#: app/templates/fuel/index.html:45 app/templates/vehicles/view.html:106
 msgid "Avg. Consumption"
 msgstr "平均油耗"
 
-#: app/templates/fuel/index.html:63 app/templates/vehicles/view.html:152
+#: app/templates/fuel/index.html:51 app/templates/vehicles/view.html:152
 msgid "Last fill"
 msgstr "上次加油"
 
-#: app/templates/fuel/index.html:84
+#: app/templates/fuel/index.html:72
 msgid "Sales Tax Paid"
 msgstr "已付税额"
 
-#: app/templates/fuel/index.html:102 app/templates/stations/prices.html:38
+#: app/templates/fuel/index.html:90 app/templates/stations/prices.html:38
 msgid "Price/Unit"
 msgstr "单价"
 
-#: app/templates/fuel/index.html:103
+#: app/templates/fuel/index.html:91
 msgid "Consumption"
 msgstr "油耗"
 
-#: app/templates/fuel/index.html:124
+#: app/templates/fuel/index.html:112
 msgid "Better than average"
 msgstr "优于平均水平"
 
-#: app/templates/fuel/index.html:124
+#: app/templates/fuel/index.html:112
 msgid "Worse than average"
 msgstr "低于平均水平"
 
-#: app/templates/fuel/index.html:133
+#: app/templates/fuel/index.html:121
 msgid "Partial"
 msgstr "部分加油"
 
-#: app/templates/fuel/index.html:134
+#: app/templates/fuel/index.html:122
 msgid "Missed"
 msgstr "未完整"
 
-#: app/templates/fuel/index.html:155
+#: app/templates/fuel/index.html:143
 #, python-format
 msgid "incl. tax %(amount)s"
 msgstr "含税 %(amount)s"
 
-#: app/templates/fuel/index.html:162 app/templates/vehicles/view.html:485
+#: app/templates/fuel/index.html:150 app/templates/vehicles/view.html:485
 msgid "Delete this fuel log?"
 msgstr "删除此加油记录？"
 
-#: app/templates/fuel/index.html:182
+#: app/templates/fuel/index.html:170
 msgid "No fuel logs"
 msgstr "暂无加油记录"
 
-#: app/templates/fuel/index.html:182
+#: app/templates/fuel/index.html:170
 msgid "Start tracking your fuel fill-ups."
 msgstr "开始记录您的加油情况。"
 
@@ -4175,10 +4275,6 @@ msgstr "未知"
 #: app/templates/import/backup_preview.html:14
 msgid "Exported by"
 msgstr "导出者"
-
-#: app/templates/import/backup_preview.html:22
-msgid "Data"
-msgstr "数据"
 
 #: app/templates/import/backup_preview.html:23
 msgid "Will be added"

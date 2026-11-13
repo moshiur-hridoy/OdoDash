@@ -1,0 +1,66 @@
+{#- Account & Security. Lives inside the shared settings form (with Units). -#}
+{% from 'auth/settings/_ui.html' import card, row, switch %}
+{% from 'components/ui.html' import button, badge, password_input %}
+{% from 'partials/password_rules.html' import password_rules, password_match %}
+<section id="section-account" class="settings-section" data-section="account" aria-labelledby="account-title" hidden>
+    <h2 class="ds-sr-only" id="account-title">{{ _('Account & Security') }}</h2>
+
+    {% call card(_('Account Information'), _('Your account details')) %}
+    <div class="settings-profile">
+        <span class="settings-profile__avatar" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>
+        <div>
+            <p class="settings-profile__name">{{ current_user.username }} {{ badge(current_user.role_label, 'success' if current_user.is_admin else 'neutral') }}</p>
+            <p class="settings-row__hint">{{ _('Member Since') }} {{ current_user.created_at|format_date('long') }}</p>
+        </div>
+    </div>
+    {% if not current_user.is_admin and not current_user.has_full_write_access %}
+    <div class="import-note">
+        <p>{% if current_user.is_read_only %}{{ _('Your account can see the data but cannot change it. Ask an administrator if you need more access.') }}{% else %}{{ _('Your account can record fuel fill-ups and charging sessions. Ask an administrator if you need more access.') }}{% endif %}</p>
+    </div>
+    {% endif %}
+    <div class="ds-field">
+        <label class="ds-field__label" for="email">{{ _('Email') }}</label>
+        <div class="form-template__row">
+            <input type="email" name="email" id="email" class="ds-control" autocomplete="email" value="{{ current_user.email }}">
+            {{ button(_('Save Email'), type='submit', variant='secondary') }}
+        </div>
+    </div>
+    {% endcall %}
+
+    {% call card(_('Appearance'), _('Customize how the app looks')) %}
+    {% call row(_('Dark Mode'), _('Use dark theme for the interface'), for_id='dark-mode-switch') %}
+    {{ switch(None, current_user.dark_mode, _('Dark Mode'), id='dark-mode-switch', attrs={'onchange': 'toggleDarkMode()'}) }}
+    {% endcall %}
+    {% endcall %}
+
+    {% call card(_('Change Password'), _('Update your password to keep your account secure')) %}
+    <div class="form-grid">
+        <div class="ds-field">
+            <label class="ds-field__label" for="new_password">{{ _('New Password') }}</label>
+            {{ password_input('new_password', attrs={'autocomplete': 'new-password'}) }}
+            {{ password_rules('new_password', 'confirm_new_password', optional=true) }}
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="confirm_new_password">{{ _('Confirm New Password') }}</label>
+            {{ password_input('confirm_new_password', attrs={'autocomplete': 'new-password'}) }}
+            {{ password_match('confirm_new_password') }}
+        </div>
+    </div>
+    <div class="settings-actions settings-actions--inline">{{ button(_('Update Password'), type='submit', icon_name='check') }}</div>
+    {% endcall %}
+
+    {% if current_user.is_admin %}
+    {% call card(_('User Management'), _('Manage users and permissions'), admin=True) %}
+    {% call row(_('Users'), _('View and manage all users')) %}{{ button(_('Manage Users'), href=url_for('auth.users'), variant='secondary', icon_name='arrow-right') }}{% endcall %}
+    {% call row(_('Allow Registration'), _('Allow new users to create accounts'), for_id='registration_enabled') %}
+    {{ switch(None, registration_enabled, _('Allow Registration'), id='registration_enabled', attrs={'data-registration-url': url_for('auth.registration_settings'), 'data-saved': _('Registration settings updated')}) }}
+    {% endcall %}
+    {% endcall %}
+    {% endif %}
+
+    {% call card(_('Danger Zone'), _('Irreversible actions'), tone='danger') %}
+    {% call row(_('Delete Account'), _('Permanently delete your account and all data')) %}
+    {{ button(_('Delete Account'), variant='danger', disabled=true) }}
+    {% endcall %}
+    {% endcall %}
+</section>

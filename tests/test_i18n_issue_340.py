@@ -27,7 +27,11 @@ def _read(*parts):
 
 
 def _settings_source():
-    return _read(TEMPLATES_DIR, 'auth', 'settings.html')
+    # The settings page is a shell plus one partial per section.
+    parts = [_read(TEMPLATES_DIR, 'auth', 'settings.html')]
+    folder = os.path.join(TEMPLATES_DIR, 'auth', 'settings')
+    parts += [_read(folder, name) for name in sorted(os.listdir(folder))]
+    return '\n'.join(parts)
 
 
 def _reminder_row_source():
@@ -48,10 +52,10 @@ class TestImportCardsUseGettext:
     translator (#340)."""
 
     def _card_block(self):
-        source = _settings_source()
-        start = source.index('Import Data')
-        end = source.index('Export Data')
-        return source[start:end]
+        # The Import Data card runs from its title to the end of its partial.
+        source = _read(TEMPLATES_DIR, 'auth', 'settings', '_data.html')
+        start = source.index("_('Import Data')")
+        return source[start:]
 
     def test_hammond_description_uses_gettext(self):
         block = self._card_block()
@@ -109,7 +113,14 @@ class TestImportCardsUseGettext:
         # 'Import' label; each must reach gettext, none may stay a literal.
         bare = re.findall(r'>\s*Import\s*<', block)
         wrapped = re.findall(r"_\(\s*['\"]Import['\"]\s*\)", block)
-        assert len(bare) + len(wrapped) >= 4, (
+        # The three file imports share one macro, whose label must be wrapped too.
+        via_macro = re.findall(r'file_import\(', block)
+        if via_macro:
+            source = _read(TEMPLATES_DIR, 'auth', 'settings', '_data.html')
+            macro = source[source.index('macro file_import'):source.index('endmacro')]
+            assert re.search(r"_\(\s*['\"]Import['\"]\s*\)", macro), (
+                "the shared file import button label is a bare literal (#340)")
+        assert len(bare) + len(wrapped) + len(via_macro) >= 4, (
             "the Import button labels were not found — have they moved?"
         )
         assert bare == [], (
