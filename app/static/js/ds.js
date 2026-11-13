@@ -86,3 +86,37 @@
         target.hidden = !open;
     });
 })();
+
+/* Vehicle-bound text: inside a form, an element with
+   [data-vehicle-text="odometerUnit|readingLabel|spanLabel|..."] shows that
+   data-* value of the chosen vehicle (radio card or select option), and
+   follows it when the vehicle changes. window.dsSelectedVehicle(form) returns
+   the chosen radio or option for form scripts of their own. */
+(function () {
+    'use strict';
+    function selectedVehicle(form) {
+        var radio = form.querySelector('input[name="vehicle_id"]:checked');
+        if (radio) return radio;
+        var select = form.querySelector('select[name="vehicle_id"]');
+        return select && select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+    }
+    window.dsSelectedVehicle = selectedVehicle;
+
+    function sync(form) {
+        var chosen = selectedVehicle(form);
+        if (!chosen) return;
+        form.querySelectorAll('[data-vehicle-text]').forEach(function (el) {
+            var value = chosen.dataset[el.getAttribute('data-vehicle-text')];
+            if (value) el.textContent = value;
+        });
+    }
+    document.addEventListener('change', function (event) {
+        if (event.target.name === 'vehicle_id' && event.target.form) sync(event.target.form);
+    });
+    function init() {
+        document.querySelectorAll('form').forEach(function (form) {
+            if (form.querySelector('[data-vehicle-text]')) sync(form);
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();

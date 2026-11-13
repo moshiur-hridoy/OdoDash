@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 11:17+0600\n"
+"POT-Creation-Date: 2026-11-13 11:54+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fi <LL@li.org>\n"
@@ -50,32 +50,31 @@ msgstr "Vain luku. Näkee tiedot mutta ei voi muuttaa mitään."
 msgid "Administrator"
 msgstr "Ylläpitäjä"
 
-#: app/models.py:402 app/templates/maintenance/form.html:138
+#: app/models.py:402 app/templates/maintenance/form.html:113
 msgid "Engine hours"
 msgstr "Moottorin käyttötunnit"
 
 #: app/models.py:403 app/templates/charging/_log.html:41
-#: app/templates/charging/form.html:86 app/templates/dashboard.html:175
-#: app/templates/dashboard.html:201 app/templates/expenses/form.html:71
+#: app/templates/charging/form.html:101 app/templates/dashboard.html:178
+#: app/templates/dashboard.html:204 app/templates/expenses/form.html:71
 #: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:81
-#: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:138
-#: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
-#: app/templates/notes/index.html:35 app/templates/tires/index.html:58
-#: app/templates/tires/index.html:76 app/templates/trips/index.html:80
-#: app/templates/vehicles/index.html:71 app/templates/vehicles/view.html:87
-#: app/templates/vehicles/view.html:381 app/templates/vehicles/view.html:458
-#: app/templates/vehicles/view.html:479 app/templates/vehicles/view.html:501
-#: app/templates/vehicles/view.html:520
+#: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:113
+#: app/templates/notes/form.html:25 app/templates/notes/index.html:35
+#: app/templates/tires/index.html:58 app/templates/tires/index.html:76
+#: app/templates/trips/index.html:80 app/templates/vehicles/index.html:71
+#: app/templates/vehicles/view.html:87 app/templates/vehicles/view.html:381
+#: app/templates/vehicles/view.html:458 app/templates/vehicles/view.html:479
+#: app/templates/vehicles/view.html:501 app/templates/vehicles/view.html:520
 msgid "Odometer"
 msgstr "Mittarilukema"
 
-#: app/models.py:408 app/models.py:1527 app/templates/trips/form.html:189
+#: app/models.py:408 app/models.py:1527 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Tunnit"
 
-#: app/models.py:409 app/templates/allowance/form.html:48
+#: app/models.py:409 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52 app/templates/auth/settings.html:127
-#: app/templates/trips/form.html:97 app/templates/trips/form.html:188
+#: app/templates/trips/form.html:85 app/templates/trips/form.html:151
 #: app/templates/trips/index.html:82 app/templates/trips/report.html:102
 msgid "Distance"
 msgstr "Matka"
@@ -1015,7 +1014,7 @@ msgstr "Polttoainekirjaus lisätty!"
 
 #: app/routes/main.py:146 app/routes/vehicles.py:229
 #: app/templates/base.html:588 app/templates/dashboard.html:74
-#: app/templates/dashboard.html:211 app/templates/partials/mobile_nav.html:23
+#: app/templates/dashboard.html:214 app/templates/partials/mobile_nav.html:23
 #: app/templates/timeline/index.html:114 app/templates/trips/index.html:81
 #: app/templates/vehicles/view.html:443 app/templates/vehicles/view.html:470
 #: app/templates/vehicles/view.html:472
@@ -1024,7 +1023,7 @@ msgstr "Polttoaine"
 
 #: app/routes/main.py:149 app/routes/vehicles.py:232
 #: app/templates/charging/_log.html:67 app/templates/dashboard.html:75
-#: app/templates/dashboard.html:212 app/templates/timeline/index.html:126
+#: app/templates/dashboard.html:215 app/templates/timeline/index.html:126
 #: app/templates/vehicles/view.html:444 app/templates/vehicles/view.html:494
 #: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:544
 msgid "Charging"
@@ -1577,7 +1576,7 @@ msgstr "Sähköauton lataus"
 #: app/templates/allowance/index.html:3 app/templates/allowance/index.html:11
 #: app/templates/allowance/index.html:45 app/templates/allowance/index.html:75
 #: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
-#: app/templates/base.html:541 app/templates/dashboard.html:276
+#: app/templates/base.html:541 app/templates/dashboard.html:279
 #: app/templates/partials/mobile_nav.html:32
 #: app/templates/vehicles/view.html:205
 msgid "Mileage Allowance"
@@ -1590,16 +1589,16 @@ msgid "Tires"
 msgstr "Renkaat"
 
 #: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
-#: app/templates/base.html:543 app/templates/charging/form.html:149
-#: app/templates/dashboard.html:244 app/templates/expenses/form.html:166
+#: app/templates/base.html:543 app/templates/charging/form.html:125
+#: app/templates/dashboard.html:247 app/templates/expenses/form.html:166
 #: app/templates/fuel/form.html:222 app/templates/notes/index.html:4
 #: app/templates/notes/index.html:11 app/templates/notes/index.html:28
 #: app/templates/partials/mobile_nav.html:34
-#: app/templates/search/index.html:110 app/templates/stations/form.html:74
-#: app/templates/tires/form.html:83 app/templates/trips/form.html:142
-#: app/templates/trips/template_form.html:76
+#: app/templates/search/index.html:110 app/templates/stations/form.html:54
+#: app/templates/tires/form.html:71 app/templates/trips/form.html:129
+#: app/templates/trips/template_form.html:58
 #: app/templates/vehicles/form.html:231
-#: app/templates/vehicles/part_form.html:87
+#: app/templates/vehicles/part_form.html:66
 #: app/templates/vehicles/view.html:589
 msgid "Notes"
 msgstr "Muistiinpanot"
@@ -1711,7 +1710,7 @@ msgstr "%(amount)s samaan aikaan viime kuussa"
 msgid "Monthly Spending"
 msgstr "Kuukausittaiset menot"
 
-#: app/templates/dashboard.html:76 app/templates/dashboard.html:273
+#: app/templates/dashboard.html:76 app/templates/dashboard.html:276
 #: app/templates/vehicles/view.html:203
 msgid "Other Expenses"
 msgstr "Muut kulut"
@@ -1725,7 +1724,7 @@ msgid "Needs attention"
 msgstr "Vaatii huomiota"
 
 #: app/templates/dashboard.html:88 app/templates/dashboard.html:159
-#: app/templates/dashboard.html:244 app/templates/vehicles/view.html:267
+#: app/templates/dashboard.html:247 app/templates/vehicles/view.html:267
 #: app/templates/vehicles/view.html:300 app/templates/vehicles/view.html:329
 #: app/templates/vehicles/view.html:556 app/templates/vehicles/view.html:572
 msgid "View all"
@@ -1756,7 +1755,7 @@ msgid "In %(num)d days"
 msgstr "%(num)d päivän kuluttua"
 
 #: app/templates/dashboard.html:105 app/templates/dashboard.html:107
-#: app/templates/dashboard.html:182
+#: app/templates/dashboard.html:184
 msgid "All good"
 msgstr "Kaikki kunnossa"
 
@@ -1801,7 +1800,7 @@ msgstr "Koko ajalta: %(cost)s / %(unit)s"
 msgid "all time %(all_time)s"
 msgstr "koko ajalta %(all_time)s"
 
-#: app/templates/dashboard.html:142 app/templates/dashboard.html:274
+#: app/templates/dashboard.html:142 app/templates/dashboard.html:277
 #: app/templates/trips/index.html:16 app/templates/trips/report.html:36
 #: app/templates/trips/report.html:40 app/templates/trips/report.html:68
 #: app/templates/trips/report.html:127
@@ -1822,201 +1821,183 @@ msgstr "Suunta: %(amount)s"
 msgid "Cheapest Fuel"
 msgstr "Halvin polttoaine"
 
-#: app/templates/dashboard.html:164 app/templates/dashboard.html:187
+#: app/templates/dashboard.html:164 app/templates/dashboard.html:190
 msgid "Your Vehicles"
 msgstr "Ajoneuvosi"
 
-#: app/templates/dashboard.html:164 app/templates/trips/form.html:27
+#: app/templates/dashboard.html:164 app/templates/trips/form.html:28
 msgid "Manage"
 msgstr "Hallitse"
 
-#: app/templates/dashboard.html:180 app/templates/reminders/index.html:53
+#: app/templates/dashboard.html:182 app/templates/reminders/index.html:53
 #: app/templates/vehicles/view.html:278
 msgid "Overdue"
 msgstr "Erääntynyt"
 
-#: app/templates/dashboard.html:181 app/templates/vehicles/view.html:278
+#: app/templates/dashboard.html:183 app/templates/vehicles/view.html:278
 msgid "Due soon"
 msgstr "Erääntyy pian"
 
-#: app/templates/dashboard.html:187
+#: app/templates/dashboard.html:190
 msgid "Add your first vehicle"
 msgstr "Lisää ensimmäinen ajoneuvosi"
 
-#: app/templates/dashboard.html:191 app/templates/dashboard.html:229
+#: app/templates/dashboard.html:194 app/templates/dashboard.html:232
 #: app/templates/vehicles/view.html:439 app/templates/vehicles/view.html:441
 msgid "Recent activity"
 msgstr "Viimeaikainen toiminta"
 
-#: app/templates/allowance/form.html:34 app/templates/allowance/index.html:50
-#: app/templates/charging/_log.html:36 app/templates/charging/form.html:37
-#: app/templates/dashboard.html:197 app/templates/expenses/form.html:66
+#: app/templates/allowance/form.html:21 app/templates/allowance/index.html:50
+#: app/templates/charging/_log.html:36 app/templates/charging/form.html:26
+#: app/templates/dashboard.html:200 app/templates/expenses/form.html:66
 #: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
-#: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:131
-#: app/templates/notes/form.html:34 app/templates/notes/index.html:33
+#: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:107
+#: app/templates/notes/form.html:20 app/templates/notes/index.html:33
 #: app/templates/stations/prices.html:36 app/templates/tires/index.html:55
-#: app/templates/tires/index.html:73 app/templates/trips/form.html:67
+#: app/templates/tires/index.html:73 app/templates/trips/form.html:45
 #: app/templates/trips/index.html:78 app/templates/trips/report.html:98
 #: app/templates/vehicles/view.html:455
 msgid "Date"
 msgstr "Päivämäärä"
 
-#: app/templates/dashboard.html:198 app/templates/documents/form.html:50
+#: app/templates/dashboard.html:201 app/templates/documents/form.html:34
 #: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
-#: app/templates/reminders/form.html:53 app/templates/reminders/index.html:37
-#: app/templates/tires/form.html:43 app/templates/vehicles/form.html:26
+#: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
+#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:26
 #: app/templates/vehicles/view.html:456
 msgid "Type"
 msgstr "Tyyppi"
 
-#: app/templates/allowance/form.html:19 app/templates/allowance/index.html:14
-#: app/templates/charging/form.html:19 app/templates/charging/index.html:16
-#: app/templates/dashboard.html:199 app/templates/documents/form.html:21
+#: app/templates/allowance/index.html:14 app/templates/charging/index.html:16
+#: app/templates/components/forms.html:17
+#: app/templates/components/forms.html:38 app/templates/dashboard.html:202
 #: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
 #: app/templates/expenses/form.html:52 app/templates/expenses/index.html:26
 #: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:47
 #: app/templates/fuel/form.html:63 app/templates/fuel/index.html:18
 #: app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
-#: app/templates/maintenance/form.html:30
-#: app/templates/maintenance/history.html:14 app/templates/notes/form.html:19
-#: app/templates/notes/index.html:14 app/templates/recurring/form.html:21
-#: app/templates/reminders/form.html:26 app/templates/reminders/index.html:30
-#: app/templates/tires/form.html:16 app/templates/trips/form.html:37
-#: app/templates/trips/index.html:28 app/templates/trips/report.html:99
+#: app/templates/maintenance/history.html:14 app/templates/notes/index.html:14
+#: app/templates/reminders/index.html:30 app/templates/trips/index.html:28
+#: app/templates/trips/report.html:99
 msgid "Vehicle"
 msgstr "Ajoneuvo"
 
-#: app/templates/dashboard.html:200 app/templates/expenses/index.html:145
+#: app/templates/dashboard.html:203 app/templates/expenses/index.html:145
 #: app/templates/expenses/index.html:146 app/templates/notes/index.html:72
 #: app/templates/notes/index.html:73 app/templates/vehicles/view.html:457
 msgid "Details"
 msgstr "Tiedot"
 
-#: app/templates/allowance/form.html:41 app/templates/allowance/index.html:53
-#: app/templates/dashboard.html:202 app/templates/recurring/form.html:65
+#: app/templates/allowance/form.html:52 app/templates/allowance/index.html:53
+#: app/templates/dashboard.html:205 app/templates/recurring/form.html:59
 msgid "Amount"
 msgstr "Summa"
 
-#: app/templates/dashboard.html:229 app/templates/vehicles/view.html:540
+#: app/templates/dashboard.html:232 app/templates/vehicles/view.html:540
 msgid "No fuel logs yet."
 msgstr "Ei vielä polttoainekirjauksia."
 
-#: app/templates/dashboard.html:235 app/templates/vehicles/view.html:425
+#: app/templates/dashboard.html:238 app/templates/vehicles/view.html:425
 msgid "Expenses by Category"
 msgstr "Kulut luokittain"
 
-#: app/templates/dashboard.html:239
+#: app/templates/dashboard.html:242
 msgid "No expenses yet."
 msgstr "Ei vielä kuluja."
 
-#: app/templates/dashboard.html:255 app/templates/notes/index.html:110
+#: app/templates/dashboard.html:258 app/templates/notes/index.html:110
 msgid "No notes"
 msgstr "Ei muistiinpanoja"
 
-#: app/templates/dashboard.html:259 app/templates/notes/form.html:2
-#: app/templates/notes/form.html:11 app/templates/notes/form.html:76
+#: app/templates/dashboard.html:262 app/templates/notes/form.html:4
+#: app/templates/notes/form.html:12 app/templates/notes/form.html:51
 #: app/templates/notes/index.html:24 app/templates/notes/index.html:111
 #: app/templates/partials/mobile_nav.html:66
 msgid "Add Note"
 msgstr "Lisää muistiinpano"
 
-#: app/templates/dashboard.html:266
+#: app/templates/dashboard.html:269
 msgid "All time"
 msgstr "Koko ajalta"
 
-#: app/templates/charging/form.html:140 app/templates/dashboard.html:268
+#: app/templates/charging/form.html:80 app/templates/dashboard.html:271
 #: app/templates/fuel/_quick_form.html:75 app/templates/fuel/form.html:126
 #: app/templates/maintenance/history.html:44
 #: app/templates/vehicles/index.html:76
 msgid "Total Cost"
 msgstr "Kokonaishinta"
 
-#: app/templates/dashboard.html:269 app/templates/vehicles/view.html:198
+#: app/templates/dashboard.html:272 app/templates/vehicles/view.html:198
 msgid "Total Fuel Cost"
 msgstr "Polttoainekustannukset yhteensä"
 
-#: app/templates/dashboard.html:271 app/templates/vehicles/view.html:201
+#: app/templates/dashboard.html:274 app/templates/vehicles/view.html:201
 msgid "Total Charging Cost"
 msgstr "Latauskustannukset yhteensä"
 
-#: app/templates/dashboard.html:274 app/templates/trips/index.html:58
+#: app/templates/dashboard.html:277 app/templates/trips/index.html:58
 #: app/templates/trips/report.html:35 app/templates/vehicles/view.html:208
 msgid "Total Distance"
 msgstr "Kokonaismatka"
 
-#: app/templates/dashboard.html:274 app/templates/trips/index.html:16
+#: app/templates/dashboard.html:277 app/templates/trips/index.html:16
 #: app/templates/trips/report.html:36 app/templates/trips/report.html:40
 #: app/templates/trips/report.html:68 app/templates/trips/report.html:127
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr ""
 "Tämä summa sisältää ajoneuvot, joita seurataan matkassa ja käyttötunneissa."
 
-#: app/templates/dashboard.html:277 app/templates/vehicles/view.html:206
+#: app/templates/dashboard.html:280 app/templates/vehicles/view.html:206
 msgid "Net Cost"
 msgstr "Nettokustannus"
 
-#: app/templates/allowance/form.html:2 app/templates/allowance/form.html:11
+#: app/templates/allowance/form.html:4 app/templates/allowance/form.html:13
 msgid "Edit Allowance"
 msgstr "Muokkaa korvausta"
 
-#: app/templates/allowance/form.html:2 app/templates/allowance/form.html:11
-#: app/templates/allowance/form.html:81 app/templates/allowance/index.html:24
+#: app/templates/allowance/form.html:4 app/templates/allowance/form.html:13
+#: app/templates/allowance/form.html:63 app/templates/allowance/index.html:24
 #: app/templates/allowance/index.html:111
 msgid "Add Allowance"
 msgstr "Lisää korvaus"
 
-#: app/templates/allowance/form.html:10
+#: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "Takaisin kilometrikorvauksiin"
 
-#: app/templates/allowance/form.html:56
+#: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
+#: app/templates/documents/form.html:77 app/templates/documents/view.html:98
+#: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
+#: app/templates/maintenance/form.html:56
+#: app/templates/recurring/form.html:107 app/templates/trips/form.html:124
+#: app/templates/trips/report.html:101
+#: app/templates/trips/template_form.html:53
+msgid "Description"
+msgstr "Kuvaus"
+
+#: app/templates/allowance/form.html:28
+msgid "e.g., June client visits"
+msgstr "esim. Kesäkuun asiakaskäynnit"
+
+#: app/templates/allowance/form.html:44
 msgid "Rate per unit"
 msgstr "Hinta per yksikkö"
 
-#: app/templates/allowance/form.html:61
+#: app/templates/allowance/form.html:60
 msgid "Optional. If set with distance, the amount is calculated for you."
 msgstr ""
 "Valinnainen. Jos asetettu yhdessä matkan kanssa, summa lasketaan puolestasi."
 
-#: app/templates/allowance/form.html:65 app/templates/allowance/index.html:51
-#: app/templates/documents/form.html:85 app/templates/documents/view.html:98
-#: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
-#: app/templates/maintenance/form.html:80
-#: app/templates/recurring/form.html:111 app/templates/trips/form.html:134
-#: app/templates/trips/report.html:101
-#: app/templates/trips/template_form.html:68
-msgid "Description"
-msgstr "Kuvaus"
-
-#: app/templates/allowance/form.html:68
-msgid "e.g., June client visits"
-msgstr "esim. Kesäkuun asiakaskäynnit"
-
-#: app/templates/allowance/form.html:77 app/templates/charging/form.html:159
-#: app/templates/documents/form.html:116 app/templates/expenses/form.html:194
-#: app/templates/fuel/form.html:254
-#: app/templates/import/backup_preview.html:75
-#: app/templates/import/csv_mapping.html:95
-#: app/templates/maintenance/form.html:189
-#: app/templates/maintenance/index.html:94 app/templates/notes/form.html:72
-#: app/templates/recurring/form.html:143 app/templates/reminders/form.html:126
-#: app/templates/stations/form.html:101 app/templates/tires/form.html:103
-#: app/templates/trips/form.html:152 app/templates/trips/template_form.html:86
-#: app/templates/vehicles/form.html:330
-#: app/templates/vehicles/part_form.html:98
-msgid "Cancel"
-msgstr "Peruuta"
-
-#: app/templates/allowance/form.html:81 app/templates/auth/edit_user.html:94
-#: app/templates/auth/settings.html:214 app/templates/charging/form.html:163
-#: app/templates/documents/form.html:120 app/templates/expenses/form.html:195
-#: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:193
-#: app/templates/notes/form.html:76 app/templates/recurring/form.html:147
-#: app/templates/stations/form.html:105 app/templates/tires/form.html:107
-#: app/templates/trips/form.html:156 app/templates/trips/template_form.html:90
+#: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:94
+#: app/templates/auth/settings.html:214 app/templates/charging/form.html:130
+#: app/templates/documents/form.html:82 app/templates/expenses/form.html:195
+#: app/templates/fuel/form.html:255 app/templates/maintenance/form.html:146
+#: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
+#: app/templates/stations/form.html:63 app/templates/tires/form.html:82
+#: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
 #: app/templates/vehicles/form.html:334
-#: app/templates/vehicles/part_form.html:102
+#: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
 msgstr "Tallenna muutokset"
 
@@ -2068,7 +2049,7 @@ msgstr "Toiminnot"
 #: app/templates/reminders/_reminder_row.html:55
 #: app/templates/stations/index.html:39 app/templates/tires/index.html:115
 #: app/templates/trips/index.html:131
-#: app/templates/trips/templates_index.html:37
+#: app/templates/trips/templates_index.html:40
 #: app/templates/vehicles/parts.html:45 app/templates/vehicles/view.html:68
 #: app/templates/vehicles/view.html:176 app/templates/vehicles/view.html:319
 #: app/templates/vehicles/view.html:484 app/templates/vehicles/view.html:506
@@ -2080,14 +2061,14 @@ msgstr "Muokkaa"
 msgid "Delete this allowance entry?"
 msgstr "Poistetaanko tämä korvausmerkintä?"
 
-#: app/templates/allowance/index.html:93 app/templates/documents/form.html:108
-#: app/templates/expenses/form.html:176 app/templates/expenses/index.html:155
-#: app/templates/fuel/form.html:235 app/templates/fuel/index.html:165
-#: app/templates/notes/index.html:82 app/templates/recurring/form.html:135
+#: app/templates/allowance/index.html:93
+#: app/templates/components/forms.html:56 app/templates/expenses/form.html:176
+#: app/templates/expenses/index.html:155 app/templates/fuel/form.html:235
+#: app/templates/fuel/index.html:165 app/templates/notes/index.html:82
 #: app/templates/reminders/_reminder_row.html:60
-#: app/templates/stations/form.html:93 app/templates/tires/index.html:105
-#: app/templates/tires/index.html:119 app/templates/trips/index.html:136
-#: app/templates/trips/templates_index.html:41
+#: app/templates/tires/index.html:105 app/templates/tires/index.html:119
+#: app/templates/trips/index.html:136
+#: app/templates/trips/templates_index.html:44
 #: app/templates/vehicles/parts.html:49 app/templates/vehicles/view.html:488
 #: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
 #: app/templates/vehicles/view.html:643
@@ -2323,7 +2304,7 @@ msgid "Volume"
 msgstr "Tilavuus"
 
 #: app/templates/auth/settings.html:139
-#: app/templates/vehicles/part_form.html:58
+#: app/templates/vehicles/part_form.html:7
 msgid "Liters (L)"
 msgstr "Litraa (L)"
 
@@ -2530,7 +2511,7 @@ msgid "Recurring Expenses"
 msgstr "Toistuvat kulut"
 
 #: app/templates/auth/settings.html:457
-#: app/templates/trips/template_form.html:27
+#: app/templates/trips/template_form.html:23
 msgid "Default Vehicle"
 msgstr "Oletusajoneuvo"
 
@@ -3216,27 +3197,27 @@ msgstr "Oletusmuistutuksen ennakkoaika"
 msgid "How many days before the due date should you be notified?"
 msgstr "Kuinka monta päivää ennen eräpäivää sinulle ilmoitetaan?"
 
-#: app/templates/auth/settings.html:1454 app/templates/reminders/form.html:108
+#: app/templates/auth/settings.html:1454 app/templates/reminders/form.html:12
 msgid "On the due date"
 msgstr "Eräpäivänä"
 
-#: app/templates/auth/settings.html:1455 app/templates/reminders/form.html:109
+#: app/templates/auth/settings.html:1455 app/templates/reminders/form.html:12
 msgid "1 day before"
 msgstr "1 päivä ennen"
 
-#: app/templates/auth/settings.html:1456 app/templates/reminders/form.html:110
+#: app/templates/auth/settings.html:1456 app/templates/reminders/form.html:12
 msgid "3 days before"
 msgstr "3 päivää ennen"
 
-#: app/templates/auth/settings.html:1457 app/templates/reminders/form.html:111
+#: app/templates/auth/settings.html:1457 app/templates/reminders/form.html:12
 msgid "1 week before"
 msgstr "1 viikko ennen"
 
-#: app/templates/auth/settings.html:1458 app/templates/reminders/form.html:112
+#: app/templates/auth/settings.html:1458 app/templates/reminders/form.html:12
 msgid "2 weeks before"
 msgstr "2 viikkoa ennen"
 
-#: app/templates/auth/settings.html:1459 app/templates/reminders/form.html:113
+#: app/templates/auth/settings.html:1459 app/templates/reminders/form.html:12
 msgid "1 month before"
 msgstr "1 kuukausi ennen"
 
@@ -3568,7 +3549,7 @@ msgid "Error checking for updates"
 msgstr "Virhe päivitysten tarkistuksessa"
 
 #: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
-#: app/templates/charging/form.html:133
+#: app/templates/charging/form.html:72
 msgid "Cost per kWh"
 msgstr "Hinta per kWh"
 
@@ -3580,7 +3561,7 @@ msgstr "Viimeisin lataus"
 msgid "Charging History"
 msgstr "Lataushistoria"
 
-#: app/templates/charging/_log.html:37 app/templates/charging/form.html:69
+#: app/templates/charging/_log.html:37 app/templates/charging/form.html:114
 msgid "Location"
 msgstr "Sijainti"
 
@@ -3588,10 +3569,10 @@ msgstr "Sijainti"
 msgid "kWh"
 msgstr "kWh"
 
-#: app/templates/charging/_log.html:42 app/templates/charging/form.html:130
-#: app/templates/expenses/form.html:124 app/templates/expenses/index.html:96
-#: app/templates/fuel/index.html:105 app/templates/tires/form.html:61
-#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:459
+#: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
+#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
+#: app/templates/tires/form.html:61 app/templates/tires/index.html:45
+#: app/templates/vehicles/view.html:459
 msgid "Cost"
 msgstr "Hinta"
 
@@ -3611,62 +3592,67 @@ msgstr ""
 msgid "Add Charging Session"
 msgstr "Lisää latausistunto"
 
-#: app/templates/charging/form.html:2 app/templates/charging/form.html:11
+#: app/templates/charging/form.html:5 app/templates/charging/form.html:14
 msgid "Edit Charging Session"
 msgstr "Muokkaa latausistuntoa"
 
-#: app/templates/charging/form.html:2 app/templates/charging/form.html:11
-#: app/templates/charging/form.html:163
+#: app/templates/charging/form.html:5 app/templates/charging/form.html:14
+#: app/templates/charging/form.html:130
 msgid "Log Charging Session"
 msgstr "Kirjaa latausistunto"
 
-#: app/templates/charging/form.html:10
+#: app/templates/charging/form.html:13
 msgid "Back to charging sessions"
 msgstr "Takaisin latausistuntoihin"
 
-#: app/templates/charging/form.html:44
-msgid "Charger Type"
-msgstr "Laturin tyyppi"
-
-#: app/templates/charging/form.html:47
-msgid "Select type..."
-msgstr "Valitse tyyppi..."
-
-#: app/templates/charging/form.html:55
+#: app/templates/charging/form.html:31
 msgid "Start Time"
 msgstr "Aloitusaika"
 
-#: app/templates/charging/form.html:62
+#: app/templates/charging/form.html:36
 msgid "End Time"
 msgstr "Lopetusaika"
 
-#: app/templates/charging/form.html:72
-msgid "e.g., Home, Walmart, ChargePoint Station"
-msgstr "esim. Koti, K-Market, ChargePoint-asema"
-
-#: app/templates/charging/form.html:77
-msgid "Network"
-msgstr "Verkko"
-
-#: app/templates/charging/form.html:80
-msgid "e.g., ChargePoint, Electrify America"
-msgstr "esim. ChargePoint, Virta"
-
-#: app/templates/charging/form.html:104
+#: app/templates/charging/form.html:43
 msgid "Energy & State of Charge"
 msgstr "Energia ja varaustaso"
 
-#: app/templates/charging/form.html:107
+#: app/templates/charging/form.html:46
 msgid "Energy Added"
 msgstr "Lisätty energia"
 
-#: app/templates/charging/form.html:114
+#: app/templates/charging/form.html:54
 msgid "Start SOC"
 msgstr "Alku-SOC"
 
-#: app/templates/charging/form.html:120
+#: app/templates/charging/form.html:62
 msgid "End SOC"
 msgstr "Loppu-SOC"
+
+#: app/templates/charging/form.html:93
+msgid "Charger Type"
+msgstr "Laturin tyyppi"
+
+#: app/templates/charging/form.html:95
+msgid "Select type..."
+msgstr "Valitse tyyppi..."
+
+#: app/templates/charging/form.html:109 app/templates/fuel/form.html:95
+msgid "Odometer is automatically tracked via Tessie for this vehicle."
+msgstr ""
+"Mittarilukema seurataan automaattisesti Tessien kautta tälle ajoneuvolle."
+
+#: app/templates/charging/form.html:116
+msgid "e.g., Home, Walmart, ChargePoint Station"
+msgstr "esim. Koti, K-Market, ChargePoint-asema"
+
+#: app/templates/charging/form.html:119
+msgid "Network"
+msgstr "Verkko"
+
+#: app/templates/charging/form.html:121
+msgid "e.g., ChargePoint, Electrify America"
+msgstr "esim. ChargePoint, Virta"
 
 #: app/templates/charging/index.html:3 app/templates/charging/index.html:13
 #: app/templates/import/csv_upload.html:19 app/templates/search/index.html:152
@@ -3680,6 +3666,15 @@ msgstr "Seuraa sähköautosi latausistuntoja"
 #: app/templates/charging/index.html:26
 msgid "Log Charge"
 msgstr "Kirjaa lataus"
+
+#: app/templates/components/forms.html:60 app/templates/expenses/form.html:194
+#: app/templates/fuel/form.html:254
+#: app/templates/import/backup_preview.html:75
+#: app/templates/import/csv_mapping.html:95
+#: app/templates/maintenance/index.html:94
+#: app/templates/vehicles/form.html:330
+msgid "Cancel"
+msgstr "Peruuta"
 
 #: app/templates/components/ui.html:183
 msgid "Pagination"
@@ -3710,72 +3705,72 @@ msgstr "Näytä salasana"
 msgid "Hide password"
 msgstr "Piilota salasana"
 
-#: app/templates/documents/form.html:2 app/templates/documents/form.html:13
+#: app/templates/documents/form.html:5 app/templates/documents/form.html:15
 msgid "Edit Document"
 msgstr "Muokkaa asiakirjaa"
 
-#: app/templates/documents/form.html:2 app/templates/documents/form.html:13
+#: app/templates/documents/form.html:5 app/templates/documents/form.html:15
 #: app/templates/documents/index.html:24 app/templates/documents/index.html:69
 msgid "Upload Document"
 msgstr "Lataa asiakirja"
 
-#: app/templates/documents/form.html:6 app/templates/documents/view.html:6
+#: app/templates/documents/form.html:14 app/templates/documents/view.html:6
 msgid "Back to Documents"
 msgstr "Takaisin asiakirjoihin"
 
-#: app/templates/documents/form.html:33 app/templates/documents/view.html:72
+#: app/templates/documents/form.html:24 app/templates/documents/view.html:72
 msgid "File"
 msgstr "Tiedosto"
 
-#: app/templates/documents/form.html:37
+#: app/templates/documents/form.html:25
 msgid "PDF, images, Word, Excel, text files, or ePub (max 300MB)"
 msgstr "PDF, kuvat, Word, Excel, tekstitiedostot tai ePub (enintään 300 Mt)"
 
-#: app/templates/documents/form.html:42 app/templates/notes/form.html:48
-#: app/templates/reminders/form.html:44
+#: app/templates/documents/form.html:29 app/templates/notes/form.html:37
+#: app/templates/reminders/form.html:40
 msgid "Title"
 msgstr "Otsikko"
 
-#: app/templates/documents/form.html:45
+#: app/templates/documents/form.html:31
 msgid "e.g., Insurance Policy 2024"
 msgstr "esim. Vakuutuskirja 2024"
 
-#: app/templates/documents/form.html:62 app/templates/documents/view.html:66
+#: app/templates/documents/form.html:50 app/templates/documents/view.html:66
 msgid "Reference Number"
 msgstr "Viitenumero"
 
-#: app/templates/documents/form.html:65
+#: app/templates/documents/form.html:52
 msgid "e.g., Policy number, certificate ID"
 msgstr "esim. Vakuutusnumero, todistuksen tunnus"
 
-#: app/templates/documents/form.html:71 app/templates/documents/view.html:81
+#: app/templates/documents/form.html:55 app/templates/documents/view.html:81
 msgid "Issue Date"
 msgstr "Myöntämispäivä"
 
-#: app/templates/documents/form.html:77 app/templates/documents/view.html:88
+#: app/templates/documents/form.html:60 app/templates/documents/view.html:88
 msgid "Expiry Date"
 msgstr "Vanhenemispäivä"
 
-#: app/templates/documents/form.html:88 app/templates/recurring/form.html:114
-msgid "Optional notes"
-msgstr "Valinnaiset muistiinpanot"
-
-#: app/templates/documents/form.html:95
+#: app/templates/documents/form.html:68
 msgid "Remind me before expiry"
 msgstr "Muistuta ennen vanhenemista"
 
-#: app/templates/documents/form.html:99
+#: app/templates/documents/form.html:71
 msgid "Days before to remind"
 msgstr "Muistutus päivää ennen"
 
-#: app/templates/documents/form.html:120
+#: app/templates/documents/form.html:78 app/templates/recurring/form.html:108
+msgid "Optional notes"
+msgstr "Valinnaiset muistiinpanot"
+
+#: app/templates/documents/form.html:82
 #: app/templates/import/csv_mapping.html:15
 #: app/templates/import/csv_upload.html:10
 #: app/templates/vehicles/view.html:603
 msgid "Upload"
 msgstr "Lataa"
 
-#: app/templates/documents/form.html:132
+#: app/templates/documents/form.html:83
 msgid "Delete this document?"
 msgstr "Poistetaanko tämä asiakirja?"
 
@@ -3851,7 +3846,7 @@ msgid "Its next occurrence will be scheduled."
 msgstr "Sen seuraava toistuma ajoitetaan."
 
 #: app/templates/expenses/form.html:84 app/templates/expenses/index.html:33
-#: app/templates/recurring/form.html:42
+#: app/templates/recurring/form.html:31
 msgid "Category"
 msgstr "Kategoria"
 
@@ -3875,11 +3870,11 @@ msgstr "Valinnainen osille"
 msgid "e.g., Oil change, Annual service"
 msgstr "esim. Öljynvaihto, Vuosihuolto"
 
-#: app/templates/expenses/form.html:132 app/templates/recurring/form.html:79
+#: app/templates/expenses/form.html:132 app/templates/recurring/form.html:68
 msgid "Vendor / Service Provider"
 msgstr "Myyjä / Palveluntarjoaja"
 
-#: app/templates/expenses/form.html:135 app/templates/recurring/form.html:82
+#: app/templates/expenses/form.html:135 app/templates/recurring/form.html:70
 msgid "e.g., Local Garage"
 msgstr "esim. Paikallinen korjaamo"
 
@@ -4060,19 +4055,14 @@ msgid "Back to fuel logs"
 msgstr "Takaisin polttoainekirjauksiin"
 
 #: app/templates/fuel/form.html:91 app/templates/fuel/form.html:262
-#: app/templates/trips/form.html:56 app/templates/trips/form.html:183
+#: app/templates/trips/form.html:73 app/templates/trips/form.html:148
 msgid "Last engine hours"
 msgstr "Viimeisimmät käyttötunnit"
 
 #: app/templates/fuel/form.html:91 app/templates/fuel/form.html:261
-#: app/templates/trips/form.html:56 app/templates/trips/form.html:182
+#: app/templates/trips/form.html:73 app/templates/trips/form.html:148
 msgid "Last odometer"
 msgstr "Viimeisin mittarilukema"
-
-#: app/templates/fuel/form.html:95
-msgid "Odometer is automatically tracked via Tessie for this vehicle."
-msgstr ""
-"Mittarilukema seurataan automaattisesti Tessien kautta tälle ajoneuvolle."
 
 #: app/templates/fuel/form.html:96
 msgid ""
@@ -4418,54 +4408,54 @@ msgstr "CSV-tiedosto"
 msgid "Next: Map Columns"
 msgstr "Seuraava: yhdistä sarakkeet"
 
-#: app/templates/maintenance/form.html:2
-#: app/templates/maintenance/form.html:12
+#: app/templates/maintenance/form.html:5
+#: app/templates/maintenance/form.html:17
 msgid "Edit Maintenance Schedule"
 msgstr "Muokkaa huoltoaikataulua"
 
-#: app/templates/maintenance/form.html:2
-#: app/templates/maintenance/form.html:12
+#: app/templates/maintenance/form.html:5
+#: app/templates/maintenance/form.html:17
 msgid "New Maintenance Schedule"
 msgstr "Uusi huoltoaikataulu"
 
-#: app/templates/maintenance/form.html:6
+#: app/templates/maintenance/form.html:16
 #: app/templates/maintenance/history.html:9
 msgid "Back to Maintenance"
 msgstr "Takaisin huoltoon"
 
-#: app/templates/maintenance/form.html:45 app/templates/recurring/form.html:34
-#: app/templates/stations/form.html:20 app/templates/tires/form.html:35
+#: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
+#: app/templates/stations/form.html:16 app/templates/tires/form.html:22
 #: app/templates/vehicles/form.html:18
-#: app/templates/vehicles/part_form.html:29
+#: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "Nimi"
 
-#: app/templates/maintenance/form.html:48
+#: app/templates/maintenance/form.html:34
 msgid "e.g., Oil Change"
 msgstr "esim. Öljynvaihto"
 
-#: app/templates/maintenance/form.html:55
+#: app/templates/maintenance/form.html:37
 msgid "Main Type"
 msgstr "Päätyyppi"
 
-#: app/templates/maintenance/form.html:67
+#: app/templates/maintenance/form.html:49
 #: app/templates/maintenance/history.html:27
 msgid "Part"
 msgstr "Osa"
 
-#: app/templates/maintenance/form.html:70
+#: app/templates/maintenance/form.html:51
 msgid "Custom part"
 msgstr "Oma osa"
 
-#: app/templates/maintenance/form.html:83
+#: app/templates/maintenance/form.html:57
 msgid "Optional notes or instructions"
 msgstr "Valinnaiset muistiinpanot tai ohjeet"
 
-#: app/templates/maintenance/form.html:88
+#: app/templates/maintenance/form.html:63
 msgid "Service Interval"
 msgstr "Huoltoväli"
 
-#: app/templates/maintenance/form.html:89
+#: app/templates/maintenance/form.html:64
 msgid ""
 "Set how often this maintenance should be performed. You can set distance, "
 "time, or both."
@@ -4473,15 +4463,39 @@ msgstr ""
 "Määritä kuinka usein tämä huolto tulisi suorittaa. Voit asettaa matkan, ajan"
 " tai molemmat."
 
-#: app/templates/maintenance/form.html:93
+#: app/templates/maintenance/form.html:68
 msgid "Every (hours)"
 msgstr "Joka (tuntia)"
 
-#: app/templates/maintenance/form.html:96
+#: app/templates/maintenance/form.html:71
 msgid "e.g., 250"
 msgstr "esim. 250"
 
-#: app/templates/maintenance/form.html:98
+#: app/templates/maintenance/form.html:76
+msgid "Every (km)"
+msgstr "Joka (km)"
+
+#: app/templates/maintenance/form.html:79
+msgid "e.g., 10000"
+msgstr "esim. 10000"
+
+#: app/templates/maintenance/form.html:84
+msgid "Every (miles)"
+msgstr "Joka (mailia)"
+
+#: app/templates/maintenance/form.html:87
+msgid "e.g., 6000"
+msgstr "esim. 6000"
+
+#: app/templates/maintenance/form.html:92
+msgid "Every (months)"
+msgstr "Joka (kuukautta)"
+
+#: app/templates/maintenance/form.html:94
+msgid "e.g., 12"
+msgstr "esim. 12"
+
+#: app/templates/maintenance/form.html:97
 msgid ""
 "This vehicle is metered in engine hours, so its service interval is counted "
 "in hours."
@@ -4489,68 +4503,40 @@ msgstr ""
 "Tämän ajoneuvon mittarina ovat moottorin käyttötunnit, joten huoltoväli "
 "lasketaan tunteina."
 
-#: app/templates/maintenance/form.html:101
-msgid "Every (km)"
-msgstr "Joka (km)"
-
-#: app/templates/maintenance/form.html:104
-msgid "e.g., 10000"
-msgstr "esim. 10000"
-
-#: app/templates/maintenance/form.html:108
-msgid "Every (miles)"
-msgstr "Joka (mailia)"
-
-#: app/templates/maintenance/form.html:111
-msgid "e.g., 6000"
-msgstr "esim. 6000"
-
-#: app/templates/maintenance/form.html:115
-msgid "Every (months)"
-msgstr "Joka (kuukautta)"
-
-#: app/templates/maintenance/form.html:118
-msgid "e.g., 12"
-msgstr "esim. 12"
-
-#: app/templates/maintenance/form.html:126
+#: app/templates/maintenance/form.html:102
 msgid "Last Performed"
 msgstr "Viimeksi suoritettu"
 
-#: app/templates/maintenance/form.html:127
+#: app/templates/maintenance/form.html:103
 msgid "When was this maintenance last done? Leave blank if never."
 msgstr ""
 "Milloin tämä huolto suoritettiin viimeksi? Jätä tyhjäksi, jos ei koskaan."
 
-#: app/templates/maintenance/form.html:142
+#: app/templates/maintenance/form.html:116
 msgid "e.g., 50000"
 msgstr "esim. 50000"
 
-#: app/templates/maintenance/form.html:150
+#: app/templates/maintenance/form.html:124
 msgid "Additional Settings"
 msgstr "Lisäasetukset"
 
-#: app/templates/maintenance/form.html:154
+#: app/templates/maintenance/form.html:127
 msgid "Estimated Cost"
 msgstr "Arvioitu hinta"
 
-#: app/templates/maintenance/form.html:161
+#: app/templates/maintenance/form.html:135
 msgid "Remind Days Before"
 msgstr "Muistuta päivää ennen"
 
-#: app/templates/maintenance/form.html:172
+#: app/templates/maintenance/form.html:142
 msgid "Automatically create reminder when due"
 msgstr "Luo muistutus automaattisesti erääntyessä"
 
-#: app/templates/maintenance/form.html:181
-msgid "Delete Schedule"
-msgstr "Poista aikataulu"
-
-#: app/templates/maintenance/form.html:193
+#: app/templates/maintenance/form.html:146
 msgid "Create Schedule"
 msgstr "Luo aikataulu"
 
-#: app/templates/maintenance/form.html:242
+#: app/templates/maintenance/form.html:147
 msgid "Delete this maintenance schedule?"
 msgstr "Poistetaanko tämä huoltoaikataulu?"
 
@@ -4649,23 +4635,23 @@ msgstr "Todellinen hinta"
 msgid "Complete"
 msgstr "Valmis"
 
-#: app/templates/notes/form.html:2 app/templates/notes/form.html:11
+#: app/templates/notes/form.html:4 app/templates/notes/form.html:12
 msgid "Edit Note"
 msgstr "Muokkaa muistiinpanoa"
 
-#: app/templates/notes/form.html:10
+#: app/templates/notes/form.html:11
 msgid "Back to notes"
 msgstr "Takaisin muistiinpanoihin"
 
-#: app/templates/notes/form.html:51
+#: app/templates/notes/form.html:39
 msgid "e.g., DPF regeneration"
 msgstr "esim. Hiukkassuodattimen regenerointi"
 
-#: app/templates/notes/form.html:56 app/templates/notes/index.html:34
+#: app/templates/notes/form.html:42 app/templates/notes/index.html:34
 msgid "Note"
 msgstr "Muistiinpano"
 
-#: app/templates/notes/form.html:58
+#: app/templates/notes/form.html:43
 msgid "What happened?"
 msgstr "Mitä tapahtui?"
 
@@ -4684,8 +4670,8 @@ msgstr "Poistetaanko tämä muistiinpano?"
 msgid "Jot down anything worth remembering about your vehicles."
 msgstr "Kirjaa muistiin mitä tahansa muistamisen arvoista ajoneuvoistasi."
 
-#: app/templates/partials/mobile_nav.html:63 app/templates/trips/form.html:2
-#: app/templates/trips/form.html:13 app/templates/trips/form.html:156
+#: app/templates/partials/mobile_nav.html:63 app/templates/trips/form.html:6
+#: app/templates/trips/form.html:17 app/templates/trips/form.html:134
 #: app/templates/trips/index.html:23 app/templates/vehicles/view.html:229
 msgid "Log Trip"
 msgstr "Kirjaa matka"
@@ -4731,68 +4717,68 @@ msgstr "Yksi numero (0–9)"
 msgid "Passwords match"
 msgstr "Salasanat täsmäävät"
 
-#: app/templates/recurring/form.html:2 app/templates/recurring/form.html:13
+#: app/templates/recurring/form.html:6 app/templates/recurring/form.html:16
 msgid "Edit Recurring Expense"
 msgstr "Muokkaa toistuvaa kulua"
 
-#: app/templates/recurring/form.html:2 app/templates/recurring/form.html:13
+#: app/templates/recurring/form.html:6 app/templates/recurring/form.html:16
 #: app/templates/recurring/index.html:59
 msgid "Add Recurring Expense"
 msgstr "Lisää toistuva kulu"
 
-#: app/templates/recurring/form.html:6
-msgid "Back to Recurring Expenses"
-msgstr "Takaisin toistuviin kuluihin"
-
-#: app/templates/recurring/form.html:37
-msgid "e.g., Car Insurance, Road Tax"
-msgstr "esim. Autovakuutus, Ajoneuvovero"
-
-#: app/templates/recurring/form.html:54
-msgid "Frequency"
-msgstr "Tiheys"
-
-#: app/templates/recurring/form.html:57 app/templates/recurring/index.html:8
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
 msgid "Monthly"
 msgstr "Kuukausittain"
 
-#: app/templates/recurring/form.html:58 app/templates/recurring/index.html:8
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
 msgid "Quarterly (every 3 months)"
 msgstr "Neljännesvuosittain (joka 3. kuukausi)"
 
-#: app/templates/recurring/form.html:59 app/templates/recurring/index.html:8
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
 msgid "Biannual (every 6 months)"
 msgstr "Puolivuosittain (joka 6. kuukausi)"
 
-#: app/templates/recurring/form.html:60 app/templates/recurring/index.html:8
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
 msgid "Yearly"
 msgstr "Vuosittain"
 
-#: app/templates/recurring/form.html:75
+#: app/templates/recurring/form.html:15
+msgid "Back to Recurring Expenses"
+msgstr "Takaisin toistuviin kuluihin"
+
+#: app/templates/recurring/form.html:28
+msgid "e.g., Car Insurance, Road Tax"
+msgstr "esim. Autovakuutus, Ajoneuvovero"
+
+#: app/templates/recurring/form.html:46
+msgid "Frequency"
+msgstr "Tiheys"
+
+#: app/templates/recurring/form.html:65
 msgid "Leave blank if amount varies"
 msgstr "Jätä tyhjäksi, jos summa vaihtelee"
 
-#: app/templates/recurring/form.html:95
+#: app/templates/recurring/form.html:78
 msgid "Start Date"
 msgstr "Aloituspäivä"
 
-#: app/templates/recurring/form.html:102
+#: app/templates/recurring/form.html:84
 msgid "Next Due"
 msgstr "Seuraava eräpäivä"
 
-#: app/templates/recurring/form.html:121
-msgid "Auto-create expense when due"
-msgstr "Luo kulu automaattisesti erääntyessä"
-
-#: app/templates/recurring/form.html:125
+#: app/templates/recurring/form.html:90 app/templates/recurring/form.html:97
 msgid "Remind days before"
 msgstr "Muistuta päivää ennen"
 
-#: app/templates/recurring/form.html:147 app/templates/recurring/index.html:12
+#: app/templates/recurring/form.html:104
+msgid "Auto-create expense when due"
+msgstr "Luo kulu automaattisesti erääntyessä"
+
+#: app/templates/recurring/form.html:112 app/templates/recurring/index.html:12
 msgid "Add Recurring"
 msgstr "Lisää toistuva"
 
-#: app/templates/recurring/form.html:159
+#: app/templates/recurring/form.html:113
 msgid "Delete this recurring expense?"
 msgstr "Poistetaanko tämä toistuva kulu?"
 
@@ -4852,43 +4838,35 @@ msgstr "Kirjaa kulu"
 msgid "Delete this reminder?"
 msgstr "Poistetaanko tämä muistutus?"
 
-#: app/templates/reminders/form.html:2 app/templates/reminders/form.html:18
+#: app/templates/reminders/form.html:6 app/templates/reminders/form.html:15
 msgid "Edit Reminder"
 msgstr "Muokkaa muistutusta"
 
-#: app/templates/reminders/form.html:2 app/templates/reminders/form.html:18
+#: app/templates/reminders/form.html:6 app/templates/reminders/form.html:15
 msgid "New Reminder"
 msgstr "Uusi muistutus"
 
-#: app/templates/reminders/form.html:11
+#: app/templates/reminders/form.html:14
 msgid "Back to Reminders"
 msgstr "Takaisin muistutuksiin"
 
-#: app/templates/reminders/form.html:47
+#: app/templates/reminders/form.html:42
 msgid "e.g., MOT Due, Insurance Renewal"
 msgstr "esim. Katsastus erääntyy, Vakuutuksen uusiminen"
 
-#: app/templates/reminders/form.html:66
+#: app/templates/reminders/form.html:45
 msgid "Due Date"
 msgstr "Eräpäivä"
 
-#: app/templates/reminders/form.html:74
-msgid "Description (optional)"
-msgstr "Kuvaus (valinnainen)"
-
-#: app/templates/reminders/form.html:76
-msgid "Additional notes about this reminder"
-msgstr "Lisätietoja tästä muistutuksesta"
-
-#: app/templates/reminders/form.html:82
+#: app/templates/reminders/form.html:55 app/templates/reminders/form.html:61
 msgid "Recurrence"
 msgstr "Toisto"
 
-#: app/templates/reminders/form.html:85
+#: app/templates/reminders/form.html:57 app/templates/reminders/form.html:59
 msgid "Every"
 msgstr "Joka"
 
-#: app/templates/reminders/form.html:100
+#: app/templates/reminders/form.html:65
 msgid ""
 "e.g. \"Every 2 Year(s)\" for an MOT due every two years. When marked "
 "complete, the next occurrence is created automatically."
@@ -4897,15 +4875,23 @@ msgstr ""
 "Kun muistutus merkitään valmiiksi, seuraava esiintymä luodaan "
 "automaattisesti."
 
-#: app/templates/reminders/form.html:105
+#: app/templates/reminders/form.html:68
 msgid "Notify me"
 msgstr "Ilmoita minulle"
 
-#: app/templates/reminders/form.html:130
+#: app/templates/reminders/form.html:75
+msgid "Description (optional)"
+msgstr "Kuvaus (valinnainen)"
+
+#: app/templates/reminders/form.html:76
+msgid "Additional notes about this reminder"
+msgstr "Lisätietoja tästä muistutuksesta"
+
+#: app/templates/reminders/form.html:84
 msgid "Update Reminder"
 msgstr "Päivitä muistutus"
 
-#: app/templates/reminders/form.html:130
+#: app/templates/reminders/form.html:84
 msgid "Create Reminder"
 msgstr "Luo muistutus"
 
@@ -5006,61 +4992,61 @@ msgstr ""
 "Hinnat seurataan automaattisesti, kun kirjaat polttoainetta tallennetuilla "
 "asemilla."
 
-#: app/templates/stations/form.html:2 app/templates/stations/form.html:13
+#: app/templates/stations/form.html:4 app/templates/stations/form.html:9
 msgid "Edit Fuel Station"
 msgstr "Muokkaa huoltoasemaa"
 
-#: app/templates/stations/form.html:2 app/templates/stations/form.html:13
+#: app/templates/stations/form.html:4 app/templates/stations/form.html:9
 msgid "Add Fuel Station"
 msgstr "Lisää huoltoasema"
 
-#: app/templates/stations/form.html:6
+#: app/templates/stations/form.html:8
 msgid "Back to Stations"
 msgstr "Takaisin asemiin"
 
-#: app/templates/stations/form.html:23
+#: app/templates/stations/form.html:18
 msgid "e.g., Shell Main Street"
 msgstr "esim. Shell Mannerheimintie"
 
-#: app/templates/stations/form.html:28
+#: app/templates/stations/form.html:21
 msgid "Brand"
 msgstr "Brändi"
 
-#: app/templates/stations/form.html:31
+#: app/templates/stations/form.html:23
 msgid "e.g., Shell, BP, Esso"
 msgstr "esim. Shell, Neste, ABC"
 
-#: app/templates/stations/form.html:51
-msgid "Address"
-msgstr "Osoite"
-
-#: app/templates/stations/form.html:54
-msgid "Street address"
-msgstr "Katuosoite"
-
-#: app/templates/stations/form.html:60
-msgid "City"
-msgstr "Kaupunki"
-
-#: app/templates/stations/form.html:66
-msgid "Postcode"
-msgstr "Postinumero"
-
-#: app/templates/stations/form.html:77
-msgid "e.g., Good prices, open 24h"
-msgstr "esim. Hyvät hinnat, auki 24h"
-
-#: app/templates/stations/form.html:83 app/templates/stations/index.html:25
+#: app/templates/stations/form.html:31 app/templates/stations/index.html:25
 #: app/templates/stations/index.html:27
 msgid "Mark as favorite"
 msgstr "Merkitse suosikiksi"
 
-#: app/templates/stations/form.html:105 app/templates/stations/index.html:16
+#: app/templates/stations/form.html:37
+msgid "Address"
+msgstr "Osoite"
+
+#: app/templates/stations/form.html:39
+msgid "Street address"
+msgstr "Katuosoite"
+
+#: app/templates/stations/form.html:43
+msgid "City"
+msgstr "Kaupunki"
+
+#: app/templates/stations/form.html:48
+msgid "Postcode"
+msgstr "Postinumero"
+
+#: app/templates/stations/form.html:55
+msgid "e.g., Good prices, open 24h"
+msgstr "esim. Hyvät hinnat, auki 24h"
+
+#: app/templates/stations/form.html:63 app/templates/stations/index.html:16
 #: app/templates/stations/index.html:49
 msgid "Add Station"
 msgstr "Lisää asema"
 
-#: app/templates/stations/form.html:117
+#: app/templates/stations/form.html:64
 msgid "Delete this station?"
 msgstr "Poistetaanko tämä asema?"
 
@@ -5140,46 +5126,45 @@ msgstr "Aktiviteettiaikajana"
 msgid "No activity recorded for this vehicle yet."
 msgstr "Tälle ajoneuvolle ei ole vielä kirjattu aktiviteettia."
 
-#: app/templates/tires/form.html:2 app/templates/tires/form.html:8
+#: app/templates/tires/form.html:4 app/templates/tires/form.html:12
 msgid "Edit Tire Set"
 msgstr "Muokkaa rengassarjaa"
 
-#: app/templates/tires/form.html:2 app/templates/tires/form.html:8
-#: app/templates/tires/form.html:107 app/templates/tires/index.html:11
+#: app/templates/tires/form.html:4 app/templates/tires/form.html:12
+#: app/templates/tires/form.html:82 app/templates/tires/index.html:11
 #: app/templates/tires/index.html:130
 msgid "Add Tire Set"
 msgstr "Lisää rengassarja"
 
-#: app/templates/tires/form.html:7
-msgid "Back to tires"
-msgstr "Takaisin renkaisiin"
-
-#: app/templates/tires/form.html:38
-msgid "e.g., Michelin Alpin 6"
-msgstr "esim. Michelin Alpin 6"
-
-#: app/templates/tires/form.html:53
-msgid "Size"
-msgstr "Koko"
-
-#: app/templates/tires/form.html:56
-msgid "e.g., 205/55 R16 91H"
-msgstr "esim. 205/55 R16 91H"
-
-#: app/templates/tires/form.html:68
-msgid "Purchase date"
-msgstr "Ostopäivä"
-
-#: app/templates/tires/form.html:75 app/templates/tires/form.html:117
+#: app/templates/tires/form.html:9
 msgid "Engine hours when bought"
 msgstr "Käyttötunnit ostohetkellä"
 
-#: app/templates/tires/form.html:75 app/templates/tires/form.html:116
-#: app/templates/tires/index.html:44
+#: app/templates/tires/form.html:9 app/templates/tires/index.html:44
 msgid "Odometer when bought"
 msgstr "Mittarilukema ostohetkellä"
 
-#: app/templates/tires/form.html:79
+#: app/templates/tires/form.html:11
+msgid "Back to tires"
+msgstr "Takaisin renkaisiin"
+
+#: app/templates/tires/form.html:24
+msgid "e.g., Michelin Alpin 6"
+msgstr "esim. Michelin Alpin 6"
+
+#: app/templates/tires/form.html:27
+msgid "Size"
+msgstr "Koko"
+
+#: app/templates/tires/form.html:29
+msgid "e.g., 205/55 R16 91H"
+msgstr "esim. 205/55 R16 91H"
+
+#: app/templates/tires/form.html:48
+msgid "Purchase date"
+msgstr "Ostopäivä"
+
+#: app/templates/tires/form.html:69
 msgid ""
 "Optional. Kept for reference; the distance covered comes from when the set "
 "is on the vehicle."
@@ -5187,7 +5172,7 @@ msgstr ""
 "Valinnainen. Säilytetään viitteeksi; ajettu matka lasketaan ajalta, jolloin "
 "sarja on ajoneuvossa."
 
-#: app/templates/tires/form.html:93
+#: app/templates/tires/form.html:77
 msgid "Retired (worn out or sold)"
 msgstr "Poistettu käytöstä (kulunut tai myyty)"
 
@@ -5267,74 +5252,74 @@ msgstr "Ei rengassarjoja"
 msgid "Add a set of tires to track when it goes on and off the vehicle."
 msgstr "Lisää rengassarja, niin näet milloin se on ajoneuvossa ja milloin ei."
 
-#: app/templates/trips/form.html:2 app/templates/trips/form.html:13
+#: app/templates/trips/form.html:6 app/templates/trips/form.html:17
 msgid "Edit Trip"
 msgstr "Muokkaa matkaa"
 
-#: app/templates/trips/form.html:12 app/templates/trips/report.html:12
-#: app/templates/trips/templates_index.html:11
+#: app/templates/trips/form.html:16 app/templates/trips/report.html:12
+#: app/templates/trips/templates_index.html:14
 msgid "Back to trips"
 msgstr "Takaisin matkoihin"
 
-#: app/templates/trips/form.html:19
+#: app/templates/trips/form.html:22
 msgid "Load template"
 msgstr "Lataa malli"
 
-#: app/templates/trips/form.html:22
+#: app/templates/trips/form.html:25
 msgid "— choose a template —"
 msgstr "— valitse malli —"
 
-#: app/templates/trips/form.html:74 app/templates/trips/index.html:35
+#: app/templates/trips/form.html:50 app/templates/trips/index.html:35
 #: app/templates/trips/report.html:100
-#: app/templates/trips/template_form.html:42
+#: app/templates/trips/template_form.html:26
 msgid "Purpose"
 msgstr "Tarkoitus"
 
-#: app/templates/trips/form.html:84 app/templates/trips/form.html:185
+#: app/templates/trips/form.html:66 app/templates/trips/form.html:149
 msgid "Start Hours"
 msgstr "Alkutunnit"
 
-#: app/templates/trips/form.html:84 app/templates/trips/form.html:184
+#: app/templates/trips/form.html:66 app/templates/trips/form.html:149
 msgid "Start Odometer"
 msgstr "Alku mittarilukema"
 
-#: app/templates/trips/form.html:92 app/templates/trips/form.html:187
+#: app/templates/trips/form.html:79 app/templates/trips/form.html:150
 msgid "End Hours"
 msgstr "Lopputunnit"
 
-#: app/templates/trips/form.html:92 app/templates/trips/form.html:186
+#: app/templates/trips/form.html:79 app/templates/trips/form.html:150
 msgid "End Odometer"
 msgstr "Loppu mittarilukema"
 
-#: app/templates/trips/form.html:101
+#: app/templates/trips/form.html:91
 msgid "Start Fuel Level"
 msgstr "Polttoainetaso alussa"
 
-#: app/templates/trips/form.html:109
+#: app/templates/trips/form.html:99
 msgid "End Fuel Level"
 msgstr "Polttoainetaso lopussa"
 
-#: app/templates/trips/form.html:114
+#: app/templates/trips/form.html:105
 msgid "Fuel used"
 msgstr "Kulutettu polttoaine"
 
-#: app/templates/trips/form.html:118 app/templates/trips/template_form.html:52
+#: app/templates/trips/form.html:113 app/templates/trips/template_form.html:42
 msgid "Start Location"
 msgstr "Lähtöpaikka"
 
-#: app/templates/trips/form.html:121 app/templates/trips/template_form.html:55
+#: app/templates/trips/form.html:115 app/templates/trips/template_form.html:44
 msgid "e.g., Home, Office"
 msgstr "esim. Koti, Toimisto"
 
-#: app/templates/trips/form.html:126 app/templates/trips/template_form.html:60
+#: app/templates/trips/form.html:118 app/templates/trips/template_form.html:47
 msgid "End Location"
 msgstr "Määränpää"
 
-#: app/templates/trips/form.html:129 app/templates/trips/template_form.html:63
+#: app/templates/trips/form.html:120 app/templates/trips/template_form.html:49
 msgid "e.g., Client Site, Airport"
 msgstr "esim. Asiakaskäynti, Lentokenttä"
 
-#: app/templates/trips/form.html:137
+#: app/templates/trips/form.html:126
 msgid "e.g., Client meeting, Site visit"
 msgstr "esim. Asiakastapaaminen, Työmaakäynti"
 
@@ -5419,18 +5404,18 @@ msgstr "Kaikki matkat"
 msgid "No trips logged for"
 msgstr "Ei kirjattuja matkoja vuodelle"
 
-#: app/templates/trips/template_form.html:2
-#: app/templates/trips/template_form.html:9
+#: app/templates/trips/template_form.html:6
+#: app/templates/trips/template_form.html:13
 msgid "Edit Template"
 msgstr "Muokkaa mallia"
 
-#: app/templates/trips/template_form.html:2
-#: app/templates/trips/template_form.html:9
-#: app/templates/trips/templates_index.html:13
+#: app/templates/trips/template_form.html:6
+#: app/templates/trips/template_form.html:13
+#: app/templates/trips/templates_index.html:16
 msgid "New Template"
 msgstr "Uusi malli"
 
-#: app/templates/trips/template_form.html:7
+#: app/templates/trips/template_form.html:12
 msgid "Back to templates"
 msgstr "Takaisin malleihin"
 
@@ -5438,54 +5423,54 @@ msgstr "Takaisin malleihin"
 msgid "Template Name"
 msgstr "Mallin nimi"
 
-#: app/templates/trips/template_form.html:22
+#: app/templates/trips/template_form.html:21
 msgid "e.g., Office Commute, Client Visit"
 msgstr "esim. Työmatka toimistolle, Asiakaskäynti"
 
-#: app/templates/trips/template_form.html:30
-#: app/templates/trips/templates_index.html:28
+#: app/templates/trips/template_form.html:23
+#: app/templates/trips/templates_index.html:31
 msgid "Any vehicle"
 msgstr "Mikä tahansa ajoneuvo"
 
-#: app/templates/trips/template_form.html:38
+#: app/templates/trips/template_form.html:24
 msgid "Pre-selects this vehicle when using the template"
 msgstr "Valitsee tämän ajoneuvon valmiiksi mallia käytettäessä"
 
-#: app/templates/trips/template_form.html:71
+#: app/templates/trips/template_form.html:55
 msgid "e.g., Weekly client meeting"
 msgstr "esim. Viikoittainen asiakastapaaminen"
 
-#: app/templates/trips/template_form.html:90
+#: app/templates/trips/template_form.html:63
 msgid "Save Template"
 msgstr "Tallenna malli"
 
 #: app/templates/trips/templates_index.html:4
-#: app/templates/trips/templates_index.html:12
-#: app/templates/trips/templates_index.html:17
+#: app/templates/trips/templates_index.html:15
+#: app/templates/trips/templates_index.html:20
 msgid "Trip Templates"
 msgstr "Matkamallit"
 
-#: app/templates/trips/templates_index.html:12
+#: app/templates/trips/templates_index.html:15
 msgid "Save common routes to quickly fill in trip details"
 msgstr "Tallenna yleiset reitit matkatietojen nopeaa täyttöä varten"
 
-#: app/templates/trips/templates_index.html:36
+#: app/templates/trips/templates_index.html:39
 msgid "Use"
 msgstr "Käytä"
 
-#: app/templates/trips/templates_index.html:39
+#: app/templates/trips/templates_index.html:42
 msgid "Delete this template?"
 msgstr "Poistetaanko tämä malli?"
 
-#: app/templates/trips/templates_index.html:51
+#: app/templates/trips/templates_index.html:54
 msgid "No templates yet"
 msgstr "Ei vielä malleja"
 
-#: app/templates/trips/templates_index.html:51
+#: app/templates/trips/templates_index.html:54
 msgid "Save common routes as templates to log trips faster."
 msgstr "Tallenna yleiset reitit malleiksi kirjataksesi matkat nopeammin."
 
-#: app/templates/trips/templates_index.html:52
+#: app/templates/trips/templates_index.html:55
 msgid "Create Your First Template"
 msgstr "Luo ensimmäinen mallisi"
 
@@ -5742,19 +5727,47 @@ msgstr "Ei ajoneuvoja"
 msgid "Get started by adding your first vehicle."
 msgstr "Aloita lisäämällä ensimmäinen ajoneuvosi."
 
-#: app/templates/vehicles/part_form.html:2
-#: app/templates/vehicles/part_form.html:8
+#: app/templates/vehicles/part_form.html:4
+#: app/templates/vehicles/part_form.html:11
 msgid "Edit Part"
 msgstr "Muokkaa osaa"
 
-#: app/templates/vehicles/part_form.html:2
-#: app/templates/vehicles/part_form.html:8
-#: app/templates/vehicles/part_form.html:102
+#: app/templates/vehicles/part_form.html:4
+#: app/templates/vehicles/part_form.html:11
+#: app/templates/vehicles/part_form.html:71
 #: app/templates/vehicles/parts.html:11 app/templates/vehicles/view.html:575
 msgid "Add Part"
 msgstr "Lisää osa"
 
 #: app/templates/vehicles/part_form.html:7
+msgid "Milliliters (ml)"
+msgstr "Millilitraa (ml)"
+
+#: app/templates/vehicles/part_form.html:7
+msgid "Gallons (gal)"
+msgstr "Gallonaa (gal)"
+
+#: app/templates/vehicles/part_form.html:7
+msgid "Quarts (qt)"
+msgstr "Quarttia (qt)"
+
+#: app/templates/vehicles/part_form.html:8
+msgid "Units"
+msgstr "Yksikköä"
+
+#: app/templates/vehicles/part_form.html:8
+msgid "Pieces"
+msgstr "Kappaletta"
+
+#: app/templates/vehicles/part_form.html:8
+msgid "Set"
+msgstr "Sarja"
+
+#: app/templates/vehicles/part_form.html:8
+msgid "Pair"
+msgstr "Pari"
+
+#: app/templates/vehicles/part_form.html:10
 msgid "Back to parts"
 msgstr "Takaisin osiin"
 
@@ -5762,70 +5775,54 @@ msgstr "Takaisin osiin"
 msgid "Part Details"
 msgstr "Osan tiedot"
 
-#: app/templates/vehicles/part_form.html:19
+#: app/templates/vehicles/part_form.html:18
 msgid "Part Type"
 msgstr "Osan tyyppi"
 
-#: app/templates/vehicles/part_form.html:37
+#: app/templates/vehicles/part_form.html:26
+msgid "e.g., Engine Oil, Oil Filter"
+msgstr "esim. moottoriöljy, öljynsuodatin"
+
+#: app/templates/vehicles/part_form.html:30
 msgid "Specification"
 msgstr "Tekniset tiedot"
 
-#: app/templates/vehicles/part_form.html:42
+#: app/templates/vehicles/part_form.html:33
 msgid "Oil viscosity, filter model, tire size, etc."
 msgstr "Öljyn viskositeetti, suodattimen malli, rengaskoko jne."
 
-#: app/templates/vehicles/part_form.html:46
+#: app/templates/vehicles/part_form.html:37
 msgid "Quantity"
 msgstr "Määrä"
 
-#: app/templates/vehicles/part_form.html:54
+#: app/templates/vehicles/part_form.html:42
 msgid "Unit"
 msgstr "Yksikkö"
 
-#: app/templates/vehicles/part_form.html:57
+#: app/templates/vehicles/part_form.html:44
 msgid "Select unit..."
 msgstr "Valitse yksikkö..."
 
-#: app/templates/vehicles/part_form.html:59
-msgid "Milliliters (ml)"
-msgstr "Millilitraa (ml)"
-
-#: app/templates/vehicles/part_form.html:60
-msgid "Gallons (gal)"
-msgstr "Gallonaa (gal)"
-
-#: app/templates/vehicles/part_form.html:61
-msgid "Quarts (qt)"
-msgstr "Quarttia (qt)"
-
-#: app/templates/vehicles/part_form.html:62
-msgid "Units"
-msgstr "Yksikköä"
-
-#: app/templates/vehicles/part_form.html:63
-msgid "Pieces"
-msgstr "Kappaletta"
-
-#: app/templates/vehicles/part_form.html:64
-msgid "Set"
-msgstr "Sarja"
-
-#: app/templates/vehicles/part_form.html:65
-msgid "Pair"
-msgstr "Pari"
-
-#: app/templates/vehicles/part_form.html:70
+#: app/templates/vehicles/part_form.html:54
 msgid "Part Number"
 msgstr "Osanumero"
 
-#: app/templates/vehicles/part_form.html:78
+#: app/templates/vehicles/part_form.html:56
+msgid "e.g., OEM or aftermarket part number"
+msgstr "esim. alkuperäis- tai tarvikeosan numero"
+
+#: app/templates/vehicles/part_form.html:59
 #: app/templates/vehicles/parts.html:42
 msgid "Supplier URL"
 msgstr "Toimittajan URL-osoite"
 
-#: app/templates/vehicles/part_form.html:83
+#: app/templates/vehicles/part_form.html:62
 msgid "Link to purchase this part"
 msgstr "Linkki tämän osan ostamiseen"
+
+#: app/templates/vehicles/part_form.html:67
+msgid "Any additional notes about this part..."
+msgstr "Lisähuomioita tästä osasta…"
 
 #: app/templates/vehicles/parts.html:4 app/templates/vehicles/parts.html:10
 #: app/templates/vehicles/view.html:555

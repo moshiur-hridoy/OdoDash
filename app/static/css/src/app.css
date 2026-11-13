@@ -542,6 +542,15 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .form-delta { font-family: var(--ds-font-mono); font-weight: 600; color: var(--ds-accent-ink); }
 .form-delta.is-negative { color: var(--ds-danger); }
 .form-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.form-actions__start { margin-inline-end: auto; }
+.form-template { padding-block: 16px; }
+.form-section__title { margin: 0 0 4px; font-size: var(--ds-text-base); font-weight: 600; }
+.form-hint[hidden] { display: none; }
+.form-inline { display: flex; align-items: center; gap: 8px; }
+.form-inline .ds-control { flex: 1; min-width: 0; }
+.form-inline .form-inline__num { flex: 0 0 72px; }
+.form-template__row { display: flex; align-items: center; gap: 12px; }
+.form-template__row .ds-control { flex: 1; }
 
 /* Input with its unit inside the box. */
 .ds-affix { position: relative; display: flex; }
@@ -611,6 +620,9 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
     backdrop-filter: blur(8px); border-top: 1px solid var(--ds-border);
   }
   .form-actions .ds-btn { flex: 1 1 0; }
+  .form-actions__start { display: contents; }
+  .form-actions__start .ds-btn { flex: 0 0 auto; }
+  .form-actions__start .ds-btn span { display: none; }
 }
 
 /* ---- Empty state ---------------------------------------------------- */
@@ -707,10 +719,6 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .dashboard-attention .ds-attention-list { flex: 1; }
 .dashboard-card-footer { margin-top: 12px; margin-inline-start: -10px; }
 .dashboard-stat-link { display: inline-block; margin-top: 10px; }
-.dashboard-vehicle-link { color: var(--ds-text); text-decoration: none; }
-.dashboard-vehicle-link:hover { color: var(--ds-accent-ink); text-decoration: underline; text-underline-offset: 3px; }
-.dashboard-odometer { font-size: var(--ds-text-sm); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.dashboard-consumption { font-size: var(--ds-text-sm); white-space: nowrap; }
 .dashboard-date { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .dashboard-chart { position: relative; height: 250px; }
 .dashboard-notes { margin: 0; padding: 0; list-style: none; }
@@ -721,7 +729,6 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .dashboard-notes__meta { margin: 2px 0 0; font-size: var(--ds-text-sm); }
 @media (max-width: 640px) {
   .dashboard .ds-page-header { align-items: flex-start; }
-  .dashboard .dashboard-odometer { display: none; }
 }
 
 

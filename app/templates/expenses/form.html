@@ -200,7 +200,8 @@
 
 {% block extra_scripts %}
 <script>
-(function() {
+// This block renders in <head>: wait for the form before wiring it up.
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('expense-form');
     const vehicleInputs = form.querySelectorAll('[name="vehicle_id"]');
     const odometerLabel = document.getElementById('odometer-label');
@@ -274,6 +275,6 @@
         el.addEventListener('change', toggleClassification);
     });
     toggleClassification();
-})();
+});
 </script>
 {% endblock %}

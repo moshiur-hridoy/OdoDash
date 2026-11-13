@@ -1,167 +1,121 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import category_icons %}
 {% block title %}{% if recurring %}{{ _('Edit Recurring Expense') }}{% else %}{{ _('Add Recurring Expense') }}{% endif %}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('recurring.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:text-gray-400 dark:hover:text-gray-300">&larr; {{ _('Back to Recurring Expenses') }}</a>
-</div>
+{%- set chosen = vehicles|selectattr('id', 'equalto', (selected_vehicle|int) if selected_vehicle else -1)|list if not recurring else [] -%}
+{%- set form_vehicle = recurring.vehicle if recurring else (chosen[0] if chosen else (vehicles[0] if vehicles else None)) -%}
+{%- set chosen_category = recurring.category if recurring else categories[0][0] -%}
+{%- set chosen_frequency = recurring.frequency if recurring else 'monthly' -%}
+{%- set frequencies = [('monthly', _('Monthly')), ('quarterly', _('Quarterly (every 3 months)')), ('biannual', _('Biannual (every 6 months)')), ('yearly', _('Yearly'))] -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Recurring Expenses'), url_for('recurring.index')) }}
+{{ page_header(_('Edit Recurring Expense') if recurring else _('Add Recurring Expense'), subtitle=recurring.vehicle.name if recurring else None) }}
 
-<div class="max-w-lg mx-auto">
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-                {% if recurring %}{{ _('Edit Recurring Expense') }}{% else %}{{ _('Add Recurring Expense') }}{% endif %}
-            </h1>
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <section class="ds-card form-section">
+        {% if not recurring %}
+        {% call(v) vehicle_picker(vehicles, form_vehicle) %}data-currency="{{ v.currency_symbol }}"{% endcall %}
+        {% endif %}
+        <div class="ds-field">
+            <label class="ds-field__label" for="name">{{ _('Name') }}{{ req() }}</label>
+            <input type="text" name="name" id="name" class="ds-control" required
+                   value="{{ recurring.name if recurring else '' }}" placeholder="{{ _('e.g., Car Insurance, Road Tax') }}">
         </div>
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Category') }}{{ req() }}</legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for value, label in categories %}
+                <label class="ds-choice">
+                    <input type="radio" name="category" value="{{ value }}" required{% if value == chosen_category %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(category_icons.get(value, 'dots'), 18) }}</span>
+                    <span class="ds-choice__label">{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </section>
 
-        <form method="POST" class="p-6 space-y-4">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            {% if not recurring %}
-            <div>
-                <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }} *</label>
-                <select name="vehicle_id" id="vehicle_id" required
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    {% for vehicle in vehicles %}
-                    <option value="{{ vehicle.id }}" {% if selected_vehicle and selected_vehicle|int == vehicle.id %}selected{% endif %}>
-                        {{ vehicle.name }}
-                    </option>
-                    {% endfor %}
-                </select>
+    <section class="ds-card form-section">
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Frequency') }}{{ req() }}</legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for value, label in frequencies %}
+                <label class="ds-choice">
+                    <input type="radio" name="frequency" value="{{ value }}" required{% if value == chosen_frequency %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon('repeat', 18) }}</span>
+                    <span class="ds-choice__label">{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="amount">{{ _('Amount') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="amount" id="amount" class="ds-control" inputmode="decimal" step="0.01" min="0"
+                           value="{{ recurring.amount if recurring and recurring.amount else '' }}" placeholder="0.00">
+                    <span class="ds-affix__unit" data-vehicle-text="currency">{{ form_vehicle.currency_symbol if form_vehicle else '' }}</span>
+                </div>
+                <p class="form-hint">{{ _('Leave blank if amount varies') }}</p>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="vendor">{{ _('Vendor / Service Provider') }}</label>
+                <input type="text" name="vendor" id="vendor" class="ds-control"{% if known_vendors %} list="vendor-suggestions"{% endif %}
+                       value="{{ recurring.vendor if recurring and recurring.vendor is not none else '' }}" placeholder="{{ _('e.g., Local Garage') }}">
+                {% if known_vendors %}
+                <datalist id="vendor-suggestions">{% for v in known_vendors %}<option value="{{ v }}"></option>{% endfor %}</datalist>
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="start_date">{{ _('Start Date') }}</label>
+                <input type="text" name="start_date" id="start_date" class="ds-control" data-datepicker
+                       value="{{ recurring.start_date.strftime('%Y-%m-%d') if recurring and recurring.start_date else '' }}">
+            </div>
+            {% if recurring %}
+            <div class="ds-field">
+                <label class="ds-field__label" for="next_due">{{ _('Next Due') }}</label>
+                <input type="text" name="next_due" id="next_due" class="ds-control" data-datepicker
+                       value="{{ recurring.next_due.strftime('%Y-%m-%d') if recurring.next_due else '' }}">
+            </div>
+            {% else %}
+            <div class="ds-field">
+                <label class="ds-field__label" for="remind_days_before">{{ _('Remind days before') }}</label>
+                <input type="number" name="remind_days_before" id="remind_days_before" class="ds-control" inputmode="numeric" min="0" max="90" value="7">
             </div>
             {% endif %}
-
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Name') }} *</label>
-                <input type="text" name="name" id="name" required
-                       value="{{ recurring.name if recurring else '' }}"
-                       placeholder="{{ _('e.g., Car Insurance, Road Tax') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-            </div>
-
-            <div>
-                <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Category') }} *</label>
-                <select name="category" id="category" required
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    {% for cat_id, cat_name in categories %}
-                    <option value="{{ cat_id }}" {% if recurring and recurring.category == cat_id %}selected{% endif %}>
-                        {{ cat_name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                <label for="frequency" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Frequency') }} *</label>
-                <select name="frequency" id="frequency" required
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    <option value="monthly" {% if recurring and recurring.frequency == 'monthly' %}selected{% endif %}>{{ _('Monthly') }}</option>
-                    <option value="quarterly" {% if recurring and recurring.frequency == 'quarterly' %}selected{% endif %}>{{ _('Quarterly (every 3 months)') }}</option>
-                    <option value="biannual" {% if recurring and recurring.frequency == 'biannual' %}selected{% endif %}>{{ _('Biannual (every 6 months)') }}</option>
-                    <option value="yearly" {% if recurring and recurring.frequency == 'yearly' %}selected{% endif %}>{{ _('Yearly') }}</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Amount') }}</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="text-gray-500 dark:text-gray-400 sm:text-sm">{{ vehicles[0].currency_symbol if vehicles else '£' }}</span>
-                    </div>
-                    <input type="number" name="amount" id="amount" step="0.01" min="0"
-                           value="{{ recurring.amount if recurring and recurring.amount else '' }}"
-                           placeholder="0.00"
-                           class="block w-full pl-7 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Leave blank if amount varies') }}</p>
-            </div>
-
-            <div>
-                <label for="vendor" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vendor / Service Provider') }}</label>
-                <input type="text" name="vendor" id="vendor" list="vendor-suggestions"
-                       value="{{ recurring.vendor if recurring and recurring.vendor is not none else '' }}"
-                       placeholder="{{ _('e.g., Local Garage') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                {% if known_vendors %}
-                <datalist id="vendor-suggestions">
-                    {% for v in known_vendors %}
-                    <option value="{{ v }}"></option>
-                    {% endfor %}
-                </datalist>
-                {% endif %}
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Start Date') }}</label>
-                    <input type="text" name="start_date" id="start_date" data-datepicker
-                           value="{{ recurring.start_date.strftime('%Y-%m-%d') if recurring and recurring.start_date else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                {% if recurring %}
-                <div>
-                    <label for="next_due" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Next Due') }}</label>
-                    <input type="text" name="next_due" id="next_due" data-datepicker
-                           value="{{ recurring.next_due.strftime('%Y-%m-%d') if recurring and recurring.next_due else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                {% endif %}
-            </div>
-
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }}</label>
-                <textarea name="description" id="description" rows="2"
-                          class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                          placeholder="{{ _('Optional notes') }}">{{ recurring.description if recurring else '' }}</textarea>
-            </div>
-
-            <div class="flex items-center">
-                <input type="checkbox" name="auto_create" id="auto_create"
-                       {% if not recurring or recurring.auto_create %}checked{% endif %}
-                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded">
-                <label for="auto_create" class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ _('Auto-create expense when due') }}</label>
-            </div>
-
-            <div>
-                <label for="remind_days_before" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Remind days before') }}</label>
-                <input type="number" name="remind_days_before" id="remind_days_before"
-                       value="{{ recurring.notify_before_days if recurring else 7 }}"
-                       min="0" max="90"
-                       class="mt-1 block w-24 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-            </div>
-
-            <div class="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                {% if recurring %}
-                <button type="button" onclick="deleteRecurring()" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm">
-                    {{ _('Delete') }}
-                </button>
-                {% else %}
-                <div></div>
-                {% endif %}
-                <div class="flex gap-3">
-                    <a href="{{ url_for('recurring.index') }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        {{ _('Cancel') }}
-                    </a>
-                    <button type="submit"
-                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                        {% if recurring %}{{ _('Save Changes') }}{% else %}{{ _('Add Recurring') }}{% endif %}
-                    </button>
-                </div>
-            </div>
-        </form>
-
+        </div>
         {% if recurring %}
-        <form id="delete-form" method="POST" action="{{ url_for('recurring.delete', recurring_id=recurring.id) }}" class="hidden">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        </form>
-        <script>
-        function deleteRecurring() {
-            if (confirm('{{ _("Delete this recurring expense?") }}')) {
-                document.getElementById('delete-form').submit();
-            }
-        }
-        </script>
+        <div class="ds-field">
+            <label class="ds-field__label" for="remind_days_before">{{ _('Remind days before') }}</label>
+            <input type="number" name="remind_days_before" id="remind_days_before" class="ds-control" inputmode="numeric" min="0" max="90"
+                   value="{{ recurring.notify_before_days if recurring.notify_before_days is not none else 7 }}">
+        </div>
         {% endif %}
-    </div>
+        <label class="ds-switch">
+            <input type="checkbox" name="auto_create" id="auto_create"{% if not recurring or recurring.auto_create %} checked{% endif %}>
+            {{ _('Auto-create expense when due') }}
+        </label>
+        <div class="ds-field">
+            <label class="ds-field__label" for="description">{{ _('Description') }}</label>
+            <textarea name="description" id="description" rows="2" class="ds-control" placeholder="{{ _('Optional notes') }}">{{ recurring.description if recurring and recurring.description else '' }}</textarea>
+        </div>
+    </section>
+
+    {{ form_actions(url_for('recurring.index'), _('Save Changes') if recurring else _('Add Recurring'),
+                    delete_form='delete-form' if recurring else None, delete_confirm=_('Delete this recurring expense?')) }}
+</form>
+{% if recurring %}
+<form id="delete-form" method="POST" action="{{ url_for('recurring.delete', recurring_id=recurring.id) }}" hidden>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+{% endif %}
 </div>
 {% endblock %}

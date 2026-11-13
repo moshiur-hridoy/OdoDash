@@ -1,146 +1,97 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, file_drop %}
+{% from 'components/forms.html' import vehicle_picker, form_actions, req %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{% if document %}{{ _('Edit Document') }}{% else %}{{ _('Upload Document') }}{% endif %}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('documents.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:text-gray-400 dark:hover:text-gray-300">&larr; {{ _('Back to Documents') }}</a>
-</div>
+{%- set chosen = vehicles|selectattr('id', 'equalto', (selected_vehicle|int) if selected_vehicle else -1)|list -%}
+{%- set chosen_type = document.document_type if document else document_types[0][0] -%}
+{%- set type_icons = {'insurance': 'document', 'registration': 'note', 'mot': 'check', 'service_record': 'wrench',
+                      'purchase': 'receipt', 'warranty': 'alert', 'manual': 'document', 'other': 'dots'} -%}
+{%- set reminding = not document or document.remind_before_expiry -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Documents'), url_for('documents.index')) }}
+{{ page_header(_('Edit Document') if document else _('Upload Document'), subtitle=document.vehicle.name if document else None) }}
 
-<div class="max-w-lg mx-auto">
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-                {% if document %}{{ _('Edit Document') }}{% else %}{{ _('Upload Document') }}{% endif %}
-            </h1>
+<form id="document-form" method="POST" enctype="multipart/form-data" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <section class="ds-card form-section">
+        {% if not document %}
+        {{ vehicle_picker(vehicles, chosen[0] if chosen else (vehicles[0] if vehicles else None)) }}
+        <div class="ds-field">
+            <span class="ds-field__label">{{ _('File') }}{{ req() }}</span>
+            {{ file_drop('file', '.pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xlsx,.xls,.txt,.csv,.epub', hint=_('PDF, images, Word, Excel, text files, or ePub (max 300MB)')) }}
         </div>
-
-        <form method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            {% if not document %}
-            <div>
-                <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }} *</label>
-                <select name="vehicle_id" id="vehicle_id" required
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    {% for vehicle in vehicles %}
-                    <option value="{{ vehicle.id }}" {% if selected_vehicle and selected_vehicle|int == vehicle.id %}selected{% endif %}>
-                        {{ vehicle.name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                <label for="file" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('File') }} *</label>
-                <input type="file" name="file" id="file" required
-                       accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xlsx,.xls,.txt,.csv,.epub"
-                       class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400">
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('PDF, images, Word, Excel, text files, or ePub (max 300MB)') }}</p>
-            </div>
-            {% endif %}
-
-            <div>
-                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Title') }} *</label>
-                <input type="text" name="title" id="title" required
-                       value="{{ document.title if document else '' }}"
-                       placeholder="{{ _('e.g., Insurance Policy 2024') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-            </div>
-
-            <div>
-                <label for="document_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Type') }} *</label>
-                <select name="document_type" id="document_type" required
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    {% for type_id, type_name in document_types %}
-                    <option value="{{ type_id }}" {% if document and document.document_type == type_id %}selected{% endif %}>
-                        {{ type_name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                <label for="reference_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Reference Number') }}</label>
-                <input type="text" name="reference_number" id="reference_number"
-                       value="{{ document.reference_number if document else '' }}"
-                       placeholder="{{ _('e.g., Policy number, certificate ID') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="issue_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Issue Date') }}</label>
-                    <input type="text" name="issue_date" id="issue_date" data-datepicker
-                           value="{{ document.issue_date.strftime('%Y-%m-%d') if document and document.issue_date else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="expiry_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Expiry Date') }}</label>
-                    <input type="text" name="expiry_date" id="expiry_date" data-datepicker
-                           value="{{ document.expiry_date.strftime('%Y-%m-%d') if document and document.expiry_date else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-            </div>
-
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }}</label>
-                <textarea name="description" id="description" rows="2"
-                          class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                          placeholder="{{ _('Optional notes') }}">{{ document.description if document else '' }}</textarea>
-            </div>
-
-            <div class="flex items-center">
-                <input type="checkbox" name="remind_before_expiry" id="remind_before_expiry"
-                       {% if not document or document.remind_before_expiry %}checked{% endif %}
-                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded">
-                <label for="remind_before_expiry" class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ _('Remind me before expiry') }}</label>
-            </div>
-
-            <div id="remind-days-field">
-                <label for="remind_days" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Days before to remind') }}</label>
-                <input type="number" name="remind_days" id="remind_days"
-                       value="{{ document.remind_days if document else 30 }}"
-                       class="mt-1 block w-24 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-            </div>
-
-            <div class="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                {% if document %}
-                <button type="button" onclick="deleteDocument()" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm">
-                    {{ _('Delete') }}
-                </button>
-                {% else %}
-                <div></div>
-                {% endif %}
-                <div class="flex gap-3">
-                    <a href="{{ url_for('documents.index') }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        {{ _('Cancel') }}
-                    </a>
-                    <button type="submit"
-                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                        {% if document %}{{ _('Save Changes') }}{% else %}{{ _('Upload') }}{% endif %}
-                    </button>
-                </div>
-            </div>
-        </form>
-
-        {% if document %}
-        <form id="delete-form" method="POST" action="{{ url_for('documents.delete', document_id=document.id) }}" class="hidden">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        </form>
-        <script>
-        function deleteDocument() {
-            if (confirm('{{ _("Delete this document?") }}')) {
-                document.getElementById('delete-form').submit();
-            }
-        }
-        </script>
         {% endif %}
-    </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="title">{{ _('Title') }}{{ req() }}</label>
+            <input type="text" name="title" id="title" class="ds-control" required
+                   value="{{ document.title if document else '' }}" placeholder="{{ _('e.g., Insurance Policy 2024') }}">
+        </div>
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Type') }}{{ req() }}</legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for type_id, type_name in document_types %}
+                <label class="ds-choice">
+                    <input type="radio" name="document_type" value="{{ type_id }}" required{% if type_id == chosen_type %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(type_icons.get(type_id, 'document'), 18) }}</span>
+                    <span class="ds-choice__label">{{ type_name }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </section>
+
+    <section class="ds-card form-section">
+        <div class="form-grid form-grid--3">
+            <div class="ds-field">
+                <label class="ds-field__label" for="reference_number">{{ _('Reference Number') }}</label>
+                <input type="text" name="reference_number" id="reference_number" class="ds-control"
+                       value="{{ document.reference_number if document and document.reference_number else '' }}" placeholder="{{ _('e.g., Policy number, certificate ID') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="issue_date">{{ _('Issue Date') }}</label>
+                <input type="text" name="issue_date" id="issue_date" class="ds-control" data-datepicker
+                       value="{{ document.issue_date.strftime('%Y-%m-%d') if document and document.issue_date else '' }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="expiry_date">{{ _('Expiry Date') }}</label>
+                <input type="text" name="expiry_date" id="expiry_date" class="ds-control" data-datepicker
+                       value="{{ document.expiry_date.strftime('%Y-%m-%d') if document and document.expiry_date else '' }}">
+            </div>
+        </div>
+        <div class="form-grid">
+            <label class="ds-switch">
+                <input type="checkbox" name="remind_before_expiry" id="remind_before_expiry"{% if reminding %} checked{% endif %}>
+                {{ _('Remind me before expiry') }}
+            </label>
+            <div class="ds-field" id="remind-days-field"{% if not reminding %} hidden{% endif %}>
+                <label class="ds-field__label" for="remind_days">{{ _('Days before to remind') }}</label>
+                <input type="number" name="remind_days" id="remind_days" class="ds-control" inputmode="numeric"
+                       value="{{ document.remind_days if document and document.remind_days is not none else 30 }}">
+            </div>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="description">{{ _('Description') }}</label>
+            <textarea name="description" id="description" rows="2" class="ds-control" placeholder="{{ _('Optional notes') }}">{{ document.description if document and document.description else '' }}</textarea>
+        </div>
+    </section>
+
+    {{ form_actions(url_for('documents.index'), _('Save Changes') if document else _('Upload'),
+                    delete_form='delete-form' if document else None, delete_confirm=_('Delete this document?')) }}
+</form>
+{% if document %}
+<form id="delete-form" method="POST" action="{{ url_for('documents.delete', document_id=document.id) }}" hidden>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+{% endif %}
 </div>
 
 <script>
-document.getElementById('remind_before_expiry').addEventListener('change', function() {
-    document.getElementById('remind-days-field').style.display = this.checked ? 'block' : 'none';
+document.getElementById('remind_before_expiry').addEventListener('change', function () {
+    document.getElementById('remind-days-field').hidden = !this.checked;
 });
 </script>
 {% endblock %}
