@@ -177,6 +177,19 @@
     call body, written as plain HTML so its name/id stay exactly as the route
     expects; give it class="ds-control" and, with an error,
     aria-invalid="true" aria-describedby="<for_id>-error". -#}
+{#- Newer / Older pager under a paginated list. Renders nothing for one page. -#}
+{%- macro pager(pagination, prev_href=None, next_href=None) -%}
+{%- if pagination and pagination.pages > 1 %}
+<nav class="ds-pager" aria-label="{{ _('Pagination') }}">
+    <span class="ds-pager__status">{{ _('Page %(page)s of %(pages)s', page=pagination.page, pages=pagination.pages) }}</span>
+    <div class="ds-pager__links">
+        {%- if pagination.has_prev %}{{ button(_('Newer'), href=prev_href, variant='secondary', size='sm', icon_name='arrow-left') }}{% endif %}
+        {%- if pagination.has_next %}{{ button(_('Older'), href=next_href, variant='secondary', size='sm') }}{% endif %}
+    </div>
+</nav>
+{%- endif %}
+{%- endmacro %}
+
 {#- Numbered progress for a multi-step flow. `steps` is a list of labels,
     `current` the 1-based step the page is on. -#}
 {%- macro steps(labels, current) -%}

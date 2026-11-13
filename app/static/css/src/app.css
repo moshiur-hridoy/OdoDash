@@ -511,6 +511,15 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .ds-drop.has-file { border-style: solid; border-color: var(--ds-accent); background: var(--ds-accent-soft); }
 .ds-drop.has-file .ds-drop__icon { color: var(--ds-accent-ink); }
 
+/* ---- Pager ----------------------------------------------------------- */
+.ds-pager {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  padding: 12px 24px; border-top: 1px solid var(--ds-border-soft); font-size: var(--ds-text-sm);
+}
+.ds-pager__status { color: var(--ds-text-muted); }
+.ds-pager__links { display: flex; gap: 8px; }
+@media (max-width: 640px) { .ds-pager { padding: 12px 16px; } }
+
 /* ---- Empty state ---------------------------------------------------- */
 .ds-empty {
   display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 40px 24px; text-align: center;
@@ -727,6 +736,90 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .share-user__main { flex: 1; min-width: 0; }
 .share-user__name { margin: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .share-user__email { margin: 1px 0 0; font-size: var(--ds-text-sm); color: var(--ds-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- Log pages (fuel, charging; expenses next) ---------------------- */
+.log-page { display: flex; flex-direction: column; gap: 16px; }
+.log-page > .ds-page-header { margin-bottom: 4px; }
+.log-page > .ds-segmented { align-self: flex-start; max-width: 100%; overflow-x: auto; }
+.log-vehicle { display: flex; gap: 8px; }
+.log-vehicle .ds-control { width: auto; min-width: 180px; max-width: 260px; }
+
+/* Summary strip: cockpit read-outs, mono figures with a small unit. */
+.log-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: 0; overflow: hidden; }
+.log-summary > div {
+  padding: 16px 22px; border-inline-start: 1px solid var(--ds-border-soft); margin-inline-start: -1px;
+  border-top: 1px solid var(--ds-border-soft); margin-top: -1px; min-width: 0;
+}
+.log-summary dt { font-size: var(--ds-text-xs); font-weight: 500; color: var(--ds-text-muted); }
+.log-summary dd { margin: 6px 0 0; font-family: var(--ds-font-mono); font-size: 20px; font-weight: 600; overflow-wrap: anywhere; }
+.log-summary dd span { margin-inline-start: 4px; font-size: 12px; font-weight: 400; color: var(--ds-text-muted); white-space: nowrap; }
+.log-summary__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 4px 0 0; font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+.log-change { display: inline-flex; align-items: center; gap: 2px; font-family: var(--ds-font-mono); font-weight: 600; }
+.log-change--up { color: var(--ds-warning); }
+.log-change--down { color: var(--ds-success); }
+
+.log-tax { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 24px; padding: 14px 22px; }
+.log-tax__title { margin: 0; font-size: var(--ds-text-sm); font-weight: 600; }
+.log-tax__years { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0; }
+.log-tax__years > div { display: flex; align-items: baseline; gap: 8px; }
+.log-tax__years dt { font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+.log-tax__years dd { margin: 0; font-family: var(--ds-font-mono); font-weight: 600; }
+.log-tax__years dd span { font-size: 12px; font-weight: 400; color: var(--ds-text-muted); }
+
+/* The log table: month header rows, a date block, and figures in mono. */
+.ds-log .ds-table td { font-size: var(--ds-text-sm); }
+.ds-log .ds-table td.ds-num { font-family: var(--ds-font-mono); white-space: nowrap; }
+.ds-log__month th, .ds-log__month td {
+  padding-top: 18px; padding-bottom: 8px; border-bottom: 1px solid var(--ds-border);
+  font-size: var(--ds-text-xs); font-weight: 600; color: var(--ds-text); text-transform: none;
+}
+.ds-log__month th { font-family: var(--ds-font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ds-text-muted); }
+.ds-log__month td { font-family: var(--ds-font-mono); }
+.ds-log__month td span { font-weight: 400; color: var(--ds-text-muted); }
+.ds-log tbody tr.ds-log__month:hover { background: transparent; }
+.ds-log__date { width: 44px; }
+.ds-log__day { display: block; font-family: var(--ds-font-mono); font-size: var(--ds-text-base); font-weight: 600; line-height: 1.1; }
+.ds-log__dow { display: block; font-size: 11px; color: var(--ds-text-muted); }
+.ds-log__title { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-weight: 500; color: var(--ds-text); }
+.ds-log__title a { color: inherit; text-decoration: none; }
+.ds-log__title a:hover { color: var(--ds-accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+.ds-log__sub { display: block; margin-top: 1px; font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+.ds-log__unit { font-size: 11px; color: var(--ds-text-muted); }
+.ds-log__note { display: block; font-size: 11px; color: var(--ds-text-muted); }
+.ds-log__consumption { display: inline-flex; align-items: center; gap: 3px; }
+.ds-log__consumption--better { color: var(--ds-success); }
+.ds-log__consumption--worse { color: var(--ds-warning); }
+.ds-log td[data-cell="value"] { font-weight: 600; }
+.ds-log .ds-table__actions form { margin: 0; }
+.ds-log__phone-meta { display: none; }
+
+/* Phones: a row is two lines. Title and cost on the first, date, volume and
+   consumption under the title, the edit/delete icons under the cost. */
+@media (max-width: 640px) {
+  .log-page { gap: 12px; }
+  .log-page > .ds-page-header .ds-page-header__actions,
+  .log-vehicle { width: 100%; }
+  .log-vehicle .ds-control { flex: 1; max-width: none; }
+  .log-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .log-summary > div { padding: 12px 16px; }
+  .log-summary dd { font-size: 17px; }
+  .log-tax { padding: 12px 16px; }
+
+  .ds-log .ds-table--stack tbody { border-bottom: 0; }
+  .ds-log .ds-table--stack tr { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; }
+  .ds-log .ds-table--stack td.ds-log__wide { display: none; }
+  .ds-log .ds-table--stack td[data-cell="title"] { grid-row: 1 / span 2; }
+  .ds-log .ds-table--stack td[data-cell="value"] { grid-row: 1; font-family: var(--ds-font-mono); }
+  .ds-log .ds-table--stack td[data-cell="actions"] { grid-column: 2; grid-row: 2; margin-top: 0; }
+  .ds-log .ds-table--stack td[data-cell="actions"] .ds-table__actions { justify-content: flex-end; }
+  .ds-log .ds-table--stack td[data-cell="actions"]:empty { display: none; }
+  .ds-log .ds-table--stack tr.ds-log__month { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px 6px; background: var(--ds-surface-sunken); border-bottom: 1px solid var(--ds-border-soft); }
+  .ds-log .ds-table--stack tr.ds-log__month th,
+  .ds-log .ds-table--stack tr.ds-log__month td { display: inline; padding: 0; border: 0; font-size: 11px; }
+  .ds-log .ds-table--stack tr.ds-log__month td:empty { display: none; }
+  .ds-log__sub { margin-top: 0; }
+  .ds-log__phone-meta { display: block; margin-top: 2px; font-family: var(--ds-font-mono); font-size: 11px; color: var(--ds-text-muted); }
+}
 
 /* ---- Import and restore ---------------------------------------------- */
 .import-page { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }

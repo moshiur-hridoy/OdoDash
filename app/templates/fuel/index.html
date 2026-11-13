@@ -1,197 +1,292 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, segmented, empty_state, pager %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Fuel Logs') }}{% endblock %}
 
 {% block content %}
-<div class="sm:flex sm:items-center sm:justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Fuel Logs') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ _('Track your fuel fill-ups and consumption') }}</p>
-    </div>
-    {% if can_write('fuel') %}
-    <a href="{{ url_for('fuel.new') }}"
-       class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Fuel Log') }}
-    </a>
+{%- set currency = current_user.currency -%}
+{%- set volume_unit = current_user.volume_unit -%}
+{#- The vehicle filter rides along on every tab and pager link. -#}
+{%- set scope_args = {'vehicle': selected_vehicle.id} if selected_vehicle else {} -%}
+{%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
+<div class="ds log-page">
+
+{% call page_header(_('Fuel Logs'), subtitle=_('Track your fuel fill-ups and consumption')) %}
+    {% if vehicles|length > 1 %}
+    <form method="GET" class="log-vehicle">
+        {% if active_tab == 'charging' %}<input type="hidden" name="tab" value="charging">{% endif %}
+        <label class="ds-sr-only" for="log-vehicle">{{ _('Vehicle') }}</label>
+        <select id="log-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+            <option value="">{{ _('All Vehicles') }}</option>
+            {% for vehicle in vehicles %}
+            <option value="{{ vehicle.id }}"{% if selected_vehicle and selected_vehicle.id == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>
+            {% endfor %}
+        </select>
+        <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    </form>
     {% endif %}
-</div>
+    {% if active_tab == 'charging' %}
+        {% if can_write('charging') %}{{ button(_('Add Charging Session'), href=url_for('charging.new'), icon_name='plus') }}{% endif %}
+    {% elif can_write('fuel') %}
+        {{ button(_('Add Fuel Log'), href=url_for('fuel.new'), icon_name='plus') }}
+    {% endif %}
+{% endcall %}
+
+{% if has_charging %}
+{{ segmented([
+    {'label': _('Fuel Logs') ~ ' · ' ~ fuel_count, 'href': url_for('fuel.index', **scope_args), 'current': active_tab == 'fuel'},
+    {'label': _('Charging History') ~ ' · ' ~ charging_count, 'href': url_for('fuel.index', tab='charging', **scope_args), 'current': active_tab == 'charging'},
+], _('Type')) }}
+{% endif %}
+
+{# ------------------------------------------------------------------ fuel #}
+{% if active_tab == 'fuel' %}
+
+{% if fuel_count %}
+<dl class="ds-card log-summary">
+    <div>
+        <dt>{{ _('This month') }}</dt>
+        <dd>{{ summary.month_cost|money }}<span>{{ currency }}</span></dd>
+    </div>
+    <div>
+        <dt>{{ _('This year') }}</dt>
+        <dd>{{ summary.year_cost|money }}<span>{{ currency }}</span></dd>
+    </div>
+    {% if summary.average %}
+    <div>
+        <dt>{{ _('Avg. Consumption') }}</dt>
+        <dd>{% if summary.average.value %}{{ "%.1f"|format(summary.average.value) }}<span>{{ summary.average.unit }}</span>{% else %}&mdash;{% endif %}</dd>
+    </div>
+    {% endif %}
+    {% if summary.last %}
+    <div>
+        <dt>{{ _('Last fill') }}</dt>
+        {% if summary.last.price_per_unit %}
+        <dd>{{ "%.3f"|format(summary.last.price_per_unit) }}<span>{{ currency }}/{{ volume_unit }}</span></dd>
+        {% else %}
+        <dd>{{ (summary.last.total_cost or 0)|money }}<span>{{ currency }}</span></dd>
+        {% endif %}
+        <p class="log-summary__meta">
+            {{ summary.last.date|format_date }}
+            {%- if summary.price_change %}
+            <span class="log-change log-change--{{ 'up' if summary.price_change > 0 else 'down' }}">
+                {{- icon('trend-up' if summary.price_change > 0 else 'trend-down', 14) }}{{ '%+.3f'|format(summary.price_change) -}}
+            </span>
+            {%- endif %}
+        </p>
+    </div>
+    {% endif %}
+</dl>
+{% endif %}
 
 {% if sales_tax_by_year %}
-<div class="mb-6 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-    <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Sales Tax Paid') }}</h2>
-    <dl class="mt-3 flex flex-wrap gap-6">
+<section class="ds-card log-tax" aria-labelledby="sales-tax-title">
+    <h2 class="log-tax__title" id="sales-tax-title">{{ _('Sales Tax Paid') }}</h2>
+    <dl class="log-tax__years">
         {% for year, total in sales_tax_by_year %}
-        <div>
-            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ year }}</dt>
-            <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total|money }} {{ current_user.currency }}</dd>
-        </div>
+        <div><dt>{{ year }}</dt><dd>{{ total|money }} <span>{{ currency }}</span></dd></div>
         {% endfor %}
     </dl>
-</div>
+</section>
 {% endif %}
 
 {% if logs %}
-<div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Date') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vehicle') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Odometer') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Fuel Type') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Volume') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Price/Unit') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Cost') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Consumption') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Actions') }}</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {% for log in logs %}
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ log.date|format_date }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        <a href="{{ url_for('vehicles.view', vehicle_id=log.vehicle_id) }}" class="text-primary-600 hover:text-primary-500">
-                            {{ log.vehicle.name }}
-                        </a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ log.odometer|groupnum if log.has_recorded_odometer else "—" }} {{ log.vehicle.get_reading_unit() }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ log.effective_fuel_type|fuel_type_label }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {{ "%.1f"|format(log.volume or 0) }} {{ current_user.volume_unit }}
-                        {% if log.is_full_tank %}
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 ml-1">{{ _('Full') }}</span>
-                        {% endif %}
-                        {% if log.is_missed %}
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 ml-1">{{ _('Missed') }}</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{% if log.price_per_unit %}{{ "%.3f"|format(log.price_per_unit) }}{% else %}-{% endif %}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {{ (log.total_cost or 0)|money }} {{ current_user.currency }}
-                        {% if log.sales_tax %}
-                        <span class="block text-xs text-gray-500 dark:text-gray-400">{{ _('incl. tax %(amount)s', amount=log.sales_tax|money) }}</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {% set consumption = log.get_consumption(current_user.consumption_unit, current_user.volume_unit) %}
-                        {% if consumption %}{{ "%.1f"|format(consumption) }} {{ log.vehicle.get_consumption_unit() or current_user.consumption_unit }}{% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        {% if can_write('fuel') %}
-                        <a href="{{ url_for('fuel.edit', log_id=log.id) }}" class="text-primary-600 hover:text-primary-900 mr-3">{{ _('Edit') }}</a>
-                        {% endif %}
-                        {% if can_write('fuel') %}
-                        <form method="POST" action="{{ url_for('fuel.delete', log_id=log.id) }}" class="inline"
-                              onsubmit="return confirm('{{ _('Delete this fuel log?') }}');">
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Fuel Logs') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Station') }}</th>
+                <th scope="col" class="ds-num">{{ _('Volume') }}</th>
+                <th scope="col" class="ds-num">{{ _('Price/Unit') }}</th>
+                <th scope="col" class="ds-num">{{ _('Consumption') }}</th>
+                <th scope="col" class="ds-num">{{ _('Odometer') }}</th>
+                <th scope="col" class="ds-num">{{ _('Cost') }}</th>
+                <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+            </tr>
+        </thead>
+        {% for group in groups %}
+        <tbody>
+            {% if group.month %}
+            <tr class="ds-log__month">
+                <th scope="colgroup" colspan="6">{{ group.month|dateformat('LLLL yyyy') }}</th>
+                <td class="ds-num">{% if group.total is not none %}{{ group.total|money }} <span>{{ currency }}</span>{% endif %}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% for row in group.rows %}
+            {% set log = row.log %}
+            {% set fuel_label = log.effective_fuel_type|fuel_type_label %}
+            {#- The fuel only needs naming where a vehicle's fills on this page differ. -#}
+            {% set name_fuel = log.station and log.vehicle_id in mixed_fuel_vehicles %}
+            {% set sub = [log.vehicle.name if multi_vehicle else None, fuel_label if name_fuel else None]|select|join(' · ') %}
+            {% set trend_text = (_('Better than average') if row.trend == 'better' else _('Worse than average')) if row.trend else '' %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ log.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ log.date|dateformat('EEE') }}</span>
+                </td>
+                <td data-cell="title">
+                    <span class="ds-log__title">
+                        {{- log.station or fuel_label -}}
+                        {%- if not log.is_full_tank %} {{ badge(_('Partial'), 'neutral') }}{% endif -%}
+                        {%- if log.is_missed %} {{ badge(_('Missed'), 'warning') }}{% endif -%}
+                    </span>
+                    {% if sub %}<span class="ds-log__sub">{{ sub }}</span>{% endif %}
+                    <span class="ds-log__phone-meta">
+                        {{- log.date|dateformat('d MMM') }} · {{ "%.1f"|format(log.volume or 0) }} {{ volume_unit }}
+                        {%- if row.consumption %} · <span class="ds-log__consumption{% if row.trend %} ds-log__consumption--{{ row.trend }}{% endif %}">{{ "%.1f"|format(row.consumption) }} {{ row.unit }}</span>{% endif -%}
+                    </span>
+                </td>
+                <td class="ds-num ds-log__wide">{{ "%.1f"|format(log.volume or 0) }} <span class="ds-log__unit">{{ volume_unit }}</span></td>
+                <td class="ds-num ds-log__wide">{% if log.price_per_unit %}{{ "%.3f"|format(log.price_per_unit) }}{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+                <td class="ds-num ds-log__wide">
+                    {%- if row.consumption %}
+                    <span class="ds-log__consumption{% if row.trend %} ds-log__consumption--{{ row.trend }}{% endif %}"{% if row.trend %} title="{{ trend_text }}"{% endif %}>
+                        {%- if row.trend %}{{ icon('trend-up' if row.above_average else 'trend-down', 14) }}<span class="ds-sr-only">{{ trend_text }}: </span>{% endif -%}
+                        {{ "%.1f"|format(row.consumption) -}}
+                    </span> <span class="ds-log__unit">{{ row.unit }}</span>
+                    {%- else %}<span class="ds-muted">&mdash;</span>{% endif -%}
+                </td>
+                <td class="ds-num ds-muted ds-log__wide">{% if log.has_recorded_odometer %}{{ log.odometer|groupnum }} <span class="ds-log__unit">{{ log.vehicle.get_reading_unit() }}</span>{% else %}&mdash;{% endif %}</td>
+                <td data-cell="value" class="ds-num">
+                    {{ (log.total_cost or 0)|money }} <span class="ds-log__unit">{{ currency }}</span>
+                    {% if log.sales_tax %}<span class="ds-log__note">{{ _('incl. tax %(amount)s', amount=log.sales_tax|money) }}</span>{% endif %}
+                </td>
+                <td data-cell="actions">
+                    {% if can_write('fuel') %}
+                    <div class="ds-table__actions">
+                        {{ button(_('Edit'), href=url_for('fuel.edit', log_id=log.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                        <form method="POST" action="{{ url_for('fuel.delete', log_id=log.id) }}"
+                              onsubmit='return confirm({{ _("Delete this fuel log?")|tojson }});'>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="next" value="{{ url_for('fuel.index') }}">
-                            <button type="submit" class="text-red-600 hover:text-red-900">{{ _('Delete') }}</button>
+                            <input type="hidden" name="next" value="{{ request.full_path }}">
+                            {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
                         </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% endfor %}
+    </table>
     </div>
-    {% if pagination and pagination.pages > 1 %}
-    <nav class="flex items-center justify-between px-6 py-3 border-t border-gray-200 dark:border-gray-700 text-sm" aria-label="{{ _('Pagination') }}">
-        <span class="text-gray-500 dark:text-gray-400">{{ _('Page %(page)s of %(pages)s', page=pagination.page, pages=pagination.pages) }}</span>
-        <div class="flex gap-2">
-            {% if pagination.has_prev %}
-            <a href="{{ url_for('fuel.index', page=pagination.prev_num) }}" class="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">{{ _('Newer') }}</a>
-            {% endif %}
-            {% if pagination.has_next %}
-            <a href="{{ url_for('fuel.index', page=pagination.next_num) }}" class="px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">{{ _('Older') }}</a>
-            {% endif %}
-        </div>
-    </nav>
-    {% endif %}
-</div>
+    {{ pager(pagination,
+             url_for('fuel.index', page=pagination.prev_num, **scope_args) if pagination.has_prev else None,
+             url_for('fuel.index', page=pagination.next_num, **scope_args) if pagination.has_next else None) }}
+</section>
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No fuel logs') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Start tracking your fuel fill-ups.') }}</p>
-    <div class="mt-6">
-        {% if can_write('fuel') %}
-        <a href="{{ url_for('fuel.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Fuel Log') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No fuel logs'), _('Start tracking your fuel fill-ups.'), 'fuel',
+                   _('Add Fuel Log') if can_write('fuel') else None, url_for('fuel.new')) }}
 </div>
 {% endif %}
 
-{% if charging_sessions %}
-<div class="mt-8 sm:flex sm:items-center sm:justify-between mb-6">
+{# -------------------------------------------------------------- charging #}
+{% else %}
+
+{% if charging_count %}
+<dl class="ds-card log-summary">
     <div>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ _('Charging History') }}</h2>
-        <p class="text-gray-500 dark:text-gray-400">{{ _('Sessions logged for your electric and plug-in hybrid vehicles') }}</p>
+        <dt>{{ _('This month') }}</dt>
+        <dd>{{ summary.month_cost|money }}<span>{{ currency }}</span></dd>
+        <p class="log-summary__meta">{{ "%.1f"|format(summary.month_kwh) }} kWh</p>
     </div>
-    {% if can_write('charging') %}
-    <a href="{{ url_for('charging.new') }}"
-       class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Charging Session') }}
-    </a>
+    <div>
+        <dt>{{ _('This year') }}</dt>
+        <dd>{{ summary.year_cost|money }}<span>{{ currency }}</span></dd>
+    </div>
+    <div>
+        <dt>{{ _('Cost per kWh') }}</dt>
+        <dd>{% if summary.cost_per_kwh %}{{ "%.3f"|format(summary.cost_per_kwh) }}<span>{{ currency }}</span>{% else %}&mdash;{% endif %}</dd>
+    </div>
+    {% if summary.last %}
+    <div>
+        <dt>{{ _('Last charge') }}</dt>
+        <dd>{% if summary.last.kwh_added %}{{ "%.1f"|format(summary.last.kwh_added) }}<span>kWh</span>{% else %}&mdash;{% endif %}</dd>
+        <p class="log-summary__meta">{{ summary.last.date|format_date }}</p>
+    </div>
     {% endif %}
-</div>
-<div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Date') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vehicle') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Odometer') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('kWh') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Cost') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Location') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Actions') }}</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {% for session in charging_sessions %}
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ session.date|format_date }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        <a href="{{ url_for('vehicles.view', vehicle_id=session.vehicle_id) }}" class="text-primary-600 hover:text-primary-500">
-                            {{ session.vehicle.name }}
-                        </a>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {% if session.odometer %}{{ session.odometer|groupnum }} {{ session.vehicle.get_reading_unit() }}{% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {% if session.kwh_added %}{{ "%.1f"|format(session.kwh_added) }} kWh{% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {% if session.total_cost %}{{ session.total_cost|money }} {{ current_user.currency }}{% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ session.location or '-' }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        {% if can_write('charging') %}
-                        <a href="{{ url_for('charging.edit', session_id=session.id) }}" class="text-primary-600 hover:text-primary-900">{{ _('Edit') }}</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+</dl>
+{% endif %}
+
+{% if charging_sessions %}
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Charging History') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Location') }}</th>
+                <th scope="col" class="ds-num">{{ _('kWh') }}</th>
+                <th scope="col" class="ds-num">{{ _('Cost per kWh') }}</th>
+                <th scope="col" class="ds-num">SoC</th>
+                <th scope="col" class="ds-num">{{ _('Odometer') }}</th>
+                <th scope="col" class="ds-num">{{ _('Cost') }}</th>
+                <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+            </tr>
+        </thead>
+        {% for group in groups %}
+        <tbody>
+            {% if group.month %}
+            <tr class="ds-log__month">
+                <th scope="colgroup" colspan="6">{{ group.month|dateformat('LLLL yyyy') }}</th>
+                <td class="ds-num">{% if group.total is not none %}{{ group.total|money }} <span>{{ currency }}</span>{% endif %}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% for session in group.rows %}
+            {% set charger = charger_types.get(session.charger_type) if session.charger_type else None %}
+            {% set sub = [session.vehicle.name if multi_vehicle else None, charger, session.network]|select|join(' · ') %}
+            {% set per_kwh = session.cost_per_kwh or ((session.total_cost / session.kwh_added) if session.total_cost and session.kwh_added else None) %}
+            {% set has_soc = session.start_soc is not none and session.end_soc is not none %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ session.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ session.date|dateformat('EEE') }}</span>
+                </td>
+                <td data-cell="title">
+                    <span class="ds-log__title">
+                        {{- session.location or _('Charging') -}}
+                    </span>
+                    {% if sub %}<span class="ds-log__sub">{{ sub }}</span>{% endif %}
+                    <span class="ds-log__phone-meta">
+                        {{- session.date|dateformat('d MMM') }}
+                        {%- if session.kwh_added %} · {{ "%.1f"|format(session.kwh_added) }} kWh{% endif %}
+                        {%- if has_soc %} · {{ session.start_soc }}→{{ session.end_soc }}%{% endif -%}
+                    </span>
+                </td>
+                <td class="ds-num ds-log__wide">{% if session.kwh_added %}{{ "%.1f"|format(session.kwh_added) }}{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+                <td class="ds-num ds-log__wide">{% if per_kwh %}{{ "%.3f"|format(per_kwh) }}{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+                <td class="ds-num ds-log__wide">{% if has_soc %}{{ session.start_soc }}<span class="ds-log__unit">→</span>{{ session.end_soc }}<span class="ds-log__unit">%</span>{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+                <td class="ds-num ds-muted ds-log__wide">{% if session.odometer %}{{ session.odometer|groupnum }} <span class="ds-log__unit">{{ session.vehicle.get_reading_unit() }}</span>{% else %}&mdash;{% endif %}</td>
+                <td data-cell="value" class="ds-num">{% if session.total_cost %}{{ session.total_cost|money }} <span class="ds-log__unit">{{ currency }}</span>{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+                <td data-cell="actions">
+                    {% if can_write('charging') %}
+                    <div class="ds-table__actions">
+                        {{ button(_('Edit'), href=url_for('charging.edit', session_id=session.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% endfor %}
+    </table>
     </div>
+    {{ pager(pagination,
+             url_for('fuel.index', tab='charging', page=pagination.prev_num, **scope_args) if pagination.has_prev else None,
+             url_for('fuel.index', tab='charging', page=pagination.next_num, **scope_args) if pagination.has_next else None) }}
+</section>
+{% else %}
+<div class="ds-card">
+    {{ empty_state(_('No charging sessions'), _('Start tracking your EV charging to monitor energy usage and costs.'), 'bolt',
+                   _('Add Charging Session') if can_write('charging') else None, url_for('charging.new')) }}
 </div>
 {% endif %}
+
+{% endif %}
+</div>
 {% endblock %}

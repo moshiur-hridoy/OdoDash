@@ -98,10 +98,23 @@ class TestEVStats:
         assert ev_vehicle.get_cost_per_kwh() is None
 
     def test_fuel_index_lists_charging(self, auth_client, sample_session):
+        # Charging history is its own tab on the fuel page.
         resp = auth_client.get('/fuel/')
         assert resp.status_code == 200
-        assert b'Charging History' in resp.data
-        assert b'Tesla Model 3' in resp.data
+        assert b'Charging History' in resp.data  # the tab link
+        assert b'?tab=charging' in resp.data
+        edit_link = f'/charging/{sample_session.id}/edit'.encode()
+        assert edit_link not in resp.data
+
+        resp = auth_client.get('/fuel/?tab=charging')
+        assert resp.status_code == 200
+        assert edit_link in resp.data
+        assert b'40.0' in resp.data
+
+    def test_charging_tab_has_empty_state(self, auth_client):
+        resp = auth_client.get('/fuel/?tab=charging')
+        assert resp.status_code == 200
+        assert b'No charging sessions' in resp.data
 
 
 class TestChargingIndex:

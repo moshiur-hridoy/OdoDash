@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -60,11 +60,152 @@ def _form_rejected(vehicles, field, message, log=None):
                            error_message=message), 422
 
 
+# Consumption units where a smaller figure is the better one; the rest
+# (mpg, km/L) read the other way round.
+LOWER_IS_BETTER = {'L/100km', 'L / h'}
+# How far a fill has to sit from the vehicle's average before the list
+# marks it as better or worse, so ordinary noise stays unmarked.
+CONSUMPTION_TREND_MARGIN = 0.05
+
+
+def _month_start(value):
+    return date(value.year, value.month, 1)
+
+
+def _consumption_trend(value, average, unit):
+    """'better', 'worse' or None for one fill against its vehicle's average."""
+    if not value or not average:
+        return None
+    ratio = value / average - 1
+    if abs(ratio) < CONSUMPTION_TREND_MARGIN:
+        return None
+    lower = unit in LOWER_IS_BETTER
+    return 'better' if (ratio < 0) == lower else 'worse'
+
+
+def _fuel_rows(logs):
+    """Each log with its consumption figure and how it compares to the average.
+
+    The average is per vehicle and fuel type, worked out once for each pair
+    on the page rather than once per row.
+    """
+    consumption_unit = current_user.consumption_unit
+    volume_unit = current_user.volume_unit
+    averages = {}
+    rows = []
+    for log in logs:
+        unit = log.vehicle.get_consumption_unit() or consumption_unit
+        value = log.get_consumption(consumption_unit, volume_unit)
+        trend = average = None
+        if value:
+            key = (log.vehicle_id, log.effective_fuel_type)
+            if key not in averages:
+                averages[key] = log.vehicle.get_average_consumption(
+                    consumption_unit, volume_unit, fuel_type=log.effective_fuel_type)
+            average = averages[key]
+            trend = _consumption_trend(value, average, unit)
+        rows.append({'log': log, 'consumption': value, 'unit': unit,
+                     'trend': trend, 'above_average': bool(trend) and value > average})
+    return rows
+
+
+def _group_by_month(rows, date_of, totals):
+    """Split already-sorted rows into [{month, total, rows}] blocks."""
+    groups = []
+    for row in rows:
+        when = date_of(row)
+        month = _month_start(when) if when else None
+        if not groups or groups[-1]['month'] != month:
+            groups.append({'month': month, 'total': totals.get(month), 'rows': []})
+        groups[-1]['rows'].append(row)
+    return groups
+
+
+def _monthly_totals(model, cost_column, vehicle_ids, months):
+    """Cost per calendar month over every log, not just the page shown."""
+    months = [m for m in months if m]
+    if not months:
+        return {}
+    year = extract('year', model.date)
+    month = extract('month', model.date)
+    rows = (db.session.query(year, month, func.sum(cost_column))
+            .filter(model.vehicle_id.in_(vehicle_ids),
+                    model.date >= min(months),
+                    model.date < _add_month(max(months)))
+            .group_by(year, month).all())
+    return {date(int(y), int(m), 1): round(total or 0, 2) for y, m, total in rows}
+
+
+def _add_month(value):
+    return date(value.year + value.month // 12, value.month % 12 + 1, 1)
+
+
 @bp.route('/')
 @login_required
 def index():
+    from app.models import ChargingSession
+    from app.models import CHARGER_TYPES
+    from app.utils import utcnow
+
     vehicles = current_user.get_all_vehicles()
-    vehicle_ids = [v.id for v in vehicles]
+    # ?vehicle= narrows the page to one vehicle; anything else shows them all.
+    selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    scope = [selected_vehicle] if selected_vehicle else vehicles
+    vehicle_ids = [v.id for v in scope]
+    has_charging = any(v.uses_charging() for v in scope)
+
+    # Fuel and charging history are separate tabs.
+    active_tab = 'charging' if request.args.get('tab') == 'charging' else 'fuel'
+    page = request.args.get('page', 1, type=int)
+
+    now = utcnow()
+    this_month = _month_start(now)
+    this_year = date(now.year, 1, 1)
+
+    fuel_count = FuelLog.query.filter(FuelLog.vehicle_id.in_(vehicle_ids)).count()
+    charging_query = ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids))
+    charging_count = charging_query.count()
+
+    context = dict(
+        vehicles=vehicles,
+        selected_vehicle=selected_vehicle,
+        active_tab=active_tab,
+        has_charging=has_charging or charging_count > 0,
+        fuel_count=fuel_count,
+        charging_count=charging_count,
+    )
+
+    if active_tab == 'charging':
+        # One page of sessions, newest first; same-day sessions by odometer (#329).
+        pagination = charging_query.options(joinedload(ChargingSession.vehicle)).order_by(
+            ChargingSession.date.desc(), ChargingSession.odometer.desc(), ChargingSession.id.desc()
+        ).paginate(page=page, per_page=FUEL_LOGS_PER_PAGE, error_out=False)
+        sessions = pagination.items
+        totals = _monthly_totals(ChargingSession, ChargingSession.total_cost, vehicle_ids,
+                                 [_month_start(s.date) for s in sessions if s.date])
+
+        def charging_sum(column, since):
+            return db.session.query(func.sum(column)).filter(
+                ChargingSession.vehicle_id.in_(vehicle_ids), ChargingSession.date >= since).scalar() or 0
+
+        year_kwh = charging_sum(ChargingSession.kwh_added, this_year)
+        year_cost = charging_sum(ChargingSession.total_cost, this_year)
+        last = charging_query.order_by(ChargingSession.date.desc(), ChargingSession.id.desc()).first()
+        summary = {
+            'month_cost': charging_sum(ChargingSession.total_cost, this_month),
+            'month_kwh': charging_sum(ChargingSession.kwh_added, this_month),
+            'year_cost': year_cost,
+            'cost_per_kwh': (year_cost / year_kwh) if year_kwh and year_cost else None,
+            'last': last,
+        }
+        return render_template('fuel/index.html',
+                               pagination=pagination,
+                               charging_sessions=sessions,
+                               groups=_group_by_month(sessions, lambda s: s.date, totals),
+                               summary=summary,
+                               charger_types=dict(CHARGER_TYPES),
+                               logs=[], sales_tax_by_year=[],
+                               **context)
 
     # One page of fuel logs. Each row's consumption figure costs a few
     # queries, so rendering every log made the page grow without bound
@@ -72,17 +213,18 @@ def index():
     pagination = FuelLog.query.options(joinedload(FuelLog.vehicle)).filter(
         FuelLog.vehicle_id.in_(vehicle_ids)
     ).order_by(FuelLog.date.desc(), FuelLog.odometer.desc(), FuelLog.id.desc()).paginate(
-        page=request.args.get('page', 1, type=int),
+        page=page,
         per_page=FUEL_LOGS_PER_PAGE,
         error_out=False,
     )
     logs = pagination.items
-
-    # #175 — also surface charging sessions on this page when the user has EVs
-    from app.models import ChargingSession
-    charging_sessions = ChargingSession.query.filter(
-        ChargingSession.vehicle_id.in_(vehicle_ids)
-    ).order_by(ChargingSession.date.desc()).all() if vehicle_ids else []
+    rows = _fuel_rows(logs)
+    fuels_by_vehicle = {}
+    for log in logs:
+        fuels_by_vehicle.setdefault(log.vehicle_id, set()).add(log.effective_fuel_type)
+    mixed_fuel_vehicles = {vid for vid, fuels in fuels_by_vehicle.items() if len(fuels) > 1}
+    totals = _monthly_totals(FuelLog, FuelLog.total_cost, vehicle_ids,
+                             [_month_start(log.date) for log in logs if log.date])
 
     # Sales tax paid per calendar year (#225): businesses reclaim it annually,
     # so the yearly total is what the page needs to show. Only years with tax
@@ -100,12 +242,53 @@ def index():
         if total
     ]
 
+    def fuel_sum(since):
+        return db.session.query(func.sum(FuelLog.total_cost)).filter(
+            FuelLog.vehicle_id.in_(vehicle_ids), FuelLog.date >= since).scalar() or 0
+
+    # The latest fill's price, against the fill before it on the same vehicle
+    # and fuel, so a jump at the pump is visible at a glance.
+    last = FuelLog.query.filter(FuelLog.vehicle_id.in_(vehicle_ids)).order_by(
+        FuelLog.date.desc(), FuelLog.odometer.desc(), FuelLog.id.desc()).first()
+    price_change = None
+    if last and last.price_per_unit:
+        previous = FuelLog.query.filter(
+            FuelLog.vehicle_id == last.vehicle_id,
+            FuelLog.id != last.id,
+            FuelLog.price_per_unit.isnot(None),
+            FuelLog.date <= last.date,
+            FuelLog.effective_fuel_type_filter(last.effective_fuel_type, last.vehicle.fuel_type),
+        ).order_by(FuelLog.date.desc(), FuelLog.odometer.desc(), FuelLog.id.desc()).first()
+        if previous:
+            price_change = last.price_per_unit - previous.price_per_unit
+
+    # An average only means something for one vehicle at a time.
+    fuel_vehicles = [v for v in scope if v.fuel_logs.count()]
+    average = None
+    if len(fuel_vehicles) == 1:
+        only = fuel_vehicles[0]
+        average = {
+            'value': only.get_average_consumption(current_user.consumption_unit, current_user.volume_unit),
+            'unit': only.get_consumption_unit() or current_user.consumption_unit,
+        }
+
+    summary = {
+        'month_cost': fuel_sum(this_month),
+        'year_cost': fuel_sum(this_year),
+        'last': last,
+        'price_change': price_change,
+        'average': average,
+    }
+
     return render_template('fuel/index.html',
                            logs=logs,
+                           groups=_group_by_month(rows, lambda row: row['log'].date, totals),
                            pagination=pagination,
-                           vehicles=vehicles,
                            sales_tax_by_year=sales_tax_by_year,
-                           charging_sessions=charging_sessions)
+                           summary=summary,
+                           mixed_fuel_vehicles=mixed_fuel_vehicles,
+                           charging_sessions=[],
+                           **context)
 
 
 @bp.route('/new', methods=['GET', 'POST'])

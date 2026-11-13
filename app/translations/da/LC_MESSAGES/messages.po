@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 05:40+0600\n"
+"POT-Creation-Date: 2026-11-13 06:25+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: da <LL@li.org>\n"
@@ -58,7 +58,7 @@ msgstr "Motortimer"
 #: app/templates/dashboard.html:175 app/templates/dashboard.html:201
 #: app/templates/expenses/form.html:99 app/templates/expenses/index.html:55
 #: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:56
-#: app/templates/fuel/index.html:43 app/templates/fuel/index.html:159
+#: app/templates/fuel/index.html:103 app/templates/fuel/index.html:223
 #: app/templates/maintenance/form.html:138
 #: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
 #: app/templates/notes/index.html:31 app/templates/tires/index.html:92
@@ -573,7 +573,7 @@ msgid "Password must contain at least one digit"
 msgstr "Adgangskoden skal indeholde mindst ét ciffer"
 
 #: app/routes/allowance.py:31 app/routes/expenses.py:179
-#: app/routes/fuel.py:117 app/routes/fuel.py:533 app/routes/notes.py:31
+#: app/routes/fuel.py:300 app/routes/fuel.py:716 app/routes/notes.py:31
 #: app/routes/reminders.py:64 app/routes/tires.py:77 app/routes/trips.py:76
 #: app/templates/fuel/_quick_no_vehicle.html:2
 msgid "Please add a vehicle first"
@@ -586,9 +586,9 @@ msgstr "Tilføj venligst et køretøj først"
 #: app/routes/documents.py:165 app/routes/documents.py:205
 #: app/routes/expenses.py:188 app/routes/expenses.py:278
 #: app/routes/expenses.py:333 app/routes/expenses.py:362
-#: app/routes/expenses.py:367 app/routes/fuel.py:126 app/routes/fuel.py:273
-#: app/routes/fuel.py:433 app/routes/fuel.py:488 app/routes/fuel.py:493
-#: app/routes/fuel.py:545 app/routes/fuel.py:546 app/routes/maintenance.py:220
+#: app/routes/expenses.py:367 app/routes/fuel.py:309 app/routes/fuel.py:456
+#: app/routes/fuel.py:616 app/routes/fuel.py:671 app/routes/fuel.py:676
+#: app/routes/fuel.py:728 app/routes/fuel.py:729 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
 #: app/routes/notes.py:40 app/routes/notes.py:87 app/routes/notes.py:128
 #: app/routes/reminders.py:72 app/routes/reminders.py:127
@@ -991,23 +991,23 @@ msgstr "Udgift opdateret"
 msgid "Expense deleted successfully"
 msgstr "Udgift slettet"
 
-#: app/routes/expenses.py:376 app/routes/fuel.py:502
+#: app/routes/expenses.py:376 app/routes/fuel.py:685
 msgid "Attachment deleted"
 msgstr "Vedhæftning slettet"
 
-#: app/routes/fuel.py:243
+#: app/routes/fuel.py:426
 msgid "Fuel log added successfully"
 msgstr "Brændstoflog tilføjet"
 
-#: app/routes/fuel.py:406
+#: app/routes/fuel.py:589
 msgid "Fuel log updated successfully"
 msgstr "Brændstoflog opdateret"
 
-#: app/routes/fuel.py:467
+#: app/routes/fuel.py:650
 msgid "Fuel log deleted successfully"
 msgstr "Brændstoflog slettet"
 
-#: app/routes/fuel.py:604 app/routes/fuel.py:607
+#: app/routes/fuel.py:787 app/routes/fuel.py:790
 msgid "Fuel log added!"
 msgstr "Brændstoflog tilføjet!"
 
@@ -1022,9 +1022,9 @@ msgstr "Brændstof"
 
 #: app/routes/main.py:149 app/routes/vehicles.py:232
 #: app/templates/dashboard.html:75 app/templates/dashboard.html:212
-#: app/templates/timeline/index.html:126 app/templates/vehicles/view.html:444
-#: app/templates/vehicles/view.html:494 app/templates/vehicles/view.html:496
-#: app/templates/vehicles/view.html:544
+#: app/templates/fuel/index.html:249 app/templates/timeline/index.html:126
+#: app/templates/vehicles/view.html:444 app/templates/vehicles/view.html:494
+#: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:544
 msgid "Charging"
 msgstr "Opladning"
 
@@ -1512,8 +1512,9 @@ msgid "Vehicles"
 msgstr "Køretøjer"
 
 #: app/templates/auth/settings.html:440 app/templates/auth/settings.html:495
-#: app/templates/base.html:532 app/templates/fuel/index.html:2
-#: app/templates/fuel/index.html:7 app/templates/import/csv_upload.html:18
+#: app/templates/base.html:532 app/templates/fuel/index.html:4
+#: app/templates/fuel/index.html:14 app/templates/fuel/index.html:37
+#: app/templates/fuel/index.html:94 app/templates/import/csv_upload.html:18
 #: app/templates/search/index.html:66 app/templates/vehicles/view.html:543
 msgid "Fuel Logs"
 msgstr "Brændstoflogger"
@@ -1660,11 +1661,13 @@ msgstr "God eftermiddag, %(name)s"
 msgid "Good evening, %(name)s"
 msgstr "God aften, %(name)s"
 
-#: app/templates/dashboard.html:27
+#: app/templates/dashboard.html:27 app/templates/fuel/index.html:48
+#: app/templates/fuel/index.html:191
 msgid "This month"
 msgstr "Denne måned"
 
 #: app/templates/dashboard.html:28 app/templates/dashboard.html:150
+#: app/templates/fuel/index.html:52 app/templates/fuel/index.html:196
 msgid "This year"
 msgstr "I år"
 
@@ -1836,8 +1839,8 @@ msgstr "Seneste aktivitet"
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
 #: app/templates/charging/form.html:37 app/templates/dashboard.html:197
 #: app/templates/expenses/form.html:44 app/templates/expenses/index.html:50
-#: app/templates/fuel/form.html:48 app/templates/fuel/index.html:41
-#: app/templates/fuel/index.html:157 app/templates/maintenance/form.html:131
+#: app/templates/fuel/form.html:48 app/templates/fuel/index.html:98
+#: app/templates/fuel/index.html:218 app/templates/maintenance/form.html:131
 #: app/templates/notes/form.html:34 app/templates/notes/index.html:28
 #: app/templates/tires/index.html:87 app/templates/tires/index.html:110
 #: app/templates/trips/form.html:67 app/templates/trips/report.html:98
@@ -1846,7 +1849,7 @@ msgid "Date"
 msgstr "Dato"
 
 #: app/templates/dashboard.html:198 app/templates/documents/form.html:50
-#: app/templates/expenses/index.html:53
+#: app/templates/expenses/index.html:53 app/templates/fuel/index.html:39
 #: app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:53 app/templates/reminders/index.html:36
 #: app/templates/tires/form.html:43 app/templates/vehicles/form.html:26
@@ -1859,8 +1862,7 @@ msgstr "Type"
 #: app/templates/dashboard.html:199 app/templates/documents/form.html:21
 #: app/templates/expenses/form.html:29 app/templates/expenses/index.html:51
 #: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:24
-#: app/templates/fuel/index.html:42 app/templates/fuel/index.html:158
-#: app/templates/import/csv_mapping.html:14
+#: app/templates/fuel/index.html:18 app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/form.html:30
 #: app/templates/maintenance/history.html:14 app/templates/notes/form.html:19
@@ -1979,7 +1981,7 @@ msgstr "f.eks. Kundebesøg i juni"
 #: app/templates/documents/form.html:116 app/templates/expenses/form.html:169
 #: app/templates/fuel/form.html:216
 #: app/templates/import/backup_preview.html:75
-#: app/templates/import/csv_mapping.html:90
+#: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/form.html:189
 #: app/templates/maintenance/index.html:163 app/templates/notes/form.html:72
 #: app/templates/recurring/form.html:143 app/templates/reminders/form.html:126
@@ -2010,15 +2012,15 @@ msgstr ""
 "driftsomkostninger"
 
 #: app/templates/allowance/index.html:32 app/templates/expenses/index.html:57
-#: app/templates/fuel/index.html:49 app/templates/fuel/index.html:163
+#: app/templates/fuel/index.html:105 app/templates/fuel/index.html:225
 #: app/templates/notes/index.html:32 app/templates/tires/index.html:136
 #: app/templates/vehicles/view.html:223 app/templates/vehicles/view.html:460
 msgid "Actions"
 msgstr "Handlinger"
 
 #: app/templates/allowance/index.html:51 app/templates/documents/view.html:31
-#: app/templates/expenses/index.html:95 app/templates/fuel/index.html:85
-#: app/templates/fuel/index.html:187 app/templates/maintenance/index.html:86
+#: app/templates/expenses/index.html:95 app/templates/fuel/index.html:159
+#: app/templates/fuel/index.html:266 app/templates/maintenance/index.html:86
 #: app/templates/notes/index.html:55 app/templates/stations/index.html:80
 #: app/templates/tires/index.html:166 app/templates/vehicles/view.html:68
 #: app/templates/vehicles/view.html:176 app/templates/vehicles/view.html:319
@@ -2033,7 +2035,7 @@ msgstr "Slet denne godtgørelsespost?"
 
 #: app/templates/allowance/index.html:57 app/templates/documents/form.html:108
 #: app/templates/expenses/form.html:149 app/templates/expenses/index.html:101
-#: app/templates/fuel/form.html:197 app/templates/fuel/index.html:92
+#: app/templates/fuel/form.html:197 app/templates/fuel/index.html:164
 #: app/templates/notes/index.html:61 app/templates/recurring/form.html:135
 #: app/templates/stations/form.html:93 app/templates/tires/index.html:152
 #: app/templates/tires/index.html:170 app/templates/vehicles/view.html:488
@@ -2268,7 +2270,7 @@ msgid "DD.MM.YYYY"
 msgstr "DD.MM.ÅÅÅÅ"
 
 #: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:57
-#: app/templates/fuel/form.html:75 app/templates/fuel/index.html:45
+#: app/templates/fuel/form.html:75 app/templates/fuel/index.html:100
 msgid "Volume"
 msgstr "Volumen"
 
@@ -2551,8 +2553,8 @@ msgstr "Importér fra Hammond SQLite-database (.db-fil)"
 
 #: app/templates/auth/settings.html:599 app/templates/auth/settings.html:615
 #: app/templates/auth/settings.html:631 app/templates/auth/settings.html:643
-#: app/templates/import/csv_mapping.html:10
-#: app/templates/import/csv_mapping.html:91
+#: app/templates/import/csv_mapping.html:15
+#: app/templates/import/csv_mapping.html:96
 #: app/templates/import/csv_upload.html:10
 msgid "Import"
 msgstr "Importér"
@@ -3554,7 +3556,7 @@ msgstr "Starttid"
 msgid "End Time"
 msgstr "Sluttid"
 
-#: app/templates/charging/form.html:69 app/templates/fuel/index.html:162
+#: app/templates/charging/form.html:69 app/templates/fuel/index.html:219
 msgid "Location"
 msgstr "Placering"
 
@@ -3587,13 +3589,14 @@ msgid "End SOC"
 msgstr "Slut-SOC"
 
 #: app/templates/charging/form.html:130 app/templates/expenses/form.html:92
-#: app/templates/expenses/index.html:56 app/templates/fuel/index.html:47
-#: app/templates/fuel/index.html:161 app/templates/tires/form.html:61
+#: app/templates/expenses/index.html:56 app/templates/fuel/index.html:104
+#: app/templates/fuel/index.html:224 app/templates/tires/form.html:61
 #: app/templates/tires/index.html:62 app/templates/vehicles/view.html:459
 msgid "Cost"
 msgstr "Omkostning"
 
-#: app/templates/charging/form.html:133
+#: app/templates/charging/form.html:133 app/templates/fuel/index.html:200
+#: app/templates/fuel/index.html:221
 msgid "Cost per kWh"
 msgstr "Pris pr. kWh"
 
@@ -3615,13 +3618,13 @@ msgid "Total Energy"
 msgstr "Samlet energi"
 
 #: app/templates/charging/index.html:40 app/templates/documents/index.html:25
-#: app/templates/maintenance/history.html:16
+#: app/templates/fuel/index.html:20 app/templates/maintenance/history.html:16
 #: app/templates/reminders/index.html:29 app/templates/trips/index.html:55
 msgid "All Vehicles"
 msgstr "Alle køretøjer"
 
 #: app/templates/charging/index.html:47 app/templates/expenses/index.html:36
-#: app/templates/maintenance/history.html:35
+#: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
 #: app/templates/reminders/index.html:50 app/templates/trips/index.html:80
 msgid "Filter"
 msgstr "Filtrer"
@@ -3631,11 +3634,11 @@ msgstr "Filtrer"
 msgid "Clear"
 msgstr "Ryd"
 
-#: app/templates/charging/index.html:145
+#: app/templates/charging/index.html:145 app/templates/fuel/index.html:281
 msgid "No charging sessions"
 msgstr "Ingen opladningssessioner"
 
-#: app/templates/charging/index.html:146
+#: app/templates/charging/index.html:146 app/templates/fuel/index.html:281
 msgid "Start tracking your EV charging to monitor energy usage and costs."
 msgstr ""
 "Begynd at spore din elbil-opladning for at overvåge energiforbrug og "
@@ -3645,15 +3648,32 @@ msgstr ""
 msgid "Log Your First Charge"
 msgstr "Registrer din første opladning"
 
-#: app/templates/components/ui.html:201
+#: app/templates/components/ui.html:183
+msgid "Pagination"
+msgstr "Sideinddeling"
+
+#: app/templates/components/ui.html:184
+#, python-format
+msgid "Page %(page)s of %(pages)s"
+msgstr "Side %(page)s af %(pages)s"
+
+#: app/templates/components/ui.html:186
+msgid "Newer"
+msgstr "Nyere"
+
+#: app/templates/components/ui.html:187
+msgid "Older"
+msgstr "Ældre"
+
+#: app/templates/components/ui.html:214
 msgid "Choose a file or drag it here"
 msgstr "Vælg en fil, eller træk den hertil"
 
-#: app/templates/components/ui.html:212 app/templates/components/ui.html:213
+#: app/templates/components/ui.html:225 app/templates/components/ui.html:226
 msgid "Show password"
 msgstr "Vis adgangskode"
 
-#: app/templates/components/ui.html:213
+#: app/templates/components/ui.html:226
 msgid "Hide password"
 msgstr "Skjul adgangskode"
 
@@ -3717,7 +3737,7 @@ msgid "Days before to remind"
 msgstr "Dage før for påmindelse"
 
 #: app/templates/documents/form.html:120
-#: app/templates/import/csv_mapping.html:10
+#: app/templates/import/csv_mapping.html:15
 #: app/templates/import/csv_upload.html:10
 #: app/templates/vehicles/view.html:603
 msgid "Upload"
@@ -3927,6 +3947,7 @@ msgid "Full tank"
 msgstr "Fuld tank"
 
 #: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:124
+#: app/templates/fuel/index.html:99
 msgid "Station"
 msgstr "Station"
 
@@ -3959,8 +3980,8 @@ msgid "Edit Fuel Log"
 msgstr "Rediger brændstoflog"
 
 #: app/templates/fuel/form.html:2 app/templates/fuel/form.html:16
-#: app/templates/fuel/form.html:220 app/templates/fuel/index.html:16
-#: app/templates/fuel/index.html:129 app/templates/partials/mobile_nav.html:60
+#: app/templates/fuel/form.html:220 app/templates/fuel/index.html:31
+#: app/templates/fuel/index.html:181 app/templates/partials/mobile_nav.html:60
 #: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:540
 msgid "Add Fuel Log"
 msgstr "Tilføj brændstoflog"
@@ -4024,8 +4045,7 @@ msgstr "Tilføj gemte stationer"
 msgid "for quick selection and price tracking"
 msgstr "til hurtig udvælgelse og prissporing"
 
-#: app/templates/fuel/form.html:149 app/templates/fuel/index.html:44
-#: app/templates/vehicles/form.html:59
+#: app/templates/fuel/form.html:149 app/templates/vehicles/form.html:59
 msgid "Fuel Type"
 msgstr "Brændstoftype"
 
@@ -4054,78 +4074,78 @@ msgstr "Manglet optankning (ufuldstændige data)"
 msgid "Receipt / Attachment"
 msgstr "Kvittering/vedhæftning"
 
-#: app/templates/fuel/index.html:8
+#: app/templates/fuel/index.html:14
 msgid "Track your fuel fill-ups and consumption"
 msgstr "Registrer dine optankninger og dit brændstofforbrug"
 
-#: app/templates/fuel/index.html:23
-msgid "Sales Tax Paid"
-msgstr "Betalt moms"
-
-#: app/templates/fuel/index.html:46
-msgid "Price/Unit"
-msgstr "Pris/enhed"
-
-#: app/templates/fuel/index.html:48
-msgid "Consumption"
-msgstr "Forbrug"
-
-#: app/templates/fuel/index.html:66
-msgid "Full"
-msgstr "Fuld"
-
-#: app/templates/fuel/index.html:69
-msgid "Missed"
-msgstr "Manglet"
-
-#: app/templates/fuel/index.html:76
-#, python-format
-msgid "incl. tax %(amount)s"
-msgstr "inkl. moms %(amount)s"
-
-#: app/templates/fuel/index.html:89 app/templates/vehicles/view.html:485
-msgid "Delete this fuel log?"
-msgstr "Slet denne brændstoflog?"
-
-#: app/templates/fuel/index.html:102
-msgid "Pagination"
-msgstr "Sideinddeling"
-
-#: app/templates/fuel/index.html:103
-#, python-format
-msgid "Page %(page)s of %(pages)s"
-msgstr "Side %(page)s af %(pages)s"
-
-#: app/templates/fuel/index.html:106
-msgid "Newer"
-msgstr "Nyere"
-
-#: app/templates/fuel/index.html:109
-msgid "Older"
-msgstr "Ældre"
-
-#: app/templates/fuel/index.html:120
-msgid "No fuel logs"
-msgstr "Ingen brændstoflogs"
-
-#: app/templates/fuel/index.html:121
-msgid "Start tracking your fuel fill-ups."
-msgstr "Begynd at registrere dine optankninger."
-
-#: app/templates/fuel/index.html:139
-msgid "Charging History"
-msgstr "Opladningshistorik"
-
-#: app/templates/fuel/index.html:140
-msgid "Sessions logged for your electric and plug-in hybrid vehicles"
-msgstr "Sessioner registreret for dine elektriske og plug-in hybrid køretøjer"
-
-#: app/templates/fuel/index.html:148 app/templates/partials/mobile_nav.html:58
+#: app/templates/fuel/index.html:29 app/templates/fuel/index.html:282
+#: app/templates/partials/mobile_nav.html:58
 #: app/templates/partials/mobile_nav.html:64
 msgid "Add Charging Session"
 msgstr "Tilføj opladningssession"
 
-#: app/templates/fuel/index.html:160
+#: app/templates/fuel/index.html:38 app/templates/fuel/index.html:214
+msgid "Charging History"
+msgstr "Opladningshistorik"
+
+#: app/templates/fuel/index.html:57 app/templates/vehicles/view.html:106
+msgid "Avg. Consumption"
+msgstr "Gnsn. forbrug"
+
+#: app/templates/fuel/index.html:63 app/templates/vehicles/view.html:152
+msgid "Last fill"
+msgstr "Seneste tankning"
+
+#: app/templates/fuel/index.html:84
+msgid "Sales Tax Paid"
+msgstr "Betalt moms"
+
+#: app/templates/fuel/index.html:101
+msgid "Price/Unit"
+msgstr "Pris/enhed"
+
+#: app/templates/fuel/index.html:102
+msgid "Consumption"
+msgstr "Forbrug"
+
+#: app/templates/fuel/index.html:123
+msgid "Better than average"
+msgstr "Bedre end gennemsnittet"
+
+#: app/templates/fuel/index.html:123
+msgid "Worse than average"
+msgstr "Dårligere end gennemsnittet"
+
+#: app/templates/fuel/index.html:132
+msgid "Partial"
+msgstr "Delvis"
+
+#: app/templates/fuel/index.html:133
+msgid "Missed"
+msgstr "Manglet"
+
+#: app/templates/fuel/index.html:154
+#, python-format
+msgid "incl. tax %(amount)s"
+msgstr "inkl. moms %(amount)s"
+
+#: app/templates/fuel/index.html:161 app/templates/vehicles/view.html:485
+msgid "Delete this fuel log?"
+msgstr "Slet denne brændstoflog?"
+
+#: app/templates/fuel/index.html:180
+msgid "No fuel logs"
+msgstr "Ingen brændstoflogs"
+
+#: app/templates/fuel/index.html:180
+msgid "Start tracking your fuel fill-ups."
+msgstr "Begynd at registrere dine optankninger."
+
+#: app/templates/fuel/index.html:205 app/templates/vehicles/view.html:158
+msgid "Last charge"
+msgstr "Seneste opladning"
+
+#: app/templates/fuel/index.html:220
 msgid "kWh"
 msgstr "kWh"
 
@@ -4263,66 +4283,66 @@ msgstr "Næste: forhåndsvisning"
 msgid "CSV Import - Map Columns"
 msgstr "CSV-import - Tilknyt kolonner"
 
-#: app/templates/import/csv_mapping.html:8
+#: app/templates/import/csv_mapping.html:13
 msgid "Back to upload"
 msgstr "Tilbage til upload"
 
-#: app/templates/import/csv_mapping.html:9
+#: app/templates/import/csv_mapping.html:14
 msgid "Map CSV Columns"
 msgstr "Tilknyt CSV-kolonner"
 
-#: app/templates/import/csv_mapping.html:10
+#: app/templates/import/csv_mapping.html:15
 #: app/templates/import/csv_upload.html:10
 msgid "Map Columns"
 msgstr "Tilknyt kolonner"
 
-#: app/templates/import/csv_mapping.html:13
+#: app/templates/import/csv_mapping.html:18
 #: app/templates/import/csv_upload.html:16
 msgid "Data Type"
 msgstr "Datatype"
 
-#: app/templates/import/csv_mapping.html:15
+#: app/templates/import/csv_mapping.html:20
 msgid "Rows"
 msgstr "Rækker"
 
-#: app/templates/import/csv_mapping.html:23
+#: app/templates/import/csv_mapping.html:28
 msgid "Column Mapping"
 msgstr "Kolonnetilknytning"
 
-#: app/templates/import/csv_mapping.html:25
+#: app/templates/import/csv_mapping.html:30
 msgid "Date Format in CSV"
 msgstr "Datoformat i CSV"
 
-#: app/templates/import/csv_mapping.html:27
+#: app/templates/import/csv_mapping.html:32
 msgid "Auto-detect"
 msgstr "Registrér automatisk"
 
-#: app/templates/import/csv_mapping.html:34
+#: app/templates/import/csv_mapping.html:39
 msgid "Required fields"
 msgstr "Obligatoriske felter"
 
-#: app/templates/import/csv_mapping.html:46
+#: app/templates/import/csv_mapping.html:51
 msgid "Map every required field before importing."
 msgstr "Tilknyt alle obligatoriske felter, før du importerer."
 
-#: app/templates/import/csv_mapping.html:50
+#: app/templates/import/csv_mapping.html:55
 msgid "CSV Column"
 msgstr "CSV-kolonne"
 
-#: app/templates/import/csv_mapping.html:50
+#: app/templates/import/csv_mapping.html:55
 msgid "Map To"
 msgstr "Tilknyt til"
 
-#: app/templates/import/csv_mapping.html:61
+#: app/templates/import/csv_mapping.html:66
 msgid "Skip this column"
 msgstr "Spring denne kolonne over"
 
-#: app/templates/import/csv_mapping.html:72
-#: app/templates/import/csv_mapping.html:74
+#: app/templates/import/csv_mapping.html:77
+#: app/templates/import/csv_mapping.html:79
 msgid "Data Preview"
 msgstr "Forhåndsvisning af data"
 
-#: app/templates/import/csv_mapping.html:73
+#: app/templates/import/csv_mapping.html:78
 #, python-format
 msgid "The first %(num)s rows of the file, as they were read."
 msgstr "De første %(num)s rækker i filen, som de blev læst."
@@ -5839,10 +5859,6 @@ msgstr ""
 msgid "Last Odometer"
 msgstr "Seneste kilometertæller"
 
-#: app/templates/vehicles/view.html:106
-msgid "Avg. Consumption"
-msgstr "Gnsn. forbrug"
-
 #: app/templates/vehicles/view.html:110
 msgid "Avg. Charging"
 msgstr "Gnsn. opladning"
@@ -5874,14 +5890,6 @@ msgstr "Kræver mindst to optankninger med fuld tank."
 #: app/templates/vehicles/view.html:146
 msgid "Cost per"
 msgstr "Pris pr."
-
-#: app/templates/vehicles/view.html:152
-msgid "Last fill"
-msgstr "Seneste tankning"
-
-#: app/templates/vehicles/view.html:158
-msgid "Last charge"
-msgstr "Seneste opladning"
 
 #: app/templates/vehicles/view.html:169
 msgid "Annual Mileage"

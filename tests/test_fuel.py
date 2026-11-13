@@ -1770,3 +1770,60 @@ class TestFuelIndexPagination:
         body = auth_client.get('/fuel/').data.decode()
         # 40 L per 500 km = 8.0 L/100km
         assert '8.0 L/100km' in body
+
+
+class TestFuelIndexLayout:
+    """The design-system fuel list: vehicle filter, month blocks, trends."""
+
+    def _log(self, vehicle, user, when, odometer, volume, cost, full=True, station=None):
+        log = FuelLog(vehicle_id=vehicle.id, user_id=user.id, date=when, odometer=odometer,
+                      volume=volume, price_per_unit=round(cost / volume, 3), total_cost=cost,
+                      is_full_tank=full, station=station)
+        db.session.add(log)
+        return log
+
+    def test_vehicle_filter_narrows_the_list(self, auth_client, sample_vehicle, test_user):
+        other = Vehicle(owner_id=test_user.id, name='Second Car', vehicle_type='car', fuel_type='diesel')
+        db.session.add(other)
+        db.session.commit()
+        self._log(sample_vehicle, test_user, date(2026, 3, 1), 1000, 40, 60, station='Only Mine')
+        self._log(other, test_user, date(2026, 3, 2), 5000, 40, 70, station='Only Other')
+        db.session.commit()
+
+        both = auth_client.get('/fuel/').data.decode()
+        assert 'Only Mine' in both and 'Only Other' in both
+
+        mine = auth_client.get(f'/fuel/?vehicle={sample_vehicle.id}').data.decode()
+        assert 'Only Mine' in mine and 'Only Other' not in mine
+        assert f'<option value="{sample_vehicle.id}" selected' in mine
+
+    def test_unknown_vehicle_shows_everything(self, auth_client, sample_vehicle, test_user):
+        self._log(sample_vehicle, test_user, date(2026, 3, 1), 1000, 40, 60, station='Visible')
+        db.session.commit()
+        assert 'Visible' in auth_client.get('/fuel/?vehicle=99999').data.decode()
+
+    def test_month_blocks_carry_the_month_total(self, auth_client, sample_vehicle, test_user):
+        self._log(sample_vehicle, test_user, date(2026, 3, 1), 1000, 40, 60)
+        self._log(sample_vehicle, test_user, date(2026, 3, 20), 1500, 40, 62.5)
+        self._log(sample_vehicle, test_user, date(2026, 4, 2), 2000, 40, 61)
+        db.session.commit()
+        body = auth_client.get('/fuel/').data.decode()
+        assert 'ds-log__month' in body
+        assert '122.50' in body  # March: 60 + 62.50
+        assert body.index('April 2026') < body.index('March 2026')
+
+    def test_partial_fill_is_marked(self, auth_client, sample_vehicle, test_user):
+        self._log(sample_vehicle, test_user, date(2026, 3, 1), 1000, 20, 30, full=False)
+        db.session.commit()
+        assert '>Partial<' in auth_client.get('/fuel/').data.decode()
+
+    def test_thirsty_fill_is_flagged_against_the_average(self, auth_client, sample_vehicle, test_user):
+        # 500 km spans at 8, 8 and 12 L/100km: the last is well above the average.
+        self._log(sample_vehicle, test_user, date(2026, 1, 1), 10000, 40, 60)
+        self._log(sample_vehicle, test_user, date(2026, 1, 8), 10500, 40, 60)
+        self._log(sample_vehicle, test_user, date(2026, 1, 15), 11000, 40, 60)
+        self._log(sample_vehicle, test_user, date(2026, 1, 22), 11500, 60, 90)
+        db.session.commit()
+        body = auth_client.get('/fuel/').data.decode()
+        assert 'ds-log__consumption--worse' in body
+        assert 'Worse than average' in body
