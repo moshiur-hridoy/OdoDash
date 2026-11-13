@@ -606,7 +606,7 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
   .form-more__body { padding: 0 16px 18px; }
   /* Save stays in reach above the tab bar. */
   .form-actions {
-    position: fixed; left: 0; right: 0; bottom: calc(var(--tabbar-height, 4rem) + env(safe-area-inset-bottom, 0px)); z-index: 30;
+    position: fixed; left: 0; right: 0; bottom: calc(var(--tabbar-height, 4rem) + var(--tabbar-inset, env(safe-area-inset-bottom, 0px))); z-index: 30;
     padding: 10px 16px; background: color-mix(in srgb, var(--ds-surface) 92%, transparent);
     backdrop-filter: blur(8px); border-top: 1px solid var(--ds-border);
   }

@@ -107,3 +107,10 @@ class TestMobileNav:
         html = auth_client.get('/dashboard').get_data(as_text=True)
         assert 'function enableSwipe(sheet)' in html
         assert 'enableSwipe(sheet);' in html
+
+    def test_tab_labels_keep_clear_of_the_home_indicator(self, auth_client):
+        # Where the safe-area inset reads 0 the labels sat under the home
+        # indicator; the bar keeps a floor below its tabs either way.
+        html = auth_client.get('/dashboard').get_data(as_text=True)
+        assert '--tabbar-inset: max(env(safe-area-inset-bottom, 0px), 0.75rem)' in html
+        assert 'padding: 0 0.25rem var(--tabbar-inset);' in html

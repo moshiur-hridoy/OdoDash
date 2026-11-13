@@ -160,13 +160,17 @@
 {% endif %}
 
 <style>
-    :root { --tabbar-height: 4rem; }
+    /* Room below the tabs for the home indicator. The system's safe-area inset
+       is 0 wherever it isn't reported (a browser with its own toolbar, desktop
+       device emulation), which left the labels under the indicator, so the
+       bar keeps a floor of its own. */
+    :root { --tabbar-height: 4rem; --tabbar-inset: max(env(safe-area-inset-bottom, 0px), 0.75rem); }
     /* The installed app draws under the status bar (viewport-fit=cover with a
        translucent status bar), so the top bar pads itself below it. */
     .mobile-topbar { padding-top: env(safe-area-inset-top); }
     @media (max-width: 1023px) {
         /* Keep page content and toasts clear of the tab bar and home indicator. */
-        body:has(.tabbar) main { padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + 1.5rem); }
+        body:has(.tabbar) main { padding-bottom: calc(var(--tabbar-height) + var(--tabbar-inset) + 1.5rem); }
     }
     .tabbar {
         position: fixed;
@@ -176,8 +180,8 @@
         bottom: 0;
         display: flex;
         align-items: stretch;
-        height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-        padding: 0 0.25rem env(safe-area-inset-bottom);
+        height: calc(var(--tabbar-height) + var(--tabbar-inset));
+        padding: 0 0.25rem var(--tabbar-inset);
         background: color-mix(in srgb, var(--color-surface) 92%, transparent);
         border-top: 1px solid var(--color-border);
         backdrop-filter: saturate(1.6) blur(16px);
