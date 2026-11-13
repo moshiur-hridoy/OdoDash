@@ -10,6 +10,15 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Fixed
+
+- On a phone, the consumption gauge on the vehicle page sits in the middle of its card instead of hugging the left edge.
+- The Add Fuel form's "Last odometer" and distance-since-last figures group digits by your thousands-separator setting, matching the vehicle cards above them.
+
+### Changed
+
+- The README shows the app on a phone: dashboard, vehicle page and the Add Fuel form.
+
 ## [0.50.0] - 2026-11-13
 
 ### Changed

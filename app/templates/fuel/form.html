@@ -260,6 +260,16 @@ data-bi-fuel="{{ 'true' if vehicle.declares_second_fuel() else 'false' }}"
 <script>
 const T_LAST_ODOMETER = {{ _('Last odometer')|tojson }};
 const T_LAST_HOURS = {{ _('Last engine hours')|tojson }};
+// Group digits the way the |groupnum filter does, so the script's numbers
+// match the server-rendered ones (#134).
+const THOUSAND_SEP = {{ (current_user.thousand_separator or 'none')|tojson }};
+function groupNum(n) {
+    const s = n.toLocaleString('en-US', { maximumFractionDigits: 1 });
+    if (THOUSAND_SEP === 'none') return s.replace(/,/g, '');
+    if (THOUSAND_SEP === 'space') return s.replace(/,/g, '\u202f');
+    if (THOUSAND_SEP === 'period') return s.replace(/\./g, '\0').replace(/,/g, '.').replace(/\0/g, ',');
+    return s;
+}
 let pricePerUnitWasDerived = false;
 const isEditing = {{ (log is not none)|tojson }};
 const chosenFuelType = {{ (posted.get('fuel_type', '') if posted else (log.fuel_type if log and log.fuel_type else ''))|tojson }};
@@ -287,7 +297,7 @@ function updateOdometerDelta() {
     }
     const diff = typed - last;
     const unit = vehicle.getAttribute('data-odometer-unit') || '';
-    delta.textContent = (diff >= 0 ? '+' : '−') + Math.abs(diff).toLocaleString(undefined, { maximumFractionDigits: 1 }) + ' ' + unit;
+    delta.textContent = (diff >= 0 ? '+' : '−') + groupNum(Math.abs(diff)) + ' ' + unit;
     delta.classList.toggle('is-negative', diff < 0);
 }
 
@@ -305,7 +315,7 @@ function updateVehicleOdometer() {
 
     // Update last odometer display and unit labels
     document.getElementById('last-odometer').textContent =
-        lastOdometer ? parseFloat(lastOdometer).toLocaleString(undefined, { maximumFractionDigits: 1 }) : 0;
+        lastOdometer ? groupNum(parseFloat(lastOdometer)) : 0;
     const unitDisplay = document.getElementById('odometer-unit-display');
     const unitLabel = document.getElementById('odometer-unit-label');
     if (unitDisplay) unitDisplay.textContent = odometerUnit;
