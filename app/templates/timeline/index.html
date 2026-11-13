@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Timeline') }} - {{ vehicle.name }}{% endblock %}
 
 {% block extra_scripts %}
@@ -7,145 +9,106 @@
 {% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; {{ _('Back to') }} {{ vehicle.name }}</a>
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ _('Service Timeline') }}</h1>
-    <p class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.name }} - {{ _('Complete history of fuel, expenses, and charging') }}</p>
-</div>
+{%- set currency = current_user.currency -%}
+{%- set unit = vehicle.get_reading_unit() -%}
+{%- set type_icons = {'fuel': 'fuel', 'expense': 'money', 'charging': 'bolt'} -%}
+{%- set type_labels = {'fuel': _('Fuel'), 'expense': _('Expenses'), 'charging': _('Charging')} -%}
+<div class="ds log-page">
 
-<!-- Cost Chart -->
-<div class="surface-card bg-white dark:bg-gray-800 p-6 mb-8">
-    <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Monthly Costs') }}</h2>
-    <div style="height: 300px;">
-        <canvas id="costChart"></canvas>
-    </div>
-</div>
+{{ back_link(vehicle.name, url_for('vehicles.view', vehicle_id=vehicle.id)) }}
+{{ page_header(_('Service Timeline'), subtitle=_('Complete history of fuel, expenses, and charging')) }}
 
-<!-- Timeline -->
-<div class="surface-card bg-white dark:bg-gray-800">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Activity Timeline') }}</h2>
-    </div>
+<section class="ds-card" aria-labelledby="cost-chart-title">
+    <div class="ds-card__header"><h2 class="ds-card__title" id="cost-chart-title">{{ _('Monthly Costs') }}</h2></div>
+    <div class="ds-card__body"><div class="price-chart"><canvas id="costChart"></canvas></div></div>
+</section>
 
-    {% if timeline_events %}
-    <div class="flow-root p-6">
-        <ul class="-mb-8">
-            {% for event in timeline_events %}
-            <li>
-                <div class="relative pb-8">
-                    {% if not loop.last %}
-                    <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></span>
-                    {% endif %}
-                    <div class="relative flex space-x-3">
-                        <div>
-                            <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white dark:ring-gray-800
-                                         {% if event.type == 'fuel' %}bg-yellow-500
-                                         {% elif event.type == 'expense' %}bg-red-500
-                                         {% elif event.type == 'charging' %}bg-green-500
-                                         {% else %}bg-gray-500{% endif %}">
-                                {% if event.type == 'fuel' %}
-                                <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
-                                </svg>
-                                {% elif event.type == 'expense' %}
-                                <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {% elif event.type == 'charging' %}
-                                <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
-                                {% endif %}
+{% if timeline_events %}
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Activity Timeline') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Activity Timeline') }}</th>
+                <th scope="col" class="ds-num">{{ vehicle.get_reading_label() }}</th>
+                <th scope="col" class="ds-num">{{ _('Cost') }}</th>
+            </tr>
+        </thead>
+        {% for group in groups %}
+        <tbody>
+            {% if group.month %}
+            <tr class="ds-log__month">
+                <th scope="colgroup" colspan="3">{{ group.month|dateformat('LLLL yyyy') }}</th>
+                <td class="ds-num">{% if group.total %}{{ group.total|money }} <span>{{ currency }}</span>{% endif %}</td>
+            </tr>
+            {% endif %}
+            {% for event in group.rows %}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ event.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ event.date|dateformat('EEE') }}</span>
+                </td>
+                <td data-cell="title">
+                    <div class="exp-item">
+                        <span class="exp-item__icon timeline-icon timeline-icon--{{ event.type }}" title="{{ type_labels.get(event.type, '') }}" aria-hidden="true">{{ icon(type_icons.get(event.type, 'dots'), 16) }}</span>
+                        <div class="exp-item__text">
+                            <span class="ds-log__title">{{ event.title }}</span>
+                            {% if event.description %}<span class="ds-log__sub">{{ event.description }}</span>{% endif %}
+                            {% if event.notes %}<span class="ds-log__sub note-body">{{ event.notes|linkify }}</span>{% endif %}
+                            {% if event.attachments %}
+                            <span class="ds-log__sub exp-detail__files">
+                                {% for attachment in event.attachments %}<a href="{{ url_for('api.uploaded_file', filename=attachment.filename) }}" target="_blank" rel="noopener">{{ icon('paperclip', 12) }}{{ attachment.original_filename }}</a>{% endfor %}
+                            </span>
+                            {% endif %}
+                            <span class="ds-log__phone-meta">
+                                {{- event.date|dateformat('d MMM') }}{% if event.odometer %} · {{ event.odometer|groupnum }} {{ unit }}{% endif -%}
                             </span>
                         </div>
-                        <div class="flex min-w-0 flex-1 justify-between space-x-4">
-                            <div>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ event.title }}</p>
-                                {% if event.description %}
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ event.description }}</p>
-                                {% endif %}
-                                {% if event.odometer %}
-                                <p class="text-xs text-gray-400 dark:text-gray-500">{{ event.odometer|groupnum }} {{ vehicle.get_reading_unit() }}</p>
-                                {% endif %}
-                                {% if event.notes %}
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap">{{ event.notes|linkify }}</p>
-                                {% endif %}
-                                {% if event.attachments %}
-                                <ul class="mt-1 space-y-0.5">
-                                    {% for attachment in event.attachments %}
-                                    <li class="text-sm">
-                                        <a href="{{ url_for('api.uploaded_file', filename=attachment.filename) }}" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-500">{{ attachment.original_filename }}</a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                                {% endif %}
-                            </div>
-                            <div class="whitespace-nowrap text-right">
-                                <time class="text-sm text-gray-500 dark:text-gray-400">{{ event.date|format_date }}</time>
-                                {% if event.cost %}
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ event.cost|money }} {{ current_user.currency }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </li>
+                </td>
+                <td class="ds-num ds-muted ds-log__wide">{% if event.odometer %}{{ event.odometer|groupnum }} <span class="ds-log__unit">{{ unit }}</span>{% else %}&mdash;{% endif %}</td>
+                <td data-cell="value" class="ds-num">{% if event.cost %}{{ event.cost|money }} <span class="ds-log__unit">{{ currency }}</span>{% else %}<span class="ds-muted">&mdash;</span>{% endif %}</td>
+            </tr>
             {% endfor %}
-        </ul>
+        </tbody>
+        {% endfor %}
+    </table>
     </div>
-    {% else %}
-    <div class="p-6 text-center text-gray-500 dark:text-gray-400">
-        {{ _('No activity recorded for this vehicle yet.') }}
-    </div>
-    {% endif %}
+</section>
+{% else %}
+<div class="ds-card">{{ empty_state(_('Activity Timeline'), _('No activity recorded for this vehicle yet.'), 'clock') }}</div>
+{% endif %}
+
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('costChart').getContext('2d');
     const chartData = {{ chart_data | tojson }};
+    // Series colours come from the design tokens, so they follow the theme.
+    const css = getComputedStyle(document.querySelector('.ds'));
+    const colour = (name, fallback) => (css.getPropertyValue(name) || '').trim() || fallback;
+    const text = colour('--ds-text-muted', '#6b6a65');
+    const grid = colour('--ds-border-soft', '#e7e5df');
 
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels: chartData.labels,
             datasets: [
-                {
-                    label: {{ _('Fuel')|tojson }},
-                    data: chartData.fuel,
-                    backgroundColor: 'rgba(234, 179, 8, 0.8)',
-                    borderRadius: 4
-                },
-                {
-                    label: {{ _('Expenses')|tojson }},
-                    data: chartData.expenses,
-                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                    borderRadius: 4
-                },
-                {
-                    label: {{ _('Charging')|tojson }},
-                    data: chartData.charging,
-                    backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                    borderRadius: 4
-                }
+                { label: {{ _('Fuel')|tojson }}, data: chartData.fuel, backgroundColor: colour('--ds-accent', '#0b74b8'), borderRadius: 4 },
+                { label: {{ _('Expenses')|tojson }}, data: chartData.expenses, backgroundColor: colour('--ds-warning', '#c98a12'), borderRadius: 4 },
+                { label: {{ _('Charging')|tojson }}, data: chartData.charging, backgroundColor: colour('--ds-success', '#1f6b33'), borderRadius: 4 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            },
+            plugins: { legend: { position: 'bottom', labels: { color: text, boxWidth: 10 } } },
             scales: {
-                x: {
-                    stacked: true
-                },
-                y: {
-                    stacked: true,
-                    beginAtZero: true
-                }
+                x: { stacked: true, ticks: { color: text }, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, ticks: { color: text }, grid: { color: grid } }
             }
         }
     });

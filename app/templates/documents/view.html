@@ -1,115 +1,45 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, badge %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ document.title }}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('documents.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:text-gray-400 dark:hover:text-gray-300">&larr; {{ _('Back to Documents') }}</a>
-</div>
+{%- set is_image = document.file_type in ['png', 'jpg', 'jpeg', 'gif', 'webp'] -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Documents'), url_for('documents.index')) }}
+{% call page_header(document.title, subtitle=document.vehicle.name ~ ' · ' ~ dict(document_types).get(document.document_type, document.document_type)) %}
+    {% if can_write('documents') %}{{ button(_('Edit'), href=url_for('documents.edit', document_id=document.id), variant='secondary', icon_name='edit') }}{% endif %}
+    {{ button(_('Download'), href=url_for('documents.download', document_id=document.id), icon_name='download') }}
+{% endcall %}
 
-<div class="max-w-2xl mx-auto">
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">{{ document.title }}</h1>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {{ document.vehicle.name }} &middot;
-                        {{ dict(document_types).get(document.document_type, document.document_type) }}
-                    </p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <a href="{{ url_for('documents.download', document_id=document.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <svg class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        {{ _('Download') }}
-                    </a>
-                    {% if can_write('documents') %}
-                    <a href="{{ url_for('documents.edit', document_id=document.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        {{ _('Edit') }}
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+{% if document.is_expired() %}
+<div class="import-note import-note--danger">{{ icon('alert', 18) }}<p>{{ _('This document has expired!') }}</p></div>
+{% elif document.is_expiring_soon() %}
+<div class="import-note import-note--warning">{{ icon('clock', 18) }}<p>{{ _('This document is expiring soon.') }}</p></div>
+{% endif %}
 
-        <div class="p-6 space-y-6">
-            {% if document.is_expired() %}
-            <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4">
-                <div class="flex">
-                    <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                    <p class="ml-3 text-sm text-red-700 dark:text-red-300">
-                        {{ _('This document has expired!') }}
-                    </p>
-                </div>
-            </div>
-            {% elif document.is_expiring_soon() %}
-            <div class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-md p-4">
-                <div class="flex">
-                    <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p class="ml-3 text-sm text-amber-700 dark:text-amber-300">
-                        {{ _('This document is expiring soon.') }}
-                    </p>
-                </div>
-            </div>
-            {% endif %}
-
-            <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {% if document.reference_number %}
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Reference Number') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.reference_number }}</dd>
-                </div>
-                {% endif %}
-
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('File') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                        {{ document.original_filename }}
-                        <span class="text-gray-500 dark:text-gray-400">({{ (document.file_size / 1024)|round(1) }} KB)</span>
-                    </dd>
-                </div>
-
-                {% if document.issue_date %}
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Issue Date') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.issue_date|format_date }}</dd>
-                </div>
-                {% endif %}
-
-                {% if document.expiry_date %}
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Expiry Date') }}</dt>
-                    <dd class="mt-1 text-sm {% if document.is_expired() %}text-red-600{% elif document.is_expiring_soon() %}text-amber-600{% else %}text-gray-900 dark:text-white{% endif %}">
-                        {{ document.expiry_date|format_date }}
-                    </dd>
-                </div>
-                {% endif %}
-            </dl>
-
-            {% if document.description %}
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Description') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ document.description }}</dd>
-            </div>
-            {% endif %}
-
-            <!-- Preview for images -->
-            {% if document.file_type in ['png', 'jpg', 'jpeg', 'gif', 'webp'] %}
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{{ _('Preview') }}</dt>
-                <img src="{{ url_for('api.uploaded_file', filename=document.filename) }}"
-                     alt="{{ document.title }}"
-                     class="max-w-full rounded-lg border border-gray-200 dark:border-gray-700">
-            </div>
-            {% endif %}
-        </div>
+<section class="ds-card form-section">
+    <dl class="doc-facts">
+        {% if document.reference_number %}<div><dt>{{ _('Reference Number') }}</dt><dd class="ds-mono">{{ document.reference_number }}</dd></div>{% endif %}
+        {% if document.issue_date %}<div><dt>{{ _('Issue Date') }}</dt><dd>{{ document.issue_date|format_date }}</dd></div>{% endif %}
+        {% if document.expiry_date %}<div><dt>{{ _('Expiry Date') }}</dt><dd>{{ document.expiry_date|format_date }}
+            {% if document.is_expired() %}{{ badge(_('Expired'), 'danger') }}{% elif document.is_expiring_soon() %}{{ badge(_('Expiring soon'), 'warning') }}{% endif %}</dd></div>{% endif %}
+        <div><dt>{{ _('File') }}</dt><dd class="doc-facts__file">{{ icon('image' if is_image else 'document', 14) }} {{ document.original_filename }}
+            {% if document.file_size %}<span class="ds-muted">({{ (document.file_size / 1024)|round(1) }} KB)</span>{% endif %}</dd></div>
+    </dl>
+    {% if document.description %}
+    <div class="ds-field">
+        <span class="ds-field__label">{{ _('Description') }}</span>
+        <p class="note-body">{{ document.description }}</p>
     </div>
+    {% endif %}
+</section>
+
+{% if is_image %}
+<section class="ds-card form-section" aria-labelledby="preview-title">
+    <h2 class="form-section__title" id="preview-title">{{ _('Preview') }}</h2>
+    <img class="doc-preview" src="{{ url_for('api.uploaded_file', filename=document.filename) }}" alt="{{ document.title }}">
+</section>
+{% endif %}
 </div>
 {% endblock %}

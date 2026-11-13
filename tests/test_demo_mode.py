@@ -4,7 +4,7 @@ from datetime import date
 import pytest
 
 from app import create_app, db as _db_ext
-from app.models import ChargingSession, Expense, FuelLog, Trip, User, Vehicle
+from app.models import Expense, FuelLog, Trip, User, Vehicle
 from tests.conftest import TestConfig
 
 
@@ -35,7 +35,7 @@ def test_seeds_demo_account_and_history(demo_app):
     assert user.is_admin and user.check_password('demo')
     assert Vehicle.query.count() == 2
     assert FuelLog.query.count() > 15
-    assert ChargingSession.query.count() > 30
+    assert FuelLog.query.filter_by(vehicle_id=Vehicle.query.filter_by(name='Weekend Ride').one().id).count() > 15
     assert Expense.query.count() > 10
     assert Trip.query.count() > 10
 

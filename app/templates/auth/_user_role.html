@@ -1,0 +1,15 @@
+{#- Role picker shared by the create and edit user forms: one card per role
+    with its description. Expects roles, role_descriptions and chosen_role. -#}
+<fieldset class="ds-field">
+    <legend class="ds-field__label">{{ _('Role') }}</legend>
+    <div class="ds-choices">
+        {% for value, label in roles %}
+        <label class="ds-choice ds-choice--stacked">
+            <input type="radio" name="role" value="{{ value }}"{% if value == chosen_role %} checked{% endif %}>
+            <span class="ds-choice__label">{{ label }}</span>
+            <span class="ds-choice__hint">{{ role_descriptions[value] }}</span>
+        </label>
+        {% endfor %}
+    </div>
+    <p class="form-hint">{{ _('Administrators always have full access, whatever role is set.') }}</p>
+</fieldset>

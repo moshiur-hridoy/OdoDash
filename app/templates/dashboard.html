@@ -1,624 +1,306 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, card, stat, badge, segmented, split_bar, month_bars, attention, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Dashboard') }}{% endblock %}
 
 {% block extra_scripts %}
 <!-- Chart.js - Only needed on dashboard -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-<style>
-    /* Dashboard-only surface and card treatment. */
-    html:not(.dark) body:has(.dashboard-shell) {
-        background-color: var(--color-background);
-    }
-
-    .dashboard-shell .shadow,
-    .dashboard-shell .hover\:shadow-md:hover {
-        box-shadow: none;
-    }
-
-    .dashboard-shell .rounded-lg {
-        border-radius: var(--radius-lg);
-    }
-
-    html:not(.dark) .dashboard-shell .bg-white {
-        border: 1px solid var(--color-border);
-    }
-
-    .dashboard-stat-grid > div > .p-5 > .flex {
-        justify-content: space-between;
-    }
-
-    .dashboard-stat-grid > div > .p-5 > .flex > .flex-shrink-0 {
-        margin-left: 1.25rem;
-        order: 2;
-    }
-
-    .dashboard-stat-grid > div > .p-5 > .flex > .ml-5 {
-        margin-left: 0;
-        order: 1;
-    }
-
-    .dashboard-stat-card--vehicles { order: 3; }
-    .dashboard-stat-card--distance { order: 2; }
-    .dashboard-stat-card--cost-per-distance { order: 1; }
-    .dashboard-stat-card--fuel { order: 4; }
-    .dashboard-stat-card--charging { order: 5; }
-    .dashboard-stat-card--expenses { order: 6; }
-    .dashboard-stat-card--total-cost { order: 7; }
-    .dashboard-stat-card--allowance { order: 8; }
-    .dashboard-stat-card--net-cost { order: 9; }
-
-    html:not(.dark) .dashboard-stat-card--cost-per-distance {
-        background: linear-gradient(102deg, var(--primary-100) 0%, var(--primary-50) 50%, var(--color-surface) 100%);
-        border-color: var(--primary-200);
-    }
-
-    /* Phone: compact two-column stat tiles. The headline cost-per-distance
-       tile (and Total Cost when it would otherwise sit alone) spans both
-       columns; the icon chip moves to the corner so figures get the width. */
-    @media (max-width: 639px) {
-        .dashboard-stat-grid { margin-bottom: 1rem; }
-        .dashboard-stat-card--wide-sm { grid-column: span 2 / span 2; }
-        /* Each tile fills its grid row, and the figure sits on the tile's
-           bottom edge, so figures line up across a row however the labels wrap. */
-        .dashboard-stat-grid > div > .p-5 {
-            position: relative;
-            height: 100%;
-            padding: 0.875rem;
-        }
-        .dashboard-stat-grid > div > .p-5 > .flex { height: 100%; align-items: stretch; }
-        .dashboard-stat-grid > div > .p-5 > .flex > .ml-5 { display: flex; }
-        .dashboard-stat-grid > div > .p-5 > .flex > .ml-5 > dl {
-            display: flex;
-            flex: 1;
-            flex-direction: column;
-            gap: 0.625rem;
-        }
-        .dashboard-stat-grid > div > .p-5 > .flex > .flex-shrink-0 {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            margin-left: 0;
-        }
-        .dashboard-shell .dashboard-stat-card .flex-shrink-0 svg {
-            width: 1rem;
-            height: 1rem;
-            padding: 0.4rem;
-            border-radius: 9px;
-        }
-        .dashboard-shell .dashboard-stat-card dt {
-            padding-right: 2.25rem;
-            font-size: 0.6875rem;
-            line-height: 1rem;
-            letter-spacing: 0.04em;
-            white-space: normal;
-            overflow: visible;
-        }
-        .dashboard-shell .dashboard-stat-card dd {
-            margin-top: auto;
-            font-size: clamp(1.0625rem, 4.4vw, 1.25rem);
-            line-height: 1.2;
-            letter-spacing: -0.015em;
-        }
-        .dashboard-shell .dashboard-stat-card--wide-sm dd {
-            font-size: clamp(1.375rem, 6vw, 1.625rem);
-        }
-        .dashboard-shell .dashboard-stat-card .stat-unit { display: inline-block; font-size: 0.66em; }
-
-        /* Panels below the tiles: tighter padding and headings on a phone. */
-        .dashboard-shell .rounded-lg.p-6 { padding: 1rem; }
-        .dashboard-shell .rounded-lg.p-6 h2 { font-size: 1rem; line-height: 1.5rem; }
-        .dashboard-shell > .grid,
-        .dashboard-shell > .mt-6 { gap: 0.75rem; }
-        .dashboard-shell > .mt-6 { margin-top: 1rem; }
-    }
-
-    .dashboard-shell .dashboard-stat-card .stat-unit {
-        font-size: 0.7em;
-        font-weight: 600;
-        letter-spacing: 0;
-        color: var(--color-text-muted);
-    }
-    .dashboard-shell .dashboard-stat-card--cost-per-distance .stat-unit { color: inherit; opacity: 0.75; }
-
-    /* Reminders / Notes tabs */
-    #rn-card [role="tabpanel"][hidden] { display: none; }
-    .rn-tab { color: var(--color-text-muted); transition: background-color 140ms ease, color 140ms ease; }
-    .rn-tab[aria-selected="true"] { background: var(--color-surface); color: var(--color-text); box-shadow: 0 0 0 1px var(--color-border); }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-shell">
-<div class="mb-4 sm:mb-6">
-    <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{{ _('Dashboard') }}</h1>
-    <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">{{ _('Overview of your vehicles and expenses') }}</p>
-</div>
+{% set currency = current_user.currency %}
+{% set show_reminders = current_user.show_menu_reminders is not defined or current_user.show_menu_reminders %}
+{% set show_notes = current_user.show_menu_notes is not defined or current_user.show_menu_notes %}
+{% set hour = today.hour %}
+<div class="ds dashboard">
 
-<!-- Stats Cards -->
-<div class="dashboard-stat-grid grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 mb-6">
-    <div class="dashboard-stat-card dashboard-stat-card--vehicles bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Vehicles') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ vehicles|length }}</dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
+{#- The greeting follows the server clock first, then the browser's own
+    clock (see the script below), which knows the user's time zone. -#}
+{% set greetings = {
+    'morning': _('Good morning, %(name)s', name=current_user.username),
+    'afternoon': _('Good afternoon, %(name)s', name=current_user.username),
+    'evening': _('Good evening, %(name)s', name=current_user.username),
+} %}
+{% call page_header(greetings['morning'] if 5 <= hour < 12 else (greetings['afternoon'] if 12 <= hour < 18 else greetings['evening']), eyebrow=today|dateformat('EEEE, d MMMM')) %}
+    {{ segmented([
+        {'label': _('This month'), 'href': url_for('main.dashboard'), 'current': period == 'month'},
+        {'label': _('This year'), 'href': url_for('main.dashboard', period='year'), 'current': period == 'year'},
+    ], _('Period')) }}
+{% endcall %}
+<span hidden id="dashboard-greetings" data-morning="{{ greetings['morning'] }}" data-afternoon="{{ greetings['afternoon'] }}" data-evening="{{ greetings['evening'] }}"></span>
 
-    <div class="dashboard-stat-card dashboard-stat-card--fuel bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M17 6L20 9V16C20 16.3978 19.842 16.7794 19.5607 17.0607C19.2794 17.342 18.8978 17.5 18.5 17.5C18.1022 17.5 17.7206 17.342 17.4393 17.0607C17.158 16.7794 17 16.3978 17 16V13C17 12.4696 16.7893 11.9609 16.4142 11.5858C16.0391 11.2107 15.5304 11 15 11H4M20 9H19C18.7348 9 18.4804 8.89464 18.2929 8.70711C18.1054 8.51957 18 8.26522 18 8V7M4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H12C12.5304 4 13.0391 4.21071 13.4142 4.58579C13.7893 4.96086 14 5.46957 14 6V20M3 20H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Total Fuel Cost') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total_fuel_cost|money }} <span class="stat-unit">{{ current_user.currency }}</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% if total_charging_cost and total_charging_cost > 0 %}
-    <div class="dashboard-stat-card dashboard-stat-card--charging bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Total Charging Cost') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total_charging_cost|money }} <span class="stat-unit">{{ current_user.currency }}</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="dashboard-stat-card dashboard-stat-card--expenses bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path d="M3 10H21M7 15H7.01M11 15H13M3 8C3 7.20435 3.31607 6.44129 3.87868 5.87868C4.44129 5.31607 5.20435 5 6 5H18C18.7956 5 19.5587 5.31607 20.1213 5.87868C20.6839 6.44129 21 7.20435 21 8V16C21 16.7956 20.6839 17.5587 20.1213 18.1213C19.5587 18.6839 18.7956 19 18 19H6C5.20435 19 4.44129 18.6839 3.87868 18.1213C3.31607 17.5587 3 16.7956 3 16V8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Other Expenses') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total_expense_cost|money }} <span class="stat-unit">{{ current_user.currency }}</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="dashboard-stat-card dashboard-stat-card--distance bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path d="M15 7L9 4L3 7V20L9 17M9 4V17M9 17L15 20L21 17V4L15 7M15 7V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Total Distance') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total_distance|groupnum }} {% if total_distance_unit %}<span class="stat-unit">{{ total_distance_unit }}</span>{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="dashboard-stat-card dashboard-stat-card--cost-per-distance dashboard-stat-card--wide-sm bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border-2 border-primary-200 dark:border-primary-800">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path d="M13.0201 21.206C12.6381 21.4323 12.1917 21.525 11.7512 21.4696C11.3107 21.4142 10.9011 21.2138 10.5871 20.9L6.34306 16.657C5.43989 15.7536 4.7662 14.647 4.37835 13.4298C3.9905 12.2127 3.89978 10.9203 4.11377 9.66088C4.32776 8.40146 4.84025 7.2116 5.60835 6.19084C6.37645 5.17008 7.37783 4.34811 8.52871 3.79368C9.6796 3.23926 10.9465 2.96851 12.2235 3.00408C13.5005 3.03965 14.7504 3.38051 15.8686 3.99814C16.9868 4.61578 17.9409 5.49222 18.651 6.55416C19.3611 7.6161 19.8065 8.83264 19.9501 10.102M21 15H18.5C18.1022 15 17.7206 15.158 17.4393 15.4393C17.158 15.7206 17 16.1022 17 16.5C17 16.8978 17.158 17.2794 17.4393 17.5607C17.7206 17.842 18.1022 18 18.5 18H19.5C19.8978 18 20.2794 18.158 20.5607 18.4393C20.842 18.7206 21 19.1022 21 19.5C21 19.8978 20.842 20.2794 20.5607 20.5607C20.2794 20.842 19.8978 21 19.5 21H17M19 21V22M19 14V15M9 11C9 11.7956 9.31607 12.5587 9.87868 13.1213C10.4413 13.6839 11.2044 14 12 14C12.7956 14 13.5587 13.6839 14.1213 13.1213C14.6839 12.5587 15 11.7956 15 11C15 10.2044 14.6839 9.44129 14.1213 8.87868C13.5587 8.31607 12.7956 8 12 8C11.2044 8 10.4413 8.31607 9.87868 8.87868C9.31607 9.44129 9 10.2044 9 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Cost per') }} {% if total_distance_unit %}{{ total_distance_unit }}{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('unit') }}</span>{% endif %}</dt>
-                        <dd class="text-lg font-semibold text-primary-600 dark:text-primary-400">
-                            {% if cost_per_distance %}{{ cost_per_distance|money }} <span class="stat-unit">{{ current_user.currency }}</span>{% else %}-{% endif %}
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="dashboard-stat-card dashboard-stat-card--total-cost{% if not (total_charging_cost and total_charging_cost > 0) %} dashboard-stat-card--wide-sm{% endif %} bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path d="M17 9V7C17 6.46957 16.7893 5.96086 16.4142 5.58579C16.0391 5.21071 15.5304 5 15 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V13C3 13.5304 3.21071 14.0391 3.58579 14.4142C3.96086 14.7893 4.46957 15 5 15H7M7 11C7 10.4696 7.21071 9.96086 7.58579 9.58579C7.96086 9.21071 8.46957 9 9 9H19C19.5304 9 20.0391 9.21071 20.4142 9.58579C20.7893 9.96086 21 10.4696 21 11V17C21 17.5304 20.7893 18.0391 20.4142 18.4142C20.0391 18.7893 19.5304 19 19 19H9C8.46957 19 7.96086 18.7893 7.58579 18.4142C7.21071 18.0391 7 17.5304 7 17V11ZM12 14C12 14.5304 12.2107 15.0391 12.5858 15.4142C12.9609 15.7893 13.4696 16 14 16C14.5304 16 15.0391 15.7893 15.4142 15.4142C15.7893 15.0391 16 14.5304 16 14C16 13.4696 15.7893 12.9609 15.4142 12.5858C15.0391 12.2107 14.5304 12 14 12C13.4696 12 12.9609 12.2107 12.5858 12.5858C12.2107 12.9609 12 13.4696 12 14Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Total Cost') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ total_cost|money }} <span class="stat-unit">{{ current_user.currency }}</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% if total_allowance and total_allowance > 0 %}
-    <div class="dashboard-stat-card dashboard-stat-card--allowance bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Mileage Allowance') }}</dt>
-                        <dd class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">-{{ total_allowance|money }} <span class="stat-unit">{{ current_user.currency }}</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="dashboard-stat-card dashboard-stat-card--net-cost bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
-                    </svg>
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{{ _('Net Cost') }}</dt>
-                        <dd class="text-lg font-semibold text-gray-900 dark:text-white">{{ net_cost|money }} <span class="stat-unit">{{ current_user.currency }}</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-</div>
-
-{% set show_reminders_tab = current_user.show_menu_reminders is not defined or current_user.show_menu_reminders %}
-{% set show_notes_tab = current_user.show_menu_notes is not defined or current_user.show_menu_notes %}
-{% set show_rn_card = show_reminders_tab or show_notes_tab %}
-{% set default_tab = 'reminders' if show_reminders_tab else 'notes' %}
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-    <!-- Monthly Spending Chart -->
-    <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Monthly Spending') }}</h2>
-        <div style="height: 250px;">
-            <canvas id="spendingChart"></canvas>
-        </div>
-    </div>
-
-    {% if show_rn_card %}
-    <!-- Reminders & Notes (tabbed) -->
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col" id="rn-card" data-default-tab="{{ default_tab }}">
-        <div class="mb-4">
-            <div class="rn-tabs flex w-full rounded-lg p-0.5 bg-gray-100 dark:bg-gray-700" role="tablist">
-                {% if show_reminders_tab %}
-                <button type="button" role="tab" id="rn-tab-reminders" data-rn-tab="reminders" aria-controls="rn-panel-reminders"
-                        class="rn-tab flex-1 px-3 py-1.5 text-sm font-medium rounded-md text-center">
-                    {{ _('Reminders') }}{% if dashboard_reminders_total %} <span class="ml-1 text-xs opacity-70">{{ dashboard_reminders_total }}</span>{% endif %}
-                </button>
-                {% endif %}
-                {% if show_notes_tab %}
-                <button type="button" role="tab" id="rn-tab-notes" data-rn-tab="notes" aria-controls="rn-panel-notes"
-                        class="rn-tab flex-1 px-3 py-1.5 text-sm font-medium rounded-md text-center">
-                    {{ _('Notes') }}
-                </button>
-                {% endif %}
-            </div>
-        </div>
-
-        {% if show_reminders_tab %}
-        <div id="rn-panel-reminders" role="tabpanel" aria-labelledby="rn-tab-reminders" class="flex-1 flex flex-col" {% if default_tab != 'reminders' %}hidden{% endif %}>
-            {% if dashboard_reminders %}
-            <ul class="divide-y divide-gray-200 dark:divide-gray-700 flex-1">
-                {% for reminder in dashboard_reminders %}
-                {% set days = reminder.days_until_due() %}
-                <li class="py-2.5 flex items-start justify-between gap-3">
-                    <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full {% if days < 0 %}bg-red-500{% elif days <= 7 %}bg-amber-500{% else %}bg-gray-300 dark:bg-gray-600{% endif %}"></span>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ reminder.title }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ reminder.vehicle.name }}</p>
-                    </div>
-                    <span class="shrink-0 text-xs font-medium {% if days < 0 %}text-red-600 dark:text-red-400{% elif days <= 7 %}text-amber-600 dark:text-amber-400{% else %}text-gray-500 dark:text-gray-400{% endif %}">
-                        {% if days < 0 %}{{ _('%(num)d days overdue', num=days|abs) }}
-                        {% elif days == 0 %}{{ _('Due today') }}
-                        {% elif days == 1 %}{{ _('Due tomorrow') }}
-                        {% else %}{{ _('In %(num)d days', num=days) }}{% endif %}
-                    </span>
-                </li>
-                {% endfor %}
-            </ul>
+<div class="ds-stack">
+    <div class="ds-row">
+        {#- Hero: what this month (or year) cost, against the one before. -#}
+        {% call card(class='ds-grow-2 dashboard-hero') %}
+            {% if period_change is none %}
+                {% set change_label, change_tone = None, 'neutral' %}
+            {% elif period_change > 0 %}
+                {% set change_label, change_tone = '↑ ' ~ period_change ~ '%', 'danger' %}
+            {% elif period_change < 0 %}
+                {% set change_label, change_tone = '↓ ' ~ (period_change|abs) ~ '%', 'success' %}
             {% else %}
-            <div class="flex-1 flex items-center justify-center py-6"><p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No reminders') }}</p></div>
+                {% set change_label, change_tone = '0%', 'neutral' %}
             {% endif %}
-            <div class="flex items-center justify-between pt-3 mt-2 border-t border-gray-200 dark:border-gray-700">
-                {% if can_write('reminders') %}
-                <a href="{{ url_for('reminders.new') }}" class="text-sm text-primary-600 hover:text-primary-500">+ {{ _('Add Reminder') }}</a>
-                {% else %}<span></span>{% endif %}
-                <a href="{{ url_for('reminders.index') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-            </div>
-        </div>
-        {% endif %}
-
-        {% if show_notes_tab %}
-        <div id="rn-panel-notes" role="tabpanel" aria-labelledby="rn-tab-notes" class="flex-1 flex flex-col" {% if default_tab != 'notes' %}hidden{% endif %}>
-            {% if dashboard_notes %}
-            <ul class="divide-y divide-gray-200 dark:divide-gray-700 flex-1">
-                {% for note in dashboard_notes %}
-                <li class="py-2.5">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ note.title or (note.content[:60] ~ ('…' if note.content|length > 60 else '')) }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ note.vehicle.name }} - {{ note.date|format_date }}</p>
-                </li>
-                {% endfor %}
-            </ul>
+            {#- The badge compares like with like (see _same_point_before), so
+                the note names the figure it was measured against. -#}
+            {% if period == 'year' %}
+                {% set hero_label = _('Spent in %(year)s', year=period_start.year) %}
+                {% set hero_note = _('%(amount)s by this point last year', amount=(previous_total|money) ~ ' ' ~ currency) %}
             {% else %}
-            <div class="flex-1 flex items-center justify-center py-6"><p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No notes') }}</p></div>
+                {% set hero_label = _('Spent in %(month)s', month=period_start|dateformat('LLLL')) %}
+                {% set hero_note = _('%(amount)s by this point last month', amount=(previous_total|money) ~ ' ' ~ currency) %}
             {% endif %}
-            <div class="flex items-center justify-between pt-3 mt-2 border-t border-gray-200 dark:border-gray-700">
-                {% if can_write('notes') %}
-                <a href="{{ url_for('notes.new') }}" class="text-sm text-primary-600 hover:text-primary-500">+ {{ _('Add Note') }}</a>
-                {% else %}<span></span>{% endif %}
-                <a href="{{ url_for('notes.index') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
+            {{ stat(hero_label, period_total|money, unit=currency, note=hero_note, hero=True, badge_label=change_label, badge_tone=change_tone) }}
 
-    <!-- Expenses by Category (#145): always shown, with an empty state -->
-    <div class="lg:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Expenses by Category') }}</h2>
-        {% if expenses_by_category %}
-        <div style="height: 250px;">
-            <canvas id="categoryChart"></canvas>
-        </div>
-        {% else %}
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No expenses yet.') }}</p>
-        {% endif %}
-    </div>
-
-    <!-- Cheapest Stations Widget -->
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Cheapest Fuel') }}</h2>
-            <a href="{{ url_for('stations.cheapest') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-        </div>
-        {% if cheapest_stations %}
-        <ul class="space-y-3">
-            {% for price in cheapest_stations %}
-            <li class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    {% if loop.index == 1 %}
-                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 text-xs font-bold">1</span>
-                    {% else %}
-                    <span class="inline-flex items-center justify-center w-5 h-5 text-gray-400 text-xs">{{ loop.index }}</span>
-                    {% endif %}
-                    <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate" style="max-width: 120px;">{{ price.station.name }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ price.fuel_type|fuel_type_label }}</p>
-                    </div>
-                </div>
-                <p class="text-sm font-semibold {% if loop.index == 1 %}text-green-600 dark:text-green-400{% else %}text-gray-900 dark:text-white{% endif %}">
-                    {{ "%.3f"|format(price.price_per_unit) }}
-                </p>
-            </li>
+            {#- With a single month (January, in year view) the one column
+                would only repeat the figure above. -#}
+            {% if month_totals|length > 1 %}
+            {% set bars = [] %}
+            {% for month, total in month_totals %}
+                {% set _appended = bars.append({'label': month|dateformat('LLL'), 'value': total,
+                                        'display': (total|money) ~ ' ' ~ currency, 'current': loop.last}) %}
             {% endfor %}
-        </ul>
-        {% else %}
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No price data yet. Add fuel stations and log fuel to track prices.') }}</p>
-        {% endif %}
-    </div>
-</div>
+            {{ month_bars(bars, _('Monthly Spending')) }}
+            {% endif %}
 
-<!-- Your Vehicles -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mt-6">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Your Vehicles') }}</h2>
-        {% if can_write('vehicles') %}
-        <a href="{{ url_for('vehicles.new') }}" class="text-sm text-primary-600 hover:text-primary-500">+ {{ _('Add') }}</a>
-        {% endif %}
-    </div>
-    {% if vehicles %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {% for vehicle in vehicles %}
-        <a href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}"
-           class="group flex flex-row sm:flex-col rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-primary-400 hover:shadow-md transition-all">
-            <div class="h-20 w-24 shrink-0 sm:h-32 sm:w-auto bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                {% if vehicle.image_filename %}
-                <img src="{{ url_for('api.uploaded_file', filename=vehicle.image_filename) }}"
-                     alt="{{ vehicle.name }}"
-                     class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200">
+            {% if period_total > 0 %}
+            {% set share = namespace(fuel=0, charging=0) %}
+            {% set share.fuel = (period_split.fuel / period_total * 100)|round|int %}
+            {% set share.charging = (period_split.charging / period_total * 100)|round|int %}
+            {#- A type with nothing spent stays out of the bar and its legend. -#}
+            {% set split_items = [
+                {'label': _('Fuel'), 'value': period_split.fuel, 'display': share.fuel ~ '%', 'series': 'accent'},
+                {'label': _('Charging'), 'value': period_split.charging, 'display': share.charging ~ '%', 'series': 'charging'},
+                {'label': _('Other Expenses'), 'value': period_split.other, 'display': (100 - share.fuel - share.charging) ~ '%', 'series': 'other'},
+            ] | selectattr('value') | list %}
+            <div class="dashboard-hero__split">
+                {{ split_bar(split_items, _('Spending by type')) }}
+            </div>
+            {% endif %}
+        {% endcall %}
+
+        {% if show_reminders %}
+        <section class="ds-card ds-grow-1 dashboard-attention" id="rn-card">
+            <div class="ds-card__header">
+                <h2 class="ds-card__title">{{ _('Needs attention') }}{% if dashboard_reminders_total %} {{ badge(dashboard_reminders_total) }}{% endif %}</h2>
+                <a class="ds-card__action" href="{{ url_for('reminders.index') }}">{{ _('View all') }}</a>
+            </div>
+            <div class="ds-card__body">
+                {% if dashboard_reminders %}
+                <ul class="ds-attention-list">
+                    {% for reminder in dashboard_reminders %}
+                    {% set days = reminder.days_until_due() %}
+                    {% if days < 0 %}{% set due = _('%(num)d days overdue', num=days|abs) %}
+                    {% elif days == 0 %}{% set due = _('Due today') %}
+                    {% elif days == 1 %}{% set due = _('Due tomorrow') %}
+                    {% else %}{% set due = _('In %(num)d days', num=days) %}{% endif %}
+                    {{ attention(reminder.title, reminder.vehicle.name ~ ' · ' ~ due,
+                                 'danger' if days < 0 else ('warning' if days <= 7 else 'neutral'),
+                                 'alert' if days < 0 else 'calendar') }}
+                    {% endfor %}
+                </ul>
+                {% elif open_reminders_total %}
+                {{ empty_state(_('All good'), _('Nothing due in the next %(num)d days', num=attention_days), 'check') }}
                 {% else %}
-                <svg class="h-10 w-10 sm:h-14 sm:w-14 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    {% if vehicle.vehicle_type in ('car', 'hatchback', 'station_wagon') %}
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
-                    {% elif vehicle.vehicle_type == 'motorbike' %}
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    {% else %}
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
-                    {% endif %}
-                </svg>
+                {{ empty_state(_('All good'), _('No reminders'), 'check') }}
+                {% endif %}
+                {% if can_write('reminders') %}
+                <div class="dashboard-card-footer">
+                    {{ button(_('Add Reminder'), href=url_for('reminders.new'), variant='ghost', size='sm', icon_name='plus') }}
+                </div>
                 {% endif %}
             </div>
-            <div class="p-3 flex-1 min-w-0 self-center sm:self-auto">
-                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ vehicle.name }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ vehicle.make }} {{ vehicle.model }}{% if vehicle.year %} · {{ vehicle.year }}{% endif %}</p>
-                {% if vehicle.fuel_type %}
-                <span class="inline-block mt-1.5 text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 ">{{ vehicle.fuel_type|fuel_type_label }}</span>
-                {% endif %}
-            </div>
-        </a>
-        {% endfor %}
+        </section>
+        {% endif %}
     </div>
-    {% else %}
-{% if can_write('vehicles') %}
-<a href="{{ url_for('vehicles.new') }}" class="text-primary-600 hover:text-primary-500">{{ _('Add your first vehicle') }}</a>
-{% endif %}</p>
-    {% endif %}
-</div>
 
-<!-- Recent Activity -->
-<div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Recent Fuel Logs') }}</h2>
-            <a href="{{ url_for('fuel.index') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-        </div>
-        {% if recent_logs %}
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for log in recent_logs %}
-            <li class="py-3">
-                <div class="flex justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ log.vehicle.name }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ log.date|format_date }} - {{ "%.1f"|format(log.volume or 0) }} {{ current_user.volume_unit }}</p>
-                    </div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ (log.total_cost or 0)|money }} {{ current_user.currency }}</p>
+    <div class="ds-row">
+        {#- The last complete month (or year): how far, and what each unit of
+            it cost. A fleet that mixes engine hours with distance gets the
+            total without a per-unit cost, as in All time below (#324). -#}
+        {% call card(class='ds-grow-even') %}
+            {% if period == 'year' %}
+                {% set driven_label = _('Driven in %(year)s', year=driven_start.year) %}
+            {% else %}
+                {% set driven_label = _('Driven in %(month)s', month=driven_start|dateformat('LLLL')) %}
+            {% endif %}
+            {#- The period's own cost per unit is what the card is about, so it
+                stands out; the all-time figure follows on the same line, in
+                the same unit, for scale. -#}
+            {% set driven_rate, all_time_rate, all_time_short = None, None, None %}
+            {% if total_distance_unit and driven_cost_per %}
+                {% set driven_rate = _('%(cost)s per %(unit)s',
+                                       cost=(driven_cost_per|money) ~ ' ' ~ currency, unit=total_distance_unit) %}
+            {% endif %}
+            {% if total_distance_unit and cost_per_distance %}
+                {% set all_time_rate = _('All time: %(cost)s per %(unit)s',
+                                         cost=(cost_per_distance|money) ~ ' ' ~ currency, unit=total_distance_unit) %}
+                {% set all_time_short = _('all time %(all_time)s', all_time=cost_per_distance|money) %}
+            {% endif %}
+            {{ stat(driven_label, (driven|round|int)|groupnum, unit=total_distance_unit or _('mixed units'),
+                    note=driven_rate or all_time_rate, note_tone='accent' if driven_rate else None,
+                    extra_note=all_time_short if driven_rate else None) }}
+        {% endcall %}
+        {% call card(class='ds-grow-even') %}
+            {% if period == 'year' %}
+                {{ stat(_('Average per month'), month_average|money, unit=currency) }}
+            {% else %}
+                {{ stat(_('This year'), year_to_date|money, unit=currency,
+                        note=_('On track for %(amount)s', amount=(year_projection|money) ~ ' ' ~ currency) if year_projection else None) }}
+            {% endif %}
+        {% endcall %}
+        {#- Only when stations disagree on price (see _cheapest_price): where
+            the state fixes the price, or with one station, it says nothing. -#}
+        {% if cheapest_price %}
+        {% call card(class='ds-grow-even') %}
+            {{ stat(_('Cheapest Fuel'), '%.3f'|format(cheapest_price.price_per_unit), unit=currency, note=cheapest_price.station.name ~ ' · ' ~ (cheapest_price.fuel_type|fuel_type_label)) }}
+            <a class="ds-card__action dashboard-stat-link" href="{{ url_for('stations.cheapest') }}">{{ _('View all') }}</a>
+        {% endcall %}
+        {% endif %}
+    </div>
+
+    {% call card(_('Your Vehicles'), action_label=_('Manage'), action_href=url_for('vehicles.index'), flush=True) %}
+        {% if vehicle_rows %}
+        <ul class="ds-list">
+            {% for row in vehicle_rows %}
+            {% set vehicle = row.vehicle %}
+            {#- The standard list row: lead | main | meta | actions. The meta
+                cell renders even when empty so the badge keeps its column. -#}
+            <li class="ds-list__item">
+                <span class="ds-list__lead" aria-hidden="true">{{ icon('car', 16) }}</span>
+                <div class="ds-list__main">
+                    <h3 class="ds-list__title"><a href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}">{{ vehicle.name }}</a></h3>
+                    <span class="ds-list__sub">{{ vehicle.make }} {{ vehicle.model }}{% if vehicle.year %} · {{ vehicle.year }}{% endif %}</span>
+                </div>
+                <div class="ds-list__meta">
+                    {%- if row.odometer %}<strong class="dashboard-odometer" title="{{ _('Odometer') }}">{{ row.odometer|groupnum }} {{ row.reading_unit }}</strong>{% endif %}
+                    {%- if row.consumption %}<small>{{ '%.1f'|format(row.consumption) }} {{ row.consumption_unit }}</small>{% endif -%}
+                </div>
+                <div class="ds-list__actions">
+                    {% if row.status == 'overdue' %}{{ badge(_('Overdue'), 'danger') }}
+                    {% elif row.status == 'soon' %}{{ badge(_('Due soon'), 'warning') }}
+                    {% else %}{{ badge(_('All good'), 'success') }}{% endif %}
                 </div>
             </li>
             {% endfor %}
         </ul>
         {% else %}
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No fuel logs yet.') }}</p>
+        {{ empty_state(_('Your Vehicles'), None, 'car', _('Add your first vehicle') if can_write('vehicles') else None, url_for('vehicles.new')) }}
+        {% endif %}
+    {% endcall %}
+
+    {% call card(_('Recent activity'), flush=True) %}
+        {% if recent_activity %}
+        <div class="ds-table-wrap">
+            <table class="ds-table ds-table--stack">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ _('Date') }}</th>
+                        <th scope="col">{{ _('Type') }}</th>
+                        <th scope="col">{{ _('Vehicle') }}</th>
+                        <th scope="col">{{ _('Details') }}</th>
+                        <th scope="col" class="ds-num">{{ _('Odometer') }}</th>
+                        <th scope="col" class="ds-num">{{ _('Amount') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in recent_activity %}
+                    {% set entry = row.entry %}
+                    <tr>
+                        <td data-cell="meta" class="dashboard-date">{{ row.date|format_date }}</td>
+                        <td>
+                            {% if row.kind == 'fuel' %}{{ badge(_('Fuel'), 'accent', square=True) }}
+                            {% elif row.kind == 'charging' %}{{ badge(_('Charging'), 'charging', square=True) }}
+                            {% else %}{{ badge(row.label, square=True) }}{% endif %}
+                        </td>
+                        <td data-cell="meta">{{ row.vehicle.name }}</td>
+                        <td data-cell="title">
+                            {% if row.kind == 'fuel' %}{{ '%.1f'|format(entry.volume or 0) }} {{ current_user.volume_unit }}{% if entry.station %} · {{ entry.station }}{% endif %}
+                            {% elif row.kind == 'charging' %}{{ '%.1f'|format(entry.kwh_added or 0) }} kWh{% if entry.location %} · {{ entry.location }}{% endif %}
+                            {% else %}{{ entry.description }}{% endif %}
+                        </td>
+                        <td class="ds-num ds-muted">{% if row.odometer %}{{ row.odometer|groupnum }} {{ row.vehicle.get_reading_unit() }}{% endif %}</td>
+                        <td data-cell="value" class="ds-num"><strong>{{ row.amount|money }}</strong> {{ currency }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        {{ empty_state(_('Recent activity'), _('No fuel logs yet.'), 'inbox') }}
+        {% endif %}
+    {% endcall %}
+
+    <div class="ds-row">
+        {#- Expenses by Category (#145): always shown, with an empty state -#}
+        {% call card(_('Expenses by Category'), class='ds-grow-2') %}
+            {% if expenses_by_category %}
+            <div class="dashboard-chart"><canvas id="categoryChart"></canvas></div>
+            {% else %}
+            <p class="ds-muted">{{ _('No expenses yet.') }}</p>
+            {% endif %}
+        {% endcall %}
+
+        {% if show_notes %}
+        {% call card(_('Notes'), action_label=_('View all'), action_href=url_for('notes.index'), class='ds-grow-1') %}
+            {% if dashboard_notes %}
+            <ul class="dashboard-notes">
+                {% for note in dashboard_notes %}
+                <li>
+                    <p class="dashboard-notes__title">{{ note.title or (note.content[:60] ~ ('…' if note.content|length > 60 else '')) }}</p>
+                    <p class="ds-muted dashboard-notes__meta">{{ note.vehicle.name }} · {{ note.date|format_date }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="ds-muted">{{ _('No notes') }}</p>
+            {% endif %}
+            {% if can_write('notes') %}
+            <div class="dashboard-card-footer">
+                {{ button(_('Add Note'), href=url_for('notes.new'), variant='ghost', size='sm', icon_name='plus') }}
+            </div>
+            {% endif %}
+        {% endcall %}
         {% endif %}
     </div>
 
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Recent Expenses') }}</h2>
-            <a href="{{ url_for('expenses.index') }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-        </div>
-        {% if recent_expenses %}
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for expense in recent_expenses %}
-            <li class="py-3">
-                <div class="flex justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ expense.description }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ expense.vehicle.name }} - {{ expense.date|format_date }}</p>
-                    </div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ expense.cost|money }} {{ current_user.currency }}</p>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No expenses yet.') }}</p>
-        {% endif %}
-    </div>
+    {% call card(_('All time')) %}
+        <dl class="ds-facts">
+            <div><dt>{{ _('Total Cost') }}</dt><dd>{{ total_cost|money }} <span>{{ currency }}</span></dd></div>
+            <div><dt>{{ _('Total Fuel Cost') }}</dt><dd>{{ total_fuel_cost|money }} <span>{{ currency }}</span></dd></div>
+            {% if total_charging_cost and total_charging_cost > 0 %}
+            <div><dt>{{ _('Total Charging Cost') }}</dt><dd>{{ total_charging_cost|money }} <span>{{ currency }}</span></dd></div>
+            {% endif %}
+            <div><dt>{{ _('Other Expenses') }}</dt><dd>{{ total_expense_cost|money }} <span>{{ currency }}</span></dd></div>
+            <div><dt>{{ _('Total Distance') }}</dt><dd>{{ total_distance|groupnum }} {% if total_distance_unit %}<span>{{ total_distance_unit }}</span>{% else %}<span title="{{ _('This total covers vehicles metered in distance and in engine hours.') }}">{{ _('mixed units') }}</span>{% endif %}</dd></div>
+            {% if total_allowance and total_allowance > 0 %}
+            <div><dt>{{ _('Mileage Allowance') }}</dt><dd class="ds-facts__positive">-{{ total_allowance|money }} <span>{{ currency }}</span></dd></div>
+            <div><dt>{{ _('Net Cost') }}</dt><dd>{{ net_cost|money }} <span>{{ currency }}</span></dd></div>
+            {% endif %}
+        </dl>
+    {% endcall %}
 </div>
 </div>
 
 <script>
 {% include 'partials/expense_chart.js' %}
 document.addEventListener('DOMContentLoaded', function() {
-    const rnCard = document.getElementById('rn-card');
-    if (rnCard) {
-        const tabs = rnCard.querySelectorAll('[data-rn-tab]');
-        const select = function(name) {
-            tabs.forEach(function(t) {
-                const on = t.dataset.rnTab === name;
-                t.setAttribute('aria-selected', on ? 'true' : 'false');
-                t.tabIndex = on ? 0 : -1;
-                const panel = document.getElementById('rn-panel-' + t.dataset.rnTab);
-                if (panel) panel.hidden = !on;
-            });
-            try { localStorage.setItem('may-dash-rn-tab', name); } catch (e) {}
-        };
-        tabs.forEach(function(t) { t.addEventListener('click', function() { select(t.dataset.rnTab); }); });
-        let saved = null;
-        try { saved = localStorage.getItem('may-dash-rn-tab'); } catch (e) {}
-        const known = Array.from(tabs).map(function(t) { return t.dataset.rnTab; });
-        select(known.indexOf(saved) !== -1 ? saved : rnCard.dataset.defaultTab);
+    // Greet by the browser's clock, which knows the user's time zone.
+    var greetings = document.getElementById('dashboard-greetings');
+    var title = document.querySelector('.dashboard .ds-page-header__title');
+    if (greetings && title) {
+        var h = new Date().getHours();
+        title.textContent = greetings.dataset[h >= 5 && h < 12 ? 'morning' : (h >= 12 && h < 18 ? 'afternoon' : 'evening')];
     }
 
     const currency = {{ (current_user.currency or '')|tojson }};
     const categoryEl = document.getElementById('categoryChart');
     if (categoryEl) {
         const categoryData = {{ expenses_by_category | tojson }};
-        createExpenseCategoryChart(categoryEl, categoryData, currency);
+        createExpenseCategoryChart(categoryEl, categoryData, currency, {{ _('Charging')|tojson }});
     }
-
-    const ctx = document.getElementById('spendingChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {{ monthly_data.labels | tojson }},
-            datasets: [
-                {
-                    label: {{ _('Fuel')|tojson }},
-                    data: {{ monthly_data.fuel | tojson }},
-                    backgroundColor: 'rgba(250, 204, 21, 0.8)',
-                    borderRadius: 4
-                },
-                {
-                    label: {{ _('Expenses')|tojson }},
-                    data: {{ monthly_data.expenses | tojson }},
-                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                    borderRadius: 4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: (context) => context.dataset.label + ': ' + context.formattedValue + ' ' + currency
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    stacked: true
-                },
-                y: {
-                    stacked: true,
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: currency
-                    }
-                }
-            }
-        }
-    });
 });
 </script>
 {% endblock %}

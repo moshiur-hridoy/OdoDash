@@ -131,7 +131,7 @@ def seed_demo_data(app):
 
 def _seed(db):
     from app.models import (
-        AppSettings, ChargingSession, Expense, FuelLog, MaintenanceSchedule,
+        AppSettings, Expense, FuelLog, MaintenanceSchedule,
         Reminder, Trip, User, Vehicle,
     )
 
@@ -149,11 +149,11 @@ def _seed(db):
                       make='Toyota', model='Corolla', year=2019,
                       registration='DEMO 19', fuel_type='petrol', tank_capacity=50,
                       purchase_date=start - timedelta(days=900))
-    tesla = Vehicle(owner=user, name='Weekend EV', vehicle_type='car',
-                    make='Tesla', model='Model 3', year=2022,
-                    registration='EV 22', fuel_type='electric', battery_capacity=60,
-                    purchase_date=start - timedelta(days=200))
-    db.session.add_all([corolla, tesla])
+    bike = Vehicle(owner=user, name='Weekend Ride', vehicle_type='motorbike',
+                   make='Honda', model='CB500F', year=2021,
+                   registration='BIKE 21', fuel_type='petrol', tank_capacity=17,
+                   purchase_date=start - timedelta(days=200))
+    db.session.add_all([corolla, bike])
 
     # A fill-up every two to three weeks, with the price drifting over the year.
     odometer = 42_000.0
@@ -171,26 +171,19 @@ def _seed(db):
         day += timedelta(days=rng.randint(14, 21))
     corolla_odometer = odometer
 
-    # Mostly overnight charging at home, with the odd motorway fast charge.
-    odometer = 18_000.0
+    # A shorter fill-up cycle for the bike: small tank, thriftier, mostly weekend rides.
+    odometer = 8_000.0
     day = start
     while day <= today:
-        fast = rng.random() < 0.2
-        odometer += rng.uniform(180, 320)
-        start_soc = rng.randint(15, 40)
-        end_soc = rng.choice([80, 85, 90]) if fast else 90
-        kwh = round(60 * (end_soc - start_soc) / 100 * 1.08, 1)
-        rate = 0.42 if fast else 0.15
-        db.session.add(ChargingSession(
-            vehicle=tesla, user=user, date=day, odometer=round(odometer),
-            start_time=time(14, 10) if fast else time(22, 30),
-            end_time=time(14, 45) if fast else time(5, 30),
-            kwh_added=kwh, start_soc=start_soc, end_soc=end_soc, cost_per_kwh=rate,
-            total_cost=round(kwh * rate, 2),
-            charger_type='dcfc' if fast else 'home',
-            location='Ionity Services' if fast else 'Home',
-            network='Ionity' if fast else None))
-        day += timedelta(days=rng.randint(5, 9))
+        distance = rng.uniform(220, 340)
+        odometer += distance
+        litres = round(distance * rng.uniform(3.9, 4.8) / 100, 2)
+        price = round(1.64 + 0.15 * rng.random() + 0.08 * ((day - start).days / 365), 3)
+        db.session.add(FuelLog(vehicle=bike, user=user, date=day, odometer=round(odometer),
+                               volume=litres, price_per_unit=price,
+                               total_cost=round(litres * price, 2), is_full_tank=True,
+                               station=rng.choice(stations)))
+        day += timedelta(days=rng.randint(9, 15))
 
     def expense(vehicle, days_ago, category, description, cost, vendor=None, odometer=None):
         db.session.add(Expense(vehicle=vehicle, user=user, date=today - timedelta(days=days_ago),
@@ -204,12 +197,12 @@ def _seed(db):
     expense(corolla, 120, 'inspection', 'Annual inspection', 54.85, 'City Garage')
     expense(corolla, 75, 'maintenance', 'Oil and filter change', 92.00, 'QuickLube', 54_600)
     expense(corolla, 40, 'accessories', 'All-weather floor mats', 49.99, 'Halfords')
-    expense(tesla, 330, 'insurance', 'Annual insurance', 845.00, 'Tesla Insurance')
-    expense(tesla, 210, 'maintenance', 'Tyre rotation', 45.00, 'Tesla Service')
-    expense(tesla, 95, 'accessories', 'Home wallbox install', 690.00, 'Volt Electric')
+    expense(bike, 330, 'insurance', 'Annual insurance', 310.00, 'Admiral')
+    expense(bike, 210, 'maintenance', 'Chain clean and lube', 35.00, 'Moto Garage', 11_200)
+    expense(bike, 95, 'accessories', 'Riding gloves', 89.00, 'Revzilla')
     for days_ago in range(20, 360, 30):
         expense(corolla, days_ago, 'parking', 'City centre parking', round(rng.uniform(6, 18), 2))
-        expense(tesla, days_ago + 9, 'cleaning', 'Car wash', 12.00, 'Splash Wash')
+        expense(bike, days_ago + 9, 'cleaning', 'Bike wash', 8.00, 'Splash Wash')
     for days_ago in range(35, 360, 60):
         expense(corolla, days_ago, 'tolls', 'Motorway toll', round(rng.uniform(4, 11), 2))
 
@@ -231,7 +224,7 @@ def _seed(db):
                  due_date=today + timedelta(days=25), recurrence='yearly'),
         Reminder(vehicle=corolla, user_rel=user, title='Annual inspection', reminder_type='mot',
                  due_date=today + timedelta(days=245), recurrence='yearly'),
-        Reminder(vehicle=tesla, user_rel=user, title='Tyre rotation', reminder_type='tire_change',
+        Reminder(vehicle=bike, user_rel=user, title='Chain service', reminder_type='service',
                  due_date=today + timedelta(days=12)),
         MaintenanceSchedule(vehicle=corolla, user=user, name='Oil change',
                             maintenance_type='oil_change', interval_km=8_000, interval_months=12,

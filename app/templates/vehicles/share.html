@@ -1,49 +1,45 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, card, field, empty_state %}
 {% block title %}{{ _('Share') }} {{ vehicle.name }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">&larr; Back to {{ vehicle.name }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ _('Share Vehicle') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ _('Allow other users to view and add logs to this vehicle') }}</p>
-    </div>
+<div class="ds share-page">
+{{ back_link(vehicle.name, url_for('vehicles.view', vehicle_id=vehicle.id)) }}
+{{ page_header(_('Share Vehicle'), subtitle=_('Allow other users to view and add logs to this vehicle')) }}
 
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Add User') }}</h2>
-        <form method="POST" class="flex gap-4">
+<div class="ds-stack">
+    {% call card(_('Add User')) %}
+        <form method="POST" class="share-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <input type="text" name="username" placeholder="{{ _('Enter username') }}"
-                   class="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                {{ _('Share') }}
-            </button>
+            {% call field(_('Username'), 'share-username', required=True) %}
+            <input type="text" name="username" id="share-username" class="ds-control" placeholder="{{ _('Enter username') }}"
+                   required autocomplete="off" autocapitalize="none" spellcheck="false">
+            {% endcall %}
+            {{ button(_('Share'), type='submit', icon_name='plus') }}
         </form>
-    </div>
+    {% endcall %}
 
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Shared With') }}</h2>
-        </div>
+    {% call card(_('Shared With')) %}
         {% if shared_users %}
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+        <ul class="share-list">
             {% for user in shared_users %}
-            <li class="px-6 py-4 flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ user.username }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</p>
+            <li class="share-user">
+                <span class="ds-avatar" aria-hidden="true">{{ user.username[:1] }}</span>
+                <div class="share-user__main">
+                    <p class="share-user__name">{{ user.username }}</p>
+                    {% if user.email %}<p class="share-user__email">{{ user.email }}</p>{% endif %}
                 </div>
                 <form method="POST" action="{{ url_for('vehicles.unshare', vehicle_id=vehicle.id, user_id=user.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="text-sm text-red-600 hover:text-red-500">{{ _('Remove') }}</button>
+                    {{ button(_('Remove'), type='submit', variant='danger', size='sm') }}
                 </form>
             </li>
             {% endfor %}
         </ul>
         {% else %}
-        <p class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ _('This vehicle is not shared with anyone yet.') }}</p>
+        <p class="share-empty">{{ _('This vehicle is not shared with anyone yet.') }}</p>
         {% endif %}
-    </div>
+    {% endcall %}
+</div>
 </div>
 {% endblock %}

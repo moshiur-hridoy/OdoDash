@@ -223,6 +223,66 @@ class TestVehicleOdometerUnit:
         assert abs(v.get_total_distance('mi') - 621.371) < 0.05
 
 
+class TestDistanceFromEverySource:
+    """#384 / #412 — distance reads every odometer reading, not fuel logs alone."""
+
+    def _ev(self, test_user):
+        ev = Vehicle(owner_id=test_user.id, name='EV', vehicle_type='car',
+                     fuel_type='electric', odometer_unit='km')
+        db.session.add(ev)
+        db.session.commit()
+        return ev
+
+    def _charge(self, test_user, vehicle, day, odometer):
+        return ChargingSession(vehicle_id=vehicle.id, user_id=test_user.id,
+                               date=day, odometer=odometer, kwh_added=20.0)
+
+    def test_an_ev_logged_only_by_charging_has_a_distance(self, app, test_user):
+        ev = self._ev(test_user)
+        db.session.add_all([self._charge(test_user, ev, date(2026, 1, 1), 10000),
+                            self._charge(test_user, ev, date(2026, 2, 1), 11250)])
+        db.session.commit()
+        assert ev.get_total_distance() == 1250
+        assert abs(ev.get_total_distance('mi') - 1250 * 0.621371) < 0.01
+        # Before #384 there was no distance, so no cost per km at all.
+        assert ev.get_cost_per_distance() == 0
+
+    def test_every_source_widens_the_span(self, app, test_user, sample_vehicle):
+        db.session.add_all([
+            FuelLog(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=date(2026, 1, 10),
+                    odometer=10500, volume=40, is_full_tank=True),
+            Expense(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=date(2026, 1, 1),
+                    category='maintenance', description='Service', cost=90, odometer=10000),
+            Trip(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=date(2026, 2, 1),
+                 start_odometer=10600, end_odometer=10900, purpose='business'),
+            self._charge(test_user, sample_vehicle, date(2026, 2, 5), 0),  # no reading: ignored
+        ])
+        db.session.commit()
+        assert sample_vehicle.get_total_distance() == 900
+
+    def test_one_reading_is_no_distance(self, app, test_user):
+        ev = self._ev(test_user)
+        db.session.add(self._charge(test_user, ev, date(2026, 1, 1), 10000))
+        db.session.commit()
+        assert ev.get_total_distance() == 0
+
+    def test_distance_between_uses_the_last_reading_before(self, app, test_user):
+        ev = self._ev(test_user)
+        db.session.add_all([self._charge(test_user, ev, date(2026, 9, 28), 10000),
+                            self._charge(test_user, ev, date(2026, 10, 9), 10400),
+                            self._charge(test_user, ev, date(2026, 10, 27), 11100),
+                            self._charge(test_user, ev, date(2026, 11, 3), 11300)])
+        db.session.commit()
+        october = (datetime(2026, 10, 1), datetime(2026, 11, 1))
+        assert ev.get_distance_between(*october) == 1100
+        assert abs(ev.get_distance_between(*october, distance_unit='mi') - 1100 * 0.621371) < 0.01
+        # No reading before the window: the first one inside it is the baseline.
+        assert ev.get_distance_between(datetime(2026, 9, 1), datetime(2026, 10, 1)) == 0
+        assert ev.get_distance_between(datetime(2026, 9, 1), datetime(2026, 11, 1)) == 1100
+        # Nothing logged in the window.
+        assert ev.get_distance_between(datetime(2026, 12, 1), datetime(2027, 1, 1)) == 0
+
+
 class TestLastOdometerSources:
     """#286 — an odometer recorded against a maintenance expense counts too."""
 

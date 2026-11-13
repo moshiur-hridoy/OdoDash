@@ -17,6 +17,10 @@ OdoDash tracks fuel, expenses, reminders and maintenance across your whole fleet
 - **Active maintenance:** upstream bugs and useful PRs are merged here quickly.
 
 <p align="center">
+  <a href="https://ododashdemo.moshiur.space/"><b>Try the live demo</b></a> (login <code>demo</code> / <code>demo</code>, resets nightly) · <a href="https://moshiur-hridoy.github.io/OdoDash/">Website</a>
+</p>
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="screenshots/dashboard-dark.png">
     <img src="screenshots/dashboard-light.png" alt="OdoDash dashboard" width="100%">
@@ -62,6 +66,18 @@ Costs, distance, consumption and CO&#8322; sit in one place, with quick actions 
 </p>
 
 Units, currency, date format and language are per user, so a household can mix kilometres and miles, litres and gallons.
+
+## How it relates to May
+
+OdoDash started as a fork of [May](https://github.com/dannymcc/may) and keeps its data model, REST API and import format, so May backups restore directly. On top of that foundation OdoDash adds:
+
+- A redesigned interface: hairline cards, a shared chart theme, light and dark.
+- A custom accent colour with readable text on it.
+- Logging forms with fewer clicks and limits checked as you type.
+- A built-in public demo mode with seeded data (see the [demo guide](docs/demo.md)).
+- Upstream bug fixes and useful PRs merged quickly.
+
+Looking at other self-hosted options? [LubeLogger](https://github.com/hargata/lubelog) and [Hammond](https://github.com/AlfHou/hammond) are worth a look too. Pick the one whose interface and feature set suit you.
 
 ## Features
 
@@ -127,4 +143,4 @@ MIT License, see [LICENSE](LICENSE). The original May project is Copyright (c) 2
 
 ---
 
-**Made with ❤️ by [Danny McClelland](https://github.com/dannymcc) — rebranded and maintained as OdoDash by [moshiur-hridoy](https://github.com/moshiur-hridoy)**
+**OdoDash is a fork of [May](https://github.com/dannymcc/may), created by [Danny McClelland](https://github.com/dannymcc). Redesigned and maintained by [moshiur-hridoy](https://github.com/moshiur-hridoy).**

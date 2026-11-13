@@ -6,60 +6,80 @@ from app import db
 from app.utils import parse_decimal, parse_fuel_level, shared_reading_unit
 from flask import jsonify
 from app.models import Vehicle, Trip, TripTemplate, TRIP_PURPOSES
+from app.security import get_safe_redirect_url
 
 bp = Blueprint('trips', __name__, url_prefix='/trips')
+
+
+TRIPS_PER_PAGE = 50
 
 
 @bp.route('/')
 @login_required
 def index():
-    """List all trips with filters"""
+    """List trips, newest first, with vehicle / purpose / year filters."""
+    from app.routes.log_helpers import month_start, group_by_month, monthly_totals
+
     vehicles = current_user.get_all_vehicles()
-    vehicle_ids = [v.id for v in vehicles]
-
-    # Get filter parameters
-    vehicle_filter = request.args.get('vehicle', type=int)
-    purpose_filter = request.args.get('purpose')
+    selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    vehicle_ids = [selected_vehicle.id] if selected_vehicle else [v.id for v in vehicles]
+    purpose_labels = dict(TRIP_PURPOSES)
+    purpose_filter = request.args.get('purpose') if request.args.get('purpose') in purpose_labels else None
     year_filter = request.args.get('year', type=int)
+    page = request.args.get('page', 1, type=int)
 
-    # Base query
-    query = Trip.query.filter(Trip.vehicle_id.in_(vehicle_ids))
-
-    # Apply filters
-    if vehicle_filter:
-        query = query.filter(Trip.vehicle_id == vehicle_filter)
+    filters = [Trip.vehicle_id.in_(vehicle_ids)]
     if purpose_filter:
-        query = query.filter(Trip.purpose == purpose_filter)
+        filters.append(Trip.purpose == purpose_filter)
     if year_filter:
-        query = query.filter(db.extract('year', Trip.date) == year_filter)
+        filters.append(db.extract('year', Trip.date) == year_filter)
+    query = Trip.query.filter(*filters)
 
     # Same-day trips have no time component, so fall back to the odometer
     # reading to keep them in driving order (most recent first)
-    trips = query.order_by(Trip.date.desc(), Trip.start_odometer.desc()).all()
+    pagination = query.order_by(Trip.date.desc(), Trip.start_odometer.desc(), Trip.id.desc()).paginate(
+        page=page, per_page=TRIPS_PER_PAGE, error_out=False)
+    trips = pagination.items
 
-    # Get available years for filter
     years = db.session.query(db.extract('year', Trip.date)).filter(
-        Trip.vehicle_id.in_(vehicle_ids)
+        Trip.vehicle_id.in_([v.id for v in vehicles])
     ).distinct().all()
     years = sorted([int(y[0]) for y in years if y[0]], reverse=True)
 
-    # Calculate totals
-    total_distance = sum(trip.distance for trip in trips)
-    business_distance = sum(trip.distance for trip in trips if trip.purpose == 'business')
+    # Totals over every matching trip, not just the page shown. An open trip
+    # (no end reading yet) has no distance.
+    distance = Trip.end_odometer - Trip.start_odometer
+    finished = Trip.end_odometer.isnot(None)
+
+    def distance_sum(*extra):
+        return db.session.query(db.func.sum(distance)).filter(*filters, finished, *extra).scalar() or 0
+
+    total_distance = distance_sum()
+    business_distance = distance_sum(Trip.purpose == 'business')
 
     # Totals over vehicles that meter differently would silently add engine
     # hours to miles, so only label the sum when they agree (#324).
+    trip_vehicle_ids = {vid for (vid,) in db.session.query(Trip.vehicle_id).filter(*filters).distinct()}
     total_distance_unit = shared_reading_unit(
-        [trip.vehicle for trip in trips], current_user.distance_unit
-    ) if trips else current_user.distance_unit
+        [v for v in vehicles if v.id in trip_vehicle_ids], current_user.distance_unit
+    ) if trip_vehicle_ids else current_user.distance_unit
+
+    totals = {}
+    if total_distance_unit:
+        totals = monthly_totals(Trip, distance, vehicle_ids,
+                                [month_start(t.date) for t in trips if t.date],
+                                *filters[1:], finished)
 
     return render_template('trips/index.html',
                            total_distance_unit=total_distance_unit,
                            trips=trips,
+                           trip_count=pagination.total,
+                           pagination=pagination,
+                           groups=group_by_month(trips, lambda t: t.date, totals),
                            vehicles=vehicles,
+                           selected_vehicle=selected_vehicle,
                            purposes=TRIP_PURPOSES,
                            years=years,
-                           vehicle_filter=vehicle_filter,
                            purpose_filter=purpose_filter,
                            year_filter=year_filter,
                            total_distance=total_distance,
@@ -204,7 +224,7 @@ def delete(trip_id):
     db.session.delete(trip)
     db.session.commit()
     flash(_('Trip deleted successfully'), 'success')
-    return redirect(url_for('trips.index'))
+    return redirect(get_safe_redirect_url(request.form.get('next'), 'trips.index'))
 
 
 @bp.route('/templates')

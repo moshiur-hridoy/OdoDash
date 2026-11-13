@@ -1,87 +1,54 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, password_input %}
+{% from 'components/forms.html' import form_actions, req %}
 {% from 'partials/password_rules.html' import password_rules, password_match %}
 {% block title %}{{ _('Create User') }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="sm:flex sm:items-center sm:justify-between mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Create User') }}</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Add a new user account') }}</p>
-        </div>
-        <a href="{{ url_for('auth.users') }}"
-           class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            {{ _('Back to Users') }}
-        </a>
-    </div>
+{%- set chosen_role = request.form.get('role', 'editor') -%}
+<div class="ds form-page">
+{{ back_link(_('Back to Users'), url_for('auth.settings') ~ '#users') }}
+{{ page_header(_('Create User'), subtitle=_('Add a new user account')) }}
 
-    <form method="POST">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg divide-y divide-gray-200 dark:divide-gray-700 mb-6">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Account Details') }}</h2>
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section" aria-labelledby="account-title">
+        <h2 class="form-section__title" id="account-title">{{ _('Account Details') }}</h2>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="username">{{ _('Username') }}{{ req() }}</label>
+                <input type="text" name="username" id="username" class="ds-control" required autocomplete="off" autocapitalize="none"
+                       value="{{ request.form.get('username', '') }}">
             </div>
-
-            <div class="p-6 space-y-4">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Username') }}</label>
-                    <input type="text" name="username" id="username" required value="{{ request.form.get('username', '') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Email') }}</label>
-                    <input type="email" name="email" id="email" required value="{{ request.form.get('email', '') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Password') }}</label>
-                        <input type="password" name="password" id="password" autocomplete="new-password" required
-                               class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {{ password_rules('password', 'confirm_password') }}
-                    </div>
-                    <div>
-                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Confirm Password') }}</label>
-                        <input type="password" name="confirm_password" id="confirm_password" autocomplete="new-password" required
-                               class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {{ password_match('confirm_password') }}
-                    </div>
-                </div>
-
-
-                <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Role') }}</label>
-                    <select name="role" id="role"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in roles %}
-                        <option value="{{ value }}"{% if value == request.form.get('role', 'editor') %} selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    <ul class="mt-2 space-y-1 text-xs text-gray-500 dark:text-gray-400">
-                        {% for value, label in roles %}
-                        <li><span class="font-medium">{{ label }}</span> — {{ role_descriptions[value] }}</li>
-                        {% endfor %}
-                    </ul>
-                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ _('Administrators always have full access, whatever role is set.') }}</p>
-                </div>
-
-                <div class="flex items-center">
-                    <input type="checkbox" name="is_admin" id="is_admin"{% if request.form.get('is_admin') == 'on' %} checked{% endif %}
-                           class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-                    <label for="is_admin" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Administrator') }}</label>
-                </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="email">{{ _('Email') }}{{ req() }}</label>
+                <input type="email" name="email" id="email" class="ds-control" required autocomplete="off"
+                       value="{{ request.form.get('email', '') }}">
             </div>
         </div>
-
-        <div class="flex justify-end">
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {{ _('Create User') }}
-            </button>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="password">{{ _('Password') }}{{ req() }}</label>
+                {{ password_input('password', attrs={'required': true, 'autocomplete': 'new-password'}) }}
+                {{ password_rules('password', 'confirm_password') }}
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="confirm_password">{{ _('Confirm Password') }}{{ req() }}</label>
+                {{ password_input('confirm_password', attrs={'required': true, 'autocomplete': 'new-password'}) }}
+                {{ password_match('confirm_password') }}
+            </div>
         </div>
-    </form>
+    </section>
+
+    <section class="ds-card form-section">
+        {% include 'auth/_user_role.html' %}
+        <label class="ds-switch">
+            <input type="checkbox" name="is_admin" id="is_admin"{% if request.form.get('is_admin') == 'on' %} checked{% endif %}>
+            {{ _('Administrator') }}
+        </label>
+    </section>
+
+    {{ form_actions(url_for('auth.settings') ~ '#users', _('Create User')) }}
+</form>
 </div>
 {% endblock %}

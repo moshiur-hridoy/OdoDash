@@ -1,107 +1,74 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import form_actions, req %}
 {% block title %}{% if part %}{{ _('Edit Part') }}{% else %}{{ _('Add Part') }}{% endif %} - {{ vehicle.name }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; {{ _('Back to parts') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{% if part %}{{ _('Edit Part') }}{% else %}{{ _('Add Part') }}{% endif %}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ vehicle.name }}</p>
-    </div>
+{%- set units = [('L', _('Liters (L)')), ('ml', _('Milliliters (ml)')), ('gal', _('Gallons (gal)')), ('qt', _('Quarts (qt)')),
+                 ('units', _('Units')), ('pcs', _('Pieces')), ('set', _('Set')), ('pair', _('Pair'))] -%}
+<div class="ds form-page">
+{{ back_link(_('Back to parts'), url_for('vehicles.parts', vehicle_id=vehicle.id)) }}
+{{ page_header(_('Edit Part') if part else _('Add Part'), subtitle=vehicle.name) }}
 
-    <form method="POST" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Part Details') }}</h2>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                    <label for="part_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Part Type') }} *</label>
-                    <select name="part_type" id="part_type" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in part_types %}
-                        <option value="{{ value }}" {% if part and part.part_type == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Name') }} *</label>
-                    <input type="text" name="name" id="name" required
-                           value="{{ part.name if part else '' }}"
-                           placeholder="e.g., Engine Oil, Oil Filter"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="specification" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Specification') }}</label>
-                    <input type="text" name="specification" id="specification"
-                           value="{{ part.specification if part else '' }}"
-                           placeholder="e.g., 10W-40, K&N KN-204, 205/55R16"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Oil viscosity, filter model, tire size, etc.') }}</p>
-                </div>
-
-                <div>
-                    <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Quantity') }}</label>
-                    <input type="number" name="quantity" id="quantity" step="0.1"
-                           value="{{ part.quantity if part else '' }}"
-                           placeholder="e.g., 3.5"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Unit') }}</label>
-                    <select name="unit" id="unit"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        <option value="">{{ _('Select unit...') }}</option>
-                        <option value="L" {% if part and part.unit == 'L' %}selected{% endif %}>{{ _('Liters (L)') }}</option>
-                        <option value="ml" {% if part and part.unit == 'ml' %}selected{% endif %}>{{ _('Milliliters (ml)') }}</option>
-                        <option value="gal" {% if part and part.unit == 'gal' %}selected{% endif %}>{{ _('Gallons (gal)') }}</option>
-                        <option value="qt" {% if part and part.unit == 'qt' %}selected{% endif %}>{{ _('Quarts (qt)') }}</option>
-                        <option value="units" {% if part and part.unit == 'units' %}selected{% endif %}>{{ _('Units') }}</option>
-                        <option value="pcs" {% if part and part.unit == 'pcs' %}selected{% endif %}>{{ _('Pieces') }}</option>
-                        <option value="set" {% if part and part.unit == 'set' %}selected{% endif %}>{{ _('Set') }}</option>
-                        <option value="pair" {% if part and part.unit == 'pair' %}selected{% endif %}>{{ _('Pair') }}</option>
-                    </select>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="part_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Part Number') }}</label>
-                    <input type="text" name="part_number" id="part_number"
-                           value="{{ part.part_number if part else '' }}"
-                           placeholder="e.g., OEM or aftermarket part number"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white font-mono focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="supplier_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Supplier URL') }}</label>
-                    <input type="url" name="supplier_url" id="supplier_url"
-                           value="{{ part.supplier_url if part else '' }}"
-                           placeholder="https://..."
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Link to purchase this part') }}</p>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Notes') }}</label>
-                    <textarea name="notes" id="notes" rows="3"
-                              placeholder="Any additional notes about this part..."
-                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ part.notes if part and part.notes else '' }}</textarea>
-                </div>
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section" aria-label="{{ _('Part Details') }}">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="part_type">{{ _('Part Type') }}{{ req() }}</label>
+                <select name="part_type" id="part_type" class="ds-control" required>
+                    {% for value, label in part_types %}<option value="{{ value }}"{% if part and part.part_type == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="name">{{ _('Name') }}{{ req() }}</label>
+                <input type="text" name="name" id="name" class="ds-control" required
+                       value="{{ part.name if part else '' }}" placeholder="{{ _('e.g., Engine Oil, Oil Filter') }}">
             </div>
         </div>
-
-        <div class="flex justify-end space-x-3">
-            <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}"
-               class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                {{ _('Cancel') }}
-            </a>
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {% if part %}{{ _('Save Changes') }}{% else %}{{ _('Add Part') }}{% endif %}
-            </button>
+        <div class="ds-field">
+            <label class="ds-field__label" for="specification">{{ _('Specification') }}</label>
+            <input type="text" name="specification" id="specification" class="ds-control"
+                   value="{{ part.specification if part and part.specification else '' }}" placeholder="10W-40, K&amp;N KN-204, 205/55R16">
+            <p class="form-hint">{{ _('Oil viscosity, filter model, tire size, etc.') }}</p>
         </div>
-    </form>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="quantity">{{ _('Quantity') }}</label>
+                <input type="number" name="quantity" id="quantity" class="ds-control" inputmode="decimal" step="0.1"
+                       value="{{ part.quantity if part and part.quantity is not none else '' }}" placeholder="3.5">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="unit">{{ _('Unit') }}</label>
+                <select name="unit" id="unit" class="ds-control">
+                    <option value="">{{ _('Select unit...') }}</option>
+                    {% for value, label in units %}<option value="{{ value }}"{% if part and part.unit == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section class="ds-card form-section">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="part_number">{{ _('Part Number') }}</label>
+                <input type="text" name="part_number" id="part_number" class="ds-control"
+                       value="{{ part.part_number if part and part.part_number else '' }}" placeholder="{{ _('e.g., OEM or aftermarket part number') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="supplier_url">{{ _('Supplier URL') }}</label>
+                <input type="url" name="supplier_url" id="supplier_url" class="ds-control" inputmode="url"
+                       value="{{ part.supplier_url if part and part.supplier_url else '' }}" placeholder="https://…">
+                <p class="form-hint">{{ _('Link to purchase this part') }}</p>
+            </div>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="notes">{{ _('Notes') }}</label>
+            <textarea name="notes" id="notes" rows="3" class="ds-control" placeholder="{{ _('Any additional notes about this part...') }}">{{ part.notes if part and part.notes else '' }}</textarea>
+        </div>
+    </section>
+
+    {{ form_actions(url_for('vehicles.parts', vehicle_id=vehicle.id), _('Save Changes') if part else _('Add Part')) }}
+</form>
 </div>
 {% endblock %}

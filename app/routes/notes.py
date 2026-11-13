@@ -5,21 +5,34 @@ from flask_babel import gettext as _
 from app import db
 from app.utils import parse_decimal
 from app.models import Vehicle, Note
+from app.security import get_safe_redirect_url
 
 bp = Blueprint('notes', __name__, url_prefix='/notes')
+
+NOTES_PER_PAGE = 50
 
 
 @bp.route('/')
 @login_required
 def index():
+    from app.routes.log_helpers import group_by_month
+
     vehicles = current_user.get_all_vehicles()
-    vehicle_ids = [v.id for v in vehicles]
+    selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    vehicle_ids = [selected_vehicle.id] if selected_vehicle else [v.id for v in vehicles]
 
-    notes = Note.query.filter(
+    pagination = Note.query.filter(
         Note.vehicle_id.in_(vehicle_ids)
-    ).order_by(Note.date.desc()).all()
+    ).order_by(Note.date.desc(), Note.id.desc()).paginate(
+        page=request.args.get('page', 1, type=int), per_page=NOTES_PER_PAGE, error_out=False)
+    notes = pagination.items
 
-    return render_template('notes/index.html', notes=notes, vehicles=vehicles)
+    return render_template('notes/index.html',
+                           notes=notes,
+                           pagination=pagination,
+                           groups=group_by_month(notes, lambda n: n.date),
+                           vehicles=vehicles,
+                           selected_vehicle=selected_vehicle)
 
 
 @bp.route('/new', methods=['GET', 'POST'])
@@ -137,4 +150,4 @@ def delete(note_id):
     if request.args.get('return_to') == 'vehicle':
         return redirect(url_for('vehicles.view', vehicle_id=vehicle_id))
 
-    return redirect(url_for('notes.index'))
+    return redirect(get_safe_redirect_url(request.form.get('next'), 'notes.index'))

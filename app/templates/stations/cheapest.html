@@ -1,83 +1,50 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, card, empty_state %}
 {% block title %}{{ _('Cheapest Fuel') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('stations.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; {{ _('Back to stations') }}</a>
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ _('Cheapest Fuel') }}</h1>
-    <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Stations ranked by most recent reported prices') }}</p>
-</div>
+{% set currency = current_user.currency %}
+<div class="ds">
+{{ back_link(_('Back to stations'), url_for('stations.index')) }}
+{% call page_header(_('Cheapest Fuel'), subtitle=_('Stations ranked by most recent reported prices')) %}
+    {% if can_write('stations') %}
+    {{ button(_('Add a Station'), href=url_for('stations.new'), variant='secondary', icon_name='plus') }}
+    {% endif %}
+{% endcall %}
 
 {% if prices_by_type %}
-{% for fuel_type, prices in prices_by_type.items() %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ fuel_type|fuel_type_label }}</h2>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for price in prices[:10] %}
-        <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        {% if loop.index == 1 %}
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 text-xs font-bold">1</span>
-                        {% elif loop.index == 2 %}
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300 text-xs font-bold">2</span>
-                        {% elif loop.index == 3 %}
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 text-xs font-bold">3</span>
-                        {% else %}
-                        <span class="inline-flex items-center justify-center w-6 h-6 text-gray-400 dark:text-gray-500 text-xs">{{ loop.index }}</span>
-                        {% endif %}
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ price.station.name }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                {% if price.station.brand %}{{ price.station.brand }} &middot; {% endif %}
-                                {{ price.station.address or price.station.city or _('No address') }}
-                            </p>
-                        </div>
-                    </div>
+<div class="ds-stack">
+    {% for fuel_type, prices in prices_by_type.items() %}
+    {% set best = prices[0].price_per_unit %}
+    {% call card(fuel_type|fuel_type_label) %}
+        <ol class="price-list">
+            {% for price in prices[:10] %}
+            {% set station = price.station %}
+            <li class="price-row{% if loop.first %} price-row--best{% endif %}">
+                <span class="price-rank" aria-hidden="true">{{ loop.index }}</span>
+                <div class="ds-list__main">
+                    <p class="ds-list__title">{{ station.name }}</p>
+                    <p class="ds-list__meta">{% if station.brand %}{{ station.brand }} · {% endif %}{{ station.address or station.city or _('No address') }}</p>
                 </div>
-                <div class="ml-4 flex items-center gap-4">
-                    <div class="text-right">
-                        <p class="text-lg font-semibold {% if loop.index == 1 %}text-green-600 dark:text-green-400{% else %}text-gray-900 dark:text-white{% endif %}">
-                            {{ "%.3f"|format(price.price_per_unit) }} {{ current_user.currency }}
-                        </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                            {{ price.date|format_date('short') }}
-                        </p>
-                    </div>
-                    <a href="{{ url_for('stations.price_history', station_id=price.station_id) }}"
-                       class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="{{ _('View history') }}">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    </a>
+                <div class="price-row__value">
+                    <p class="price-row__price">{{ "%.3f"|format(price.price_per_unit) }}<span>{{ currency }}</span></p>
+                    <p class="price-row__meta">
+                        {{ price.date|format_date('short') }}
+                        {%- if not loop.first and price.price_per_unit > best %} · <span class="price-row__diff">+{{ "%.3f"|format(price.price_per_unit - best) }}</span>{% endif %}
+                    </p>
                 </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+                {{ button(_('View history'), href=url_for('stations.price_history', station_id=price.station_id), variant='ghost', size='sm', icon_name='trend-up', icon_only=True) }}
+            </li>
+            {% endfor %}
+        </ol>
+    {% endcall %}
+    {% endfor %}
 </div>
-{% endfor %}
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No price data available') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Prices are automatically tracked when you log fuel at saved stations.') }}</p>
-    <div class="mt-6">
-        {% if can_write('stations') %}
-        <a href="{{ url_for('stations.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add a Station') }}
-        </a>
-        {% endif %}
-    </div>
-</div>
+{% call card() %}
+    {{ empty_state(_('No price data available'), _('Prices are automatically tracked when you log fuel at saved stations.'), 'fuel',
+                   _('Add a Station') if can_write('stations') else None, url_for('stations.new')) }}
+{% endcall %}
 {% endif %}
+</div>
 {% endblock %}

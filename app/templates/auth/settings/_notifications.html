@@ -1,0 +1,175 @@
+{#- Notifications: the user's own reminder delivery, then (admins) the services
+    every user can pick from. -#}
+{% from 'auth/settings/_ui.html' import card, row, switch, status %}
+{% from 'components/ui.html' import button, badge %}
+{% from 'components/icons.html' import icon %}
+{%- set method = current_user.notification_method or 'email' -%}
+{%- set methods = [
+    ('email', _('Email'), 'document', smtp_configured),
+    ('ntfy', _('ntfy (Push Notifications)'), 'bell', true),
+    ('pushover', _('Pushover'), 'send', pushover_configured),
+    ('webhook', _('Webhook (HTTP POST)'), 'link', true),
+] -%}
+<section id="section-notifications" class="settings-section" data-section="notifications" aria-labelledby="notifications-title" hidden>
+    <h2 class="ds-sr-only" id="notifications-title">{{ _('Notifications') }}</h2>
+
+    <form method="POST" action="{{ url_for('auth.notifications') }}" class="settings-form" data-busy-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% call card(_('Notification Preferences'), _('Configure how you receive reminders about your vehicles')) %}
+        {% call row(_('Enable Reminders'), _('Receive notifications for upcoming reminders'), for_id='email_reminders') %}
+        {{ switch('email_reminders', current_user.email_reminders, _('Enable Reminders'), id='email_reminders', value='true') }}
+        {% endcall %}
+        <div class="ds-field">
+            <label class="ds-field__label" for="reminder_days_before">{{ _('Default Reminder Lead Time') }}</label>
+            <select name="reminder_days_before" id="reminder_days_before" class="ds-control">
+                {% for days, label in [(0, _('On the due date')), (1, _('1 day before')), (3, _('3 days before')), (7, _('1 week before')), (14, _('2 weeks before')), (30, _('1 month before'))] %}
+                <option value="{{ days }}"{% if current_user.reminder_days_before == days %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <p class="form-hint">{{ _('How many days before the due date should you be notified?') }}</p>
+        </div>
+
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Notification Method') }}</legend>
+            <p class="form-hint">{{ _('Choose how you want to receive notifications') }}</p>
+            <div class="ds-choices notification-methods">
+                {% for value, label, icon_name, available in methods %}
+                <label class="ds-choice ds-choice--stacked{% if not available %} is-disabled{% endif %}">
+                    <input type="radio" name="notification_method" value="{{ value }}"{% if method == value %} checked{% endif %}{% if not available %} disabled{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(icon_name, 18) }}</span>
+                    <span class="ds-choice__label">{{ label }}</span>
+                    {% if not available %}<span class="ds-choice__hint">{{ _('not configured') }}</span>{% endif %}
+                </label>
+                {% endfor %}
+            </div>
+            {#- The script reads the chosen method from this element's value. -#}
+            <input type="hidden" id="notification_method" value="{{ method }}">
+        </fieldset>
+
+        <div id="notification-email" class="notification-field" hidden>
+            <div class="import-note">
+                {{ icon('document', 18) }}
+                <div>
+                    <p>{{ _('Notifications will be sent to') }} <strong>{{ current_user.email }}</strong></p>
+                    {% if not smtp_configured %}<p>{{ _('Email not configured. Ask an administrator to configure SMTP settings.') }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div id="notification-ntfy" class="notification-field settings-stack" hidden>
+            <p class="settings-row__hint"><a class="api-link" href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a> {{ _('is a simple pub-sub notification service. Enter your topic below.') }}</p>
+            <div class="ds-field">
+                <label class="ds-field__label" for="ntfy_topic">{{ _('ntfy Topic or Server URL') }}</label>
+                <input type="text" name="ntfy_topic" id="ntfy_topic" class="ds-control" value="{{ current_user.ntfy_topic or '' }}"
+                       placeholder="my-vehicle-reminders or https://ntfy.example.com/topic">
+                <p class="form-hint">{{ _('For ntfy.sh, just enter your topic name. For self-hosted, enter the full URL.') }}</p>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="ntfy_token">{{ _('ntfy Access Token') }}</label>
+                <input type="password" name="ntfy_token" id="ntfy_token" class="ds-control" autocomplete="off"
+                       placeholder="{% if current_user.ntfy_token %}{{ _('Token saved — enter a new one to replace it') }}{% else %}tk_...{% endif %}">
+                <p class="form-hint">{{ _('Optional — only needed for self-hosted ntfy servers with authentication enabled. Leave blank to keep the saved token.') }}</p>
+                {% if current_user.ntfy_token %}
+                <label class="ds-switch"><input type="checkbox" name="clear_ntfy_token" id="clear_ntfy_token"> {{ _('Remove the saved token') }}</label>
+                {% endif %}
+            </div>
+        </div>
+        <div id="notification-pushover" class="notification-field settings-stack" hidden>
+            <p class="settings-row__hint"><a class="api-link" href="https://pushover.net" target="_blank" rel="noopener">Pushover</a> {{ _('sends notifications to your devices. Enter your User Key below.') }}</p>
+            <div class="ds-field">
+                <label class="ds-field__label" for="pushover_user_key">{{ _('Pushover User Key') }}</label>
+                <input type="text" name="pushover_user_key" id="pushover_user_key" class="ds-control ds-mono" value="{{ current_user.pushover_user_key or '' }}"
+                       placeholder="uQiRzpo4DXghDmr9QzzfQu27cmVRsG">
+                <p class="form-hint">{{ _('Find your User Key on your Pushover dashboard.') }}</p>
+            </div>
+        </div>
+        <div id="notification-webhook" class="notification-field settings-stack" hidden>
+            <p class="settings-row__hint">{{ _('Notifications will be sent as JSON POST requests to your webhook URL.') }}</p>
+            <div class="ds-field">
+                <label class="ds-field__label" for="webhook_url">{{ _('Webhook URL') }}</label>
+                <input type="url" name="webhook_url" id="webhook_url" class="ds-control" inputmode="url" value="{{ current_user.webhook_url or '' }}"
+                       placeholder="https://example.com/webhook">
+                <p class="form-hint">{{ _('JSON payload: {title, message, reminder_id, vehicle_name, due_date}') }}</p>
+            </div>
+        </div>
+
+        <div class="settings-test">
+            {{ button(_('Send Test Notification'), variant='secondary', icon_name='send', attrs={'onclick': 'sendTestNotification()'}) }}
+            {{ status('test-notification-result') }}
+        </div>
+        {% endcall %}
+        <div class="settings-actions">
+            {{ button(_('View all reminders'), href=url_for('reminders.index'), variant='ghost', icon_name='bell') }}
+            {{ button(_('Save Preferences'), type='submit', icon_name='check') }}
+        </div>
+    </form>
+
+    {% if current_user.is_admin %}
+    <form method="POST" action="{{ url_for('auth.smtp_settings') }}" class="settings-form" data-busy-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% call card(_('Notification Services'), _('Configure notification services available to all users'), admin=True) %}
+        {% call row(_('Email (SMTP)'), None, for_id='smtp_enabled') %}
+        {{ switch('smtp_enabled', smtp_settings.enabled != 'false', _('Email (SMTP)'), id='smtp_enabled', value='true') }}
+        {% endcall %}
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="smtp_host">{{ _('SMTP Host') }}</label>
+                <input type="text" name="smtp_host" id="smtp_host" class="ds-control" value="{{ smtp_settings.host or '' }}" placeholder="smtp.gmail.com">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="smtp_port">{{ _('SMTP Port') }}</label>
+                <input type="number" name="smtp_port" id="smtp_port" class="ds-control" inputmode="numeric" value="{{ smtp_settings.port or '587' }}" placeholder="587">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="smtp_username">{{ _('SMTP Username') }}</label>
+                <input type="text" name="smtp_username" id="smtp_username" class="ds-control" autocomplete="off" value="{{ smtp_settings.username or '' }}" placeholder="your-email@gmail.com">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="smtp_password">{{ _('SMTP Password') }}</label>
+                <input type="password" name="smtp_password" id="smtp_password" class="ds-control" autocomplete="off" value="{{ smtp_settings.password or '' }}"
+                       placeholder="{% if smtp_settings.password %}••••••••{% else %}App password{% endif %}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="smtp_sender">{{ _('Sender Email') }}</label>
+                <input type="email" name="smtp_sender" id="smtp_sender" class="ds-control" value="{{ smtp_settings.sender or '' }}" placeholder="noreply@example.com">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="smtp_sender_name">{{ _('Sender Name') }}</label>
+                <input type="text" name="smtp_sender_name" id="smtp_sender_name" class="ds-control" value="{{ smtp_settings.sender_name or '' }}" placeholder="{{ APP_NAME }}">
+            </div>
+        </div>
+        <div class="settings-test">
+            <label class="ds-switch"><input type="checkbox" name="smtp_tls" value="true"{% if smtp_settings.tls != 'false' %} checked{% endif %}> {{ _('Use TLS') }}</label>
+            <label class="ds-switch"><input type="checkbox" name="smtp_ssl" value="true"{% if smtp_settings.ssl == 'true' %} checked{% endif %}> {{ _('Use SSL') }}</label>
+            {{ button(_('Test'), variant='secondary', icon_name='send', attrs={'onclick': 'testSmtpSettings()'}) }}
+            {{ status('test-smtp-result') }}
+        </div>
+
+        <div class="settings-divider"></div>
+        {% call row(_('Pushover'), None, for_id='pushover_enabled') %}
+        {{ switch('pushover_enabled', smtp_settings.pushover_enabled == 'true', _('Pushover'), id='pushover_enabled', value='true') }}
+        {% endcall %}
+        <p class="settings-row__hint"><a class="api-link" href="https://pushover.net" target="_blank" rel="noopener">Pushover</a> {{ _('sends push notifications to iOS and Android devices.') }}</p>
+        <div class="ds-field">
+            <label class="ds-field__label" for="pushover_app_token">{{ _('Application Token') }}</label>
+            <input type="text" name="pushover_app_token" id="pushover_app_token" class="ds-control ds-mono" value="{{ smtp_settings.pushover_app_token or '' }}" placeholder="azGDORePK8gMaC0QOYAMyEEuzJnyUi">
+            <p class="form-hint">{{ _('Create an application at pushover.net to get your token') }}</p>
+        </div>
+
+        <div class="settings-divider"></div>
+        <div class="settings-row">
+            <div class="settings-row__text">
+                <h3 class="settings-row__title">{{ _('ntfy') }} {{ badge(_('Always available'), 'success') }}</h3>
+                <p class="settings-row__hint"><a class="api-link" href="https://ntfy.sh" target="_blank" rel="noopener">ntfy.sh</a> {{ _('is a free, open-source notification service that requires no admin configuration. Users can set their own topic.') }}</p>
+            </div>
+        </div>
+        <div class="settings-row">
+            <div class="settings-row__text">
+                <h3 class="settings-row__title">{{ _('Webhook') }} {{ badge(_('Always available'), 'success') }}</h3>
+                <p class="settings-row__hint">{{ _('Webhooks allow users to integrate with any service that accepts HTTP POST requests (Home Assistant, Discord, Slack, etc.)') }}</p>
+            </div>
+        </div>
+        {% endcall %}
+        <div class="settings-actions">{{ button(_('Save Notification Settings'), type='submit', icon_name='check') }}</div>
+    </form>
+    {% endif %}
+</section>

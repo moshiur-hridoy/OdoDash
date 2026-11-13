@@ -1,185 +1,746 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import back_link, button, card, badge, attention, month_bars, odometer, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ vehicle.name }}{% endblock %}
 
 {% block extra_scripts %}
 <!-- Chart.js - Needed for vehicle charts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-<style>
-    html:not(.dark) body:has(.vehicle-stat-grid) {
-        background-color: var(--color-background);
-    }
-
-    .vehicle-stat-grid > .bg-white,
-    .vehicle-stat-grid > .dark\:bg-gray-800 {
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-none);
-    }
-
-    /* Stat cards share the dashboard's card language: quiet uppercase label,
-       large figure with its unit on the same baseline. */
-    .vehicle-stat-grid > div {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        column-gap: 0.4rem;
-        padding: 1.1rem 1.25rem;
-        transition: border-color 140ms ease;
-    }
-    .vehicle-stat-grid > div:hover { border-color: var(--color-border-strong); }
-    .vehicle-stat-grid > div dt {
-        width: 100%;
-        margin-bottom: 0.35rem;
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-    .vehicle-stat-grid > div dd:not(.text-xs) { margin-top: 0; }
-    .vehicle-stat-grid > div dd.text-xl {
-        font-size: 1.5rem;
-        line-height: 1.9rem;
-        font-weight: 650;
-        letter-spacing: -0.02em;
-    }
-    .vehicle-stat-grid > div dd.text-xs { width: 100%; margin-top: 0.25rem; }
-
-    .vehicle-meta > div { min-width: 0; }
-    .vehicle-meta dt {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-    .vehicle-meta dd {
-        margin-top: 0.35rem;
-        font-size: 1rem;
-        line-height: 1.4rem;
-        font-weight: 550;
-        letter-spacing: -0.01em;
-    }
-
-    .vehicle-details-card {
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-none);
-    }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="mb-5">
-    <a href="{{ url_for('vehicles.index') }}" class="inline-flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">&larr; {{ _('Back to vehicles') }}</a>
-</div>
+{% set currency = current_user.currency %}
+{% set unit = vehicle.get_reading_unit() %}
+{% set reading = vehicle.get_last_odometer(vehicle.get_effective_odometer_unit()) %}
+{% set consumption_unit = vehicle.get_consumption_unit() or current_user.consumption_unit %}
+{% set fuel_first = vehicle.uses_fuel() and not vehicle.uses_tessie_odometer() and can_write('fuel') %}
+{% set charging_first = not fuel_first and vehicle.uses_charging() and can_write('charging') %}
 
 {# Main image first, then the rest of the gallery (#147) #}
 {% set carousel = [] %}
 {% if vehicle.image_filename %}{% set _unused = carousel.append(vehicle.image_filename) %}{% endif %}
 {% for photo in photos %}{% if photo.filename != vehicle.image_filename %}{% set _unused = carousel.append(photo.filename) %}{% endif %}{% endfor %}
 
-<div class="vehicle-details-card bg-white dark:bg-gray-800 overflow-hidden mb-8">
-    <div class="md:flex">
-        {% if carousel %}
-        <div class="md:w-1/3 relative" id="vehicle-carousel" data-count="{{ carousel|length }}">
-            {% for filename in carousel %}
-            <img src="{{ url_for('api.uploaded_file', filename=filename) }}"
-                 alt="{{ vehicle.name }}"
-                 data-carousel-index="{{ loop.index0 }}"
-                 class="vehicle-carousel-image w-full h-48 md:h-full object-cover{% if not loop.first %} hidden{% endif %}">
-            {% endfor %}
-            {% if carousel|length > 1 %}
-            <button type="button" onclick="stepVehicleCarousel(-1)"
-                    aria-label="{{ _('Previous photo') }}"
-                    class="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/40 text-white hover:bg-black/60">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
-            </button>
-            <button type="button" onclick="stepVehicleCarousel(1)"
-                    aria-label="{{ _('Next photo') }}"
-                    class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/40 text-white hover:bg-black/60">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </button>
-            <span id="vehicle-carousel-counter"
-                  class="absolute bottom-2 right-2 px-2 py-0.5 rounded text-xs bg-black/40 text-white">1 / {{ carousel|length }}</span>
-            {% endif %}
-        </div>
-        {% endif %}
-        <div class="p-6 min-w-0 {% if carousel %}md:w-2/3{% else %}flex-1{% endif %}">
-            <div class="flex flex-wrap items-start justify-between gap-4">
-                <div class="min-w-0">
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white truncate">{{ vehicle.name }}</h1>
-                    <p class="text-gray-500 dark:text-gray-400">{{ vehicle.make or '' }} {{ vehicle.model or '' }} {% if vehicle.year %}({{ vehicle.year }}){% endif %}</p>
-                </div>
-                <div class="flex flex-wrap items-center justify-end gap-2 sm:ml-auto">
-                    <a href="{{ url_for('vehicles.report', vehicle_id=vehicle.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-                       title="{{ _('Download PDF Report') }}">
-                        <svg class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        PDF
-                    </a>
-                    <a href="{{ url_for('vehicles.report', vehicle_id=vehicle.id, receipts=1) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-                       title="{{ _('Download PDF Report with receipt images') }}">
-                        <svg class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
-                        </svg>
-                        {{ _('PDF + Receipts') }}
-                    </a>
-                    {% if can_write('vehicles') %}
-                    <a href="{{ url_for('vehicles.edit', vehicle_id=vehicle.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                        {{ _('Edit') }}
-                    </a>
-                    {% endif %}
-                    {% if can_write('vehicles') %}
-                    <a href="{{ url_for('vehicles.share', vehicle_id=vehicle.id) }}"
-                       class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                        {{ _('Share') }}
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
+<div class="ds vehicle-page">
+{{ back_link(_('Back to vehicles'), url_for('vehicles.index')) }}
 
-            <div class="vehicle-meta mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Type') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ vehicle.vehicle_type_label }}</dd>
-                </div>
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Fuel') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white ">{{ vehicle.fuel_type|fuel_type_label if vehicle.fuel_type else _('Not set') }}</dd>
-                </div>
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Registration plate') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ vehicle.registration or _('Not set') }}</dd>
-                </div>
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Last Odometer') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ vehicle.get_last_odometer(vehicle.get_effective_odometer_unit())|groupnum }} {{ vehicle.get_reading_unit() }}</dd>
-                </div>
-                {% if vehicle.purchase_date %}
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Purchase Date') }}</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ vehicle.purchase_date|format_date }}</dd>
-                </div>
-                <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Owned for') }}</dt>
-                    {% set owned_for = vehicle.get_owned_for() %}
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ owned_for[0] }} {{ _('year(s)') }}, {{ owned_for[1] }} {{ _('month(s)') }}, {{ owned_for[2] }} {{ _('day(s)') }}</dd>
-                </div>
+{# ---- Header ----------------------------------------------------------- #}
+<header class="vp-head">
+    <div class="vp-head__id">
+        <a class="vp-head__media" href="#photos" aria-label="{{ _('Photos') }}">
+            {% if vehicle.image_filename %}
+            <img src="{{ url_for('api.uploaded_file', filename=vehicle.image_filename) }}" alt="">
+            {% else %}
+            {{ icon('car', 34) }}
+            {% endif %}
+        </a>
+        <div style="min-width: 0">
+            <p class="vp-head__eyebrow">{{ vehicle.vehicle_type_label }}{% if vehicle.fuel_type %} · {{ vehicle.fuel_type|fuel_type_label }}{% endif %}{% if vehicle.year %} · {{ vehicle.year }}{% endif %}</p>
+            <h1 class="vp-head__title">{{ vehicle.name }}</h1>
+            <div class="vp-head__meta">
+                {% set details = [vehicle.make, vehicle.model]|select|join(' ') %}
+                {% if details %}<span>{{ details }}</span>{% endif %}
+                {% if vehicle.registration %}
+                <dl class="vp-head__plate">
+                    <dt class="ds-sr-only">{{ _('Registration plate') }}</dt>
+                    <dd class="vp-plate">{{ vehicle.registration }}</dd>
+                </dl>
                 {% endif %}
+                {% if vehicle.purchase_date %}
+                {% set owned_for = vehicle.get_owned_for() %}
+                <span title="{{ _('Purchase Date') }}: {{ vehicle.purchase_date|format_date }}">{{ _('Owned for') }} {{ owned_for[0] }} {{ _('year(s)') }}, {{ owned_for[1] }} {{ _('month(s)') }}, {{ owned_for[2] }} {{ _('day(s)') }}</span>
+                {% endif %}
+                {% if vehicle.is_shared %}{{ badge(_('Shared'), 'accent') }}{% endif %}
+                {% if not vehicle.is_active %}{{ badge(_('Archived'), 'warning') }}{% endif %}
             </div>
         </div>
     </div>
+    <div class="vp-head__actions">
+        <details class="vp-menu">
+            <summary class="ds-btn ds-btn--secondary">{{ icon('document', 16) }}<span>{{ _('Report') }}</span>{{ icon('chevron-down', 14) }}</summary>
+            <div class="vp-menu__panel">
+                <a href="{{ url_for('vehicles.report', vehicle_id=vehicle.id) }}" title="{{ _('Download PDF Report') }}">{{ icon('document', 16) }}PDF</a>
+                <a href="{{ url_for('vehicles.report', vehicle_id=vehicle.id, receipts=1) }}" title="{{ _('Download PDF Report with receipt images') }}">{{ icon('document', 16) }}{{ _('PDF + Receipts') }}</a>
+            </div>
+        </details>
+        {% if can_write('vehicles') %}
+        {{ button(_('Share'), href=url_for('vehicles.share', vehicle_id=vehicle.id), variant='secondary') }}
+        {{ button(_('Edit'), href=url_for('vehicles.edit', vehicle_id=vehicle.id), variant='secondary', icon_name='edit') }}
+        {% endif %}
+        {% if fuel_first %}
+        {{ button(_('Add Fuel Log'), href=url_for('fuel.new', vehicle_id=vehicle.id, return_to='vehicle'), icon_name='plus') }}
+        {% elif charging_first %}
+        {{ button(_('Add Charging'), href=url_for('charging.new', vehicle_id=vehicle.id), icon_name='plus') }}
+        {% endif %}
+    </div>
+</header>
+
+<div class="ds-stack">
+
+{% if not vehicle.is_active %}
+<ul class="ds-attention-list">
+    {{ attention(_('This vehicle is archived. It won\'t appear in regular lists or calculations.'), tone='warning', icon_name='alert') }}
+</ul>
+{% endif %}
+
+{# ---- Cockpit: odometer, consumption gauge, cost per distance ----------- #}
+<section class="ds-card vp-cockpit" aria-label="{{ _('Odometer') }}">
+    <div class="vp-cockpit__row">
+        <div class="vp-cockpit__odo">
+            <p class="vp-label">{{ _('Last Odometer') }}</p>
+            {% if reading %}
+            {{ odometer(reading, unit=unit, label=_('Last Odometer') ~ ': ' ~ (reading|groupnum) ~ ' ' ~ unit, size='lg') }}
+            {% else %}
+            <p class="vp-cockpit__empty">—</p>
+            {% endif %}
+        </div>
+
+        {#- A gauge per average: one per fuel on a dual-fuel vehicle (#221), plus
+            charging on an EV or plug-in. The arc reads against a fixed scale
+            for its unit, the way a dashboard gauge does. -#}
+        {% set scales = {'L/100km': 20, 'mpg': 80, 'mpg_us': 80, 'L / h': 30} %}
+        {% set gauges = [] %}
+        {% if vehicle.uses_fuel() %}
+            {% for entry in stats.consumption_by_fuel %}
+                {% set _g = gauges.append({'value': entry.value, 'reason': entry.reason, 'unit': consumption_unit, 'scale': scales.get(consumption_unit),
+                    'label': _('Avg. Consumption') ~ ((' · ' ~ (entry.fuel_type|fuel_type_label)) if stats.consumption_by_fuel|length > 1 else '')}) %}
+            {% endfor %}
+        {% endif %}
+        {% if vehicle.uses_charging() %}
+            {% set _g = gauges.append({'value': stats.avg_charging_consumption, 'reason': 'charging', 'unit': 'kWh / 100 ' ~ unit, 'scale': 30, 'label': _('Avg. Charging')}) %}
+        {% endif %}
+        {% if gauges %}
+        <div class="vp-gauges">
+            {% for g in gauges %}
+            {% set pct = ([[(g.value / g.scale * 100) if (g.value and g.scale) else 0, 0]|max, 100]|min)|round(1) %}
+            <figure class="vp-gauge">
+                <svg viewBox="0 0 180 104" aria-hidden="true">
+                    <path class="vp-gauge__track" d="M20 90 A70 70 0 0 1 160 90" fill="none" stroke-width="10" stroke-linecap="round"/>
+                    {% if pct > 0 %}<path class="vp-gauge__fill" d="M20 90 A70 70 0 0 1 160 90" fill="none" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ pct }} 100"/>{% endif %}
+                </svg>
+                {% if g.value %}
+                <p class="vp-gauge__value">{{ "%.1f"|format(g.value) }}</p>
+                {% else %}
+                <p class="vp-gauge__value vp-gauge__value--empty">&mdash;</p>
+                {% endif %}
+                <figcaption><span class="vp-label">{{ g.label }}</span><br><span class="vp-label">{{ g.unit }}</span></figcaption>
+                {% if not g.value and g.reason != 'charging' %}
+                {% if g.reason == 'missed_fill_up' %}
+                    {% set consumption_hint = _('A missed fill-up in the range means we can’t calculate this honestly.') %}
+                {% elif g.reason == 'needs_distance_attribution' %}
+                    {% set consumption_hint = _('Consumption can’t be worked out until the distance run on each fuel is recorded — the odometer can’t tell petrol from LPG. Add it to your fill-ups.') %}
+                {% elif g.reason == 'insufficient_data' %}
+                    {% set consumption_hint = _('Not enough distance or fuel data yet to calculate this.') %}
+                {% else %}
+                    {% set consumption_hint = _('Needs at least two full-tank fill-ups.') %}
+                {% endif %}
+                <p class="vp-gauge__hint">{{ consumption_hint }}</p>
+                {% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <dl class="vp-readouts">
+            <div>
+                <dt class="vp-label">{{ _('Cost per') }} {{ unit }}</dt>
+                <dd class="vp-readouts__big">{% if stats.cost_per_distance %}{{ stats.cost_per_distance|money }}{% else %}&mdash;{% endif %}<span>{{ currency }}</span></dd>
+            </div>
+            {% if vehicle.uses_fuel() and recent_logs %}
+            {% set last = recent_logs[0] %}
+            <div>
+                <dt class="vp-label">{{ _('Last fill') }}</dt>
+                <dd>{{ last.date|format_date('short') }} · {{ "%.1f"|format(last.volume or 0) }} {{ current_user.volume_unit }}{% if last.is_full_tank %} · {{ _('Full tank') }}{% endif %}</dd>
+            </div>
+            {% endif %}
+            {% if last_charge %}
+            <div>
+                <dt class="vp-label">{{ _('Last charge') }}</dt>
+                <dd>{{ last_charge.date|format_date('short') }}{% if last_charge.kwh_added %} · {{ "%.1f"|format(last_charge.kwh_added) }} kWh{% endif %}{% if last_charge.end_soc is not none %} · {{ last_charge.end_soc }}%{% endif %}</dd>
+            </div>
+            {% endif %}
+        </dl>
+    </div>
+
+    {% if annual_mileage_stats %}
+    {% set ms = annual_mileage_stats %}
+    <div class="vp-annual">
+        <div class="vp-annual__head">
+            <p class="vp-label">{{ _('Annual Mileage') }}</p>
+            <div>
+                <span class="ds-muted" style="font-size: var(--ds-text-sm)">{{ vehicle.get_span_label() }}: <strong class="ds-mono" style="color: var(--ds-text)">{{ ms.driven|groupnum }}</strong> / {{ (ms.limit|int)|groupnum }} {{ unit }}</span>
+                {% if ms.over_limit %}{{ badge(_('Over limit'), 'danger') }}
+                {% elif ms.progress_pct >= 90 %}{{ badge(_('Approaching limit'), 'warning') }}
+                {% elif ms.on_pace %}{{ badge(_('On pace'), 'success') }}
+                {% else %}{{ badge(_('Over pace'), 'danger') }}{% endif %}
+                {% if can_write('vehicles') %}<a class="ds-card__action" href="{{ url_for('vehicles.edit', vehicle_id=vehicle.id) }}">{{ _('Edit') }}</a>{% endif %}
+            </div>
+        </div>
+        <div class="vp-annual__bar" role="img" aria-label="{{ ms.progress_pct }}% · {{ _('Time elapsed') }}: {{ ms.time_pct }}%">
+            <div class="vp-annual__fill{% if ms.over_limit %} vp-annual__fill--danger{% elif ms.progress_pct >= 90 %} vp-annual__fill--warning{% endif %}" style="width: {{ [ms.progress_pct, 100]|min }}%"></div>
+            <div class="vp-annual__marker" style="left: {{ ms.time_pct }}%" title="{{ _('Time elapsed') }}: {{ ms.time_pct }}%"></div>
+        </div>
+        <p class="vp-annual__facts">
+            <span>{{ ms.period_start|format_date }} – {{ ms.period_end|format_date }}</span>
+            <span>▲ {{ ms.time_pct }}% {{ _('of year elapsed') }}</span>
+            <span><strong>{{ ms.remaining|groupnum }}</strong> {{ unit }} {{ _('remaining') }}</span>
+            <span><strong>{{ ms.days_remaining }}</strong> {{ _('days remaining') }}</span>
+            <span><strong>{{ ms.projected|groupnum }}</strong> {{ _('projected year-end') }}</span>
+            <span><strong>{{ ms.expected|groupnum }}</strong> {{ _('expected at this point') }}</span>
+        </p>
+    </div>
+    {% endif %}
+</section>
+
+{# ---- Totals ----------------------------------------------------------- #}
+<dl class="ds-card vp-totals">
+    {% if vehicle.uses_fuel() %}
+    <div><dt class="vp-label">{{ _('Total Fuel Cost') }}</dt><dd>{{ stats.total_fuel_cost|money }}<span>{{ currency }}</span></dd></div>
+    {% endif %}
+    {% if vehicle.uses_charging() %}
+    <div><dt class="vp-label">{{ _('Total Charging Cost') }}</dt><dd>{{ stats.total_charging_cost|money }}<span>{{ currency }}</span></dd></div>
+    {% endif %}
+    <div><dt class="vp-label">{{ _('Other Expenses') }}</dt><dd>{{ stats.total_expense_cost|money }}<span>{{ currency }}</span></dd></div>
+    {% if stats.total_allowance and stats.total_allowance > 0 %}
+    <div><dt class="vp-label">{{ _('Mileage Allowance') }}</dt><dd class="vp-totals__credit">-{{ stats.total_allowance|money }}<span>{{ currency }}</span></dd></div>
+    <div><dt class="vp-label">{{ _('Net Cost') }}</dt><dd>{{ stats.net_cost|money }}<span>{{ currency }}</span></dd></div>
+    {% endif %}
+    <div><dt class="vp-label">{% if vehicle.tracks_hours() %}{{ _('Total Hours') }}{% else %}{{ _('Total Distance') }}{% endif %}</dt><dd>{{ stats.total_distance|groupnum }}<span>{{ unit }}</span></dd></div>
+    {% if vehicle.uses_fuel() and stats.total_fuel_volume %}
+    <div><dt class="vp-label">{{ _('Fuel Used') }}</dt><dd>{{ stats.total_fuel_volume|groupnum }}<span>{{ current_user.volume_unit }}</span></dd></div>
+    <div>
+        <dt class="vp-label">{{ _('CO₂ Emissions') }}</dt>
+        {% if stats.total_co2_kg >= 1000 %}
+        <dd>{{ "%.2f"|format(stats.total_co2_kg / 1000) }}<span>{{ _('tonnes (estimated)') }}</span></dd>
+        {% else %}
+        <dd>{{ stats.total_co2_kg|groupnum }}<span>{{ _('kg (estimated)') }}</span></dd>
+        {% endif %}
+    </div>
+    {% endif %}
+</dl>
+
+{# ---- Quick actions: create on the left, shortcuts on the right --------- #}
+<nav class="vp-quick" aria-label="{{ _('Actions') }}">
+    <div>
+        {% if vehicle.uses_charging() and can_write('charging') and not charging_first %}
+        {{ button(_('Add Charging'), href=url_for('charging.new', vehicle_id=vehicle.id), variant='secondary', icon_name='bolt') }}
+        {% endif %}
+        {% if can_write('trips') %}
+        {{ button(_('Log Trip'), href=url_for('trips.new', vehicle_id=vehicle.id), variant='secondary', icon_name='map') }}
+        {% endif %}
+        {% if can_write('expenses') %}
+        {{ button(_('Add Expense'), href=url_for('expenses.new', vehicle_id=vehicle.id, return_to='vehicle'), variant='secondary', icon_name='money') }}
+        {% endif %}
+        {% if can_write('reminders') %}
+        {{ button(_('Add Reminder'), href=url_for('reminders.new', vehicle_id=vehicle.id), variant='secondary', icon_name='bell') }}
+        {% endif %}
+    </div>
+    <div>
+        {{ button(_('Maintenance History'), href=url_for('maintenance.history', vehicle_id=vehicle.id), variant='ghost', icon_name='wrench') }}
+        {{ button(_('Parts'), href=url_for('vehicles.parts', vehicle_id=vehicle.id), variant='ghost', icon_name='settings') }}
+        {{ button(_('Timeline'), href=url_for('main.timeline', vehicle_id=vehicle.id), variant='ghost', icon_name='clock') }}
+    </div>
+</nav>
+
+{# ---- Spending and what is coming up ----------------------------------- #}
+{% set has_spending = month_totals|map(attribute=1)|select|list|length > 0 %}
+{% if has_spending or maintenance_schedules or reminders %}
+<div class="ds-row">
+    {% if has_spending %}
+    {% call card(_('Monthly Spending'), class='ds-grow-2') %}
+        {% set bars = [] %}
+        {% for month, total in month_totals %}
+            {% set _appended = bars.append({'label': month|dateformat('LLL'), 'value': total,
+                                            'display': (total|money) ~ ' ' ~ currency, 'current': loop.last}) %}
+        {% endfor %}
+        {{ month_bars(bars, _('Monthly Spending')) }}
+    {% endcall %}
+    {% endif %}
+
+    {% if maintenance_schedules or reminders %}
+    {% call card(class='ds-grow-1') %}
+    <div class="vp-alerts">
+        {% if maintenance_schedules %}
+        <section class="vp-alerts__group">
+            <header>
+                <h2>{{ _('Upcoming Maintenance') }}</h2>
+                <a class="ds-card__action" href="{{ url_for('maintenance.index') }}?vehicle_id={{ vehicle.id }}">{{ _('View all') }}</a>
+            </header>
+            <ul class="vp-alert-list">
+                {% for schedule in maintenance_schedules[:5] %}
+                {% set is_overdue = schedule.next_due_date and schedule.next_due_date < today %}
+                {% set is_due_soon = schedule.next_due_date and not is_overdue and (schedule.next_due_date - today).days <= 30 %}
+                <li class="vp-alert{% if is_overdue %} vp-alert--danger{% elif is_due_soon %} vp-alert--warning{% endif %}">
+                    <span class="vp-alert__dot" aria-hidden="true"></span>
+                    <div class="vp-alert__body">
+                        <p class="vp-alert__title">{{ schedule.name }}</p>
+                        <p class="vp-alert__meta">
+                            {%- if is_overdue %}{{ _('Overdue') }} · {% elif is_due_soon %}{{ _('Due soon') }} · {% endif -%}
+                            {%- if schedule.next_due_date %}{{ schedule.next_due_date|format_date }}{% endif -%}
+                            {%- if schedule.next_due_date and schedule.next_due_odometer %} · {% endif -%}
+                            {%- if schedule.next_due_odometer %}{{ schedule.next_due_odometer|groupnum }} {{ unit }}{% endif -%}
+                        </p>
+                    </div>
+                    {% if schedule.next_due_date and schedule.last_performed_date %}
+                    {% set total_days = (schedule.next_due_date - schedule.last_performed_date).days %}
+                    {% set elapsed_days = (today - schedule.last_performed_date).days %}
+                    {% set pct = [[(elapsed_days / total_days * 100) if total_days > 0 else 100, 0]|max, 100]|min %}
+                    <span class="vp-alert__progress" aria-hidden="true"><span style="width: {{ pct }}%"></span></span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if reminders %}
+        <section class="vp-alerts__group">
+            <header>
+                <h2>{{ _('Upcoming Reminders') }}</h2>
+                <a class="ds-card__action" href="{{ url_for('reminders.index') }}?vehicle={{ vehicle.id }}">{{ _('View all') }}</a>
+            </header>
+            <ul class="vp-alert-list">
+                {% for reminder in reminders[:5] %}
+                {% set days = reminder.days_until_due() %}
+                <li class="vp-alert{% if reminder.is_overdue() %} vp-alert--danger{% elif reminder.is_upcoming(7) %} vp-alert--warning{% endif %}">
+                    <span class="vp-alert__dot" aria-hidden="true"></span>
+                    <div class="vp-alert__body">
+                        <p class="vp-alert__title">{{ reminder.title }}</p>
+                        <p class="vp-alert__meta">
+                            {{ dict(reminder_types)[reminder.reminder_type] if reminder.reminder_type in dict(reminder_types) else reminder.reminder_type|capitalize }}
+                            · {{ reminder.due_date|format_date }} ·
+                            {% if reminder.is_overdue() %}{{ _('%(days)s days overdue', days=days|abs) }}
+                            {% elif days == 0 %}{{ _('Due today') }}
+                            {% elif days == 1 %}{{ _('Due tomorrow') }}
+                            {% else %}{{ _('In %(days)s days', days=days) }}{% endif %}
+                        </p>
+                    </div>
+                    {% if can_write('reminders') %}
+                    {{ button(_('Edit'), href=url_for('reminders.edit', reminder_id=reminder.id), variant='ghost', size='sm', icon_name='edit', icon_only=True) }}
+                    <form method="POST" action="{{ url_for('reminders.complete', reminder_id=reminder.id) }}?return_to=vehicle">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        {{ button(_('Mark as completed'), type='submit', variant='secondary', size='sm', icon_name='check', icon_only=True) }}
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if reminders|length > 5 %}
+            <a class="ds-card__action" style="display: inline-block; margin-top: 10px" href="{{ url_for('reminders.index') }}?vehicle={{ vehicle.id }}">{{ _('View all') }} ({{ reminders|length }})</a>
+            {% endif %}
+        </section>
+        {% endif %}
+    </div>
+    {% endcall %}
+    {% endif %}
 </div>
+{% endif %}
+
+{# ---- Integrations: DVLA (UK) and Tessie (Tesla) ------------------------ #}
+{% if vehicle.registration and dvla_configured %}
+<section class="ds-card" id="dvla-section">
+    <div class="ds-card__header">
+        <h2 class="ds-card__title">{{ _('DVLA Status') }}</h2>
+        <button type="button" onclick="refreshDvlaStatus({{ vehicle.id }})" id="dvla-refresh-btn" class="ds-btn ds-btn--secondary ds-btn--sm">{{ icon('repeat', 16) }}{{ _('Refresh') }}</button>
+    </div>
+    <div class="ds-card__body">
+        {% if vehicle.dvla_last_updated %}
+        {% set mot_tone = 'success' if vehicle.mot_status == 'Valid' else ('danger' if vehicle.mot_status == 'Not valid' else 'neutral') %}
+        {% set tax_tone = 'success' if vehicle.tax_status == 'Taxed' else ('danger' if vehicle.tax_status in ['Untaxed', 'SORN'] else 'neutral') %}
+        <dl class="ds-facts">
+            <div><dt>{{ _('MOT Status') }}</dt><dd>{{ badge(vehicle.mot_status or 'Unknown', mot_tone) }}</dd></div>
+            <div><dt>{{ _('MOT Expiry') }}</dt><dd>{{ vehicle.mot_expiry|format_date if vehicle.mot_expiry else '-' }}</dd></div>
+            <div><dt>{{ _('Tax Status') }}</dt><dd>{{ badge(vehicle.tax_status or 'Unknown', tax_tone) }}</dd></div>
+            <div><dt>{{ _('Tax Due') }}</dt><dd>{{ vehicle.tax_due|format_date if vehicle.tax_due else '-' }}</dd></div>
+        </dl>
+        <p class="ds-muted" style="margin: 14px 0 0; font-size: var(--ds-text-xs)">{{ _('Last updated') }}: {{ vehicle.dvla_last_updated|format_date('long_datetime') }}</p>
+        {% else %}
+        <div class="ds-empty" style="padding: 12px">
+            <p class="ds-empty__text">{{ _('No DVLA data available for this vehicle.') }}</p>
+            <div class="ds-empty__action"><button type="button" onclick="refreshDvlaStatus({{ vehicle.id }})" class="ds-btn ds-btn--primary">{{ _('Fetch from DVLA') }}</button></div>
+        </div>
+        {% endif %}
+        <div id="dvla-error" class="hidden ds-attention ds-attention--danger" style="margin-top: 12px"></div>
+    </div>
+</section>
+{% endif %}
+
+{% if vehicle.tessie_enabled and vehicle.tessie_vin and tessie_configured %}
+<section class="ds-card" id="tessie-section">
+    <div class="ds-card__header">
+        <h2 class="ds-card__title">{{ _('Tessie Status') }} {{ badge(_('Live'), 'success') }}</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <button type="button" onclick="importTessieCharges({{ vehicle.id }})" id="tessie-import-btn" class="ds-btn ds-btn--secondary ds-btn--sm">{{ _('Import Charges') }}</button>
+            <button type="button" onclick="refreshTessieStatus({{ vehicle.id }})" id="tessie-refresh-btn" class="ds-btn ds-btn--secondary ds-btn--sm">{{ icon('repeat', 16) }}{{ _('Refresh') }}</button>
+        </div>
+    </div>
+    <div class="ds-card__body">
+        {% if vehicle.tessie_last_updated %}
+        {% set miles = vehicle.get_effective_odometer_unit() == 'mi' %}
+        <dl class="ds-facts">
+            <div><dt>{{ _('Odometer') }}</dt><dd>{% if vehicle.tessie_last_odometer %}{{ ((vehicle.tessie_last_odometer * 0.621371) if miles else vehicle.tessie_last_odometer)|groupnum }} <span>{{ 'mi' if miles else 'km' }}</span>{% else %}-{% endif %}</dd></div>
+            <div><dt>{{ _('Battery Level') }}</dt><dd>{% if vehicle.tessie_battery_level is not none %}{{ vehicle.tessie_battery_level }}<span>%</span>{% else %}-{% endif %}</dd></div>
+            <div><dt>{{ _('Est. Range') }}</dt><dd>{% if vehicle.tessie_battery_range %}{{ ((vehicle.tessie_battery_range * 0.621371) if miles else vehicle.tessie_battery_range)|groupnum }} <span>{{ 'mi' if miles else 'km' }}</span>{% else %}-{% endif %}</dd></div>
+            <div><dt>{{ _('VIN') }}</dt><dd class="ds-mono" style="font-size: var(--ds-text-sm)">{{ vehicle.tessie_vin }}</dd></div>
+        </dl>
+        {% if vehicle.tessie_battery_level is not none %}
+        <div class="vp-annual__bar" aria-hidden="true"><div class="vp-annual__fill{% if vehicle.tessie_battery_level <= 20 %} vp-annual__fill--danger{% elif vehicle.tessie_battery_level <= 50 %} vp-annual__fill--warning{% endif %}" style="width: {{ vehicle.tessie_battery_level }}%"></div></div>
+        {% endif %}
+        <p class="ds-muted" style="margin: 14px 0 0; font-size: var(--ds-text-xs)">{{ _('Last updated') }}: {{ vehicle.tessie_last_updated|format_date('long_datetime') }}</p>
+        {% else %}
+        <div class="ds-empty" style="padding: 12px">
+            <p class="ds-empty__text">{{ _('No Tessie data available for this vehicle yet.') }}</p>
+            <div class="ds-empty__action"><button type="button" onclick="refreshTessieStatus({{ vehicle.id }})" class="ds-btn ds-btn--primary">{{ _('Fetch from Tessie') }}</button></div>
+        </div>
+        {% endif %}
+        <div id="tessie-error" class="hidden ds-attention ds-attention--danger" style="margin-top: 12px"></div>
+    </div>
+</section>
+{% endif %}
+
+{# ---- Trends: consumption, fuel price, expenses by category ------------ #}
+{% if vehicle.uses_fuel() or expenses_by_category %}
+<div class="ds-row">
+    {% if vehicle.uses_fuel() %}
+    <section class="ds-card ds-grow-even">
+        <div class="ds-card__header">
+            <h2 class="ds-card__title" style="width: 100%"><button type="button" class="vp-card-toggle" onclick="toggleChart('consumption')" aria-controls="consumption-chart-body">{{ _('Fuel Consumption Trend') }}<span id="consumption-chart-chevron">{{ icon('chevron-down', 18) }}</span></button></h2>
+        </div>
+        <div class="ds-card__body">
+            <div id="consumption-chart-body" class="vp-chart"><canvas id="consumptionChart"></canvas></div>
+        </div>
+    </section>
+    <section class="ds-card ds-grow-even">
+        <div class="ds-card__header">
+            <h2 class="ds-card__title" style="width: 100%"><button type="button" class="vp-card-toggle" onclick="toggleChart('price')" aria-controls="price-chart-body">{{ _('Fuel Price Trend') }}<span id="price-chart-chevron">{{ icon('chevron-down', 18) }}</span></button></h2>
+        </div>
+        <div class="ds-card__body">
+            <div id="price-chart-body" class="vp-chart"><canvas id="priceChart"></canvas></div>
+        </div>
+    </section>
+    {% endif %}
+    {% if expenses_by_category %}
+    <section class="ds-card ds-grow-even">
+        <div class="ds-card__header">
+            <h2 class="ds-card__title" style="width: 100%"><button type="button" class="vp-card-toggle" onclick="toggleChart('expenses')" aria-controls="expenses-chart-body">{{ _('Expenses by Category') }}<span id="expenses-chart-chevron">{{ icon('chevron-down', 18) }}</span></button></h2>
+        </div>
+        <div class="ds-card__body">
+            <div id="expenses-chart-body" class="vp-chart"><canvas id="expensesChart"></canvas></div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endif %}
+
+{# ---- One log: fuel, charging and expenses, newest first ---------------- #}
+{% set kinds = activity|map(attribute='kind')|unique|list %}
+<section class="ds-card ds-card--flush vp-log">
+    <div class="ds-card__header">
+        <h2 class="ds-card__title">{{ _('Recent activity') }}</h2>
+        {% if kinds|length > 1 %}
+        <div class="vp-log-tabs" role="group" aria-label="{{ _('Recent activity') }}">
+            <button type="button" data-log-filter="all" aria-pressed="true">{{ _('All') }}</button>
+            {% if 'fuel' in kinds %}<button type="button" data-log-filter="fuel" aria-pressed="false">{{ _('Fuel') }}</button>{% endif %}
+            {% if 'charging' in kinds %}<button type="button" data-log-filter="charging" aria-pressed="false">{{ _('Charging') }}</button>{% endif %}
+            {% if 'expense' in kinds %}<button type="button" data-log-filter="expense" aria-pressed="false">{{ _('Expenses') }}</button>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="ds-card__body">
+        {% if activity %}
+        <div class="ds-table-wrap">
+            <table class="ds-table ds-table--stack">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ _('Date') }}</th>
+                        <th scope="col">{{ _('Type') }}</th>
+                        <th scope="col">{{ _('Details') }}</th>
+                        <th scope="col" class="ds-num">{{ _('Odometer') }}</th>
+                        <th scope="col" class="ds-num">{{ _('Cost') }}</th>
+                        <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in activity %}
+                    {% set e = row.entry %}
+                    {#- "All" shows the ten newest; a kind on its own shows its ten. -#}
+                    <tr data-log-kind="{{ row.kind }}"{% if loop.index > 10 %} data-log-extra hidden{% endif %}>
+                        <td class="vp-log__date" data-cell="meta">{{ row.date|format_date }}</td>
+                        {% if row.kind == 'fuel' %}
+                        <td class="vp-log__type" data-cell="meta"><span class="vp-kind vp-kind--fuel">{{ _('Fuel') }}</span></td>
+                        <td data-cell="title">
+                            <span class="vp-log__phone-meta">{{ row.date|format_date }} · <span class="vp-kind vp-kind--fuel">{{ _('Fuel') }}</span>{% if e.has_recorded_odometer %} · {{ e.odometer|groupnum }} {{ unit }}{% endif %}</span>
+                            {{ "%.1f"|format(e.volume or 0) }} {{ current_user.volume_unit }}
+                            {% if e.price_per_unit %}· {{ "%.3f"|format(e.price_per_unit) }}/{{ current_user.volume_unit }}{% endif %}
+                            {% if e.is_full_tank %}<span class="vp-log__full">{{ _('(Full)') }}</span>{% endif %}
+                            {% set consumption = e.get_consumption(current_user.consumption_unit, current_user.volume_unit) %}
+                            {% if consumption %}· <span class="ds-muted">{{ "%.1f"|format(consumption) }} {{ consumption_unit }}</span>{% endif %}
+                        </td>
+                        <td class="ds-num ds-muted vp-log__odo" data-label="{{ _('Odometer') }}">{{ e.odometer|groupnum if e.has_recorded_odometer else "—" }}{% if e.has_recorded_odometer %} {{ unit }}{% endif %}</td>
+                        <td class="ds-num" data-cell="value">{{ (e.total_cost or 0)|money }} <span class="ds-muted">{{ currency }}</span></td>
+                        <td data-cell="actions">
+                            {% if can_write('fuel') %}
+                            <div class="ds-table__actions">
+                                {{ button(_('Edit'), href=url_for('fuel.edit', log_id=e.id, return_to='vehicle'), variant='ghost', size='sm', icon_name='edit', icon_only=True) }}
+                                <form method="POST" action="{{ url_for('fuel.delete', log_id=e.id) }}" onsubmit="return confirm('{{ _('Delete this fuel log?') }}');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="return_to" value="vehicle">
+                                    {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=True) }}
+                                </form>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% elif row.kind == 'charging' %}
+                        <td class="vp-log__type" data-cell="meta"><span class="vp-kind vp-kind--charging">{{ _('Charging') }}</span></td>
+                        <td data-cell="title">
+                            <span class="vp-log__phone-meta">{{ row.date|format_date }} · <span class="vp-kind vp-kind--charging">{{ _('Charging') }}</span>{% if e.odometer %} · {{ e.odometer|groupnum }} {{ unit }}{% endif %}</span>
+                            {% if e.kwh_added %}{{ "%.1f"|format(e.kwh_added) }} kWh{% endif %}
+                            {% if e.start_soc is not none and e.end_soc is not none %}· {{ e.start_soc }}% → {{ e.end_soc }}%{% endif %}
+                            {% if e.location %}· <span class="ds-muted">{{ e.location }}</span>{% endif %}
+                        </td>
+                        <td class="ds-num ds-muted vp-log__odo" data-label="{{ _('Odometer') }}">{% if e.odometer %}{{ e.odometer|groupnum }} {{ unit }}{% else %}—{% endif %}</td>
+                        <td class="ds-num" data-cell="value">{{ (e.total_cost or 0)|money }} <span class="ds-muted">{{ currency }}</span></td>
+                        <td data-cell="actions">
+                            {% if can_write('charging') %}
+                            <div class="ds-table__actions">
+                                {{ button(_('Edit'), href=url_for('charging.edit', session_id=e.id), variant='ghost', size='sm', icon_name='edit', icon_only=True) }}
+                                <form method="POST" action="{{ url_for('charging.delete', session_id=e.id) }}" onsubmit="return confirm('{{ _('Delete this charging session?') }}');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=True) }}
+                                </form>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% else %}
+                        <td class="vp-log__type" data-cell="meta"><span class="vp-kind">{{ e.category|category_label }}</span></td>
+                        <td data-cell="title" style="overflow-wrap: anywhere">
+                            <span class="vp-log__phone-meta">{{ row.date|format_date }} · <span class="vp-kind">{{ e.category|category_label }}</span>{% if e.odometer %} · {{ e.odometer|groupnum }} {{ unit }}{% endif %}</span>
+                            {{ e.description }}
+                        </td>
+                        <td class="ds-num ds-muted vp-log__odo" data-label="{{ _('Odometer') }}">{% if e.odometer %}{{ e.odometer|groupnum }} {{ unit }}{% else %}—{% endif %}</td>
+                        <td class="ds-num" data-cell="value">{{ e.cost|money }} <span class="ds-muted">{{ currency }}</span></td>
+                        <td data-cell="actions">
+                            {% if can_write('expenses') %}
+                            <div class="ds-table__actions">
+                                {{ button(_('Edit'), href=url_for('expenses.edit', expense_id=e.id, return_to='vehicle'), variant='ghost', size='sm', icon_name='edit', icon_only=True) }}
+                                <form method="POST" action="{{ url_for('expenses.delete', expense_id=e.id, return_to='vehicle') }}" onsubmit="return confirm('{{ _('Delete this expense?') }}');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=True) }}
+                                </form>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        {{ empty_state(_('No fuel logs yet.'), None, 'fuel', _('Add Fuel Log') if fuel_first else None, url_for('fuel.new', vehicle_id=vehicle.id, return_to='vehicle')) }}
+        {% endif %}
+        <p class="vp-log__foot">
+            {% if vehicle.uses_fuel() %}<span><a href="{{ url_for('fuel.index') }}">{{ _('Fuel Logs') }}</a> <span class="ds-muted">· {{ stats.fuel_logs_count }}</span></span>{% endif %}
+            {% if vehicle.uses_charging() %}<span><a href="{{ url_for('charging.index', vehicle=vehicle.id) }}">{{ _('Charging') }}</a> <span class="ds-muted">· {{ stats.charging_sessions_count }}</span></span>{% endif %}
+            <span><a href="{{ url_for('expenses.index') }}">{{ _('Expenses') }}</a> <span class="ds-muted">· {{ stats.expenses_count }}</span></span>
+            <span><a href="{{ url_for('main.timeline', vehicle_id=vehicle.id) }}">{{ _('Timeline') }}</a></span>
+        </p>
+    </div>
+</section>
+
+{# ---- Parts, specifications, notes -------------------------------------- #}
+<div class="ds-row">
+    <section class="ds-card ds-grow-1" id="parts-section" style="flex-grow: 1.4">
+        <div class="ds-card__header">
+            <h2 class="ds-card__title"><button type="button" class="vp-card-toggle" onclick="toggleParts()" title="{{ _('Toggle section') }}" aria-controls="parts-body">{{ _('Parts & Consumables') }}<span id="parts-chevron">{{ icon('chevron-down', 18) }}</span></button></h2>
+            <a class="ds-card__action" href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}">{{ _('View all') }}</a>
+        </div>
+        <div class="ds-card__body" id="parts-body">
+            {% if parts %}
+            <ul class="vp-parts">
+                {% for part in parts[:6] %}
+                <li>
+                    {{ badge(dict(part_types)[part.part_type] if part.part_type in dict(part_types) else part.part_type, square=True) }}
+                    <span class="vp-parts__name">{{ part.name }}</span>
+                    {% if part.specification %}<span class="vp-parts__spec">{{ part.specification }}</span>{% endif %}
+                    {% if part.quantity and part.unit %}<span class="vp-parts__qty">{{ part.quantity }} {{ part.unit }}</span>{% endif %}
+                    {% if part.supplier_url %}{{ button(_('Buy'), href=part.supplier_url, variant='ghost', size='sm', icon_name='arrow-right', icon_only=True, attrs={'target': '_blank', 'rel': 'noopener noreferrer'}) }}{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if parts|length > 6 %}
+            <a class="ds-card__action" href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}">{{ _('View all') }} ({{ parts|length }})</a>
+            {% endif %}
+            {% else %}
+            {{ empty_state(_('No parts added yet.'), None, 'settings', _('Add Part') if can_write('vehicles') else None, url_for('vehicles.new_part', vehicle_id=vehicle.id)) }}
+            {% endif %}
+        </div>
+    </section>
+    {% if specs %}
+    {% call card(_('Specifications'), class='ds-grow-1') %}
+        <dl class="vp-specs">
+            {% for spec in specs %}
+            <div><dt>{{ spec|spec_label }}</dt><dd>{{ spec.value }}</dd></div>
+            {% endfor %}
+        </dl>
+    {% endcall %}
+    {% endif %}
+    {% if vehicle.notes %}
+    {% call card(_('Notes'), class='ds-grow-1') %}
+        <p class="vp-notes">{{ vehicle.notes|linkify }}</p>
+    {% endcall %}
+    {% endif %}
+</div>
+
+{# ---- Photos (#147) ----------------------------------------------------- #}
+<section class="ds-card" id="photos">
+    <div class="ds-card__header">
+        <h2 class="ds-card__title">{{ _('Photos') }}</h2>
+        {% if can_edit and can_write('vehicles') %}
+        <form method="POST" action="{{ url_for('vehicles.add_photos', vehicle_id=vehicle.id) }}" enctype="multipart/form-data" class="vp-photos__upload">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="file" name="photo" accept="image/*" multiple aria-label="{{ _('Photos') }}">
+            {{ button(_('Upload'), type='submit', size='sm', icon_name='plus') }}
+        </form>
+        {% endif %}
+    </div>
+    <div class="ds-card__body">
+        {% if carousel %}
+        <div class="vp-viewer" id="vehicle-carousel" data-count="{{ carousel|length }}">
+            {% for filename in carousel %}
+            <img src="{{ url_for('api.uploaded_file', filename=filename) }}" alt="{{ vehicle.name }}" data-carousel-index="{{ loop.index0 }}"
+                 class="vehicle-carousel-image{% if not loop.first %} hidden{% endif %}"{% if not loop.first %} loading="lazy"{% endif %}>
+            {% endfor %}
+            {% if carousel|length > 1 %}
+            <button type="button" class="vp-viewer__nav vp-viewer__nav--prev" onclick="stepVehicleCarousel(-1)" aria-label="{{ _('Previous photo') }}">{{ icon('arrow-left', 20) }}</button>
+            <button type="button" class="vp-viewer__nav vp-viewer__nav--next" onclick="stepVehicleCarousel(1)" aria-label="{{ _('Next photo') }}">{{ icon('arrow-right', 20) }}</button>
+            <span class="vp-viewer__count" id="vehicle-carousel-counter">1 / {{ carousel|length }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% if photos %}
+        <div class="vp-thumbs">
+            {% for photo in photos %}
+            <div class="vp-thumb">
+                <a href="{{ url_for('api.uploaded_file', filename=photo.filename) }}" target="_blank" rel="noopener">
+                    <img src="{{ url_for('api.uploaded_file', filename=photo.filename) }}" alt="{{ photo.original_filename }}" loading="lazy">
+                </a>
+                <div class="vp-thumb__bar">
+                    {% if vehicle.image_filename == photo.filename %}
+                    {{ badge(_('Main'), 'accent') }}
+                    {% elif can_edit and can_write('vehicles') %}
+                    <form method="POST" action="{{ url_for('vehicles.set_primary_photo', vehicle_id=vehicle.id, attachment_id=photo.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="vp-link-btn">{{ _('Set as main') }}</button>
+                    </form>
+                    {% else %}
+                    <span></span>
+                    {% endif %}
+                    {% if can_edit and can_write('vehicles') %}
+                    <form method="POST" action="{{ url_for('vehicles.delete_photo', vehicle_id=vehicle.id, attachment_id=photo.id) }}"
+                          onsubmit="return confirm('{{ _('Delete this photo?') }}');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="vp-link-btn vp-link-btn--danger">{{ _('Delete') }}</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif not carousel %}
+        <p class="ds-muted" style="margin: 0">{{ _('No photos yet.') }}</p>
+        {% endif %}
+    </div>
+</section>
+
+{# ---- Archive / restore, delete ---------------------------------------- #}
+{% if can_write('vehicles') %}
+<section class="vp-danger" aria-label="{{ _('Danger Zone') }}">
+    <div>
+        <div>
+            {% if vehicle.is_active %}
+            <h2>{{ _('Archive this vehicle') }}</h2>
+            <p>{{ _('Archived vehicles won\'t appear in regular lists or calculations. You can restore them later.') }}</p>
+            {% else %}
+            <h2>{{ _('Restore this vehicle') }}</h2>
+            <p>{{ _('Restore this vehicle to make it active again and include it in calculations.') }}</p>
+            {% endif %}
+        </div>
+        {% if vehicle.is_active %}
+        <form method="POST" action="{{ url_for('vehicles.archive', vehicle_id=vehicle.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ button(_('Archive Vehicle'), type='submit', variant='secondary') }}
+        </form>
+        {% else %}
+        <form method="POST" action="{{ url_for('vehicles.unarchive', vehicle_id=vehicle.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ button(_('Restore Vehicle'), type='submit', variant='secondary') }}
+        </form>
+        {% endif %}
+    </div>
+    <div>
+        <div>
+            <h2>{{ _('Delete this vehicle') }}</h2>
+            <p>{{ _('Once you delete a vehicle, there is no going back. This will also delete all associated fuel logs and expenses.') }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('vehicles.delete', vehicle_id=vehicle.id) }}"
+              onsubmit="return confirm('{{ _('Are you sure you want to delete this vehicle? This action cannot be undone.') }}');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ button(_('Delete Vehicle'), type='submit', variant='danger', icon_name='trash') }}
+        </form>
+    </div>
+</section>
+{% endif %}
+
+</div>
+</div>
+
+<script>
+// Report menu: close it on a click elsewhere or on Escape.
+(function() {
+    const menu = document.querySelector('.vp-menu');
+    if (!menu) return;
+    document.addEventListener('click', function(event) {
+        if (menu.open && !menu.contains(event.target)) menu.open = false;
+    });
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && menu.open) { menu.open = false; menu.querySelector('summary').focus(); }
+    });
+})();
+
+// The log shows every kind together, or one kind at a time.
+(function() {
+    const buttons = document.querySelectorAll('[data-log-filter]');
+    const rows = document.querySelectorAll('[data-log-kind]');
+    buttons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const kind = btn.getAttribute('data-log-filter');
+            buttons.forEach(function(b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+            rows.forEach(function(row) {
+                row.hidden = kind === 'all'
+                    ? row.hasAttribute('data-log-extra')
+                    : row.getAttribute('data-log-kind') !== kind;
+            });
+        });
+    });
+})();
+
+(function() {
+    const key = 'parts-collapsed-{{ vehicle.id }}';
+    const body = document.getElementById('parts-body');
+    const chevron = document.getElementById('parts-chevron');
+    if (localStorage.getItem(key) === '1') {
+        body.classList.add('hidden');
+        chevron.style.transform = 'rotate(-90deg)';
+    }
+    window.toggleParts = function() {
+        const collapsed = !body.classList.contains('hidden');
+        body.classList.toggle('hidden', collapsed);
+        chevron.style.transform = collapsed ? 'rotate(-90deg)' : '';
+        localStorage.setItem(key, collapsed ? '1' : '0');
+    };
+})();
+</script>
 
 {% if carousel|length > 1 %}
 <script>
@@ -199,998 +760,6 @@
 })();
 </script>
 {% endif %}
-
-<!-- Stats Cards -->
-<div class="vehicle-stat-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
-    {% if vehicle.uses_fuel() %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Fuel Cost') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_fuel_cost|money }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.currency }}</dd>
-    </div>
-    {% endif %}
-    {% if vehicle.uses_charging() %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Charging Cost') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_charging_cost|money }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.currency }}</dd>
-    </div>
-    {% endif %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Other Expenses') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_expense_cost|money }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.currency }}</dd>
-    </div>
-    {% if stats.total_allowance and stats.total_allowance > 0 %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Mileage Allowance') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-emerald-600 dark:text-emerald-400">-{{ stats.total_allowance|money }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.currency }}</dd>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Net Cost') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.net_cost|money }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.currency }}</dd>
-    </div>
-    {% endif %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{% if vehicle.tracks_hours() %}{{ _('Total Hours') }}{% else %}{{ _('Total Distance') }}{% endif %}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_distance|groupnum }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.get_reading_unit() }}</dd>
-    </div>
-    {% if vehicle.uses_fuel() %}
-    {# One card per fuel: on a dual-fuel vehicle petrol and LPG each get their
-       own average, since a combined figure would be meaningless (#221). #}
-    {% for entry in stats.consumption_by_fuel %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-            {{ _('Avg. Consumption') }}{% if stats.consumption_by_fuel|length > 1 %} &middot; {{ entry.fuel_type|fuel_type_label }}{% endif %}
-        </dt>
-        {% if entry.value %}
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(entry.value) }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.get_consumption_unit() or current_user.consumption_unit }}</dd>
-        {% else %}
-        {% if entry.reason == 'missed_fill_up' %}
-            {% set consumption_hint = _('A missed fill-up in the range means we can’t calculate this honestly.') %}
-        {% elif entry.reason == 'needs_distance_attribution' %}
-            {% set consumption_hint = _('Consumption can’t be worked out until the distance run on each fuel is recorded — the odometer can’t tell petrol from LPG. Add it to your fill-ups.') %}
-        {% elif entry.reason == 'insufficient_data' %}
-            {% set consumption_hint = _('Not enough distance or fuel data yet to calculate this.') %}
-        {% else %}
-            {% set consumption_hint = _('Needs at least two full-tank fill-ups.') %}
-        {% endif %}
-        <dd class="mt-1 text-xl font-semibold text-gray-400 dark:text-gray-500" title="{{ consumption_hint }}">&mdash;</dd>
-        <dd class="text-xs text-gray-400 dark:text-gray-500">{{ consumption_hint }}</dd>
-        {% endif %}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% if vehicle.uses_charging() %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Avg. Charging') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{% if stats.avg_charging_consumption %}{{ "%.1f"|format(stats.avg_charging_consumption) }}{% else %}-{% endif %}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">kWh / 100 {{ vehicle.get_reading_unit() }}</dd>
-    </div>
-    {% endif %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Cost per') }} {{ vehicle.get_reading_unit() }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{% if stats.cost_per_distance %}{{ stats.cost_per_distance|money }}{% else %}-{% endif %}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.currency }}</dd>
-    </div>
-    {% if vehicle.uses_fuel() and stats.total_fuel_volume %}
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Fuel Used') }}</dt>
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_fuel_volume|groupnum }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ current_user.volume_unit }}</dd>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('CO₂ Emissions') }}</dt>
-        {% if stats.total_co2_kg >= 1000 %}
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ "%.2f"|format(stats.total_co2_kg / 1000) }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('tonnes (estimated)') }}</dd>
-        {% else %}
-        <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-white">{{ stats.total_co2_kg|groupnum }}</dd>
-        <dd class="text-sm text-gray-500 dark:text-gray-400">{{ _('kg (estimated)') }}</dd>
-        {% endif %}
-    </div>
-    {% endif %}
-</div>
-
-<!-- Quick Actions: create actions on the left (one primary, the rest outlined),
-     navigation shortcuts on the right. -->
-{% set btn_base = 'inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors' %}
-{% set btn_primary = btn_base ~ ' border border-transparent shadow-sm text-white bg-primary-600 hover:bg-primary-700' %}
-{% set btn_outline = btn_base ~ ' border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700' %}
-<div class="flex flex-wrap items-center gap-3 mb-8">
-    {% if vehicle.uses_fuel() and not vehicle.uses_tessie_odometer() %}
-    {% if can_write('fuel') %}
-    <a href="{{ url_for('fuel.new', vehicle_id=vehicle.id, return_to='vehicle') }}" class="{{ btn_primary }}">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Fuel Log') }}
-    </a>
-    {% endif %}
-    {% endif %}
-    {% if vehicle.uses_charging() %}
-    {% if can_write('charging') %}
-    <a href="{{ url_for('charging.new', vehicle_id=vehicle.id) }}" class="{{ btn_primary if not (vehicle.uses_fuel() and not vehicle.uses_tessie_odometer() and can_write('fuel')) else btn_outline }}">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        {{ _('Add Charging') }}
-    </a>
-    {% endif %}
-    {% endif %}
-    {% if can_write('trips') %}
-    <a href="{{ url_for('trips.new', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-        </svg>
-        {{ _('Log Trip') }}
-    </a>
-    {% endif %}
-    {% if can_write('expenses') %}
-    <a href="{{ url_for('expenses.new', vehicle_id=vehicle.id, return_to='vehicle') }}" class="{{ btn_outline }}">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Expense') }}
-    </a>
-    {% endif %}
-    {% if can_write('reminders') %}
-    <a href="{{ url_for('reminders.new', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Reminder') }}
-    </a>
-    {% endif %}
-
-    <div class="flex flex-wrap items-center gap-3 lg:ml-auto">
-        <a href="{{ url_for('maintenance.history', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"/>
-            </svg>
-            {{ _('Maintenance History') }}
-        </a>
-        <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-            </svg>
-            {{ _('Parts') }}
-        </a>
-        <a href="{{ url_for('main.timeline', vehicle_id=vehicle.id) }}" class="{{ btn_outline }}">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            {{ _('Timeline') }}
-        </a>
-    </div>
-</div>
-
-<!-- Photos (#147) -->
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8" id="photos">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Photos') }}</h2>
-        {% if can_edit %}
-        {% if can_write('vehicles') %}
-        <form method="POST" action="{{ url_for('vehicles.add_photos', vehicle_id=vehicle.id) }}"
-              enctype="multipart/form-data" class="flex items-center gap-2">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <input type="file" name="photo" accept="image/*" multiple
-                   class="text-sm text-gray-500 dark:text-gray-400">
-            <button type="submit"
-                    class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                {{ _('Upload') }}
-            </button>
-        </form>
-        {% endif %}
-        {% endif %}
-    </div>
-    {% if photos %}
-    <div class="p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {% for photo in photos %}
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <a href="{{ url_for('api.uploaded_file', filename=photo.filename) }}" target="_blank" rel="noopener">
-                <img src="{{ url_for('api.uploaded_file', filename=photo.filename) }}"
-                     alt="{{ photo.original_filename }}"
-                     class="w-full h-32 object-cover hover:opacity-90">
-            </a>
-            <div class="px-2 py-2 flex items-center justify-between gap-2">
-                {% if vehicle.image_filename == photo.filename %}
-                <span class="text-xs px-1.5 py-0.5 rounded bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">{{ _('Main') }}</span>
-                {% elif can_edit %}
-                {% if can_write('vehicles') %}
-                <form method="POST" action="{{ url_for('vehicles.set_primary_photo', vehicle_id=vehicle.id, attachment_id=photo.id) }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="text-xs text-primary-600 hover:text-primary-500">{{ _('Set as main') }}</button>
-                </form>
-                {% endif %}
-                {% else %}
-                <span></span>
-                {% endif %}
-                {% if can_edit %}
-                {% if can_write('vehicles') %}
-                <form method="POST" action="{{ url_for('vehicles.delete_photo', vehicle_id=vehicle.id, attachment_id=photo.id) }}"
-                      onsubmit="return confirm('{{ _('Delete this photo?') }}');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="text-xs text-red-600 hover:text-red-500">{{ _('Delete') }}</button>
-                </form>
-                {% endif %}
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="px-6 py-8 text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('No photos yet.') }}</p>
-    </div>
-    {% endif %}
-</div>
-
-<!-- DVLA Status Section (UK Vehicles) -->
-{% if vehicle.registration and dvla_configured %}
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8" id="dvla-section">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center">
-            <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('DVLA Status') }}</h2>
-        </div>
-        <button onclick="refreshDvlaStatus({{ vehicle.id }})" id="dvla-refresh-btn"
-                class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-            {{ _('Refresh') }}
-        </button>
-    </div>
-    <div class="p-6">
-        {% if vehicle.dvla_last_updated %}
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('MOT Status') }}</dt>
-                <dd class="mt-1">
-                    {% if vehicle.mot_status == 'Valid' %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                        {{ vehicle.mot_status }}
-                    </span>
-                    {% elif vehicle.mot_status == 'Not valid' %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                        {{ vehicle.mot_status }}
-                    </span>
-                    {% else %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
-                        {{ vehicle.mot_status or 'Unknown' }}
-                    </span>
-                    {% endif %}
-                </dd>
-            </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('MOT Expiry') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                    {% if vehicle.mot_expiry %}
-                    {{ vehicle.mot_expiry|format_date }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </dd>
-            </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Tax Status') }}</dt>
-                <dd class="mt-1">
-                    {% if vehicle.tax_status == 'Taxed' %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                        {{ vehicle.tax_status }}
-                    </span>
-                    {% elif vehicle.tax_status in ['Untaxed', 'SORN'] %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                        {{ vehicle.tax_status }}
-                    </span>
-                    {% else %}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300">
-                        {{ vehicle.tax_status or 'Unknown' }}
-                    </span>
-                    {% endif %}
-                </dd>
-            </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Tax Due') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                    {% if vehicle.tax_due %}
-                    {{ vehicle.tax_due|format_date }}
-                    {% else %}
-                    -
-                    {% endif %}
-                </dd>
-            </div>
-        </div>
-        <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">
-            {{ _('Last updated') }}: {{ vehicle.dvla_last_updated|format_date('long_datetime') }}
-        </p>
-        {% else %}
-        <div class="text-center py-4">
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ _('No DVLA data available for this vehicle.') }}</p>
-            <button onclick="refreshDvlaStatus({{ vehicle.id }})"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                {{ _('Fetch from DVLA') }}
-            </button>
-        </div>
-        {% endif %}
-        <div id="dvla-error" class="hidden mt-3 p-3 bg-red-50 dark:bg-red-900/30 rounded-md text-sm text-red-600 dark:text-red-400"></div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Tessie Status Section (Tesla Vehicles) -->
-{% if vehicle.tessie_enabled and vehicle.tessie_vin and tessie_configured %}
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8" id="tessie-section">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center">
-            <svg class="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Tessie Status') }}</h2>
-            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                {{ _('Live') }}
-            </span>
-        </div>
-        <div class="flex flex-wrap gap-2">
-            <button onclick="importTessieCharges({{ vehicle.id }})" id="tessie-import-btn"
-                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                </svg>
-                {{ _('Import Charges') }}
-            </button>
-            <button onclick="refreshTessieStatus({{ vehicle.id }})" id="tessie-refresh-btn"
-                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                {{ _('Refresh') }}
-            </button>
-        </div>
-    </div>
-    <div class="p-6">
-        {% if vehicle.tessie_last_updated %}
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Odometer') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                    {% if vehicle.tessie_last_odometer %}
-                    {% if vehicle.get_effective_odometer_unit() == 'mi' %}
-                    {{ (vehicle.tessie_last_odometer * 0.621371)|groupnum }} mi
-                    {% else %}
-                    {{ vehicle.tessie_last_odometer|groupnum }} km
-                    {% endif %}
-                    {% else %}
-                    -
-                    {% endif %}
-                </dd>
-            </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Battery Level') }}</dt>
-                <dd class="mt-1">
-                    {% if vehicle.tessie_battery_level is not none %}
-                    <div class="flex items-center gap-2">
-                        <div class="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                            <div class="h-full {% if vehicle.tessie_battery_level > 50 %}bg-green-500{% elif vehicle.tessie_battery_level > 20 %}bg-yellow-500{% else %}bg-red-500{% endif %}"
-                                 style="width: {{ vehicle.tessie_battery_level }}%"></div>
-                        </div>
-                        <span class="text-sm text-gray-900 dark:text-white">{{ vehicle.tessie_battery_level }}%</span>
-                    </div>
-                    {% else %}
-                    <span class="text-sm text-gray-500 dark:text-gray-400">-</span>
-                    {% endif %}
-                </dd>
-            </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Est. Range') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-                    {% if vehicle.tessie_battery_range %}
-                    {% if vehicle.get_effective_odometer_unit() == 'mi' %}
-                    {{ (vehicle.tessie_battery_range * 0.621371)|groupnum }} mi
-                    {% else %}
-                    {{ vehicle.tessie_battery_range|groupnum }} km
-                    {% endif %}
-                    {% else %}
-                    -
-                    {% endif %}
-                </dd>
-            </div>
-            <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('VIN') }}</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white font-mono">{{ vehicle.tessie_vin }}</dd>
-            </div>
-        </div>
-        <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">
-            {{ _('Last updated') }}: {{ vehicle.tessie_last_updated|format_date('long_datetime') }}
-        </p>
-        {% else %}
-        <div class="text-center py-4">
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ _('No Tessie data available for this vehicle yet.') }}</p>
-            <button onclick="refreshTessieStatus({{ vehicle.id }})"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                {{ _('Fetch from Tessie') }}
-            </button>
-        </div>
-        {% endif %}
-        <div id="tessie-error" class="hidden mt-3 p-3 bg-red-50 dark:bg-red-900/30 rounded-md text-sm text-red-600 dark:text-red-400"></div>
-    </div>
-</div>
-{% endif %}
-
-{% if not vehicle.is_active %}
-<div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8">
-    <div class="flex">
-        <svg class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-        </svg>
-        <p class="ml-3 text-sm text-amber-700">{{ _('This vehicle is archived. It won\'t appear in regular lists or calculations.') }}</p>
-    </div>
-</div>
-{% endif %}
-
-<!-- Annual Mileage Tracker -->
-{% if annual_mileage_stats %}
-{% set ms = annual_mileage_stats %}
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center">
-            <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            </svg>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Annual Mileage') }}</h2>
-        </div>
-        <div class="flex items-center gap-2">
-            {% if ms.over_limit %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                {{ _('Over limit') }}
-            </span>
-            {% elif ms.progress_pct >= 90 %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                {{ _('Approaching limit') }}
-            </span>
-            {% elif ms.on_pace %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                {{ _('On pace') }}
-            </span>
-            {% else %}
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                {{ _('Over pace') }}
-            </span>
-            {% endif %}
-            {% if can_write('vehicles') %}
-            <a href="{{ url_for('vehicles.edit', vehicle_id=vehicle.id) }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('Edit') }}</a>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="px-6 py-5">
-        <!-- Progress bars -->
-        <div class="mb-4">
-            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-                <span>{{ vehicle.get_span_label() }}: {{ "{:,}".format(ms.driven) }} / {{ "{:,}".format(ms.limit|int) }} {{ vehicle.get_reading_unit() }}</span>
-                <span>{{ ms.progress_pct }}%</span>
-            </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 relative overflow-hidden">
-                <!-- Time elapsed marker -->
-                <div class="absolute top-0 bottom-0 w-0.5 bg-gray-400 dark:bg-gray-500 z-10" style="left: {{ ms.time_pct }}%;" title="{{ _('Time elapsed') }}: {{ ms.time_pct }}%"></div>
-                <!-- Distance progress -->
-                <div class="h-3 rounded-full transition-all {% if ms.over_limit %}bg-red-500{% elif ms.progress_pct >= 90 %}bg-amber-500{% else %}bg-primary-500{% endif %}"
-                     style="width: {{ ms.progress_pct }}%;"></div>
-            </div>
-            <div class="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
-                <span>{{ ms.period_start|format_date }}</span>
-                <span class="text-gray-500 dark:text-gray-400" title="{{ _('Time elapsed') }}">▲ {{ ms.time_pct }}% {{ _('of year elapsed') }}</span>
-                <span>{{ ms.period_end|format_date }}</span>
-            </div>
-        </div>
-
-        <!-- Stats grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
-            <div class="text-center">
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ "{:,}".format(ms.remaining) }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ vehicle.get_reading_unit() }} {{ _('remaining') }}</p>
-            </div>
-            <div class="text-center">
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ ms.days_remaining }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ _('days remaining') }}</p>
-            </div>
-            <div class="text-center">
-                <p class="text-2xl font-semibold {% if not ms.on_pace and not ms.over_limit %}text-red-600 dark:text-red-400{% else %}text-gray-900 dark:text-white{% endif %}">{{ "{:,}".format(ms.projected) }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ _('projected year-end') }}</p>
-            </div>
-            <div class="text-center">
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ "{:,}".format(ms.expected) }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ _('expected at this point') }}</p>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Reminders Section -->
-{% if reminders %}
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center">
-            <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Upcoming Reminders') }}</h2>
-        </div>
-        <a href="{{ url_for('reminders.index') }}?vehicle={{ vehicle.id }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for reminder in reminders[:5] %}
-        <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center space-x-3 min-w-0 flex-1">
-                    {% if can_write('reminders') %}
-                    <form method="POST" action="{{ url_for('reminders.complete', reminder_id=reminder.id) }}?return_to=vehicle" class="flex-shrink-0">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="h-5 w-5 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 hover:bg-green-50 flex items-center justify-center transition-colors"
-                                title="{{ _('Mark as completed') }}">
-                        </button>
-                    </form>
-                    {% endif %}
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ reminder.title }}</p>
-                            <span class="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                         {% if reminder.reminder_type == 'mot' %}bg-purple-100 text-purple-800
-                                         {% elif reminder.reminder_type == 'service' %}bg-blue-100 text-blue-800
-                                         {% elif reminder.reminder_type == 'insurance' %}bg-green-100 text-green-800
-                                         {% elif reminder.reminder_type == 'tax' %}bg-yellow-100 text-yellow-800
-                                         {% else %}bg-gray-100 dark:bg-gray-600 text-gray-800{% endif %}">
-                                {{ dict(reminder_types)[reminder.reminder_type] if reminder.reminder_type in dict(reminder_types) else reminder.reminder_type|capitalize }}
-                            </span>
-                        </div>
-                        {% if reminder.description %}
-                        <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ reminder.description }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4 flex-shrink-0">
-                    <div class="text-right">
-                        <p class="text-sm {% if reminder.is_overdue() %}text-red-600 font-medium{% elif reminder.is_upcoming(7) %}text-amber-600{% else %}text-gray-900 dark:text-white{% endif %}">
-                            {{ reminder.due_date|format_date }}
-                        </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                            {% if reminder.is_overdue() %}
-                            {{ _('%(days)s days overdue', days=reminder.days_until_due()|abs) }}
-                            {% elif reminder.days_until_due() == 0 %}
-                            {{ _('Due today') }}
-                            {% elif reminder.days_until_due() == 1 %}
-                            {{ _('Due tomorrow') }}
-                            {% else %}
-                            {{ _('In %(days)s days', days=reminder.days_until_due()) }}
-                            {% endif %}
-                        </p>
-                    </div>
-                    {% if can_write('reminders') %}
-                    <a href="{{ url_for('reminders.edit', reminder_id=reminder.id) }}"
-                       class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-400" title="Edit">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% if reminders|length > 5 %}
-    <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
-        <a href="{{ url_for('reminders.index') }}?vehicle={{ vehicle.id }}" class="text-sm text-primary-600 hover:text-primary-500">
-            View {{ reminders|length - 5 }} more reminder{{ 's' if reminders|length - 5 > 1 else '' }}
-        </a>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-<!-- Specifications & Notes -->
-{% if specs or vehicle.notes %}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-    {% if specs %}
-    <div class="vehicle-details-card bg-white dark:bg-gray-800">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Specifications') }}</h2>
-        </div>
-        <dl class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for spec in specs %}
-            <div class="px-6 py-3 flex justify-between">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ spec|spec_label }}</dt>
-                <dd class="text-sm text-gray-900 dark:text-white">{{ spec.value }}</dd>
-            </div>
-            {% endfor %}
-        </dl>
-    </div>
-    {% endif %}
-
-    {% if vehicle.notes %}
-    <div class="vehicle-details-card bg-white dark:bg-gray-800">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Notes') }}</h2>
-        </div>
-        <div class="px-6 py-4">
-            <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ vehicle.notes|linkify }}</p>
-        </div>
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-
-{% if maintenance_schedules %}
-<!-- Upcoming Maintenance -->
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center">
-            <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Upcoming Maintenance') }}</h2>
-        </div>
-        <a href="{{ url_for('maintenance.index') }}?vehicle_id={{ vehicle.id }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-    </div>
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for schedule in maintenance_schedules[:5] %}
-        {% set is_overdue = schedule.next_due_date and schedule.next_due_date < today %}
-        {% set is_due_soon = schedule.next_due_date and not is_overdue and (schedule.next_due_date - today).days <= 30 %}
-        <li class="px-6 py-3">
-            <div class="flex items-center justify-between gap-4">
-                <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ schedule.name }}</span>
-                        {% if is_overdue %}
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">{{ _('Overdue') }}</span>
-                        {% elif is_due_soon %}
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400">{{ _('Due soon') }}</span>
-                        {% endif %}
-                    </div>
-                    <div class="flex items-center gap-3 mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                        {% if schedule.next_due_date %}
-                        <span>{{ schedule.next_due_date|format_date }}</span>
-                        {% endif %}
-                        {% if schedule.next_due_odometer %}
-                        <span>{{ schedule.next_due_odometer|groupnum }} {{ vehicle.get_reading_unit() }}</span>
-                        {% endif %}
-                    </div>
-                </div>
-                {% if schedule.next_due_date and schedule.last_performed_date %}
-                {% set total_days = (schedule.next_due_date - schedule.last_performed_date).days %}
-                {% set elapsed_days = (today - schedule.last_performed_date).days %}
-                {% set pct = [[(elapsed_days / total_days * 100) if total_days > 0 else 100, 0]|max, 100]|min %}
-                <div class="w-24 flex-shrink-0">
-                    <div class="h-1.5 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full {% if is_overdue %}bg-red-500{% elif is_due_soon %}bg-yellow-400{% else %}bg-green-500{% endif %}"
-                             style="width: {{ pct }}%"></div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-
-<!-- Parts & Consumables -->
-<div class="vehicle-details-card bg-white dark:bg-gray-800 mb-8" id="parts-section">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-            <button onclick="toggleParts()" class="flex items-center gap-2 text-left" title="{{ _('Toggle section') }}">
-                <svg id="parts-chevron" class="h-4 w-4 text-gray-400 transition-transform duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-                </svg>
-                <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Parts & Consumables') }}</h2>
-            </button>
-        </div>
-        <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}" class="text-sm text-primary-600 hover:text-primary-500">{{ _('View all') }}</a>
-    </div>
-    <div id="parts-body">
-    {% if parts %}
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for part in parts[:6] %}
-        <li class="px-6 py-3 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3 min-w-0">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                        {{ dict(part_types)[part.part_type] if part.part_type in dict(part_types) else part.part_type }}
-                    </span>
-                    <span class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ part.name }}</span>
-                    {% if part.specification %}
-                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ part.specification }}</span>
-                    {% endif %}
-                </div>
-                <div class="flex items-center gap-2 ml-4 flex-shrink-0">
-                    {% if part.quantity and part.unit %}
-                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ part.quantity }} {{ part.unit }}</span>
-                    {% endif %}
-                    {% if part.supplier_url %}
-                    <a href="{{ part.supplier_url }}" target="_blank" rel="noopener noreferrer"
-                       class="p-1 text-gray-400 hover:text-primary-500" title="Buy">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                        </svg>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% if parts|length > 6 %}
-    <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
-        <a href="{{ url_for('vehicles.parts', vehicle_id=vehicle.id) }}" class="text-sm text-primary-600 hover:text-primary-500">
-            View {{ parts|length - 6 }} more part{{ 's' if parts|length - 6 > 1 else '' }}
-        </a>
-    </div>
-    {% endif %}
-    {% else %}
-    <div class="px-6 py-8 text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{{ _('No parts added yet.') }}</p>
-        {% if can_write('vehicles') %}
-        <a href="{{ url_for('vehicles.new_part', vehicle_id=vehicle.id) }}"
-           class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <svg class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Part') }}
-        </a>
-        {% endif %}
-    </div>
-    {% endif %}
-    </div><!-- end parts-body -->
-</div>
-
-<script>
-(function() {
-    const key = 'parts-collapsed-{{ vehicle.id }}';
-    const body = document.getElementById('parts-body');
-    const chevron = document.getElementById('parts-chevron');
-    if (localStorage.getItem(key) === '1') {
-        body.classList.add('hidden');
-        chevron.style.transform = 'rotate(-90deg)';
-    }
-    window.toggleParts = function() {
-        const collapsed = !body.classList.contains('hidden');
-        body.classList.toggle('hidden', collapsed);
-        chevron.style.transform = collapsed ? 'rotate(-90deg)' : '';
-        localStorage.setItem(key, collapsed ? '1' : '0');
-    };
-})();
-</script>
-
-{% if vehicle.uses_fuel() %}
-<!-- Consumption Chart (collapsible, state per vehicle in localStorage, #249) -->
-<div class="vehicle-details-card bg-white dark:bg-gray-800 p-6 mb-8">
-    <button type="button" onclick="toggleChart('consumption')" class="w-full flex items-center justify-between text-left">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Fuel Consumption Trend') }}</h2>
-        <svg id="consumption-chart-chevron" class="h-5 w-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-    </button>
-    <div id="consumption-chart-body" class="mt-4" style="position: relative; height: 300px;">
-        <canvas id="consumptionChart"></canvas>
-    </div>
-</div>
-
-<!-- Price per Unit Chart (#249, #145) -->
-<div class="vehicle-details-card bg-white dark:bg-gray-800 p-6 mb-8">
-    <button type="button" onclick="toggleChart('price')" class="w-full flex items-center justify-between text-left">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Fuel Price Trend') }}</h2>
-        <svg id="price-chart-chevron" class="h-5 w-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-    </button>
-    <div id="price-chart-body" class="mt-4" style="position: relative; height: 300px;">
-        <canvas id="priceChart"></canvas>
-    </div>
-</div>
-{% endif %}
-
-{% if expenses_by_category %}
-<!-- Expenses by Category for this vehicle (#287) -->
-<div class="vehicle-details-card bg-white dark:bg-gray-800 p-6 mb-8">
-    <button type="button" onclick="toggleChart('expenses')" class="w-full flex items-center justify-between text-left">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Expenses by Category') }}</h2>
-        <svg id="expenses-chart-chevron" class="h-5 w-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-    </button>
-    <div id="expenses-chart-body" class="mt-4" style="position: relative; height: 250px;">
-        <canvas id="expensesChart"></canvas>
-    </div>
-</div>
-{% endif %}
-
-<!-- Recent Activity -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <div class="vehicle-details-card bg-white dark:bg-gray-800">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Fuel Logs') }}</h2>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ stats.fuel_logs_count }} total</span>
-        </div>
-        {% if recent_logs %}
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for log in recent_logs %}
-            <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ log.date|format_date }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ log.odometer|groupnum if log.has_recorded_odometer else "—" }} {{ vehicle.get_reading_unit() }} &middot;
-                            {{ "%.1f"|format(log.volume or 0) }} {{ current_user.volume_unit }}
-                            {% if log.price_per_unit %}&middot; {{ "%.3f"|format(log.price_per_unit) }}/{{ current_user.volume_unit }}{% endif %}
-                            {% if log.is_full_tank %}<span class="text-green-600">{{ _('(Full)') }}</span>{% endif %}
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ (log.total_cost or 0)|money }} {{ current_user.currency }}</p>
-                            {% set consumption = log.get_consumption(current_user.consumption_unit, current_user.volume_unit) %}
-                            {% if consumption %}
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ "%.1f"|format(consumption) }} {{ vehicle.get_consumption_unit() or current_user.consumption_unit }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="flex items-center gap-1">
-                            {% if can_write('fuel') %}
-                            <a href="{{ url_for('fuel.edit', log_id=log.id, return_to='vehicle') }}" class="p-1.5 text-gray-400 hover:text-primary-600 rounded hover:bg-gray-100 dark:hover:bg-gray-600" title="Edit">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
-                            {% endif %}
-                            {% if can_write('fuel') %}
-                            <form method="POST" action="{{ url_for('fuel.delete', log_id=log.id) }}" class="inline" onsubmit="return confirm('{{ _('Delete this fuel log?') }}');">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="return_to" value="vehicle">
-                                <button type="submit" class="p-1.5 text-gray-400 hover:text-red-600 rounded hover:bg-gray-100 dark:hover:bg-gray-600" title="Delete">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ _('No fuel logs yet.') }}</p>
-        {% endif %}
-    </div>
-
-    <div class="vehicle-details-card bg-white dark:bg-gray-800">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-2">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Expenses') }}</h2>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ stats.expenses_count }} total</span>
-        </div>
-        {% if recent_expenses %}
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for expense in recent_expenses %}
-            <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-                <div class="flex items-center justify-between">
-                    <div class="min-w-0 flex-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white break-words">{{ expense.description }}</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ expense.date|format_date }} &middot;
-                            <span>{{ expense.category|category_label }}</span>
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3 ml-4">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white whitespace-nowrap">{{ expense.cost|money }} {{ current_user.currency }}</p>
-                        <div class="flex items-center gap-1">
-                            {% if can_write('expenses') %}
-                            <a href="{{ url_for('expenses.edit', expense_id=expense.id, return_to='vehicle') }}" class="p-1.5 text-gray-400 hover:text-primary-600 rounded hover:bg-gray-100 dark:hover:bg-gray-600" title="Edit">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
-                            {% endif %}
-                            {% if can_write('expenses') %}
-                            <form method="POST" action="{{ url_for('expenses.delete', expense_id=expense.id, return_to='vehicle') }}" class="inline" onsubmit="return confirm('{{ _('Delete this expense?') }}');">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="p-1.5 text-gray-400 hover:text-red-600 rounded hover:bg-gray-100 dark:hover:bg-gray-600" title="Delete">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ _('No expenses yet.') }}</p>
-        {% endif %}
-    </div>
-</div>
-
-<!-- Danger Zone -->
-<div class="mt-8 bg-white dark:bg-gray-800 shadow rounded-lg border border-red-200">
-    <div class="px-6 py-4 border-b border-red-200">
-        <h3 class="text-lg font-medium text-red-600">{{ _('Danger Zone') }}</h3>
-    </div>
-    <div class="divide-y divide-gray-200 dark:divide-gray-700">
-        <!-- Archive/Restore -->
-        <div class="px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    {% if vehicle.is_active %}
-                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ _('Archive this vehicle') }}</h4>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Archived vehicles won\'t appear in regular lists or calculations. You can restore them later.') }}</p>
-                    {% else %}
-                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ _('Restore this vehicle') }}</h4>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Restore this vehicle to make it active again and include it in calculations.') }}</p>
-                    {% endif %}
-                </div>
-                {% if vehicle.is_active %}
-                {% if can_write('vehicles') %}
-                <form method="POST" action="{{ url_for('vehicles.archive', vehicle_id=vehicle.id) }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit"
-                            class="px-4 py-2 border border-amber-300 rounded-md text-sm font-medium text-amber-700 bg-white dark:bg-gray-800 hover:bg-amber-50">
-                        {{ _('Archive Vehicle') }}
-                    </button>
-                </form>
-                {% endif %}
-                {% else %}
-                {% if can_write('vehicles') %}
-                <form method="POST" action="{{ url_for('vehicles.unarchive', vehicle_id=vehicle.id) }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit"
-                            class="px-4 py-2 border border-green-300 rounded-md text-sm font-medium text-green-700 bg-white dark:bg-gray-800 hover:bg-green-50">
-                        {{ _('Restore Vehicle') }}
-                    </button>
-                </form>
-                {% endif %}
-                {% endif %}
-            </div>
-        </div>
-        <!-- Delete -->
-        <div class="px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ _('Delete this vehicle') }}</h4>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Once you delete a vehicle, there is no going back. This will also delete all associated fuel logs and expenses.') }}</p>
-                </div>
-                {% if can_write('vehicles') %}
-                <form method="POST" action="{{ url_for('vehicles.delete', vehicle_id=vehicle.id) }}"
-                      onsubmit="return confirm('{{ _('Are you sure you want to delete this vehicle? This action cannot be undone.') }}');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit"
-                            class="px-4 py-2 border border-red-300 rounded-md text-sm font-medium text-red-700 bg-white dark:bg-gray-800 hover:bg-red-50">
-                        {{ _('Delete Vehicle') }}
-                    </button>
-                </form>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 // Collapsible chart cards with per-vehicle state (#249). Charts are resized
@@ -1214,12 +783,23 @@ function restoreChartState(name) {
 }
 function showChartFallback(canvasEl, message) {
     const p = document.createElement('p');
-    p.className = 'text-sm text-gray-500 dark:text-gray-400';
+    p.className = 'ds-muted';
+    p.style.margin = '0';
     p.textContent = message;
+    canvasEl.parentElement.style.height = 'auto';
     canvasEl.parentElement.replaceChildren(p);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Chart text and grid lines follow the design-system colours, so the
+    // charts read in the dark theme as well as the light one.
+    if (window.Chart) {
+        const css = getComputedStyle(document.documentElement);
+        Chart.defaults.color = css.getPropertyValue('--ds-text-muted').trim() || Chart.defaults.color;
+        Chart.defaults.borderColor = css.getPropertyValue('--ds-border-soft').trim() || Chart.defaults.borderColor;
+        Chart.defaults.font.family = css.getPropertyValue('--ds-font-sans').trim() || Chart.defaults.font.family;
+    }
+
     const consumptionEl = document.getElementById('consumptionChart');
     if (consumptionEl) {
         restoreChartState('consumption');
@@ -1276,7 +856,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 const fallbackColours = ['rgb(59, 130, 246)', 'rgb(239, 68, 68)', 'rgb(34, 197, 94)', 'rgb(245, 158, 11)', 'rgb(139, 92, 246)'];
                 const fuelTypes = Object.keys(typeLabels);
-                const unit = {{ (vehicle.get_consumption_unit() or current_user.consumption_unit)|tojson }};
+                const unit = {{ consumption_unit|tojson }};
                 const datasets = fuelTypes.map((ft, i) => {
                     const colour = typeColours[ft] || fallbackColours[i % fallbackColours.length];
                     // A single series keeps the filled look it has always had;
@@ -1314,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 beginAtZero: false,
                                 title: {
                                     display: true,
-                                    text: {{ (vehicle.get_consumption_unit() or current_user.consumption_unit)|tojson }}
+                                    text: {{ consumption_unit|tojson }}
                                 }
                             }
                         }
@@ -1375,21 +955,25 @@ document.addEventListener('DOMContentLoaded', function() {
     restoreChartState('expenses');
     const categoryData = {{ expenses_by_category | tojson }};
     const expenseCurrency = {{ (current_user.currency or '')|tojson }};
-    chartInstances['expenses'] = createExpenseCategoryChart(expensesEl, categoryData, expenseCurrency);
+    chartInstances['expenses'] = createExpenseCategoryChart(expensesEl, categoryData, expenseCurrency, {{ _('Charging')|tojson }});
 });
+
+const refreshIcon = {{ icon('repeat', 16)|string|tojson }};
+function resetButton(btn, label, withIcon) {
+    btn.disabled = false;
+    btn.innerHTML = withIcon ? refreshIcon : '';
+    btn.appendChild(document.createTextNode(label));
+}
+function busyButton(btn, label) {
+    btn.disabled = true;
+    btn.textContent = label;
+}
 
 function refreshDvlaStatus(vehicleId) {
     const btn = document.getElementById('dvla-refresh-btn');
     const errorDiv = document.getElementById('dvla-error');
-
-    // Hide any previous errors
     errorDiv.classList.add('hidden');
-
-    // Show loading state
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...';
-    }
+    if (btn) busyButton(btn, 'Loading...');
 
     fetch('/api/vehicles/' + vehicleId + '/dvla-refresh', {
         method: 'POST'
@@ -1397,44 +981,26 @@ function refreshDvlaStatus(vehicleId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Reload the page to show updated data
                 location.reload();
             } else {
-                // Show error
                 errorDiv.textContent = data.error || 'Failed to refresh DVLA status';
                 errorDiv.classList.remove('hidden');
-
-                // Reset button
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Refresh';
-                }
+                if (btn) resetButton(btn, {{ _('Refresh')|tojson }}, true);
             }
         })
         .catch(err => {
             errorDiv.textContent = 'Error connecting to server';
             errorDiv.classList.remove('hidden');
             console.error(err);
-
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = '<svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Refresh';
-            }
+            if (btn) resetButton(btn, {{ _('Refresh')|tojson }}, true);
         });
 }
 
 function importTessieCharges(vehicleId) {
     const btn = document.getElementById('tessie-import-btn');
     const errorDiv = document.getElementById('tessie-error');
-
-    // Hide any previous errors
     errorDiv.classList.add('hidden');
-
-    // Show loading state
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Importing...';
-    }
+    if (btn) busyButton(btn, 'Importing...');
 
     fetch('/api/vehicles/' + vehicleId + '/tessie-import-charges', {
         method: 'POST'
@@ -1442,45 +1008,27 @@ function importTessieCharges(vehicleId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success message and reload
                 alert(data.message);
                 location.reload();
             } else {
-                // Show error
                 errorDiv.textContent = data.error || 'Failed to import charges';
                 errorDiv.classList.remove('hidden');
-
-                // Reset button
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>Import Charges';
-                }
+                if (btn) resetButton(btn, {{ _('Import Charges')|tojson }}, false);
             }
         })
         .catch(err => {
             errorDiv.textContent = 'Error connecting to server';
             errorDiv.classList.remove('hidden');
             console.error(err);
-
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = '<svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>Import Charges';
-            }
+            if (btn) resetButton(btn, {{ _('Import Charges')|tojson }}, false);
         });
 }
 
 function refreshTessieStatus(vehicleId) {
     const btn = document.getElementById('tessie-refresh-btn');
     const errorDiv = document.getElementById('tessie-error');
-
-    // Hide any previous errors
     errorDiv.classList.add('hidden');
-
-    // Show loading state
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...';
-    }
+    if (btn) busyButton(btn, 'Loading...');
 
     fetch('/api/vehicles/' + vehicleId + '/tessie-refresh', {
         method: 'POST'
@@ -1488,29 +1036,18 @@ function refreshTessieStatus(vehicleId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Reload the page to show updated data
                 location.reload();
             } else {
-                // Show error
                 errorDiv.textContent = data.error || 'Failed to refresh Tessie status';
                 errorDiv.classList.remove('hidden');
-
-                // Reset button
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Refresh';
-                }
+                if (btn) resetButton(btn, {{ _('Refresh')|tojson }}, true);
             }
         })
         .catch(err => {
             errorDiv.textContent = 'Error connecting to server';
             errorDiv.classList.remove('hidden');
             console.error(err);
-
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = '<svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Refresh';
-            }
+            if (btn) resetButton(btn, {{ _('Refresh')|tojson }}, true);
         });
 }
 </script>

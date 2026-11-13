@@ -97,11 +97,25 @@ class TestEVStats:
         assert ev_vehicle.get_average_charging_consumption() is None
         assert ev_vehicle.get_cost_per_kwh() is None
 
-    def test_fuel_index_lists_charging(self, auth_client, sample_session):
+    def test_fuel_index_leaves_charging_to_its_own_page(self, auth_client, sample_session):
+        # The fuel page is fuel only; charging lives on /charging/.
         resp = auth_client.get('/fuel/')
         assert resp.status_code == 200
-        assert b'Charging History' in resp.data
-        assert b'Tesla Model 3' in resp.data
+        assert b'?tab=charging' not in resp.data
+        assert f'/charging/{sample_session.id}/edit'.encode() not in resp.data
+
+    def test_old_charging_tab_link_redirects(self, auth_client, sample_session, ev_vehicle):
+        # Bookmarks to the former tab land on the charging page, filter kept.
+        resp = auth_client.get(f'/fuel/?tab=charging&vehicle={ev_vehicle.id}&page=1')
+        assert resp.status_code == 302
+        location = resp.headers['Location']
+        assert '/charging/' in location
+        assert f'vehicle={ev_vehicle.id}' in location
+        assert 'tab=' not in location
+
+        resp = auth_client.get('/fuel/?tab=charging', follow_redirects=True)
+        assert resp.status_code == 200
+        assert f'/charging/{sample_session.id}/edit'.encode() in resp.data
 
 
 class TestChargingIndex:

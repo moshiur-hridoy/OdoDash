@@ -1,0 +1,17 @@
+{#- Icon for each expense category, shared by the expense list and form.
+    {% from 'components/categories.html' import category_icons %} -#}
+{%- set category_icons = {'maintenance': 'wrench', 'repairs': 'settings', 'inspection': 'check', 'insurance': 'document',
+                          'tax': 'money', 'registration': 'note', 'parking': 'pin', 'tolls': 'map',
+                          'cleaning': 'droplet', 'accessories': 'car'} -%}
+
+{#- Icons for the trip purpose chips (TRIP_PURPOSES). -#}
+{%- set purpose_icons = {
+    'business': 'wallet', 'personal': 'car', 'commute': 'repeat',
+    'medical': 'plus', 'charity': 'money', 'other': 'dots',
+} -%}
+
+{#- Icons for the reminder type chips (REMINDER_TYPES). -#}
+{%- set reminder_icons = {
+    'mot': 'check', 'service': 'wrench', 'insurance': 'document', 'tax': 'money',
+    'registration': 'note', 'warranty': 'alert', 'tire_change': 'tire', 'oil_change': 'droplet', 'custom': 'bell',
+} -%}

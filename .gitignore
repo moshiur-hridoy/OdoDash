@@ -49,3 +49,8 @@ docker-compose.override.yml
 *.key
 backups/
 uploads/
+
+# Compiled stylesheet and the Tailwind CLI it is built with -- build artefacts,
+# produced by "python scripts/build_css.py"
+app/static/css/app.css
+.cache/

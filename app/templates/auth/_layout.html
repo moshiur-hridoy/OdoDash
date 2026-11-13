@@ -1,0 +1,29 @@
+{#- Shared frame for the signed-out pages (login, register, forgot and reset
+    password): brand mark, one card, and a line of links under it.
+
+    Blocks: auth_title (h1), auth_lead (optional paragraph under it),
+    auth_body (the form), auth_after (links under the card). -#}
+{% extends "base.html" %}
+
+{% block auth_content %}
+<div class="ds auth">
+    <div class="auth__brand">
+        {% if APP_LOGO %}
+        <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="" class="auth__logo">
+        {% else %}
+        {% from 'partials/logo.html' import logo_mark %}
+        {{ logo_mark('auth__logo auth__logo--mark') }}
+        {% endif %}
+        <span class="auth__app">{{ APP_NAME }}</span>
+    </div>
+
+    <section class="ds-card auth__card" aria-labelledby="auth-title">
+        <h1 class="auth__title" id="auth-title">{% block auth_title %}{% endblock %}</h1>
+        {% block auth_lead %}{% endblock %}
+        {% block auth_body %}{% endblock %}
+    </section>
+
+    {% set after %}{% block auth_after %}{% endblock %}{% endset %}
+    {% if after|trim %}<p class="auth__after">{{ after }}</p>{% endif %}
+</div>
+{% endblock %}

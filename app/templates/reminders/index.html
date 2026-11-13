@@ -1,147 +1,70 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, field, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Reminders') }}{% endblock %}
 
+{%- macro section(title, items, tone, icon_name) -%}
+{% if items %}
+<section class="ds-card ds-card--flush ds-section{% if tone %} ds-section--{{ tone }}{% endif %}" aria-label="{{ title }}">
+    <header class="ds-section__head">
+        {{ icon(icon_name, 18) }}
+        <h2 class="ds-section__title">{{ title }}</h2>
+        {{ badge(items|length, tone or 'neutral') }}
+    </header>
+    <ul class="ds-list">
+        {% for reminder in items %}{% include "reminders/_reminder_row.html" %}{% endfor %}
+    </ul>
+</section>
+{% endif %}
+{%- endmacro -%}
+
 {% block content %}
-<div class="sm:flex sm:items-center sm:justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Reminders') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ _('Keep track of important dates for your vehicles') }}</p>
-    </div>
-    <div class="mt-4 sm:mt-0">
-        {% if can_write('reminders') %}
-        <a href="{{ url_for('reminders.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Reminder') }}
-        </a>
-        {% endif %}
-    </div>
-</div>
+<div class="ds log-page">
 
-<!-- Filters -->
-<div class="surface-card bg-white dark:bg-gray-800 p-4 mb-6">
-    <form method="GET" class="flex flex-wrap gap-4 items-end">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Vehicle') }}</label>
-            <select name="vehicle" class="block rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm">
-                <option value="">{{ _('All Vehicles') }}</option>
-                {% for vehicle in vehicles %}
-                <option value="{{ vehicle.id }}" {% if filter_vehicle == vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ _('Type') }}</label>
-            <select name="type" class="block rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm">
-                <option value="">{{ _('All Types') }}</option>
-                {% for type_id, type_name in reminder_types %}
-                <option value="{{ type_id }}" {% if filter_type == type_id %}selected{% endif %}>{{ type_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="flex items-center gap-2">
-            <input type="checkbox" id="completed" name="completed" value="true" {% if show_completed %}checked{% endif %}
-                   class="rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-            <label for="completed" class="text-sm text-gray-700 dark:text-gray-300">{{ _('Show completed') }}</label>
-        </div>
-        <button type="submit" class="px-4 py-2 bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md text-sm hover:bg-gray-200">
-            {{ _('Filter') }}
-        </button>
-        {% if filter_vehicle or filter_type or show_completed %}
-        <a href="{{ url_for('reminders.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">{{ _('Clear filters') }}</a>
-        {% endif %}
-    </form>
-</div>
+{% call page_header(_('Reminders'), subtitle=_('Keep track of important dates for your vehicles')) %}
+    {% if can_write('reminders') %}{{ button(_('Add Reminder'), href=url_for('reminders.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
 
-<!-- Overdue Reminders -->
-{% if overdue %}
-<div class="mb-8">
-    <h2 class="text-lg font-medium text-red-600 mb-4 flex items-center">
-        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
-        {{ _('Overdue') }} ({{ overdue|length }})
-    </h2>
-    <div class="surface-card bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        {% for reminder in overdue %}
-        {% include "reminders/_reminder_row.html" %}
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+<form method="GET" class="ds-card ds-filters exp-filters{% if vehicles|length > 1 %} exp-filters--vehicle{% endif %}">
+    {% if vehicles|length > 1 %}
+    {% call field(_('Vehicle'), 'filter-vehicle') %}
+    <select id="filter-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Vehicles') }}</option>
+        {% for vehicle in vehicles %}<option value="{{ vehicle.id }}"{% if filter_vehicle == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    {% endif %}
+    {% call field(_('Type'), 'filter-type') %}
+    <select id="filter-type" name="type" class="ds-control" onchange="this.form.submit()">
+        <option value="">{{ _('All Types') }}</option>
+        {% for type_id, type_name in reminder_types %}<option value="{{ type_id }}"{% if filter_type == type_id %} selected{% endif %}>{{ type_name }}</option>{% endfor %}
+    </select>
+    {% endcall %}
+    <label class="ds-switch">
+        <input type="checkbox" id="completed" name="completed" value="true"{% if show_completed %} checked{% endif %} onchange="this.form.submit()">
+        {{ _('Show completed') }}
+    </label>
+    <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    {% if filtered %}
+    <div class="ds-filters__actions">{{ button(_('Clear filters'), href=url_for('reminders.index'), variant='ghost', icon_name='x') }}</div>
+    {% endif %}
+</form>
 
-<!-- Upcoming Reminders -->
-{% if upcoming %}
-<div class="mb-8">
-    <h2 class="text-lg font-medium text-amber-600 mb-4 flex items-center">
-        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        {{ _('Upcoming') }} ({{ upcoming|length }})
-    </h2>
-    <div class="surface-card bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        {% for reminder in upcoming %}
-        {% include "reminders/_reminder_row.html" %}
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+{{ section(_('Overdue'), overdue, 'danger', 'alert') }}
+{{ section(_('Upcoming'), upcoming, 'warning', 'clock') }}
+{{ section(_('Later'), later, None, 'calendar') }}
+{{ section(_('Completed'), completed, 'success', 'check') }}
 
-<!-- Later Reminders -->
-{% if later %}
-<div class="mb-8">
-    <h2 class="text-lg font-medium text-gray-600 dark:text-gray-400 mb-4 flex items-center">
-        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-        {{ _('Later') }} ({{ later|length }})
-    </h2>
-    <div class="surface-card bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        {% for reminder in later %}
-        {% include "reminders/_reminder_row.html" %}
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-<!-- Completed Reminders -->
-{% if completed %}
-<div class="mb-8">
-    <h2 class="text-lg font-medium text-green-600 mb-4 flex items-center">
-        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
-        {{ _('Completed') }} ({{ completed|length }})
-    </h2>
-    <div class="surface-card bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 opacity-75">
-        {% for reminder in completed %}
-        {% include "reminders/_reminder_row.html" %}
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-<!-- Empty State -->
 {% if not overdue and not upcoming and not later and not completed %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No reminders') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Get started by adding a reminder for your vehicle.') }}</p>
-    <div class="mt-6">
-        {% if can_write('reminders') %}
-        <a href="{{ url_for('reminders.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Reminder') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {% if filtered %}
+    {{ empty_state(_('No reminders'), _('No reminders match these filters.'), 'bell', _('Clear filters'), url_for('reminders.index')) }}
+    {% else %}
+    {{ empty_state(_('No reminders'), _('Get started by adding a reminder for your vehicle.'), 'bell',
+                   _('Add Reminder') if can_write('reminders') else None, url_for('reminders.new')) }}
+    {% endif %}
 </div>
 {% endif %}
+
+</div>
 {% endblock %}

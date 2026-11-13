@@ -22,7 +22,7 @@ class TestExpenseChartCurrency:
         assert 'const expenseCurrency = "GBP";' in body
         assert 'text: currency' in body
         assert "context.formattedValue + ' ' + currency" in body
-        assert 'createExpenseCategoryChart(expensesEl, categoryData, expenseCurrency)' in body
+        assert 'createExpenseCategoryChart(expensesEl, categoryData, expenseCurrency, "Charging")' in body
 
     def test_expense_chart_currency_is_escaped(self, app, auth_client, sample_vehicle, test_user):
         """A custom currency is free text, so it must not break out of the JS."""

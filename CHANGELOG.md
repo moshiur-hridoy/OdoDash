@@ -10,6 +10,58 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+## [0.50.0] - 2026-11-13
+
+### Changed
+
+- Charging is always green in the Expenses by Category chart, every category label is shown, and the app version sits beside the app name in the sidebar.
+- A new look across the whole app. Every page now uses one design system:
+  a calm light theme with a sidebar, a dark theme that follows your device,
+  Inter type, odometer-style readings and an accent colour taken from
+  Settings > Branding. Nothing about your data or how you log it changes.
+- The dashboard leads with what you spent this month or this year and how
+  that compares with the same point last month, then Needs attention, driven
+  distance, cheapest fuel, your vehicles and recent activity.
+- The vehicle page opens on a cockpit panel (last odometer, average
+  consumption gauge, cost per km), followed by upcoming maintenance, trends
+  and one activity log you can filter.
+- Fuel, charging, expenses, trips, reminders, recurring expenses,
+  maintenance, documents, notes, tyres, parts, stations, price history,
+  mileage allowance and trip templates are lists grouped by month, with
+  monthly totals and filters. On a phone each row stacks into two lines, so
+  no page scrolls sideways.
+- Every add and edit form shares one layout: the vehicle picker first,
+  required fields marked, the primary action fixed in a footer. Fuel and
+  charging forms read the odometer from the selected vehicle.
+- Settings is rebuilt as a list of sections (Units, Menu, Notifications,
+  Account, API, Import/Export, Integrations, Branding, Users, About). On a
+  phone it shows the list first and each section on its own screen, with
+  Back returning to the list. Users now sits inside Settings.
+- Sign-in, registration, password change, CSV import, backup restore,
+  timeline, search, trip report, document view, quick fuel, toasts, the
+  offline page and the API docs follow the same design. The trip report
+  shows bars instead of a doughnut.
+- Maintenance Mark Complete opens a dialog, the stations list stars a
+  favourite in place, and the notes list is paginated with a vehicle filter.
+
+### Fixed
+
+- Total distance, and the cost per km built on it, counts odometer readings
+  from fuel logs, charging sessions, trips and expenses, not fuel logs alone.
+  An electric car logged only through charging sessions showed no distance
+  and no cost per km (#384, #412). Vehicles logged mostly through fuel see
+  the same figure or a slightly longer span.
+- The dashboard's change against last month compares the same number of
+  days, so early in a month it no longer shows a large fall. Needs attention
+  lists reminders due within 30 days. Cheapest Fuel reads only your own
+  stations' prices (it used to rank every user's together) and appears only
+  when your stations' recent prices differ, so it stays away where fuel
+  prices are set by the state.
+- The Telegram bot and its settings panel are translated into every
+  language. In 0.48.0 they appeared in English everywhere, because their
+  strings never reached the translation template. A test now fails when a
+  string marked for translation is missing from the template.
+
 ## [0.48.0] - 2026-11-12
 
 ### Added

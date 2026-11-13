@@ -1,0 +1,46 @@
+{#- About: running version, update check and project links. -#}
+{% from 'auth/settings/_ui.html' import card, row, status %}
+{% from 'components/ui.html' import button, badge %}
+{% from 'components/icons.html' import icon %}
+<section id="section-about" class="settings-section" data-section="about" aria-labelledby="about-title" hidden>
+    <h2 class="ds-sr-only" id="about-title">{{ _('About') }}</h2>
+    {% call card(_('About') ~ ' OdoDash', _('Version information and updates') ~ ' · OdoDash') %}
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('Current Version') }}</h3>
+            <p class="about-version"><span id="current-version-value">v{{ app_version }}</span>
+                {% if release_channel and release_channel != 'stable' %}{{ badge(release_channel, 'warning') }}{% endif %}</p>
+        </div>
+        <div class="settings-row__control">{{ button(github_repo, href='https://github.com/' ~ github_repo, variant='ghost', size='sm', icon_name='external', attrs={'target': '_blank', 'rel': 'noopener'}) }}</div>
+    </div>
+    <div class="settings-row">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title">{{ _('Check for Updates') }}</h3>
+            <p class="settings-row__hint" id="update-status">{{ _('Click to check for newer versions') }}</p>
+        </div>
+        <div class="settings-row__control">
+            <button type="button" class="ds-btn ds-btn--secondary" onclick="checkForUpdates()"><span id="update-spinner" class="about-spinner">{{ icon('repeat', 16) }}</span><span>{{ _('Check Now') }}</span></button>
+        </div>
+    </div>
+    <div id="update-available" class="import-note import-note--success" hidden>
+        {{ icon('download', 18) }}
+        <div>
+            <p><strong>{{ _('Update Available') }}</strong></p>
+            <p>{{ _('Version') }} <span id="latest-version" class="ds-mono"></span> {{ _('is available') }} · <a id="release-link" class="api-link" href="#" target="_blank" rel="noopener">{{ _('View Release Notes') }}</a></p>
+            <p class="form-hint">{{ _('To update (Docker):') }}</p>
+            <pre class="settings-code settings-code--block"><code>docker compose pull
+docker compose up -d</code></pre>
+            <p class="form-hint">{{ _('Or use Watchtower for automatic updates.') }}</p>
+        </div>
+    </div>
+    <div id="up-to-date" class="import-note import-note--success" hidden>{{ icon('check', 18) }}<p>{{ _('You are running the latest version') }}</p></div>
+    {% endcall %}
+
+    {% call card(_('Resources')) %}
+    <div class="about-links">
+        {% for href, label, icon_name in [('', _('Source Code'), 'document'), ('/issues', _('Report an Issue'), 'alert'), ('/releases', _('All Releases'), 'clock'), ('#readme', _('Documentation'), 'note')] %}
+        <a class="about-link" href="https://github.com/{{ github_repo }}{{ href }}" target="_blank" rel="noopener">{{ icon(icon_name, 16) }}<span>{{ label }}</span>{{ icon('external', 14) }}</a>
+        {% endfor %}
+    </div>
+    {% endcall %}
+</section>

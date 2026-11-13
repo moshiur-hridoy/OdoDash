@@ -1,125 +1,72 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link %}
+{% from 'components/forms.html' import form_actions, req %}
 {% block title %}{% if station %}{{ _('Edit Fuel Station') }}{% else %}{{ _('Add Fuel Station') }}{% endif %}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('stations.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:text-gray-400 dark:hover:text-gray-300">&larr; {{ _('Back to Stations') }}</a>
-</div>
+<div class="ds form-page">
+{{ back_link(_('Back to Stations'), url_for('stations.index')) }}
+{{ page_header(_('Edit Fuel Station') if station else _('Add Fuel Station')) }}
 
-<div class="max-w-lg mx-auto">
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-                {% if station %}{{ _('Edit Fuel Station') }}{% else %}{{ _('Add Fuel Station') }}{% endif %}
-            </h1>
-        </div>
-
-        <form method="POST" class="p-6 space-y-4">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Name') }} *</label>
-                <input type="text" name="name" id="name" required
-                       value="{{ station.name if station else '' }}"
-                       placeholder="{{ _('e.g., Shell Main Street') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+<form method="POST" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="ds-card form-section">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="name">{{ _('Name') }}{{ req() }}</label>
+                <input type="text" name="name" id="name" class="ds-control" required
+                       value="{{ station.name if station else '' }}" placeholder="{{ _('e.g., Shell Main Street') }}">
             </div>
-
-            <div>
-                <label for="brand" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Brand') }}</label>
-                <input type="text" name="brand" id="brand"
-                       value="{{ station.brand if station else '' }}"
-                       placeholder="{{ _('e.g., Shell, BP, Esso') }}"
-                       list="brand-list"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+            <div class="ds-field">
+                <label class="ds-field__label" for="brand">{{ _('Brand') }}</label>
+                <input type="text" name="brand" id="brand" class="ds-control" list="brand-list"
+                       value="{{ station.brand if station and station.brand else '' }}" placeholder="{{ _('e.g., Shell, BP, Esso') }}">
                 <datalist id="brand-list">
-                    <option value="Shell">
-                    <option value="BP">
-                    <option value="Esso">
-                    <option value="Texaco">
-                    <option value="Total">
-                    <option value="Mobil">
-                    <option value="Chevron">
-                    <option value="Costco">
-                    <option value="Sainsbury's">
-                    <option value="Tesco">
-                    <option value="Asda">
-                    <option value="Morrisons">
+                    {% for brand in ['Shell', 'BP', 'Esso', 'Texaco', 'Total', 'Mobil', 'Chevron', 'Costco', "Sainsbury's", 'Tesco', 'Asda', 'Morrisons'] %}<option value="{{ brand }}"></option>{% endfor %}
                 </datalist>
             </div>
+        </div>
+        <label class="ds-switch">
+            <input type="checkbox" name="is_favorite" id="is_favorite"{% if station and station.is_favorite %} checked{% endif %}>
+            {{ _('Mark as favorite') }}
+        </label>
+    </section>
 
-            <div>
-                <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Address') }}</label>
-                <input type="text" name="address" id="address"
-                       value="{{ station.address if station else '' }}"
-                       placeholder="{{ _('Street address') }}"
-                       class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+    <section class="ds-card form-section">
+        <div class="ds-field">
+            <label class="ds-field__label" for="address">{{ _('Address') }}</label>
+            <input type="text" name="address" id="address" class="ds-control" autocomplete="street-address"
+                   value="{{ station.address if station and station.address else '' }}" placeholder="{{ _('Street address') }}">
+        </div>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="city">{{ _('City') }}</label>
+                <input type="text" name="city" id="city" class="ds-control" autocomplete="address-level2"
+                       value="{{ station.city if station and station.city else '' }}">
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('City') }}</label>
-                    <input type="text" name="city" id="city"
-                           value="{{ station.city if station else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Postcode') }}</label>
-                    <input type="text" name="postcode" id="postcode"
-                           value="{{ station.postcode if station else '' }}"
-                           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="postcode">{{ _('Postcode') }}</label>
+                <input type="text" name="postcode" id="postcode" class="ds-control" autocomplete="postal-code"
+                       value="{{ station.postcode if station and station.postcode else '' }}">
             </div>
+        </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="notes">{{ _('Notes') }}</label>
+            <textarea name="notes" id="notes" rows="2" class="ds-control" placeholder="{{ _('e.g., Good prices, open 24h') }}">{{ station.notes if station and station.notes else '' }}</textarea>
+        </div>
+    </section>
 
-            <div>
-                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Notes') }}</label>
-                <textarea name="notes" id="notes" rows="2"
-                          class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                          placeholder="{{ _('e.g., Good prices, open 24h') }}">{{ station.notes if station else '' }}</textarea>
-            </div>
+    <!-- Hidden coordinates fields (could be populated via geolocation) -->
+    <input type="hidden" name="latitude" id="latitude" value="{{ station.latitude if station and station.latitude else '' }}">
+    <input type="hidden" name="longitude" id="longitude" value="{{ station.longitude if station and station.longitude else '' }}">
 
-            <div class="flex items-center">
-                <input type="checkbox" name="is_favorite" id="is_favorite" {% if station and station.is_favorite %}checked{% endif %}
-                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded">
-                <label for="is_favorite" class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ _('Mark as favorite') }}</label>
-            </div>
-
-            <!-- Hidden coordinates fields (could be populated via geolocation) -->
-            <input type="hidden" name="latitude" id="latitude" value="{{ station.latitude if station and station.latitude else '' }}">
-            <input type="hidden" name="longitude" id="longitude" value="{{ station.longitude if station and station.longitude else '' }}">
-
-            <div class="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                {% if station %}
-                <button type="button" onclick="deleteStation()" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm">
-                    {{ _('Delete') }}
-                </button>
-                {% else %}
-                <div></div>
-                {% endif %}
-                <div class="flex gap-3">
-                    <a href="{{ url_for('stations.index') }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        {{ _('Cancel') }}
-                    </a>
-                    <button type="submit"
-                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-                        {% if station %}{{ _('Save Changes') }}{% else %}{{ _('Add Station') }}{% endif %}
-                    </button>
-                </div>
-            </div>
-        </form>
-
-        {% if station %}
-        <form id="delete-form" method="POST" action="{{ url_for('stations.delete', station_id=station.id) }}" class="hidden">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        </form>
-        <script>
-        function deleteStation() {
-            if (confirm('{{ _("Delete this station?") }}')) {
-                document.getElementById('delete-form').submit();
-            }
-        }
-        </script>
-        {% endif %}
-    </div>
+    {{ form_actions(url_for('stations.index'), _('Save Changes') if station else _('Add Station'),
+                    delete_form='delete-form' if station else None, delete_confirm=_('Delete this station?')) }}
+</form>
+{% if station %}
+<form id="delete-form" method="POST" action="{{ url_for('stations.delete', station_id=station.id) }}" hidden>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+{% endif %}
 </div>
 {% endblock %}

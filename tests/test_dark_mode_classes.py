@@ -59,7 +59,6 @@ def test_each_element_has_one_dark_background():
     )
 
 
-@pytest.mark.parametrize('template', ['fuel/index.html', 'reminders/_reminder_row.html'])
-def test_list_rows_highlight_only_on_hover_in_dark_mode(template):
-    source = (TEMPLATES / template).read_text(encoding='utf-8')
-    assert 'dark:hover:bg-gray-700' in source
+# The list rows that had this check (fuel/index.html, reminders/_reminder_row.html)
+# moved to the design system, whose rows take their hover colour from the
+# --ds-* tokens in both themes.

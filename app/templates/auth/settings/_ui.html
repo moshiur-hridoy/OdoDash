@@ -1,0 +1,42 @@
+{#- Building blocks for the settings sections.
+
+    card(title, hint)        a titled card; the call block is its body
+    row(title, hint, for_id) one setting: text on the left, its control (the call
+                             block) on the right; wraps under the text on phones
+    switch(name, ...)        an on/off toggle with the row title as its name
+    foot()                   the card's action bar (Save buttons) -#}
+{% from 'components/ui.html' import badge %}
+
+{%- macro card(title, hint=None, id=None, tone=None, admin=False, flush=False) -%}
+<section class="ds-card settings-card{% if tone %} settings-card--{{ tone }}{% endif %}"{% if id %} id="{{ id }}"{% endif %}>
+    <header class="settings-card__head">
+        <h2 class="settings-card__title">{{ title }}{% if admin %} {{ badge(_('Admin'), 'accent') }}{% endif %}</h2>
+        {% if hint %}<p class="settings-card__hint">{{ hint }}</p>{% endif %}
+    </header>
+    <div class="settings-card__body{% if flush %} settings-card__body--flush{% endif %}">{{ caller() }}</div>
+</section>
+{%- endmacro %}
+
+{%- macro row(title, hint=None, for_id=None) -%}
+<div class="settings-row">
+    <div class="settings-row__text">
+        {% if for_id %}<label class="settings-row__title" for="{{ for_id }}">{{ title }}</label>{% else %}<h3 class="settings-row__title">{{ title }}</h3>{% endif %}
+        {% if hint %}<p class="settings-row__hint">{{ hint }}</p>{% endif %}
+    </div>
+    <div class="settings-row__control">{{ caller() }}</div>
+</div>
+{%- endmacro %}
+
+{%- macro switch(name, checked, label, id=None, value=None, attrs={}) -%}
+<label class="ds-switch">
+    <input type="checkbox"{% if name %} name="{{ name }}"{% endif %}{% if id %} id="{{ id }}"{% endif %}{% if value %} value="{{ value }}"{% endif %}{% if checked %} checked{% endif %}{{ attrs|xmlattr }}>
+    <span class="ds-sr-only">{{ label }}</span>
+</label>
+{%- endmacro %}
+
+{%- macro foot() -%}
+<div class="settings-card__foot">{{ caller() }}</div>
+{%- endmacro %}
+
+{#- Result line for a Test button, filled in by the page script. -#}
+{%- macro status(id) -%}<span class="settings-status" id="{{ id }}" role="status" aria-live="polite"></span>{%- endmacro %}

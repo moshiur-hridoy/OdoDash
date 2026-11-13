@@ -1,113 +1,64 @@
-<div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-    <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4 min-w-0">
-            <!-- Complete checkbox / status -->
-            {% if not reminder.is_completed %}
-            {% if can_write('reminders') %}
-            <form method="POST" action="{{ url_for('reminders.complete', reminder_id=reminder.id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" class="h-6 w-6 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 hover:bg-green-50 flex items-center justify-center transition-colors"
-                        title="Mark as completed">
-                </button>
-            </form>
-            {% endif %}
-            {% else %}
-            {% if can_write('reminders') %}
-            <form method="POST" action="{{ url_for('reminders.uncomplete', reminder_id=reminder.id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center"
-                        title="Mark as not completed">
-                    <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </button>
-            </form>
-            {% endif %}
-            {% endif %}
+{#- One reminder in a .ds-list. Expects `reminder`, `reminder_types`. -#}
+{% from 'components/ui.html' import badge, button %}
+{% from 'components/icons.html' import icon %}
+{%- set tone = None if reminder.is_completed else ('danger' if reminder.is_overdue() else ('warning' if reminder.is_upcoming(7) else None)) -%}
+<li class="ds-list__item{% if reminder.is_completed %} ds-list__item--muted{% endif %}">
+    {% if can_write('reminders') %}
+    <form class="ds-list__check" method="POST" action="{{ url_for('reminders.uncomplete' if reminder.is_completed else 'reminders.complete', reminder_id=reminder.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="next" value="{{ request.full_path }}">
+        {% if reminder.is_completed %}
+        <button type="submit" class="ds-done ds-done--done" title="{{ _('Mark as not completed') }}" aria-label="{{ _('Mark as not completed') }}">{{ icon('check', 14) }}</button>
+        {% else %}
+        <button type="submit" class="ds-done" title="{{ _('Mark as completed') }}" aria-label="{{ _('Mark as completed') }}">{{ icon('check', 14) }}</button>
+        {% endif %}
+    </form>
+    {% else %}
+    <span class="ds-list__lead{% if tone %} ds-list__lead--{{ tone }}{% elif reminder.is_completed %} ds-list__lead--success{% endif %}" aria-hidden="true">{{ icon('check' if reminder.is_completed else 'bell', 16) }}</span>
+    {% endif %}
 
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                    <h3 class="text-sm font-medium text-gray-900 dark:text-white truncate {% if reminder.is_completed %}line-through text-gray-500 dark:text-gray-400{% endif %}">
-                        {{ reminder.title }}
-                    </h3>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                 {% if reminder.reminder_type == 'mot' %}bg-purple-100 text-purple-800
-                                 {% elif reminder.reminder_type == 'service' %}bg-blue-100 text-blue-800
-                                 {% elif reminder.reminder_type == 'insurance' %}bg-green-100 text-green-800
-                                 {% elif reminder.reminder_type == 'tax' %}bg-yellow-100 text-yellow-800
-                                 {% else %}bg-gray-100 dark:bg-gray-600 text-gray-800{% endif %}">
-                        {{ dict(reminder_types)[reminder.reminder_type] if reminder.reminder_type in dict(reminder_types) else reminder.reminder_type|capitalize }}
-                    </span>
-                    {% if reminder.recurrence != 'none' %}
-                    <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" title="Recurring">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    {% endif %}
-                </div>
-                <div class="mt-1 flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                    <a href="{{ url_for('vehicles.view', vehicle_id=reminder.vehicle_id) }}" class="hover:text-primary-600">
-                        {{ reminder.vehicle.name }}
-                    </a>
-                    {% if reminder.description %}
-                    <span>&bull;</span>
-                    <span class="truncate max-w-xs">{{ reminder.description }}</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-shrink-0 items-center space-x-4">
-            <!-- Due date -->
-            <div class="text-right">
-                <p class="text-sm {% if reminder.is_overdue() %}text-red-600 font-medium{% elif reminder.is_upcoming(7) %}text-amber-600{% else %}text-gray-900 dark:text-white{% endif %}">
-                    {{ reminder.due_date|format_date }}
-                </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                    {% if reminder.is_completed %}
-                    {{ _('Completed') }}
-                    {% elif reminder.is_overdue() %}
-                    {{ _('%(num)d days overdue', num=reminder.days_until_due()|abs) }}
-                    {% elif reminder.days_until_due() == 0 %}
-                    {{ _('Due today') }}
-                    {% elif reminder.days_until_due() == 1 %}
-                    {{ _('Due tomorrow') }}
-                    {% else %}
-                    {{ _('In %(num)d days', num=reminder.days_until_due()) }}
-                    {% endif %}
-                </p>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-center space-x-2">
-                {% if not reminder.is_completed and can_write('reminders') and can_write('expenses') %}
-                <!-- Record what this reminder cost, and complete it (#296) -->
-                <a href="{{ url_for('expenses.new', reminder_id=reminder.id) }}"
-                   class="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400" title="{{ _('Log expense') }}">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                    </svg>
-                </a>
-                {% endif %}
-                {% if can_write('reminders') %}
-                <a href="{{ url_for('reminders.edit', reminder_id=reminder.id) }}"
-                   class="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400" title="Edit">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                </a>
-                {% endif %}
-                {% if can_write('reminders') %}
-                <form method="POST" action="{{ url_for('reminders.delete', reminder_id=reminder.id) }}" class="inline"
-                      onsubmit="return confirm('Delete this reminder?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="p-2 text-gray-400 hover:text-red-600" title="Delete">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </button>
-                </form>
-                {% endif %}
-            </div>
-        </div>
+    <div class="ds-list__main">
+        <h3 class="ds-list__title">
+            <span{% if reminder.is_completed %} class="ds-list__title--done"{% endif %}>{{ reminder.title }}</span>
+            {{ badge(dict(reminder_types)[reminder.reminder_type] if reminder.reminder_type in dict(reminder_types) else reminder.reminder_type|capitalize) }}
+            {% if reminder.recurrence != 'none' %}<span title="{{ _('Recurring') }}">{{ icon('repeat', 14) }}<span class="ds-sr-only">{{ _('Recurring') }}</span></span>{% endif %}
+        </h3>
+        <span class="ds-list__sub">
+            <a href="{{ url_for('vehicles.view', vehicle_id=reminder.vehicle_id) }}">{{ reminder.vehicle.name }}</a>
+            {%- if reminder.description %} · {{ reminder.description }}{% endif -%}
+        </span>
     </div>
-</div>
+
+    <div class="ds-list__meta{% if tone %} ds-list__meta--{{ tone }}{% endif %}">
+        <strong>{{ reminder.due_date|format_date }}</strong>
+        <small>
+            {%- if reminder.is_completed -%}
+            {{ _('Completed') }}
+            {%- elif reminder.is_overdue() -%}
+            {{ _('%(num)d days overdue', num=reminder.days_until_due()|abs) }}
+            {%- elif reminder.days_until_due() == 0 -%}
+            {{ _('Due today') }}
+            {%- elif reminder.days_until_due() == 1 -%}
+            {{ _('Due tomorrow') }}
+            {%- else -%}
+            {{ _('In %(num)d days', num=reminder.days_until_due()) }}
+            {%- endif -%}
+        </small>
+    </div>
+
+    <div class="ds-list__actions">
+        {% if not reminder.is_completed and can_write('reminders') and can_write('expenses') %}
+        {#- Record what this reminder cost, and complete it (#296) -#}
+        {{ button(_('Log expense'), href=url_for('expenses.new', reminder_id=reminder.id), variant='ghost', size='sm', icon_name='receipt', icon_only=true) }}
+        {% endif %}
+        {% if can_write('reminders') %}
+        {{ button(_('Edit'), href=url_for('reminders.edit', reminder_id=reminder.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+        <form method="POST" action="{{ url_for('reminders.delete', reminder_id=reminder.id) }}"
+              onsubmit='return confirm({{ _("Delete this reminder?")|tojson }});'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="next" value="{{ request.full_path }}">
+            {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
+        </form>
+        {% endif %}
+    </div>
+</li>

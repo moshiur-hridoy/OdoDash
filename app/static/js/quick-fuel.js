@@ -45,15 +45,13 @@
             if (option.dataset.readingLabel && label) label.textContent = option.dataset.readingLabel;
 
             if (option.dataset.usesTessie === 'true' && option.dataset.tessieOdometer) {
-                badge.classList.remove('hidden');
+                badge.hidden = false;
                 odometer.readOnly = true;
                 odometer.value = Math.round(parseFloat(option.dataset.tessieOdometer));
-                odometer.classList.add('bg-gray-100', 'dark:bg-gray-600');
                 hint.textContent = form.dataset.tFromTessie;
             } else {
-                badge.classList.add('hidden');
+                badge.hidden = true;
                 odometer.readOnly = false;
-                odometer.classList.remove('bg-gray-100', 'dark:bg-gray-600');
                 var last = option.dataset.odometer;
                 if (last && parseFloat(last) > 0) {
                     hint.textContent = form.dataset.tLast + ': ' + parseFloat(last).toLocaleString() + ' ' + unit;

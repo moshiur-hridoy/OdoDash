@@ -467,11 +467,40 @@ class Vehicle(db.Model):
     def currency_symbol(self):
         return get_currency_symbol(self.owner.currency if self.owner else None)
 
-    def get_total_distance(self, distance_unit=None):
-        """Get total distance for the vehicle.
+    def get_odometer_readings(self):
+        """Every logged odometer reading as ``(date, reading)``, oldest first.
 
-        If Tessie is enabled, returns the current odometer reading.
-        Otherwise, calculates from fuel log entries.
+        The same four sources as :meth:`get_last_odometer`: fuel logs, trips
+        (both ends), charging sessions and expenses. Readings are in the
+        vehicle's reading unit, as stored. A fuel log without a reading is
+        left out by its own rule; elsewhere an empty or zero reading is.
+        """
+        readings = []
+        readings += db.session.query(FuelLog.date, FuelLog.odometer).filter(
+            FuelLog.vehicle_id == self.id, FuelLog.recorded_odometer_filter()).all()
+        readings += db.session.query(ChargingSession.date, ChargingSession.odometer).filter(
+            ChargingSession.vehicle_id == self.id, ChargingSession.odometer > 0).all()
+        readings += db.session.query(Expense.date, Expense.odometer).filter(
+            Expense.vehicle_id == self.id, Expense.odometer > 0).all()
+        readings += db.session.query(Trip.date, Trip.start_odometer).filter(
+            Trip.vehicle_id == self.id, Trip.start_odometer > 0).all()
+        readings += db.session.query(Trip.date, Trip.end_odometer).filter(
+            Trip.vehicle_id == self.id, Trip.end_odometer > 0).all()
+        return sorted((day, float(value)) for day, value in readings)
+
+    def _reading_in(self, raw, distance_unit):
+        """``raw`` (vehicle units) in ``distance_unit``; hours stay hours (#323)."""
+        if distance_unit and not self.tracks_hours():
+            return _distance_in(raw, self.get_effective_odometer_unit(), distance_unit)
+        return raw
+
+    def get_total_distance(self, distance_unit=None):
+        """Distance between the lowest and highest odometer readings logged.
+
+        Readings come from every source (#384): a vehicle logged only through
+        charging sessions, trips or expenses has a distance too (#412), where
+        fuel logs alone used to leave it at 0. With fewer than two readings it
+        is 0. If Tessie is enabled, returns the current Tessie odometer.
 
         Args:
             distance_unit: If provided ('km' or 'mi'), converts the result
@@ -482,27 +511,39 @@ class Vehicle(db.Model):
         span is returned as logged and ``distance_unit`` is ignored — there
         is no km/mi conversion to apply to an hour (#323).
         """
-        if self.tracks_hours():
-            logs = self.fuel_logs.filter(FuelLog.recorded_odometer_filter()).order_by(FuelLog.odometer).all()
-            if len(logs) < 2:
-                return 0
-            return logs[-1].odometer - logs[0].odometer
-
-        # If Tessie is enabled, use the odometer reading directly (always stored in km)
-        if self.uses_tessie_odometer() and self.tessie_last_odometer:
+        if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer:
+            # Tessie reports km.
             odometer = self.tessie_last_odometer
             if distance_unit == 'mi':
                 return odometer * 0.621371
             return odometer
 
-        # Otherwise calculate from fuel logs, stored in the vehicle's odometer unit
-        logs = self.fuel_logs.filter(FuelLog.recorded_odometer_filter()).order_by(FuelLog.odometer).all()
-        if len(logs) < 2:
+        values = [value for _, value in self.get_odometer_readings()]
+        if len(values) < 2:
             return 0
-        raw_distance = logs[-1].odometer - logs[0].odometer
-        if distance_unit:
-            return _distance_in(raw_distance, self.get_effective_odometer_unit(), distance_unit)
-        return raw_distance
+        return self._reading_in(max(values) - min(values), distance_unit)
+
+    def get_distance_between(self, start, end, distance_unit=None):
+        """Distance driven in ``[start, end)``, from odometer readings.
+
+        The highest reading before ``start`` is the baseline; without one,
+        the first reading inside the window is. The result is the highest
+        reading inside the window minus that baseline, so a period counts up
+        to its last logged reading: driving after it lands in the next
+        period. 0 when nothing was logged in the window.
+        """
+        start = start.date() if isinstance(start, datetime) else start
+        end = end.date() if isinstance(end, datetime) else end
+        before, within = [], []
+        for day, value in self.get_odometer_readings():
+            if day < start:
+                before.append(value)
+            elif day < end:
+                within.append(value)
+        if not within:
+            return 0
+        baseline = max(before) if before else min(within)
+        return self._reading_in(max(0.0, max(within) - baseline), distance_unit)
 
     def get_primary_fuel_type(self):
         """The fuel this vehicle burns by default, propulsion resolved (#221).

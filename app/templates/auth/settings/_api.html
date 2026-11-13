@@ -1,0 +1,56 @@
+{#- API access: show, copy, regenerate or revoke the account's API key. -#}
+{% from 'auth/settings/_ui.html' import card %}
+{% from 'components/ui.html' import button %}
+{% from 'components/icons.html' import icon %}
+<section id="section-api" class="settings-section" data-section="api" aria-labelledby="api-title" hidden>
+    <h2 class="ds-sr-only" id="api-title">{{ _('API') }}</h2>
+
+    {% call card(_('API Access'), _('Generate API keys to connect external applications')) %}
+    <div id="api-key-section">
+        {% if current_user.api_key %}
+        <div class="ds-field">
+            <label class="ds-field__label" for="api-key-display">{{ _('Your API Key') }}</label>
+            <div class="form-template__row">
+                <div class="ds-password">
+                    <input type="password" id="api-key-display" class="ds-control ds-mono" readonly value="{{ current_user.api_key }}">
+                    <button type="button" class="ds-password__toggle" data-password-toggle="api-key-display" aria-pressed="false"
+                            aria-label="{{ _('Show password') }}" data-label-show="{{ _('Show password') }}" data-label-hide="{{ _('Hide password') }}">
+                        <span data-eye="show">{{ icon('eye', 18) }}</span><span data-eye="hide" hidden>{{ icon('eye-off', 18) }}</span>
+                    </button>
+                </div>
+                {{ button(_('Copy'), variant='secondary', icon_name='copy', attrs={'data-copy': 'api-key-display'}) }}
+            </div>
+            <p class="form-hint">{{ _('Created') }}: {{ current_user.api_key_created_at|format_date('long_datetime') }}</p>
+        </div>
+        <div class="settings-actions settings-actions--inline settings-actions--start">
+            {{ button(_('Regenerate Key'), variant='secondary', icon_name='repeat', attrs={'onclick': 'regenerateApiKey()'}) }}
+            {{ button(_('Revoke Key'), variant='danger', icon_name='x', attrs={'onclick': 'revokeApiKey()'}) }}
+        </div>
+        {% else %}
+        <p class="settings-row__hint">{{ _('Generate an API key to access May programmatically. You can use it to integrate with other applications or build your own tools.').replace('May', APP_NAME) }}</p>
+        <div class="settings-actions settings-actions--inline settings-actions--start">{{ button(_('Generate API Key'), icon_name='plus', attrs={'onclick': 'generateApiKey()'}) }}</div>
+        {% endif %}
+    </div>
+
+    <div id="new-key-display" class="settings-newkey" hidden>
+        <div class="import-note import-note--success">
+            {{ icon('check', 18) }}
+            <div>
+                <p><strong>{{ _('API Key Generated') }}</strong></p>
+                <p>{{ _('Copy your API key now. For security, it won\'t be shown in full again.') }}</p>
+            </div>
+        </div>
+        <div class="form-template__row">
+            <code id="new-api-key" class="settings-code"></code>
+            {{ button(_('Copy'), variant='secondary', icon_name='copy', attrs={'data-copy': 'new-api-key'}) }}
+        </div>
+        <div class="settings-actions settings-actions--inline">{{ button(_('Done'), attrs={'onclick': 'location.reload()'}) }}</div>
+    </div>
+    {% endcall %}
+
+    <a class="ds-card settings-link" href="{{ url_for('api.docs') }}">
+        <span class="settings-link__icon" aria-hidden="true">{{ icon('document', 18) }}</span>
+        <span><strong>{{ _('View API Docs') }}</strong></span>
+        {{ icon('arrow-right', 16) }}
+    </a>
+</section>

@@ -1,254 +1,280 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, file_drop %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/categories.html' import category_icons %}
 {% block title %}{% if expense %}{{ _('Edit Expense') }}{% else %}{{ _('Add Expense') }}{% endif %}{% endblock %}
 
 {% block content %}
 {% set selected_id = (expense.vehicle_id if expense else selected_vehicle_id) %}
 {% set preselected = vehicles | selectattr('id', 'equalto', selected_id if selected_id else -1) | list %}
 {% set form_vehicle = preselected[0] if preselected else (vehicles[0] if vehicles else None) %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('expenses.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">&larr; {{ _('Back to expenses') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{% if expense %}{{ _('Edit Expense') }}{% else %}{{ _('Add Expense') }}{% endif %}</h1>
-    </div>
+{% set chosen_category = expense.category if expense else (reminder.expense_category() if reminder else categories[0][0]) %}
+{% set files = expense.attachments.all() if expense else [] %}
+{% set more_open = (expense and (expense.notes or files)) %}
+<div class="ds form-page">
+{{ back_link(_('Back to expenses'), url_for('expenses.index')) }}
+{{ page_header(_('Edit Expense') if expense else _('Add Expense')) }}
 
-    <form method="POST" enctype="multipart/form-data" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        {% if reminder %}
-        <!-- Logging this expense against a reminder (#296) -->
-        <input type="hidden" name="reminder_id" id="reminder_id" value="{{ reminder.id }}" data-vehicle-id="{{ reminder.vehicle_id }}">
-        <div id="reminder-notice" class="rounded-md bg-primary-50 dark:bg-gray-700 p-4 text-sm text-gray-700 dark:text-gray-200">
+<form id="expense-form" method="POST" enctype="multipart/form-data" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if reminder %}
+    <!-- Logging this expense against a reminder (#296) -->
+    <input type="hidden" name="reminder_id" id="reminder_id" value="{{ reminder.id }}" data-vehicle-id="{{ reminder.vehicle_id }}">
+    <div id="reminder-notice" class="import-note">
+        {{ icon('bell', 18) }}
+        <p>
             {{ _('Saving this expense will also complete the reminder "%(title)s".', title=reminder.title) }}
-            {% if reminder.recurrence != 'none' %}
-            {{ _('Its next occurrence will be scheduled.') }}
-            {% endif %}
+            {% if reminder.recurrence != 'none' %}{{ _('Its next occurrence will be scheduled.') }}{% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    {# ---- Which vehicle and when ---- #}
+    <section class="ds-card form-section">
+        {% if vehicles|length <= 4 %}
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Vehicle') }}<span class="ds-field__required" aria-hidden="true">*</span></legend>
+            <div class="vehicle-pick">
+                {% for vehicle in vehicles %}
+                <label class="vehicle-pick__item">
+                    <input type="radio" name="vehicle_id" value="{{ vehicle.id }}" required
+                           data-odometer-unit="{{ vehicle.get_reading_unit() }}"
+                           data-reading-label="{{ vehicle.get_reading_label() }}"
+                           {%- if form_vehicle and vehicle.id == form_vehicle.id %} checked{% endif %}>
+                    <span class="vehicle-pick__name">{{ vehicle.name }}</span>
+                    <span class="vehicle-pick__meta">{{ vehicle.vehicle_type_label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        {% else %}
+        <div class="ds-field">
+            <label class="ds-field__label" for="vehicle_id">{{ _('Vehicle') }}<span class="ds-field__required" aria-hidden="true">*</span></label>
+            <select name="vehicle_id" id="vehicle_id" class="ds-control" required>
+                {% for vehicle in vehicles %}
+                <option value="{{ vehicle.id }}"
+                        data-odometer-unit="{{ vehicle.get_reading_unit() }}"
+                        data-reading-label="{{ vehicle.get_reading_label() }}"
+                        {% if form_vehicle and vehicle.id == form_vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         {% endif %}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div class="sm:col-span-2">
-                    <label for="vehicle_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }} *</label>
-                    <select name="vehicle_id" id="vehicle_id" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for vehicle in vehicles %}
-                        <option value="{{ vehicle.id }}"
-                                data-odometer-unit="{{ vehicle.get_reading_unit() }}"
-                                data-reading-label="{{ vehicle.get_reading_label() }}"
-                                {% if (expense and expense.vehicle_id == vehicle.id) or (selected_vehicle_id == vehicle.id) %}selected{% endif %}>
-                            {{ vehicle.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
 
-                <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Date') }} *</label>
-                    <input type="text" name="date" id="date" required data-datepicker data-default-today
-                           value="{{ expense.date.strftime('%Y-%m-%d') if expense else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Category') }} *</label>
-                    <select name="category" id="category" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in categories %}
-                        <option value="{{ value }}" {% if (expense and expense.category == value) or (not expense and reminder and reminder.expense_category() == value) %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div id="maintenance-classification" class="sm:col-span-2 {% if not expense or expense.category != 'maintenance' %}hidden{% endif %}">
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        <div>
-                            <label for="maintenance_group" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Maintenance Type') }}</label>
-                            <select name="maintenance_group" id="maintenance_group"
-                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                                <option value="">{{ _('Uncategorized') }}</option>
-                                {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if expense and expense.maintenance_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label for="maintenance_part" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Part Name') }}</label>
-                            <input type="text" name="maintenance_part" id="maintenance_part" list="maintenance-part-suggestions"
-                                   value="{{ expense.maintenance_part if expense and expense.maintenance_part else '' }}"
-                                   placeholder="{{ _('Optional for parts') }}"
-                                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                            <datalist id="maintenance-part-suggestions">
-                                {% for value, label in maintenance_part_types %}<option value="{{ label }}"></option>{% endfor %}
-                            </datalist>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Description') }} *</label>
-                    <input type="text" name="description" id="description" required
-                           value="{% if expense %}{{ expense.description }}{% elif reminder %}{{ reminder.title }}{% endif %}"
-                           placeholder="{{ _('e.g., Oil change, Annual service') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Cost') }} ({{ current_user.currency }}) *</label>
-                    <input type="number" name="cost" id="cost" required step="0.01"
-                           value="{{ expense.cost if expense else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="odometer" id="odometer-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ form_vehicle.get_reading_label() if form_vehicle else _('Odometer') }} ({{ form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit }})</label>
-                    <input type="number" name="odometer" id="odometer" step="0.1"
-                           value="{{ expense.odometer if expense and expense.odometer is not none else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="vendor" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vendor / Service Provider') }}</label>
-                    <input type="text" name="vendor" id="vendor" list="vendor-suggestions"
-                           value="{{ expense.vendor if expense and expense.vendor is not none else '' }}"
-                           placeholder="{{ _('e.g., Local Garage') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    {% if known_vendors %}
-                    <datalist id="vendor-suggestions">
-                        {% for v in known_vendors %}
-                        <option value="{{ v }}"></option>
-                        {% endfor %}
-                    </datalist>
-                    {% endif %}
-                </div>
-
-                {% if not expense and maintenance_schedules %}
-                <div>
-                    <label for="maintenance_schedule_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Mark Maintenance as Performed') }}</label>
-                    <select name="maintenance_schedule_id" id="maintenance_schedule_id"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        <option value="">{{ _('— none —') }}</option>
-                        {% for schedule in maintenance_schedules %}
-                        <option value="{{ schedule.id }}" data-vehicle-id="{{ schedule.vehicle_id }}">{{ schedule.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Optional — records the schedule as performed on the expense date') }}</p>
-                </div>
-                {% endif %}
-
-                <div class="sm:col-span-2">
-                    <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Notes') }}</label>
-                    <textarea name="notes" id="notes" rows="2"
-                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ expense.notes if expense and expense.notes is not none else '' }}</textarea>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Receipts / Attachments') }}</label>
-                    {% if expense %}
-                    {% for attachment in expense.attachments.all() %}
-                    <div class="mt-2 flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                        <a href="{{ url_for('api.uploaded_file', filename=attachment.filename) }}" target="_blank" class="text-primary-600 hover:text-primary-500">{{ attachment.original_filename }}</a>
-                        <button type="button" class="text-red-600 hover:text-red-800 text-xs"
-                                data-post-url="{{ url_for('expenses.delete_attachment', expense_id=expense.id, attachment_id=attachment.id) }}"
-                                data-confirm="{{ _('Delete this attachment?') }}">
-                            {{ _('Delete') }}
-                        </button>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                    <input type="file" name="attachment" accept="image/*,.pdf" multiple
-                           class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400">
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('You can select more than one file') }}</p>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="date">{{ _('Date') }}<span class="ds-field__required" aria-hidden="true">*</span></label>
+                <input type="text" name="date" id="date" class="ds-control" required data-datepicker data-default-today
+                       value="{{ expense.date.strftime('%Y-%m-%d') if expense else '' }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="odometer" id="odometer-label">{{ form_vehicle.get_reading_label() if form_vehicle else _('Odometer') }}</label>
+                <div class="ds-affix">
+                    <input type="number" name="odometer" id="odometer" class="ds-control" inputmode="decimal" step="0.1"
+                           value="{{ expense.odometer if expense and expense.odometer is not none else '' }}">
+                    <span class="ds-affix__unit" id="odometer-unit">{{ form_vehicle.get_reading_unit() if form_vehicle else current_user.distance_unit }}</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Hidden field for return redirect -->
-        {% if request.args.get('return_to') == 'vehicle' or (request.referrer and '/vehicles/' in request.referrer) %}
-        <input type="hidden" name="return_to" value="vehicle">
-        {% endif %}
+    {# ---- What it was ---- #}
+    <section class="ds-card form-section">
+        <fieldset class="ds-field">
+            <legend class="ds-field__label">{{ _('Category') }}<span class="ds-field__required" aria-hidden="true">*</span></legend>
+            <div class="ds-choices ds-choices--compact">
+                {% for value, label in categories %}
+                <label class="ds-choice">
+                    <input type="radio" name="category" value="{{ value }}" required{% if value == chosen_category %} checked{% endif %}>
+                    <span class="ds-choice__icon">{{ icon(category_icons.get(value, 'dots'), 18) }}</span>
+                    <span class="ds-choice__label">{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
 
-        <div class="flex justify-end space-x-3">
-            <a href="{{ url_for('expenses.index') }}"
-               class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                {{ _('Cancel') }}
-            </a>
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {% if expense %}{{ _('Save Changes') }}{% else %}{{ _('Add Expense') }}{% endif %}
-            </button>
+        <div id="maintenance-classification" class="form-grid"{% if chosen_category != 'maintenance' %} hidden{% endif %}>
+            <div class="ds-field">
+                <label class="ds-field__label" for="maintenance_group">{{ _('Maintenance Type') }}</label>
+                <select name="maintenance_group" id="maintenance_group" class="ds-control">
+                    <option value="">{{ _('Uncategorized') }}</option>
+                    {% for value, label in maintenance_groups %}<option value="{{ value }}" {% if expense and expense.maintenance_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="maintenance_part">{{ _('Part Name') }}</label>
+                <input type="text" name="maintenance_part" id="maintenance_part" class="ds-control" list="maintenance-part-suggestions"
+                       value="{{ expense.maintenance_part if expense and expense.maintenance_part else '' }}"
+                       placeholder="{{ _('Optional for parts') }}">
+                <datalist id="maintenance-part-suggestions">
+                    {% for value, label in maintenance_part_types %}<option value="{{ label }}"></option>{% endfor %}
+                </datalist>
+            </div>
         </div>
-    </form>
-</div>
 
+        <div class="ds-field">
+            <label class="ds-field__label" for="description">{{ _('Description') }}<span class="ds-field__required" aria-hidden="true">*</span></label>
+            <input type="text" name="description" id="description" class="ds-control" required
+                   value="{% if expense %}{{ expense.description }}{% elif reminder %}{{ reminder.title }}{% endif %}"
+                   placeholder="{{ _('e.g., Oil change, Annual service') }}">
+        </div>
+
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="cost">{{ _('Cost') }}<span class="ds-field__required" aria-hidden="true">*</span></label>
+                <div class="ds-affix">
+                    <input type="number" name="cost" id="cost" class="ds-control" inputmode="decimal" required step="0.01"
+                           value="{{ expense.cost if expense else '' }}">
+                    <span class="ds-affix__unit">{{ current_user.currency }}</span>
+                </div>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="vendor">{{ _('Vendor / Service Provider') }}</label>
+                <input type="text" name="vendor" id="vendor" class="ds-control"{% if known_vendors %} list="vendor-suggestions"{% endif %}
+                       value="{{ expense.vendor if expense and expense.vendor is not none else '' }}"
+                       placeholder="{{ _('e.g., Local Garage') }}">
+                {% if known_vendors %}
+                <datalist id="vendor-suggestions">
+                    {% for v in known_vendors %}<option value="{{ v }}"></option>{% endfor %}
+                </datalist>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if not expense and maintenance_schedules %}
+        <div class="ds-field" id="schedule-field">
+            <label class="ds-field__label" for="maintenance_schedule_id">{{ _('Mark Maintenance as Performed') }}</label>
+            <select name="maintenance_schedule_id" id="maintenance_schedule_id" class="ds-control">
+                <option value="">{{ _('— none —') }}</option>
+                {% for schedule in maintenance_schedules %}
+                <option value="{{ schedule.id }}" data-vehicle-id="{{ schedule.vehicle_id }}">{{ schedule.name }}</option>
+                {% endfor %}
+            </select>
+            <p class="form-hint">{{ _('Optional — records the schedule as performed on the expense date') }}</p>
+        </div>
+        {% endif %}
+    </section>
+
+    {# ---- Optional extras ---- #}
+    <details class="ds-card form-more"{% if more_open %} open{% endif %}>
+        <summary>
+            <span>{{ _('More details') }} <span class="form-more__hint">· {{ _('Notes and receipts') }}</span></span>
+            {{ icon('chevron-down', 18) }}
+        </summary>
+        <div class="form-more__body">
+            <div class="ds-field">
+                <label class="ds-field__label" for="notes">{{ _('Notes') }}</label>
+                <textarea name="notes" id="notes" rows="2" class="ds-control">{{ expense.notes if expense and expense.notes is not none else '' }}</textarea>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="attachment">{{ _('Receipts / Attachments') }}</label>
+                {% if files %}
+                <ul class="form-files">
+                    {% for attachment in files %}
+                    <li>
+                        <a href="{{ url_for('api.uploaded_file', filename=attachment.filename) }}" target="_blank" rel="noopener">{{ icon('paperclip', 14) }}{{ attachment.original_filename }}</a>
+                        {{ button(_('Delete'), variant='ghost', size='sm', icon_name='trash', icon_only=true,
+                                  attrs={'data-post-url': url_for('expenses.delete_attachment', expense_id=expense.id, attachment_id=attachment.id),
+                                         'data-confirm': _('Delete this attachment?')}) }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {{ file_drop('attachment', 'image/*,.pdf', hint=_('You can select more than one file'), required=False, multiple=True) }}
+            </div>
+        </div>
+    </details>
+
+    <!-- Hidden field for return redirect -->
+    {% if request.args.get('return_to') == 'vehicle' or (request.referrer and '/vehicles/' in request.referrer) %}
+    <input type="hidden" name="return_to" value="vehicle">
+    {% endif %}
+
+    <div class="form-actions">
+        {{ button(_('Cancel'), href=url_for('expenses.index'), variant='ghost') }}
+        {{ button(_('Save Changes') if expense else _('Add Expense'), type='submit', icon_name='check') }}
+    </div>
+</form>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    (function() {
-        const vehicleSelect = document.getElementById('vehicle_id');
-        const odometerLabel = document.getElementById('odometer-label');
+// This block renders in <head>: wait for the form before wiring it up.
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('expense-form');
+    const vehicleInputs = form.querySelectorAll('[name="vehicle_id"]');
+    const odometerLabel = document.getElementById('odometer-label');
+    const odometerUnit = document.getElementById('odometer-unit');
 
-        if (!vehicleSelect || !odometerLabel) {
-            return;
-        }
-
-        function updateOdometerUnit() {
-            const selected = vehicleSelect.options[vehicleSelect.selectedIndex];
-            const unit = selected ? selected.dataset.odometerUnit : '{{ current_user.distance_unit }}';
-            // An hours-metered vehicle has no odometer to read, so the word
-            // changes with the unit rather than just the bracket (#324).
-            const readingLabel = selected ? selected.dataset.readingLabel : '';
-            if (readingLabel && unit) {
-                odometerLabel.textContent = readingLabel + ' (' + unit + ')';
-            } else if (unit) {
-                odometerLabel.textContent = odometerLabel.textContent.replace(/\([^)]*\)/, '(' + unit + ')');
-            }
-        }
-
-        vehicleSelect.addEventListener('change', updateOdometerUnit);
-        updateOdometerUnit();
-
-        // Only offer maintenance schedules belonging to the chosen vehicle (#86)
-        const scheduleSelect = document.getElementById('maintenance_schedule_id');
-        if (scheduleSelect) {
-            function filterSchedules() {
-                const vehicleId = vehicleSelect.value;
-                let visible = 0;
-                Array.from(scheduleSelect.options).forEach(function(opt) {
-                    if (!opt.value) return;
-                    const match = opt.dataset.vehicleId === vehicleId;
-                    opt.hidden = !match;
-                    if (match) visible++;
-                    if (!match && opt.selected) scheduleSelect.value = '';
-                });
-                scheduleSelect.closest('div').style.display = visible ? '' : 'none';
-            }
-            vehicleSelect.addEventListener('change', filterSchedules);
-            filterSchedules();
-        }
-
-        // Drop the reminder link if the expense is moved to another vehicle (#296)
-        const reminderInput = document.getElementById('reminder_id');
-        if (reminderInput) {
-            const reminderNotice = document.getElementById('reminder-notice');
-            function syncReminderLink() {
-                const match = vehicleSelect.value === reminderInput.dataset.vehicleId;
-                reminderInput.disabled = !match;
-                if (reminderNotice) {
-                    reminderNotice.style.display = match ? '' : 'none';
-                }
-            }
-            vehicleSelect.addEventListener('change', syncReminderLink);
-            syncReminderLink();
-        }
-    })();
-</script>
-<script>
-(function () {
-    const category = document.getElementById('category');
-    const classification = document.getElementById('maintenance-classification');
-    if (!category || !classification) return;
-    function toggleClassification() {
-        classification.classList.toggle('hidden', category.value !== 'maintenance');
+    // The picked vehicle: a checked radio card, or the select's option.
+    function selectedVehicle() {
+        const radio = form.querySelector('input[name="vehicle_id"]:checked');
+        if (radio) return radio;
+        const select = document.getElementById('vehicle_id');
+        return select ? select.options[select.selectedIndex] : null;
     }
-    category.addEventListener('change', toggleClassification);
+    function vehicleId() {
+        const el = selectedVehicle();
+        return el ? el.value : '';
+    }
+    function onVehicleChange(fn) {
+        vehicleInputs.forEach(function(el) { el.addEventListener('change', fn); });
+    }
+
+    // An hours-metered vehicle has no odometer to read, so the word changes
+    // with the unit (#324).
+    function updateOdometerUnit() {
+        const selected = selectedVehicle();
+        if (!selected) return;
+        if (selected.dataset.readingLabel) odometerLabel.textContent = selected.dataset.readingLabel;
+        if (selected.dataset.odometerUnit) odometerUnit.textContent = selected.dataset.odometerUnit;
+    }
+    onVehicleChange(updateOdometerUnit);
+    updateOdometerUnit();
+
+    // Only offer maintenance schedules belonging to the chosen vehicle (#86)
+    const scheduleSelect = document.getElementById('maintenance_schedule_id');
+    if (scheduleSelect) {
+        const scheduleField = document.getElementById('schedule-field');
+        function filterSchedules() {
+            let visible = 0;
+            Array.from(scheduleSelect.options).forEach(function(opt) {
+                if (!opt.value) return;
+                const match = opt.dataset.vehicleId === vehicleId();
+                opt.hidden = !match;
+                if (match) visible++;
+                if (!match && opt.selected) scheduleSelect.value = '';
+            });
+            scheduleField.hidden = !visible;
+        }
+        onVehicleChange(filterSchedules);
+        filterSchedules();
+    }
+
+    // Drop the reminder link if the expense is moved to another vehicle (#296)
+    const reminderInput = document.getElementById('reminder_id');
+    if (reminderInput) {
+        const reminderNotice = document.getElementById('reminder-notice');
+        function syncReminderLink() {
+            const match = vehicleId() === reminderInput.dataset.vehicleId;
+            reminderInput.disabled = !match;
+            if (reminderNotice) reminderNotice.hidden = !match;
+        }
+        onVehicleChange(syncReminderLink);
+        syncReminderLink();
+    }
+
+    // Type and part only apply to maintenance.
+    const classification = document.getElementById('maintenance-classification');
+    function toggleClassification() {
+        const checked = form.querySelector('input[name="category"]:checked');
+        classification.hidden = !checked || checked.value !== 'maintenance';
+    }
+    form.querySelectorAll('input[name="category"]').forEach(function(el) {
+        el.addEventListener('change', toggleClassification);
+    });
     toggleClassification();
-})();
+});
 </script>
 {% endblock %}

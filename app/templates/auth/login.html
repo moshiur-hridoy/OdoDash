@@ -1,66 +1,43 @@
-{% extends "base.html" %}
+{% extends "auth/_layout.html" %}
+{% from 'components/ui.html' import button, field, password_input %}
 {% block title %}{{ _('Login') }}{% endblock %}
 
-{% block auth_content %}
-<div class="w-full max-w-md">
-    <div class="bg-white dark:bg-gray-800 py-8 px-6 shadow-lg rounded-lg">
-        <div class="text-center mb-8">
-            {% if APP_LOGO %}
-            <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="h-12 mx-auto mb-3">
-            {% else %}
-            {% from 'partials/logo.html' import logo_mark %}
-            {{ logo_mark('h-12 w-12 mx-auto mb-3 text-primary-600') }}
-            {% endif %}
-            <h1 class="text-3xl font-bold text-primary-600">{{ APP_NAME }}</h1>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ APP_TAGLINE }}</p>
-        </div>
+{% block auth_title %}{{ _('Sign in') }}{% endblock %}
+{% block auth_lead %}{% if APP_TAGLINE %}<p class="auth__lead">{{ APP_TAGLINE }}</p>{% endif %}{% endblock %}
 
-        {% if DEMO_MODE %}
-        <div class="mb-6 rounded-md border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/30 px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-            <p class="font-medium text-primary-700 dark:text-primary-300">Live demo</p>
-            <p class="mt-1">Sign in with <code class="font-mono font-semibold">{{ DEMO_USERNAME }}</code> / <code class="font-mono font-semibold">{{ DEMO_PASSWORD }}</code>. Feel free to add and edit anything; the data resets regularly.</p>
-        </div>
-        {% endif %}
+{% block auth_body %}
+{% if DEMO_MODE %}
+<div class="auth__note">
+    <p class="auth__note-title">Live demo</p>
+    <p>Sign in with <code>{{ DEMO_USERNAME }}</code> / <code>{{ DEMO_PASSWORD }}</code>. Feel free to add and edit anything; the data resets regularly.</p>
+</div>
+{% endif %}
 
-        <form method="POST" class="space-y-6">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div>
-                <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Username') }}</label>
-                <input type="text" name="username" id="username" required autofocus
-                       {% if DEMO_MODE %}value="{{ DEMO_USERNAME }}"{% endif %}
-                       class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-            </div>
+<form method="POST" class="auth__form" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% call field(_('Username'), 'username') %}
+    <input type="text" name="username" id="username" class="ds-control" required autofocus
+           autocomplete="username" autocapitalize="none" spellcheck="false"
+           {% if DEMO_MODE %}value="{{ DEMO_USERNAME }}"{% endif %}>
+    {% endcall %}
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Password') }}</label>
-                <input type="password" name="password" id="password" required
-                       {% if DEMO_MODE %}value="{{ DEMO_PASSWORD }}"{% endif %}
-                       class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-            </div>
+    {% call field(_('Password'), 'password') %}
+    {{ password_input('password', attrs={'required': true, 'autocomplete': 'current-password',
+                                         'value': DEMO_PASSWORD if DEMO_MODE else none}) }}
+    {% endcall %}
 
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input type="checkbox" name="remember" id="remember"
-                           class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-                    <label for="remember" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Remember me') }}</label>
-                </div>
-                {% if smtp_configured %}
-                <a href="{{ url_for('auth.forgot_password') }}" class="text-sm font-medium text-primary-600 hover:text-primary-500">{{ _('Forgot password?') }}</a>
-                {% endif %}
-            </div>
-
-            <button type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {{ _('Sign in') }}
-            </button>
-        </form>
-
-        {% if registration_enabled %}
-        <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            {{ _("Don't have an account?") }}
-            <a href="{{ url_for('auth.register') }}" class="font-medium text-primary-600 hover:text-primary-500">{{ _('Register') }}</a>
-        </p>
+    <div class="auth__row">
+        <label class="ds-check">
+            <input type="checkbox" name="remember" id="remember">
+            <span>{{ _('Remember me') }}</span>
+        </label>
+        {% if smtp_configured %}
+        <a href="{{ url_for('auth.forgot_password') }}" class="auth__link">{{ _('Forgot password?') }}</a>
         {% endif %}
     </div>
-</div>
+
+    {{ button(_('Sign in'), type='submit', block=true) }}
+</form>
 {% endblock %}
+
+{% block auth_after %}{% if registration_enabled %}{{ _("Don't have an account?") }} <a href="{{ url_for('auth.register') }}" class="auth__link">{{ _('Register') }}</a>{% endif %}{% endblock %}

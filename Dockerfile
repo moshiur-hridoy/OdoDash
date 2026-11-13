@@ -1,3 +1,12 @@
+# Compile the Tailwind stylesheet. The output is plain CSS, the same for every
+# target platform, so this stage runs on the build host's own architecture
+# rather than under emulation for the arm64 image. build_css.py fetches the
+# pinned Tailwind CLI and refuses it unless its checksum matches.
+FROM --platform=$BUILDPLATFORM python:3.12-slim AS css
+WORKDIR /src
+COPY . .
+RUN python scripts/build_css.py
+
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -23,6 +32,9 @@ COPY . .
 # Compile the translation catalogues. The .mo files are build artefacts rather
 # than tracked files (#344), so the image builds them from the .po sources.
 RUN pybabel compile -d app/translations
+
+# The compiled stylesheet is a build artefact too, made in the css stage.
+COPY --from=css /src/app/static/css/app.css app/static/css/app.css
 
 # Create non-root user and set up directories
 RUN useradd --create-home --shell /bin/bash may \

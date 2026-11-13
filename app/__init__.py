@@ -1,4 +1,4 @@
-from flask import Flask, request, g
+from flask import Flask, request, g, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
@@ -355,12 +355,47 @@ def create_app(config_class=Config):
     def load_user(user_id):
         return db.session.get(User, int(user_id))
 
+    def compiled_stylesheet_url():
+        """URL of the compiled Tailwind stylesheet, or None when it is absent.
+
+        scripts/build_css.py writes it and the image always ships it; a bare
+        checkout that has not run the build falls back to compiling in the
+        browser (see base.html). The modification time busts browser caches
+        whenever it is rebuilt.
+        """
+        try:
+            mtime = int(os.stat(os.path.join(app.static_folder, 'css', 'app.css')).st_mtime)
+        except OSError:
+            return None
+        return url_for('static', filename='css/app.css', v=mtime)
+
+    def design_system_fallback_css():
+        """The stylesheet source, prepared for the in-browser runtime.
+
+        Without a compiled app.css the runtime only knows Tailwind's own
+        classes, and the shell (.ds-*) would render unstyled. The runtime
+        compiles any <style type="text/tailwindcss"> it finds, after its own
+        base/components/utilities, so the source goes in minus its @tailwind
+        directives, with the font paths made absolute (they are written
+        relative to the compiled file).
+        """
+        try:
+            with open(os.path.join(app.static_folder, 'css', 'src', 'app.css'), encoding='utf-8') as f:
+                source = f.read()
+        except OSError:
+            return None
+        source = '\n'.join(line for line in source.splitlines()
+                            if not line.lstrip().startswith('@tailwind '))
+        fonts = url_for('static', filename='fonts/')
+        return source.replace('url(../fonts/', 'url(' + fonts).replace('</', '<\\/')
+
     # Make languages and branding available in templates
     @app.context_processor
     def inject_globals():
         import config as release
         branding = AppSettings.get_all_branding()
         current_locale = str(get_locale() or 'en')
+        stylesheet_url = compiled_stylesheet_url()
         return {
             'LANGUAGES': LANGUAGES,
             'CURRENT_LOCALE': current_locale,
@@ -373,6 +408,8 @@ def create_app(config_class=Config):
             'DISPLAY_VERSION': app.config.get('DISPLAY_VERSION', release.DISPLAY_VERSION),
             'GITHUB_REPO': app.config.get('GITHUB_REPO', release.GITHUB_REPO),
             'CHECK_FOR_UPDATES': app.config.get('CHECK_FOR_UPDATES', release.CHECK_FOR_UPDATES),
+            'TAILWIND_CSS_URL': stylesheet_url,
+            'DS_FALLBACK_CSS': None if stylesheet_url else design_system_fallback_css(),
             'TAILWIND_ASSET_URL': app.config.get('TAILWIND_ASSET_URL', '/static/vendor/tailwindcss.js'),
             'TAILWIND_CDN_URL': app.config.get('TAILWIND_CDN_URL', 'https://cdn.tailwindcss.com'),
             'HTMX_ASSET_URL': app.config.get('HTMX_ASSET_URL', '/static/vendor/htmx.min.js'),
@@ -489,7 +526,7 @@ def create_app(config_class=Config):
         fmt = formats.get(style, formats['default'])
         return value.strftime(fmt)
 
-    from app.routes import main, auth, vehicles, fuel, expenses, api, reminders, maintenance, documents, stations, recurring, homeassistant, calendar, trips, charging, notes, allowance, search, tires
+    from app.routes import main, auth, vehicles, fuel, expenses, api, reminders, maintenance, documents, stations, recurring, homeassistant, calendar, trips, charging, notes, allowance, search, tires, design
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(vehicles.bp)
@@ -509,6 +546,7 @@ def create_app(config_class=Config):
     app.register_blueprint(allowance.bp)
     app.register_blueprint(search.bp)
     app.register_blueprint(tires.bp)
+    app.register_blueprint(design.bp)
 
     # Per-user permissions (#285) — refuse writes the account's role does not
     # cover, and expose can_write() to templates.
