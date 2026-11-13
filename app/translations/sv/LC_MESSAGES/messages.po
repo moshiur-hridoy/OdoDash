@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 11:54+0600\n"
+"POT-Creation-Date: 2026-11-13 12:05+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: sv <LL@li.org>\n"
@@ -1605,7 +1605,7 @@ msgstr "Däck"
 #: app/templates/search/index.html:110 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
-#: app/templates/vehicles/form.html:231
+#: app/templates/vehicles/form.html:187
 #: app/templates/vehicles/part_form.html:66
 #: app/templates/vehicles/view.html:589
 msgid "Notes"
@@ -1871,8 +1871,8 @@ msgstr "Datum"
 #: app/templates/dashboard.html:201 app/templates/documents/form.html:34
 #: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
-#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:26
-#: app/templates/vehicles/view.html:456
+#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
+#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:456
 msgid "Type"
 msgstr "Typ"
 
@@ -2004,7 +2004,7 @@ msgstr ""
 #: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
 #: app/templates/stations/form.html:63 app/templates/tires/form.html:82
 #: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
-#: app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:237
 #: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
 msgstr "Spara ändringar"
@@ -2078,9 +2078,9 @@ msgstr "Radera denna ersättningspost?"
 #: app/templates/tires/index.html:105 app/templates/tires/index.html:119
 #: app/templates/trips/index.html:136
 #: app/templates/trips/templates_index.html:44
-#: app/templates/vehicles/parts.html:49 app/templates/vehicles/view.html:488
-#: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
-#: app/templates/vehicles/view.html:643
+#: app/templates/vehicles/form.html:17 app/templates/vehicles/parts.html:49
+#: app/templates/vehicles/view.html:488 app/templates/vehicles/view.html:509
+#: app/templates/vehicles/view.html:528 app/templates/vehicles/view.html:643
 msgid "Delete"
 msgstr "Radera"
 
@@ -2351,7 +2351,7 @@ msgstr "km/l"
 msgid "Thousand Separator"
 msgstr "Tusentalsavgränsare"
 
-#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:73
+#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:99
 msgid "None"
 msgstr "Ingen"
 
@@ -3057,7 +3057,7 @@ msgstr "Testa"
 msgid "Save DVLA Settings"
 msgstr "Spara DVLA-inställningar"
 
-#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:277
+#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:162
 msgid "Tessie Integration"
 msgstr "Tessie-integrering"
 
@@ -3684,7 +3684,6 @@ msgstr "Registrera laddning"
 #: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/index.html:94
-#: app/templates/vehicles/form.html:330
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -3902,6 +3901,7 @@ msgid "Optional — records the schedule as performed on the expense date"
 msgstr "Valfritt — registrerar underhållet som utfört på utgiftens datum"
 
 #: app/templates/expenses/form.html:161 app/templates/fuel/form.html:186
+#: app/templates/vehicles/form.html:187
 msgid "More details"
 msgstr "Fler detaljer"
 
@@ -3930,7 +3930,7 @@ msgid "All Categories"
 msgstr "Alla kategorier"
 
 #: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
-#: app/templates/vehicles/form.html:98
+#: app/templates/vehicles/form.html:59
 msgid "Year"
 msgstr "År"
 
@@ -4044,7 +4044,7 @@ msgid "Save & Add Another"
 msgstr "Spara och lägg till en till"
 
 #: app/templates/fuel/_quick_no_vehicle.html:4
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:237
 #: app/templates/vehicles/index.html:15 app/templates/vehicles/index.html:85
 msgid "Add Vehicle"
 msgstr "Lägg till fordon"
@@ -4095,7 +4095,7 @@ msgid "for quick selection and price tracking"
 msgstr "för snabbval och prisspårning"
 
 #: app/templates/fuel/form.html:160 app/templates/stations/prices.html:37
-#: app/templates/vehicles/form.html:59
+#: app/templates/vehicles/form.html:88
 msgid "Fuel Type"
 msgstr "Bränsletyp"
 
@@ -4438,7 +4438,7 @@ msgstr "Tillbaka till underhåll"
 
 #: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
 #: app/templates/stations/form.html:16 app/templates/tires/form.html:22
-#: app/templates/vehicles/form.html:18
+#: app/templates/vehicles/form.html:38
 #: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "Namn"
@@ -5214,7 +5214,7 @@ msgstr "Total sträcka på denna sats"
 msgid "Purchased"
 msgstr "Inköpt"
 
-#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:254
+#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:148
 msgid "Status"
 msgstr "Status"
 
@@ -5485,55 +5485,83 @@ msgstr "Spara vanliga rutter som mallar för att logga resor snabbare."
 msgid "Create Your First Template"
 msgstr "Skapa din första mall"
 
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:28
 msgid "Edit Vehicle"
 msgstr "Redigera fordon"
 
-#: app/templates/vehicles/form.html:7 app/templates/vehicles/view.html:25
+#: app/templates/vehicles/form.html:14
+msgid "Custom label"
+msgstr "Egen etikett"
+
+#: app/templates/vehicles/form.html:16
+msgid "Value"
+msgstr "Värde"
+
+#: app/templates/vehicles/form.html:27 app/templates/vehicles/view.html:25
 msgid "Back to vehicles"
 msgstr "Tillbaka till fordon"
 
-#: app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:28
 msgid "Add New Vehicle"
 msgstr "Lägg till nytt fordon"
 
-#: app/templates/vehicles/form.html:14
+#: app/templates/vehicles/form.html:35
 msgid "Basic Information"
 msgstr "Grundläggande information"
 
-#: app/templates/vehicles/form.html:21
+#: app/templates/vehicles/form.html:40
 msgid "e.g., My Daily Driver"
 msgstr "t.ex. Min vardagsbil"
 
-#: app/templates/vehicles/form.html:36
-msgid "Tracking Unit"
-msgstr "Spårningsenhet"
+#: app/templates/vehicles/form.html:51
+msgid "Make"
+msgstr "Märke"
 
-#: app/templates/vehicles/form.html:43
-msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
-msgstr "Använd \"Timmar\" för traktorer, fyrhjulingar, båtar med mera."
-
-#: app/templates/vehicles/form.html:47
-msgid "Odometer Unit"
-msgstr "Mätarenhet"
-
-#: app/templates/vehicles/form.html:50
-msgid "Use account default"
-msgstr "Använd kontots standard"
+#: app/templates/vehicles/form.html:52
+msgid "e.g., Toyota"
+msgstr "t.ex. Toyota"
 
 #: app/templates/vehicles/form.html:55
-msgid ""
-"Override the odometer unit for this vehicle. Useful when you have vehicles "
-"with different odometer units."
-msgstr ""
-"Åsidosätt mätarenheten för detta fordon. Praktiskt när du har fordon med "
-"olika mätarenheter."
+msgid "Model"
+msgstr "Modell"
 
-#: app/templates/vehicles/form.html:70
+#: app/templates/vehicles/form.html:56
+msgid "e.g., Corolla"
+msgstr "t.ex. Corolla"
+
+#: app/templates/vehicles/form.html:61
+msgid "e.g., 2020"
+msgstr "t.ex. 2020"
+
+#: app/templates/vehicles/form.html:66
+msgid "Registration / License Plate"
+msgstr "Registrering/registreringsskylt"
+
+#: app/templates/vehicles/form.html:68
+msgid "e.g., ABC 123"
+msgstr "t.ex. ABC 123"
+
+#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:384
+msgid "VIN"
+msgstr "VIN"
+
+#: app/templates/vehicles/form.html:73
+msgid "Vehicle Identification Number"
+msgstr "Chassinummer (VIN)"
+
+#: app/templates/vehicles/form.html:77 app/templates/vehicles/view.html:51
+msgid "Purchase Date"
+msgstr "Inköpsdatum"
+
+#: app/templates/vehicles/form.html:80
+msgid "The date you bought this vehicle."
+msgstr "Datumet då du köpte fordonet."
+
+#: app/templates/vehicles/form.html:97
 msgid "Secondary Fuel Type"
 msgstr "Sekundär bränsletyp"
 
-#: app/templates/vehicles/form.html:78
+#: app/templates/vehicles/form.html:102
 msgid ""
 "Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue "
 "alongside Diesel."
@@ -5541,144 +5569,54 @@ msgstr ""
 "Valfritt. Används för fordon med en sekundär vätska att spåra, t.ex. AdBlue "
 "tillsammans med diesel."
 
-#: app/templates/vehicles/form.html:82
-msgid "Make"
-msgstr "Märke"
-
-#: app/templates/vehicles/form.html:85
-msgid "e.g., Toyota"
-msgstr "t.ex. Toyota"
-
-#: app/templates/vehicles/form.html:90
-msgid "Model"
-msgstr "Modell"
-
-#: app/templates/vehicles/form.html:93
-msgid "e.g., Corolla"
-msgstr "t.ex. Corolla"
-
-#: app/templates/vehicles/form.html:102
-msgid "e.g., 2020"
-msgstr "t.ex. 2020"
-
-#: app/templates/vehicles/form.html:107 app/templates/vehicles/view.html:51
-msgid "Purchase Date"
-msgstr "Inköpsdatum"
-
-#: app/templates/vehicles/form.html:111
-msgid "The date you bought this vehicle."
-msgstr "Datumet då du köpte fordonet."
-
-#: app/templates/vehicles/form.html:115
+#: app/templates/vehicles/form.html:106
 msgid "Tank Capacity (L)"
 msgstr "Tankvolym (L)"
 
-#: app/templates/vehicles/form.html:118
+#: app/templates/vehicles/form.html:108
 msgid "e.g., 50"
 msgstr "t.ex. 50"
 
+#: app/templates/vehicles/form.html:112
+msgid "Tracking Unit"
+msgstr "Spårningsenhet"
+
+#: app/templates/vehicles/form.html:122
+msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
+msgstr "Använd \"Timmar\" för traktorer, fyrhjulingar, båtar med mera."
+
 #: app/templates/vehicles/form.html:125
-msgid "Identification"
-msgstr "Identifikation"
+msgid "Odometer Unit"
+msgstr "Mätarenhet"
 
-#: app/templates/vehicles/form.html:129
-msgid "Registration / License Plate"
-msgstr "Registrering/registreringsskylt"
+#: app/templates/vehicles/form.html:127
+msgid "Use account default"
+msgstr "Använd kontots standard"
 
-#: app/templates/vehicles/form.html:132
-msgid "e.g., ABC 123"
-msgstr "t.ex. ABC 123"
+#: app/templates/vehicles/form.html:130
+msgid ""
+"Override the odometer unit for this vehicle. Useful when you have vehicles "
+"with different odometer units."
+msgstr ""
+"Åsidosätt mätarenheten för detta fordon. Praktiskt när du har fordon med "
+"olika mätarenheter."
 
-#: app/templates/vehicles/form.html:137 app/templates/vehicles/view.html:384
-msgid "VIN"
-msgstr "VIN"
-
-#: app/templates/vehicles/form.html:140
-msgid "Vehicle Identification Number"
-msgstr "Chassinummer (VIN)"
-
-#: app/templates/vehicles/form.html:147
-msgid "Photo"
-msgstr "Foto"
-
-#: app/templates/vehicles/form.html:150
+#: app/templates/vehicles/form.html:137
 msgid "Vehicle Image"
 msgstr "Fordonsbild"
 
-#: app/templates/vehicles/form.html:164 app/templates/vehicles/view.html:580
-msgid "Specifications"
-msgstr "Specifikationer"
-
-#: app/templates/vehicles/form.html:165
-msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
-msgstr ""
-"Lägg till tekniska detaljer som däckstorlekar, oljetyp, torkarbladsstorlekar"
-" med mera."
-
-#: app/templates/vehicles/form.html:199
-msgid "Add Specification"
-msgstr "Lägg till specifikation"
-
-#: app/templates/vehicles/form.html:204
-msgid "Annual Mileage Tracking"
-msgstr "Spårning av årlig körsträcka"
-
-#: app/templates/vehicles/form.html:205
-msgid ""
-"Set a yearly distance limit to track progress — useful for leasing contracts"
-" or insurance policies."
-msgstr ""
-"Ange en årlig avståndsgräns för att följa framstegen — praktiskt för "
-"leasingavtal eller försäkringar."
-
-#: app/templates/vehicles/form.html:210
-msgid "Annual Limit"
-msgstr "Årlig gräns"
-
-#: app/templates/vehicles/form.html:215
-msgid "e.g. 25000"
-msgstr "t.ex. 25000"
-
-#: app/templates/vehicles/form.html:219
-msgid "Period Start Date"
-msgstr "Periodens startdatum"
-
-#: app/templates/vehicles/form.html:223
-msgid "e.g. the date your lease or insurance starts"
-msgstr "t.ex. det datum då din leasing eller försäkring börjar"
-
-#: app/templates/vehicles/form.html:225
-msgid "Tracking resets on this date each year."
-msgstr "Spårningen återställs på detta datum varje år."
-
-#: app/templates/vehicles/form.html:234
-msgid "General Notes"
-msgstr "Allmänna anteckningar"
-
-#: app/templates/vehicles/form.html:236
-msgid "Any additional notes about this vehicle..."
-msgstr "Eventuella ytterligare anteckningar om detta fordon …"
-
-#: app/templates/vehicles/form.html:241
-msgid "Default Trip Type"
-msgstr "Standardresetyp"
-
-#: app/templates/vehicles/form.html:248
-msgid "Pre-selected when logging a new trip for this vehicle"
-msgstr "Förvald när du loggar en ny resa för detta fordon"
-
-#: app/templates/vehicles/form.html:259
+#: app/templates/vehicles/form.html:151
 msgid "Active (show in lists and calculations)"
 msgstr "Aktiv (visas i listor och beräkningar)"
 
-#: app/templates/vehicles/form.html:265
+#: app/templates/vehicles/form.html:155
 msgid ""
 "Shared — all users on this instance can view and log against this vehicle"
 msgstr ""
 "Delad — alla användare på denna instans kan se och registrera mot detta "
 "fordon"
 
-#: app/templates/vehicles/form.html:281
+#: app/templates/vehicles/form.html:163
 msgid ""
 "Link this vehicle to Tessie for automatic odometer and battery tracking. "
 "When enabled, manual odometer entry will be disabled."
@@ -5687,26 +5625,109 @@ msgstr ""
 " batteri. När det är aktiverat inaktiveras manuell inmatning av "
 "mätarställning."
 
-#: app/templates/vehicles/form.html:285
+#: app/templates/vehicles/form.html:165
 msgid "Tessie VIN"
 msgstr "Tessie VIN"
 
-#: app/templates/vehicles/form.html:289
+#: app/templates/vehicles/form.html:168
 msgid "Enter Tesla VIN or select from list"
 msgstr "Ange Tesla-VIN eller välj från listan"
 
-#: app/templates/vehicles/form.html:297
+#: app/templates/vehicles/form.html:169
 msgid "Lookup"
 msgstr "Sök"
 
-#: app/templates/vehicles/form.html:308
+#: app/templates/vehicles/form.html:176
 msgid "Enable Tessie tracking (disables manual odometer entry)"
 msgstr ""
 "Aktivera Tessie-spårning (inaktiverar manuell inmatning av mätarställning)"
 
-#: app/templates/vehicles/form.html:318
+#: app/templates/vehicles/form.html:179
 msgid "Tessie tracking is active for this vehicle"
 msgstr "Tessie-spårning är aktiv för detta fordon"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:192
+#: app/templates/vehicles/view.html:580
+msgid "Specifications"
+msgstr "Specifikationer"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:202
+msgid "Annual Mileage Tracking"
+msgstr "Spårning av årlig körsträcka"
+
+#: app/templates/vehicles/form.html:193
+msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
+msgstr ""
+"Lägg till tekniska detaljer som däckstorlekar, oljetyp, torkarbladsstorlekar"
+" med mera."
+
+#: app/templates/vehicles/form.html:197
+msgid "Add Specification"
+msgstr "Lägg till specifikation"
+
+#: app/templates/vehicles/form.html:203
+msgid ""
+"Set a yearly distance limit to track progress — useful for leasing contracts"
+" or insurance policies."
+msgstr ""
+"Ange en årlig avståndsgräns för att följa framstegen — praktiskt för "
+"leasingavtal eller försäkringar."
+
+#: app/templates/vehicles/form.html:207
+msgid "Annual Limit"
+msgstr "Årlig gräns"
+
+#: app/templates/vehicles/form.html:210
+msgid "e.g. 25000"
+msgstr "t.ex. 25000"
+
+#: app/templates/vehicles/form.html:215
+msgid "Period Start Date"
+msgstr "Periodens startdatum"
+
+#: app/templates/vehicles/form.html:218
+msgid "e.g. the date your lease or insurance starts"
+msgstr "t.ex. det datum då din leasing eller försäkring börjar"
+
+#: app/templates/vehicles/form.html:219
+msgid "Tracking resets on this date each year."
+msgstr "Spårningen återställs på detta datum varje år."
+
+#: app/templates/vehicles/form.html:224
+msgid "Default Trip Type"
+msgstr "Standardresetyp"
+
+#: app/templates/vehicles/form.html:228
+msgid "Pre-selected when logging a new trip for this vehicle"
+msgstr "Förvald när du loggar en ny resa för detta fordon"
+
+#: app/templates/vehicles/form.html:231
+msgid "General Notes"
+msgstr "Allmänna anteckningar"
+
+#: app/templates/vehicles/form.html:232
+msgid "Any additional notes about this vehicle..."
+msgstr "Eventuella ytterligare anteckningar om detta fordon …"
+
+#: app/templates/vehicles/form.html:277
+msgid "Loading vehicles from Tessie..."
+msgstr "Hämtar fordon från Tessie …"
+
+#: app/templates/vehicles/form.html:277
+msgid "No vehicles found in your Tessie account"
+msgstr "Inga fordon hittades i ditt Tessie-konto"
+
+#: app/templates/vehicles/form.html:278
+msgid "Failed to fetch vehicles"
+msgstr "Det gick inte att hämta fordon"
+
+#: app/templates/vehicles/form.html:278
+msgid "Error connecting to server"
+msgstr "Fel vid anslutning till servern"
+
+#: app/templates/vehicles/form.html:279
+msgid "Unnamed Vehicle"
+msgstr "Namnlöst fordon"
 
 #: app/templates/vehicles/index.html:7
 msgid "Archived Vehicles"

@@ -546,6 +546,27 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .form-template { padding-block: 16px; }
 .form-section__title { margin: 0 0 4px; font-size: var(--ds-text-base); font-weight: 600; }
 .form-hint[hidden] { display: none; }
+.form-section__title svg { vertical-align: -2px; color: var(--ds-text-muted); }
+/* Vehicle form: specification rows, photo, Tessie lookup. */
+.spec-rows { display: flex; flex-direction: column; gap: 8px; }
+.spec-rows:empty { display: none; }
+.spec-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr) auto; gap: 8px; align-items: center; }
+.spec-row:not(:has(.spec-label:not([hidden]))) { grid-template-columns: minmax(0, 1fr) minmax(0, 2.3fr) auto; }
+.spec-row .spec-label[hidden] { display: none; }
+.vehicle-photo { display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px; }
+.vehicle-photo__current { width: 132px; height: 96px; object-fit: cover; border-radius: var(--ds-radius-md); border: 1px solid var(--ds-border); }
+.vehicle-photo .ds-drop { flex: 1 1 240px; }
+.tessie-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; font-size: var(--ds-text-sm); color: var(--ds-text-muted); }
+.tessie-list[hidden] { display: none; }
+.tessie-list__item { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-md); background: var(--ds-surface); color: var(--ds-text); cursor: pointer; text-align: left; }
+.tessie-list__item:hover { border-color: var(--ds-accent); }
+.tessie-list__item span { font-family: var(--ds-font-mono); font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+@media (max-width: 640px) {
+  .spec-row, .spec-row:not(:has(.spec-label:not([hidden]))) { grid-template-columns: minmax(0, 1fr) auto; }
+  .spec-row > .spec-type { grid-column: 1; }
+  .spec-row > .ds-btn { grid-column: 2; grid-row: 1; }
+  .spec-row > .spec-label, .spec-row > .spec-value { grid-column: 1 / -1; }
+}
 .form-inline { display: flex; align-items: center; gap: 8px; }
 .form-inline .ds-control { flex: 1; min-width: 0; }
 .form-inline .form-inline__num { flex: 0 0 72px; }

@@ -1,455 +1,306 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, badge, file_drop %}
+{% from 'components/forms.html' import form_actions, req %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{% if vehicle %}{{ _('Edit Vehicle') }}{% else %}{{ _('Add Vehicle') }}{% endif %}{% endblock %}
 
+{%- macro spec_row(spec=None) -%}
+{%- set kind = spec.spec_type if spec else spec_types[0][0] -%}
+<div class="spec-row">
+    <select name="spec_type[]" class="ds-control spec-type" aria-label="{{ _('Type') }}">
+        {% for value, label in spec_types %}<option value="{{ value }}"{% if kind == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <input type="text" name="spec_label[]" value="{{ spec.label if spec and spec.label else '' }}" class="ds-control spec-label"
+           placeholder="{{ _('Custom label') }}" aria-label="{{ _('Custom label') }}"{% if kind != 'custom' %} hidden{% else %} required{% endif %}>
+    <input type="text" name="spec_value[]" value="{{ spec.value if spec and spec.value else '' }}" class="ds-control spec-value"
+           placeholder="{{ _('Value') }}" aria-label="{{ _('Value') }}">
+    {{ button(_('Delete'), variant='ghost', size='sm', icon_name='trash', icon_only=true, attrs={'data-spec-remove': ''}) }}
+</div>
+{%- endmacro -%}
+
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ url_for('vehicles.index') }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300">&larr; {{ _('Back to vehicles') }}</a>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{% if vehicle %}{{ _('Edit Vehicle') }}{% else %}{{ _('Add New Vehicle') }}{% endif %}</h1>
-    </div>
+{%- set unit = vehicle.get_reading_unit() if vehicle else current_user.distance_unit -%}
+{%- set tracking = vehicle.tracking_unit if vehicle and vehicle.tracking_unit else 'mileage' -%}
+{%- set odo_unit = vehicle.odometer_unit if vehicle and vehicle.odometer_unit else '' -%}
+{%- set more_open = vehicle and (specs or vehicle.annual_mileage_limit or vehicle.notes) -%}
+<div class="ds form-page">
+{{ back_link(_('Back to vehicles'), url_for('vehicles.index')) }}
+{{ page_header(_('Edit Vehicle') if vehicle else _('Add New Vehicle'), subtitle=vehicle.name if vehicle else None) }}
 
-    <form method="POST" enctype="multipart/form-data" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Basic Information') }}</h2>
+<form id="vehicle-form" method="POST" enctype="multipart/form-data" class="form-stack" data-busy-submit>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div class="sm:col-span-2">
-                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Name') }} *</label>
-                    <input type="text" name="name" id="name" required
-                           value="{{ vehicle.name if vehicle else '' }}"
-                           placeholder="{{ _('e.g., My Daily Driver') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="vehicle_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Type') }} *</label>
-                    <select name="vehicle_type" id="vehicle_type" required
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in vehicle_types %}
-                        <option value="{{ value }}" {% if vehicle and vehicle.vehicle_type == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div>
-                    <label for="tracking_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Tracking Unit') }}</label>
-                    <select name="tracking_unit" id="tracking_unit"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {% for value, label in tracking_units %}
-                        <option value="{{ value }}" {% if vehicle and vehicle.tracking_unit == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Use "Hours" for tractors, ATVs, boats, etc.') }}</p>
-                </div>
-
-                <div>
-                    <label for="odometer_unit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Odometer Unit') }}</label>
-                    <select name="odometer_unit" id="odometer_unit"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        <option value="" {% if not vehicle or not vehicle.odometer_unit %}selected{% endif %}>{{ _('Use account default') }} ({{ current_user.distance_unit }})</option>
-                        {% for value, label in odometer_units %}
-                        <option value="{{ value }}" {% if vehicle and vehicle.odometer_unit == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Override the odometer unit for this vehicle. Useful when you have vehicles with different odometer units.') }}</p>
-                </div>
-
-                <div>
-                    <label for="fuel_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Fuel Type') }}</label>
-                    <select name="fuel_type" id="fuel_type"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        {# AdBlue never propels a vehicle, so it is offered as a secondary type only (#319). #}
-                        {% for value, label in fuel_types if value != 'adblue' or (vehicle and vehicle.fuel_type == value) %}
-                        <option value="{{ value }}" {% if vehicle and vehicle.fuel_type == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div>
-                    <label for="secondary_fuel_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Secondary Fuel Type') }}</label>
-                    <select name="secondary_fuel_type" id="secondary_fuel_type"
-                            class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        <option value="">{{ _('None') }}</option>
-                        {% for value, label in fuel_types %}
-                        <option value="{{ value }}" {% if vehicle and vehicle.secondary_fuel_type == value %}selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue alongside Diesel.') }}</p>
-                </div>
-
-                <div>
-                    <label for="make" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Make') }}</label>
-                    <input type="text" name="make" id="make"
-                           value="{{ vehicle.make if vehicle else '' }}"
-                           placeholder="{{ _('e.g., Toyota') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="model" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Model') }}</label>
-                    <input type="text" name="model" id="model"
-                           value="{{ vehicle.model if vehicle else '' }}"
-                           placeholder="{{ _('e.g., Corolla') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="year" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Year') }}</label>
-                    <input type="number" name="year" id="year"
-                           value="{{ vehicle.year if vehicle else '' }}"
-                           min="1900" max="2100"
-                           placeholder="{{ _('e.g., 2020') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="purchase_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Purchase Date') }}</label>
-                    <input type="text" name="purchase_date" id="purchase_date" data-datepicker
-                           value="{{ vehicle.purchase_date.strftime('%Y-%m-%d') if vehicle and vehicle.purchase_date else '' }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('The date you bought this vehicle.') }}</p>
-                </div>
-
-                <div>
-                    <label for="tank_capacity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Tank Capacity (L)') }}</label>
-                    <input type="number" name="tank_capacity" id="tank_capacity" step="0.1"
-                           value="{{ vehicle.tank_capacity if vehicle else '' }}"
-                           placeholder="{{ _('e.g., 50') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
+    {# ---- What it is ---- #}
+    <section class="ds-card form-section" aria-labelledby="basic-title">
+        <h2 class="form-section__title" id="basic-title">{{ _('Basic Information') }}</h2>
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="name">{{ _('Name') }}{{ req() }}</label>
+                <input type="text" name="name" id="name" class="ds-control" required
+                       value="{{ vehicle.name if vehicle else '' }}" placeholder="{{ _('e.g., My Daily Driver') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="vehicle_type">{{ _('Type') }}{{ req() }}</label>
+                <select name="vehicle_type" id="vehicle_type" class="ds-control" required>
+                    {% for value, label in vehicle_types %}<option value="{{ value }}"{% if vehicle and vehicle.vehicle_type == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
             </div>
         </div>
-
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Identification') }}</h2>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                    <label for="registration" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Registration / License Plate') }}</label>
-                    <input type="text" name="registration" id="registration"
-                           value="{{ vehicle.registration if vehicle else '' }}"
-                           placeholder="{{ _('e.g., ABC 123') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-
-                <div>
-                    <label for="vin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('VIN') }}</label>
-                    <input type="text" name="vin" id="vin"
-                           value="{{ vehicle.vin if vehicle else '' }}"
-                           placeholder="{{ _('Vehicle Identification Number') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
+        <div class="form-grid form-grid--3">
+            <div class="ds-field">
+                <label class="ds-field__label" for="make">{{ _('Make') }}</label>
+                <input type="text" name="make" id="make" class="ds-control" value="{{ vehicle.make if vehicle and vehicle.make else '' }}" placeholder="{{ _('e.g., Toyota') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="model">{{ _('Model') }}</label>
+                <input type="text" name="model" id="model" class="ds-control" value="{{ vehicle.model if vehicle and vehicle.model else '' }}" placeholder="{{ _('e.g., Corolla') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="year">{{ _('Year') }}</label>
+                <input type="number" name="year" id="year" class="ds-control" inputmode="numeric" min="1900" max="2100"
+                       value="{{ vehicle.year if vehicle and vehicle.year else '' }}" placeholder="{{ _('e.g., 2020') }}">
             </div>
         </div>
-
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Photo') }}</h2>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle Image') }}</label>
-                {% if vehicle and vehicle.image_filename %}
-                <div class="mt-2 mb-4">
-                    <img src="{{ url_for('api.uploaded_file', filename=vehicle.image_filename) }}"
-                         alt="{{ vehicle.name }}"
-                         class="h-32 w-auto rounded-lg object-cover">
-                </div>
-                {% endif %}
-                <input type="file" name="image" accept="image/*"
-                       class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="registration">{{ _('Registration / License Plate') }}</label>
+                <input type="text" name="registration" id="registration" class="ds-control"
+                       value="{{ vehicle.registration if vehicle and vehicle.registration else '' }}" placeholder="{{ _('e.g., ABC 123') }}">
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="vin">{{ _('VIN') }}</label>
+                <input type="text" name="vin" id="vin" class="ds-control" autocapitalize="characters"
+                       value="{{ vehicle.vin if vehicle and vehicle.vin else '' }}" placeholder="{{ _('Vehicle Identification Number') }}">
             </div>
         </div>
-
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Specifications') }}</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ _('Add technical details like tire sizes, oil type, wiper sizes, etc.') }}</p>
-
-            <div id="specs-container" class="space-y-3">
-                {% if specs %}
-                    {% for spec in specs %}
-                    <div class="spec-row flex items-center gap-3">
-                        <select name="spec_type[]" onchange="handleSpecTypeChange(this)"
-                                class="w-40 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                            {% for value, label in spec_types %}
-                            <option value="{{ value }}" {% if spec.spec_type == value %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" name="spec_label[]" value="{{ spec.label }}"
-                               placeholder="Custom label"
-                               class="spec-label w-32 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 {% if spec.spec_type != 'custom' %}hidden{% endif %}">
-                        <input type="text" name="spec_value[]" value="{{ spec.value }}"
-                               placeholder="Value"
-                               class="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                        <button type="button" onclick="removeSpecRow(this)"
-                                class="p-2 text-gray-400 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                        </button>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-
-            <button type="button" onclick="addSpecRow()"
-                    class="mt-4 inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                {{ _('Add Specification') }}
-            </button>
+        <div class="ds-field">
+            <label class="ds-field__label" for="purchase_date">{{ _('Purchase Date') }}</label>
+            <input type="text" name="purchase_date" id="purchase_date" class="ds-control" data-datepicker
+                   value="{{ vehicle.purchase_date.strftime('%Y-%m-%d') if vehicle and vehicle.purchase_date else '' }}">
+            <p class="form-hint">{{ _('The date you bought this vehicle.') }}</p>
         </div>
+    </section>
 
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-1">{{ _('Annual Mileage Tracking') }}</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ _('Set a yearly distance limit to track progress — useful for leasing contracts or insurance policies.') }}</p>
-
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                    <label for="annual_mileage_limit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {{ _('Annual Limit') }} ({{ vehicle.get_reading_unit() if vehicle else current_user.distance_unit }})
-                    </label>
-                    <input type="number" name="annual_mileage_limit" id="annual_mileage_limit"
-                           step="1" min="0"
-                           value="{{ vehicle.annual_mileage_limit|int if vehicle and vehicle.annual_mileage_limit else '' }}"
-                           placeholder="{{ _('e.g. 25000') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                </div>
-                <div>
-                    <label for="annual_mileage_start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Period Start Date') }}</label>
-                    <input type="text" name="annual_mileage_start_date" id="annual_mileage_start_date"
-                           data-datepicker
-                           value="{{ vehicle.annual_mileage_start_date.strftime('%Y-%m-%d') if vehicle and vehicle.annual_mileage_start_date else '' }}"
-                           placeholder="{{ _('e.g. the date your lease or insurance starts') }}"
-                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ _('Tracking resets on this date each year.') }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Notes') }}</h2>
-
-            <div>
-                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('General Notes') }}</label>
-                <textarea name="notes" id="notes" rows="4"
-                          placeholder="{{ _('Any additional notes about this vehicle...') }}"
-                          class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">{{ vehicle.notes if vehicle and vehicle.notes else '' }}</textarea>
-            </div>
-
-            <div class="mt-6">
-                <label for="default_trip_purpose" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Default Trip Type') }}</label>
-                <select name="default_trip_purpose" id="default_trip_purpose"
-                        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-                    {% for value, label in trip_purposes %}
-                    <option value="{{ value }}" {% if (vehicle.default_trip_purpose if vehicle else 'business') == value %}selected{% endif %}>{{ label }}</option>
+    {# ---- Fuel and how it is metered ---- #}
+    <section class="ds-card form-section">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="fuel_type">{{ _('Fuel Type') }}</label>
+                <select name="fuel_type" id="fuel_type" class="ds-control">
+                    {# AdBlue never propels a vehicle, so it is offered as a secondary type only (#319). #}
+                    {% for value, label in fuel_types if value != 'adblue' or (vehicle and vehicle.fuel_type == value) %}
+                    <option value="{{ value }}"{% if vehicle and vehicle.fuel_type == value %} selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Pre-selected when logging a new trip for this vehicle') }}</p>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="secondary_fuel_type">{{ _('Secondary Fuel Type') }}</label>
+                <select name="secondary_fuel_type" id="secondary_fuel_type" class="ds-control">
+                    <option value="">{{ _('None') }}</option>
+                    {% for value, label in fuel_types %}<option value="{{ value }}"{% if vehicle and vehicle.secondary_fuel_type == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+                <p class="form-hint">{{ _('Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue alongside Diesel.') }}</p>
             </div>
         </div>
-
-        {% if vehicle %}
-        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ _('Status') }}</h2>
-            <div class="flex items-center">
-                <input type="checkbox" name="is_active" id="is_active"
-                       {% if vehicle.is_active %}checked{% endif %}
-                       class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-                <label for="is_active" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Active (show in lists and calculations)') }}</label>
-            </div>
-            <div class="flex items-center mt-3">
-                <input type="checkbox" name="is_shared" id="is_shared"
-                       {% if vehicle.is_shared %}checked{% endif %}
-                       class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-                <label for="is_shared" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">{{ _('Shared — all users on this instance can view and log against this vehicle') }}</label>
-            </div>
+        <div class="ds-field">
+            <label class="ds-field__label" for="tank_capacity">{{ _('Tank Capacity (L)') }}</label>
+            <input type="number" name="tank_capacity" id="tank_capacity" class="ds-control" inputmode="decimal" step="0.1"
+                   value="{{ vehicle.tank_capacity if vehicle and vehicle.tank_capacity is not none else '' }}" placeholder="{{ _('e.g., 50') }}">
         </div>
-        {% endif %}
-
-        {% if tessie_configured %}
-        <div id="tessie-section" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 {% if not vehicle or vehicle.fuel_type != 'electric' %}hidden{% endif %}">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center">
-                    <svg class="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                    <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ _('Tessie Integration') }}</h2>
-                </div>
-                <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded">Tesla</span>
-            </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ _('Link this vehicle to Tessie for automatic odometer and battery tracking. When enabled, manual odometer entry will be disabled.') }}</p>
-
-            <div class="space-y-4">
-                <div>
-                    <label for="tessie_vin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Tessie VIN') }}</label>
-                    <div class="mt-1 flex gap-2">
-                        <input type="text" name="tessie_vin" id="tessie_vin"
-                               value="{{ vehicle.tessie_vin if vehicle and vehicle.tessie_vin else '' }}"
-                               placeholder="{{ _('Enter Tesla VIN or select from list') }}"
-                               maxlength="20"
-                               class="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 font-mono">
-                        <button type="button" onclick="fetchTessieVehicles()"
-                                class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <svg class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                            </svg>
-                            {{ _('Lookup') }}
-                        </button>
-                    </div>
-                    <div id="tessie-vehicles-list" class="hidden mt-2 border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden"></div>
-                </div>
-
-                <div class="flex items-center">
-                    <input type="checkbox" name="tessie_enabled" id="tessie_enabled"
-                           {% if vehicle and vehicle.tessie_enabled %}checked{% endif %}
-                           class="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500">
-                    <label for="tessie_enabled" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                        {{ _('Enable Tessie tracking (disables manual odometer entry)') }}
+        <div class="form-grid">
+            <fieldset class="ds-field">
+                <legend class="ds-field__label">{{ _('Tracking Unit') }}</legend>
+                <div class="ds-choices ds-choices--compact">
+                    {% for value, label in tracking_units %}
+                    <label class="ds-choice">
+                        <input type="radio" name="tracking_unit" value="{{ value }}"{% if tracking == value %} checked{% endif %}>
+                        <span class="ds-choice__icon">{{ icon('clock' if value == 'hours' else 'gauge', 18) }}</span>
+                        <span class="ds-choice__label">{{ label }}</span>
                     </label>
+                    {% endfor %}
                 </div>
+                <p class="form-hint">{{ _('Use "Hours" for tractors, ATVs, boats, etc.') }}</p>
+            </fieldset>
+            <div class="ds-field">
+                <label class="ds-field__label" for="odometer_unit">{{ _('Odometer Unit') }}</label>
+                <select name="odometer_unit" id="odometer_unit" class="ds-control">
+                    <option value=""{% if not odo_unit %} selected{% endif %}>{{ _('Use account default') }} ({{ current_user.distance_unit }})</option>
+                    {% for value, label in odometer_units %}<option value="{{ value }}"{% if odo_unit == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+                <p class="form-hint">{{ _('Override the odometer unit for this vehicle. Useful when you have vehicles with different odometer units.') }}</p>
+            </div>
+        </div>
+    </section>
 
-                {% if vehicle and vehicle.tessie_enabled and vehicle.tessie_vin %}
-                <div class="mt-2 p-3 bg-green-50 dark:bg-green-900/30 rounded-md">
-                    <div class="flex items-center">
-                        <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        <span class="text-sm text-green-700 dark:text-green-300">{{ _('Tessie tracking is active for this vehicle') }}</span>
+    {# ---- Photo ---- #}
+    <section class="ds-card form-section" aria-labelledby="photo-title">
+        <h2 class="form-section__title" id="photo-title">{{ _('Vehicle Image') }}</h2>
+        <div class="vehicle-photo">
+            {% if vehicle and vehicle.image_filename %}
+            <img class="vehicle-photo__current" src="{{ url_for('api.uploaded_file', filename=vehicle.image_filename) }}" alt="{{ vehicle.name }}">
+            {% endif %}
+            {{ file_drop('image', 'image/*', required=False) }}
+        </div>
+    </section>
+
+    {% if vehicle %}
+    <section class="ds-card form-section" aria-labelledby="status-title">
+        <h2 class="form-section__title" id="status-title">{{ _('Status') }}</h2>
+        <label class="ds-switch">
+            <input type="checkbox" name="is_active" id="is_active"{% if vehicle.is_active %} checked{% endif %}>
+            {{ _('Active (show in lists and calculations)') }}
+        </label>
+        <label class="ds-switch">
+            <input type="checkbox" name="is_shared" id="is_shared"{% if vehicle.is_shared %} checked{% endif %}>
+            {{ _('Shared — all users on this instance can view and log against this vehicle') }}
+        </label>
+    </section>
+    {% endif %}
+
+    {% if tessie_configured %}
+    <section class="ds-card form-section" id="tessie-section"{% if not vehicle or vehicle.fuel_type != 'electric' %} hidden{% endif %} aria-labelledby="tessie-title">
+        <h2 class="form-section__title" id="tessie-title">{{ icon('bolt', 16) }} {{ _('Tessie Integration') }} {{ badge('Tesla') }}</h2>
+        <p class="form-hint">{{ _('Link this vehicle to Tessie for automatic odometer and battery tracking. When enabled, manual odometer entry will be disabled.') }}</p>
+        <div class="ds-field">
+            <label class="ds-field__label" for="tessie_vin">{{ _('Tessie VIN') }}</label>
+            <div class="form-template__row">
+                <input type="text" name="tessie_vin" id="tessie_vin" class="ds-control" maxlength="20"
+                       value="{{ vehicle.tessie_vin if vehicle and vehicle.tessie_vin else '' }}" placeholder="{{ _('Enter Tesla VIN or select from list') }}">
+                {{ button(_('Lookup'), variant='secondary', icon_name='repeat', attrs={'id': 'tessie-lookup'}) }}
+            </div>
+            <div id="tessie-vehicles-list" class="tessie-list" hidden></div>
+            <p class="ds-field__error" id="tessie-lookup-error" hidden></p>
+        </div>
+        <label class="ds-switch">
+            <input type="checkbox" name="tessie_enabled" id="tessie_enabled"{% if vehicle and vehicle.tessie_enabled %} checked{% endif %}>
+            {{ _('Enable Tessie tracking (disables manual odometer entry)') }}
+        </label>
+        {% if vehicle and vehicle.tessie_enabled and vehicle.tessie_vin %}
+        <p class="form-hint">{{ badge(_('Tessie tracking is active for this vehicle'), 'success') }}</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    {# ---- Optional extras ---- #}
+    <details class="ds-card form-more"{% if more_open %} open{% endif %}>
+        <summary>
+            <span>{{ _('More details') }} <span class="form-more__hint">· {{ _('Specifications') }}, {{ _('Annual Mileage Tracking') }}, {{ _('Notes') }}</span></span>
+            {{ icon('chevron-down', 18) }}
+        </summary>
+        <div class="form-more__body">
+            <div class="ds-field">
+                <span class="ds-field__label">{{ _('Specifications') }}</span>
+                <p class="form-hint">{{ _('Add technical details like tire sizes, oil type, wiper sizes, etc.') }}</p>
+                <div id="specs-container" class="spec-rows">
+                    {% for spec in specs or [] %}{{ spec_row(spec) }}{% endfor %}
+                </div>
+                <div>{{ button(_('Add Specification'), variant='secondary', size='sm', icon_name='plus', attrs={'id': 'add-spec'}) }}</div>
+                <template id="spec-row-template">{{ spec_row() }}</template>
+            </div>
+
+            <div class="ds-field">
+                <span class="ds-field__label">{{ _('Annual Mileage Tracking') }}</span>
+                <p class="form-hint">{{ _('Set a yearly distance limit to track progress — useful for leasing contracts or insurance policies.') }}</p>
+            </div>
+            <div class="form-grid">
+                <div class="ds-field">
+                    <label class="ds-field__label" for="annual_mileage_limit">{{ _('Annual Limit') }}</label>
+                    <div class="ds-affix">
+                        <input type="number" name="annual_mileage_limit" id="annual_mileage_limit" class="ds-control" inputmode="numeric" step="1" min="0"
+                               value="{{ vehicle.annual_mileage_limit|int if vehicle and vehicle.annual_mileage_limit else '' }}" placeholder="{{ _('e.g. 25000') }}">
+                        <span class="ds-affix__unit">{{ unit }}</span>
                     </div>
                 </div>
-                {% endif %}
+                <div class="ds-field">
+                    <label class="ds-field__label" for="annual_mileage_start_date">{{ _('Period Start Date') }}</label>
+                    <input type="text" name="annual_mileage_start_date" id="annual_mileage_start_date" class="ds-control" data-datepicker
+                           value="{{ vehicle.annual_mileage_start_date.strftime('%Y-%m-%d') if vehicle and vehicle.annual_mileage_start_date else '' }}"
+                           placeholder="{{ _('e.g. the date your lease or insurance starts') }}">
+                    <p class="form-hint">{{ _('Tracking resets on this date each year.') }}</p>
+                </div>
             </div>
-            <div id="tessie-lookup-error" class="hidden mt-3 p-3 bg-red-50 dark:bg-red-900/30 rounded-md text-sm text-red-600 dark:text-red-400"></div>
-        </div>
-        {% endif %}
 
-        <div class="flex justify-end space-x-3">
-            <a href="{{ url_for('vehicles.index') }}"
-               class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                {{ _('Cancel') }}
-            </a>
-            <button type="submit"
-                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                {% if vehicle %}{{ _('Save Changes') }}{% else %}{{ _('Add Vehicle') }}{% endif %}
-            </button>
+            <div class="ds-field">
+                <label class="ds-field__label" for="default_trip_purpose">{{ _('Default Trip Type') }}</label>
+                <select name="default_trip_purpose" id="default_trip_purpose" class="ds-control">
+                    {% for value, label in trip_purposes %}<option value="{{ value }}"{% if (vehicle.default_trip_purpose if vehicle else 'business') == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+                <p class="form-hint">{{ _('Pre-selected when logging a new trip for this vehicle') }}</p>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="notes">{{ _('General Notes') }}</label>
+                <textarea name="notes" id="notes" rows="4" class="ds-control" placeholder="{{ _('Any additional notes about this vehicle...') }}">{{ vehicle.notes if vehicle and vehicle.notes else '' }}</textarea>
+            </div>
         </div>
-    </form>
+    </details>
+
+    {{ form_actions(url_for('vehicles.index'), _('Save Changes') if vehicle else _('Add Vehicle')) }}
+</form>
 </div>
 
 <script>
-const specTypes = [
-    {% for value, label in spec_types %}
-    { value: '{{ value }}', label: '{{ label }}' },
-    {% endfor %}
-];
+document.addEventListener('DOMContentLoaded', function () {
+    var container = document.getElementById('specs-container');
+    var template = document.getElementById('spec-row-template');
 
-function addSpecRow() {
-    const container = document.getElementById('specs-container');
-    const row = document.createElement('div');
-    row.className = 'spec-row flex items-center gap-3';
-
-    let options = specTypes.map(t => `<option value="${t.value}">${t.label}</option>`).join('');
-
-    row.innerHTML = `
-        <select name="spec_type[]" onchange="handleSpecTypeChange(this)"
-                class="w-40 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-            ${options}
-        </select>
-        <input type="text" name="spec_label[]" value=""
-               placeholder="Custom label"
-               class="spec-label w-32 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 hidden">
-        <input type="text" name="spec_value[]" value=""
-               placeholder="Value"
-               class="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
-        <button type="button" onclick="removeSpecRow(this)"
-                class="p-2 text-gray-400 hover:text-red-500">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-        </button>
-    `;
-
-    container.appendChild(row);
-}
-
-function removeSpecRow(btn) {
-    btn.closest('.spec-row').remove();
-}
-
-function handleSpecTypeChange(select) {
-    const row = select.closest('.spec-row');
-    const labelInput = row.querySelector('.spec-label');
-
-    if (select.value === 'custom') {
-        labelInput.classList.remove('hidden');
-        labelInput.required = true;
-    } else {
-        labelInput.classList.add('hidden');
-        labelInput.required = false;
-        labelInput.value = '';
+    // A spec's own label is only asked for when its type is "custom".
+    function syncLabel(row) {
+        var custom = row.querySelector('.spec-type').value === 'custom';
+        var label = row.querySelector('.spec-label');
+        label.hidden = !custom;
+        label.required = custom;
+        if (!custom) label.value = '';
     }
-}
+    document.getElementById('add-spec').addEventListener('click', function () {
+        container.appendChild(template.content.cloneNode(true));
+        var row = container.lastElementChild;
+        syncLabel(row);
+        row.querySelector('.spec-value').focus();
+    });
+    container.addEventListener('change', function (event) {
+        if (event.target.classList.contains('spec-type')) syncLabel(event.target.closest('.spec-row'));
+    });
+    container.addEventListener('click', function (event) {
+        var remove = event.target.closest('[data-spec-remove]');
+        if (remove) remove.closest('.spec-row').remove();
+    });
 
-function fetchTessieVehicles() {
-    const listDiv = document.getElementById('tessie-vehicles-list');
-    const errorDiv = document.getElementById('tessie-lookup-error');
-    const vinInput = document.getElementById('tessie_vin');
+    // Tessie only applies to electric vehicles.
+    var tessie = document.getElementById('tessie-section');
+    var fuel = document.getElementById('fuel_type');
+    if (!tessie) return;
+    fuel.addEventListener('change', function () { tessie.hidden = fuel.value !== 'electric'; });
 
-    // Hide error and show loading
-    errorDiv.classList.add('hidden');
-    listDiv.innerHTML = '<div class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">Loading vehicles from Tessie...</div>';
-    listDiv.classList.remove('hidden');
-
-    fetch('/api/tessie/vehicles')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.vehicles && data.vehicles.length > 0) {
-                listDiv.innerHTML = data.vehicles.map(v => `
-                    <button type="button" onclick="selectTessieVehicle('${v.vin}', '${v.display_name || ''}')"
-                            class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-0">
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">${v.display_name || 'Unnamed Vehicle'}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 font-mono">${v.vin}</div>
-                    </button>
-                `).join('');
-            } else if (data.success && (!data.vehicles || data.vehicles.length === 0)) {
-                listDiv.innerHTML = '<div class="p-3 text-center text-sm text-gray-500 dark:text-gray-400">No vehicles found in your Tessie account</div>';
-            } else {
-                listDiv.classList.add('hidden');
-                errorDiv.textContent = data.error || 'Failed to fetch vehicles';
-                errorDiv.classList.remove('hidden');
-            }
-        })
-        .catch(err => {
-            listDiv.classList.add('hidden');
-            errorDiv.textContent = 'Error connecting to server';
-            errorDiv.classList.remove('hidden');
-            console.error(err);
-        });
-}
-
-function selectTessieVehicle(vin, name) {
-    document.getElementById('tessie_vin').value = vin;
-    document.getElementById('tessie-vehicles-list').classList.add('hidden');
-}
-
-// Show/hide Tessie section based on fuel type
-function updateTessieVisibility() {
-    const fuelType = document.getElementById('fuel_type').value;
-    const tessieSection = document.getElementById('tessie-section');
-    if (tessieSection) {
-        if (fuelType === 'electric') {
-            tessieSection.classList.remove('hidden');
-        } else {
-            tessieSection.classList.add('hidden');
-        }
-    }
-}
-
-// Listen for fuel type changes
-document.getElementById('fuel_type').addEventListener('change', updateTessieVisibility);
-
-// Run on page load in case fuel type is already set to electric
-document.addEventListener('DOMContentLoaded', updateTessieVisibility);
+    var list = document.getElementById('tessie-vehicles-list');
+    var error = document.getElementById('tessie-lookup-error');
+    var vin = document.getElementById('tessie_vin');
+    var T = { loading: {{ _('Loading vehicles from Tessie...')|tojson }}, none: {{ _('No vehicles found in your Tessie account')|tojson }},
+              failed: {{ _('Failed to fetch vehicles')|tojson }}, offline: {{ _('Error connecting to server')|tojson }},
+              unnamed: {{ _('Unnamed Vehicle')|tojson }} };
+    function showError(message) { list.hidden = true; error.textContent = message; error.hidden = false; }
+    document.getElementById('tessie-lookup').addEventListener('click', function () {
+        error.hidden = true;
+        list.hidden = false;
+        list.textContent = T.loading;
+        fetch('/api/tessie/vehicles')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (!data.success) { showError(data.error || T.failed); return; }
+                list.textContent = '';
+                if (!data.vehicles || !data.vehicles.length) { list.textContent = T.none; return; }
+                data.vehicles.forEach(function (v) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'tessie-list__item';
+                    var name = document.createElement('strong'); name.textContent = v.display_name || T.unnamed;
+                    var code = document.createElement('span'); code.textContent = v.vin;
+                    b.append(name, code);
+                    b.addEventListener('click', function () { vin.value = v.vin; list.hidden = true; });
+                    list.appendChild(b);
+                });
+            })
+            .catch(function () { showError(T.offline); });
+    });
+});
 </script>
 {% endblock %}

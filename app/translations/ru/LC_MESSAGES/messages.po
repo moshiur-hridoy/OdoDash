@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 11:54+0600\n"
+"POT-Creation-Date: 2026-11-13 12:05+0600\n"
 "PO-Revision-Date: 2026-08-03 16:49+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -1593,7 +1593,7 @@ msgstr "Шины"
 #: app/templates/search/index.html:110 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
-#: app/templates/vehicles/form.html:231
+#: app/templates/vehicles/form.html:187
 #: app/templates/vehicles/part_form.html:66
 #: app/templates/vehicles/view.html:589
 msgid "Notes"
@@ -1859,8 +1859,8 @@ msgstr "Дата"
 #: app/templates/dashboard.html:201 app/templates/documents/form.html:34
 #: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
-#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:26
-#: app/templates/vehicles/view.html:456
+#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
+#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:456
 msgid "Type"
 msgstr "Тип"
 
@@ -1992,7 +1992,7 @@ msgstr ""
 #: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
 #: app/templates/stations/form.html:63 app/templates/tires/form.html:82
 #: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
-#: app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:237
 #: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
 msgstr "Сохранить изменения"
@@ -2066,9 +2066,9 @@ msgstr "Удалить эту запись о компенсации?"
 #: app/templates/tires/index.html:105 app/templates/tires/index.html:119
 #: app/templates/trips/index.html:136
 #: app/templates/trips/templates_index.html:44
-#: app/templates/vehicles/parts.html:49 app/templates/vehicles/view.html:488
-#: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
-#: app/templates/vehicles/view.html:643
+#: app/templates/vehicles/form.html:17 app/templates/vehicles/parts.html:49
+#: app/templates/vehicles/view.html:488 app/templates/vehicles/view.html:509
+#: app/templates/vehicles/view.html:528 app/templates/vehicles/view.html:643
 msgid "Delete"
 msgstr "Удалить"
 
@@ -2337,7 +2337,7 @@ msgstr "км/л"
 msgid "Thousand Separator"
 msgstr "Разделитель тысяч"
 
-#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:73
+#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:99
 msgid "None"
 msgstr "Нет"
 
@@ -3045,7 +3045,7 @@ msgstr "Проверить"
 msgid "Save DVLA Settings"
 msgstr "Сохранить настройки DVLA"
 
-#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:277
+#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:162
 msgid "Tessie Integration"
 msgstr "Интеграция с Tessie"
 
@@ -3677,7 +3677,6 @@ msgstr "Записать зарядку"
 #: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/index.html:94
-#: app/templates/vehicles/form.html:330
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -3898,6 +3897,7 @@ msgstr ""
 "Необязательно — отмечает график обслуживания как выполненный на дату расхода"
 
 #: app/templates/expenses/form.html:161 app/templates/fuel/form.html:186
+#: app/templates/vehicles/form.html:187
 msgid "More details"
 msgstr "Подробнее"
 
@@ -3926,7 +3926,7 @@ msgid "All Categories"
 msgstr "Все категории"
 
 #: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
-#: app/templates/vehicles/form.html:98
+#: app/templates/vehicles/form.html:59
 msgid "Year"
 msgstr "Год"
 
@@ -4040,7 +4040,7 @@ msgid "Save & Add Another"
 msgstr "Сохранить и добавить ещё"
 
 #: app/templates/fuel/_quick_no_vehicle.html:4
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:237
 #: app/templates/vehicles/index.html:15 app/templates/vehicles/index.html:85
 msgid "Add Vehicle"
 msgstr "Добавить автомобиль"
@@ -4091,7 +4091,7 @@ msgid "for quick selection and price tracking"
 msgstr "для быстрого выбора и отслеживания цен"
 
 #: app/templates/fuel/form.html:160 app/templates/stations/prices.html:37
-#: app/templates/vehicles/form.html:59
+#: app/templates/vehicles/form.html:88
 msgid "Fuel Type"
 msgstr "Вид топлива"
 
@@ -4438,7 +4438,7 @@ msgstr "Назад к обслуживанию"
 
 #: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
 #: app/templates/stations/form.html:16 app/templates/tires/form.html:22
-#: app/templates/vehicles/form.html:18
+#: app/templates/vehicles/form.html:38
 #: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "Название"
@@ -5217,7 +5217,7 @@ msgstr "Общий пробег на этом комплекте"
 msgid "Purchased"
 msgstr "Куплен"
 
-#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:254
+#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:148
 msgid "Status"
 msgstr "Статус"
 
@@ -5491,55 +5491,83 @@ msgstr ""
 msgid "Create Your First Template"
 msgstr "Создайте свой первый шаблон"
 
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:28
 msgid "Edit Vehicle"
 msgstr "Изменить автомобиль"
 
-#: app/templates/vehicles/form.html:7 app/templates/vehicles/view.html:25
+#: app/templates/vehicles/form.html:14
+msgid "Custom label"
+msgstr "Своя подпись"
+
+#: app/templates/vehicles/form.html:16
+msgid "Value"
+msgstr "Значение"
+
+#: app/templates/vehicles/form.html:27 app/templates/vehicles/view.html:25
 msgid "Back to vehicles"
 msgstr "Назад к автомобилям"
 
-#: app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:28
 msgid "Add New Vehicle"
 msgstr "Добавить новый автомобиль"
 
-#: app/templates/vehicles/form.html:14
+#: app/templates/vehicles/form.html:35
 msgid "Basic Information"
 msgstr "Основная информация"
 
-#: app/templates/vehicles/form.html:21
+#: app/templates/vehicles/form.html:40
 msgid "e.g., My Daily Driver"
 msgstr "например, моя повседневная машина"
 
-#: app/templates/vehicles/form.html:36
-msgid "Tracking Unit"
-msgstr "Единица учёта"
+#: app/templates/vehicles/form.html:51
+msgid "Make"
+msgstr "Марка"
 
-#: app/templates/vehicles/form.html:43
-msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
-msgstr "Используйте «Часы» для тракторов, квадроциклов, лодок и т. д."
-
-#: app/templates/vehicles/form.html:47
-msgid "Odometer Unit"
-msgstr "Единица пробега"
-
-#: app/templates/vehicles/form.html:50
-msgid "Use account default"
-msgstr "Использовать значение по умолчанию из учётной записи"
+#: app/templates/vehicles/form.html:52
+msgid "e.g., Toyota"
+msgstr "например, Toyota"
 
 #: app/templates/vehicles/form.html:55
-msgid ""
-"Override the odometer unit for this vehicle. Useful when you have vehicles "
-"with different odometer units."
-msgstr ""
-"Переопределите единицу пробега для этого автомобиля. Полезно, если у вас "
-"есть автомобили с разными единицами измерения пробега."
+msgid "Model"
+msgstr "Модель"
 
-#: app/templates/vehicles/form.html:70
+#: app/templates/vehicles/form.html:56
+msgid "e.g., Corolla"
+msgstr "например, Corolla"
+
+#: app/templates/vehicles/form.html:61
+msgid "e.g., 2020"
+msgstr "например, 2020"
+
+#: app/templates/vehicles/form.html:66
+msgid "Registration / License Plate"
+msgstr "Регистрационный / гос. номер"
+
+#: app/templates/vehicles/form.html:68
+msgid "e.g., ABC 123"
+msgstr "например, А123ВС"
+
+#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:384
+msgid "VIN"
+msgstr "VIN"
+
+#: app/templates/vehicles/form.html:73
+msgid "Vehicle Identification Number"
+msgstr "Идентификационный номер автомобиля"
+
+#: app/templates/vehicles/form.html:77 app/templates/vehicles/view.html:51
+msgid "Purchase Date"
+msgstr "Дата покупки"
+
+#: app/templates/vehicles/form.html:80
+msgid "The date you bought this vehicle."
+msgstr "Дата, когда вы купили это транспортное средство."
+
+#: app/templates/vehicles/form.html:97
 msgid "Secondary Fuel Type"
 msgstr "Дополнительный вид топлива"
 
-#: app/templates/vehicles/form.html:78
+#: app/templates/vehicles/form.html:102
 msgid ""
 "Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue "
 "alongside Diesel."
@@ -5547,144 +5575,54 @@ msgstr ""
 "Необязательно. Используйте для автомобилей с дополнительной отслеживаемой "
 "жидкостью, например AdBlue наряду с дизелем."
 
-#: app/templates/vehicles/form.html:82
-msgid "Make"
-msgstr "Марка"
-
-#: app/templates/vehicles/form.html:85
-msgid "e.g., Toyota"
-msgstr "например, Toyota"
-
-#: app/templates/vehicles/form.html:90
-msgid "Model"
-msgstr "Модель"
-
-#: app/templates/vehicles/form.html:93
-msgid "e.g., Corolla"
-msgstr "например, Corolla"
-
-#: app/templates/vehicles/form.html:102
-msgid "e.g., 2020"
-msgstr "например, 2020"
-
-#: app/templates/vehicles/form.html:107 app/templates/vehicles/view.html:51
-msgid "Purchase Date"
-msgstr "Дата покупки"
-
-#: app/templates/vehicles/form.html:111
-msgid "The date you bought this vehicle."
-msgstr "Дата, когда вы купили это транспортное средство."
-
-#: app/templates/vehicles/form.html:115
+#: app/templates/vehicles/form.html:106
 msgid "Tank Capacity (L)"
 msgstr "Объём бака (л)"
 
-#: app/templates/vehicles/form.html:118
+#: app/templates/vehicles/form.html:108
 msgid "e.g., 50"
 msgstr "например, 50"
 
+#: app/templates/vehicles/form.html:112
+msgid "Tracking Unit"
+msgstr "Единица учёта"
+
+#: app/templates/vehicles/form.html:122
+msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
+msgstr "Используйте «Часы» для тракторов, квадроциклов, лодок и т. д."
+
 #: app/templates/vehicles/form.html:125
-msgid "Identification"
-msgstr "Идентификация"
+msgid "Odometer Unit"
+msgstr "Единица пробега"
 
-#: app/templates/vehicles/form.html:129
-msgid "Registration / License Plate"
-msgstr "Регистрационный / гос. номер"
+#: app/templates/vehicles/form.html:127
+msgid "Use account default"
+msgstr "Использовать значение по умолчанию из учётной записи"
 
-#: app/templates/vehicles/form.html:132
-msgid "e.g., ABC 123"
-msgstr "например, А123ВС"
+#: app/templates/vehicles/form.html:130
+msgid ""
+"Override the odometer unit for this vehicle. Useful when you have vehicles "
+"with different odometer units."
+msgstr ""
+"Переопределите единицу пробега для этого автомобиля. Полезно, если у вас "
+"есть автомобили с разными единицами измерения пробега."
 
-#: app/templates/vehicles/form.html:137 app/templates/vehicles/view.html:384
-msgid "VIN"
-msgstr "VIN"
-
-#: app/templates/vehicles/form.html:140
-msgid "Vehicle Identification Number"
-msgstr "Идентификационный номер автомобиля"
-
-#: app/templates/vehicles/form.html:147
-msgid "Photo"
-msgstr "Фото"
-
-#: app/templates/vehicles/form.html:150
+#: app/templates/vehicles/form.html:137
 msgid "Vehicle Image"
 msgstr "Изображение автомобиля"
 
-#: app/templates/vehicles/form.html:164 app/templates/vehicles/view.html:580
-msgid "Specifications"
-msgstr "Характеристики"
-
-#: app/templates/vehicles/form.html:165
-msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
-msgstr ""
-"Добавьте технические данные, такие как размеры шин, тип масла, размеры "
-"дворников и т. д."
-
-#: app/templates/vehicles/form.html:199
-msgid "Add Specification"
-msgstr "Добавить характеристику"
-
-#: app/templates/vehicles/form.html:204
-msgid "Annual Mileage Tracking"
-msgstr "Учёт годового пробега"
-
-#: app/templates/vehicles/form.html:205
-msgid ""
-"Set a yearly distance limit to track progress — useful for leasing contracts"
-" or insurance policies."
-msgstr ""
-"Задайте годовой лимит пробега для отслеживания — полезно для договоров "
-"лизинга или страховых полисов."
-
-#: app/templates/vehicles/form.html:210
-msgid "Annual Limit"
-msgstr "Годовой лимит"
-
-#: app/templates/vehicles/form.html:215
-msgid "e.g. 25000"
-msgstr "например, 25000"
-
-#: app/templates/vehicles/form.html:219
-msgid "Period Start Date"
-msgstr "Дата начала периода"
-
-#: app/templates/vehicles/form.html:223
-msgid "e.g. the date your lease or insurance starts"
-msgstr "например, дата начала лизинга или страховки"
-
-#: app/templates/vehicles/form.html:225
-msgid "Tracking resets on this date each year."
-msgstr "Учёт сбрасывается в эту дату каждый год."
-
-#: app/templates/vehicles/form.html:234
-msgid "General Notes"
-msgstr "Общие заметки"
-
-#: app/templates/vehicles/form.html:236
-msgid "Any additional notes about this vehicle..."
-msgstr "Любые дополнительные заметки об этом автомобиле…"
-
-#: app/templates/vehicles/form.html:241
-msgid "Default Trip Type"
-msgstr "Тип поездки по умолчанию"
-
-#: app/templates/vehicles/form.html:248
-msgid "Pre-selected when logging a new trip for this vehicle"
-msgstr "Выбирается по умолчанию при записи новой поездки для этого автомобиля"
-
-#: app/templates/vehicles/form.html:259
+#: app/templates/vehicles/form.html:151
 msgid "Active (show in lists and calculations)"
 msgstr "Активен (отображается в списках и расчётах)"
 
-#: app/templates/vehicles/form.html:265
+#: app/templates/vehicles/form.html:155
 msgid ""
 "Shared — all users on this instance can view and log against this vehicle"
 msgstr ""
 "Общий доступ — все пользователи этого экземпляра могут просматривать и "
 "вносить записи по этому автомобилю"
 
-#: app/templates/vehicles/form.html:281
+#: app/templates/vehicles/form.html:163
 msgid ""
 "Link this vehicle to Tessie for automatic odometer and battery tracking. "
 "When enabled, manual odometer entry will be disabled."
@@ -5692,25 +5630,108 @@ msgstr ""
 "Свяжите этот автомобиль с Tessie для автоматического учёта пробега и заряда "
 "батареи. При включении ручной ввод пробега будет отключён."
 
-#: app/templates/vehicles/form.html:285
+#: app/templates/vehicles/form.html:165
 msgid "Tessie VIN"
 msgstr "VIN в Tessie"
 
-#: app/templates/vehicles/form.html:289
+#: app/templates/vehicles/form.html:168
 msgid "Enter Tesla VIN or select from list"
 msgstr "Введите VIN Tesla или выберите из списка"
 
-#: app/templates/vehicles/form.html:297
+#: app/templates/vehicles/form.html:169
 msgid "Lookup"
 msgstr "Поиск"
 
-#: app/templates/vehicles/form.html:308
+#: app/templates/vehicles/form.html:176
 msgid "Enable Tessie tracking (disables manual odometer entry)"
 msgstr "Включить отслеживание через Tessie (отключает ручной ввод пробега)"
 
-#: app/templates/vehicles/form.html:318
+#: app/templates/vehicles/form.html:179
 msgid "Tessie tracking is active for this vehicle"
 msgstr "Отслеживание через Tessie активно для этого автомобиля"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:192
+#: app/templates/vehicles/view.html:580
+msgid "Specifications"
+msgstr "Характеристики"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:202
+msgid "Annual Mileage Tracking"
+msgstr "Учёт годового пробега"
+
+#: app/templates/vehicles/form.html:193
+msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
+msgstr ""
+"Добавьте технические данные, такие как размеры шин, тип масла, размеры "
+"дворников и т. д."
+
+#: app/templates/vehicles/form.html:197
+msgid "Add Specification"
+msgstr "Добавить характеристику"
+
+#: app/templates/vehicles/form.html:203
+msgid ""
+"Set a yearly distance limit to track progress — useful for leasing contracts"
+" or insurance policies."
+msgstr ""
+"Задайте годовой лимит пробега для отслеживания — полезно для договоров "
+"лизинга или страховых полисов."
+
+#: app/templates/vehicles/form.html:207
+msgid "Annual Limit"
+msgstr "Годовой лимит"
+
+#: app/templates/vehicles/form.html:210
+msgid "e.g. 25000"
+msgstr "например, 25000"
+
+#: app/templates/vehicles/form.html:215
+msgid "Period Start Date"
+msgstr "Дата начала периода"
+
+#: app/templates/vehicles/form.html:218
+msgid "e.g. the date your lease or insurance starts"
+msgstr "например, дата начала лизинга или страховки"
+
+#: app/templates/vehicles/form.html:219
+msgid "Tracking resets on this date each year."
+msgstr "Учёт сбрасывается в эту дату каждый год."
+
+#: app/templates/vehicles/form.html:224
+msgid "Default Trip Type"
+msgstr "Тип поездки по умолчанию"
+
+#: app/templates/vehicles/form.html:228
+msgid "Pre-selected when logging a new trip for this vehicle"
+msgstr "Выбирается по умолчанию при записи новой поездки для этого автомобиля"
+
+#: app/templates/vehicles/form.html:231
+msgid "General Notes"
+msgstr "Общие заметки"
+
+#: app/templates/vehicles/form.html:232
+msgid "Any additional notes about this vehicle..."
+msgstr "Любые дополнительные заметки об этом автомобиле…"
+
+#: app/templates/vehicles/form.html:277
+msgid "Loading vehicles from Tessie..."
+msgstr "Загрузка автомобилей из Tessie…"
+
+#: app/templates/vehicles/form.html:277
+msgid "No vehicles found in your Tessie account"
+msgstr "В вашем аккаунте Tessie не найдено автомобилей"
+
+#: app/templates/vehicles/form.html:278
+msgid "Failed to fetch vehicles"
+msgstr "Не удалось получить список автомобилей"
+
+#: app/templates/vehicles/form.html:278
+msgid "Error connecting to server"
+msgstr "Ошибка подключения к серверу"
+
+#: app/templates/vehicles/form.html:279
+msgid "Unnamed Vehicle"
+msgstr "Автомобиль без названия"
 
 #: app/templates/vehicles/index.html:7
 msgid "Archived Vehicles"

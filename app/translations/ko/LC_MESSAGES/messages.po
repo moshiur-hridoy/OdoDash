@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 11:54+0600\n"
+"POT-Creation-Date: 2026-11-13 12:05+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ko <LL@li.org>\n"
@@ -1560,7 +1560,7 @@ msgstr "타이어"
 #: app/templates/search/index.html:110 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
-#: app/templates/vehicles/form.html:231
+#: app/templates/vehicles/form.html:187
 #: app/templates/vehicles/part_form.html:66
 #: app/templates/vehicles/view.html:589
 msgid "Notes"
@@ -1826,8 +1826,8 @@ msgstr "날짜"
 #: app/templates/dashboard.html:201 app/templates/documents/form.html:34
 #: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
-#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:26
-#: app/templates/vehicles/view.html:456
+#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
+#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:456
 msgid "Type"
 msgstr "유형"
 
@@ -1957,7 +1957,7 @@ msgstr "선택 사항입니다. 거리와 함께 설정하면 금액이 자동�
 #: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
 #: app/templates/stations/form.html:63 app/templates/tires/form.html:82
 #: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
-#: app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:237
 #: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
 msgstr "변경사항 저장"
@@ -2029,9 +2029,9 @@ msgstr "이 수당 항목을 삭제하시겠습니까?"
 #: app/templates/tires/index.html:105 app/templates/tires/index.html:119
 #: app/templates/trips/index.html:136
 #: app/templates/trips/templates_index.html:44
-#: app/templates/vehicles/parts.html:49 app/templates/vehicles/view.html:488
-#: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
-#: app/templates/vehicles/view.html:643
+#: app/templates/vehicles/form.html:17 app/templates/vehicles/parts.html:49
+#: app/templates/vehicles/view.html:488 app/templates/vehicles/view.html:509
+#: app/templates/vehicles/view.html:528 app/templates/vehicles/view.html:643
 msgid "Delete"
 msgstr "삭제"
 
@@ -2298,7 +2298,7 @@ msgstr "km/L"
 msgid "Thousand Separator"
 msgstr "천 단위 구분 기호"
 
-#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:73
+#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:99
 msgid "None"
 msgstr "없음"
 
@@ -2976,7 +2976,7 @@ msgstr "테스트"
 msgid "Save DVLA Settings"
 msgstr "DVLA 설정 저장"
 
-#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:277
+#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:162
 msgid "Tessie Integration"
 msgstr "Tessie 연동"
 
@@ -3584,7 +3584,6 @@ msgstr "충전 기록"
 #: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/index.html:94
-#: app/templates/vehicles/form.html:330
 msgid "Cancel"
 msgstr "취소"
 
@@ -3802,6 +3801,7 @@ msgid "Optional — records the schedule as performed on the expense date"
 msgstr "선택 사항 — 지출 날짜에 정비 일정을 완료된 것으로 기록합니다"
 
 #: app/templates/expenses/form.html:161 app/templates/fuel/form.html:186
+#: app/templates/vehicles/form.html:187
 msgid "More details"
 msgstr "추가 정보"
 
@@ -3830,7 +3830,7 @@ msgid "All Categories"
 msgstr "모든 카테고리"
 
 #: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
-#: app/templates/vehicles/form.html:98
+#: app/templates/vehicles/form.html:59
 msgid "Year"
 msgstr "연도"
 
@@ -3944,7 +3944,7 @@ msgid "Save & Add Another"
 msgstr "저장 후 추가 입력"
 
 #: app/templates/fuel/_quick_no_vehicle.html:4
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:237
 #: app/templates/vehicles/index.html:15 app/templates/vehicles/index.html:85
 msgid "Add Vehicle"
 msgstr "차량 추가"
@@ -3993,7 +3993,7 @@ msgid "for quick selection and price tracking"
 msgstr "빠른 선택 및 가격 추적을 위해"
 
 #: app/templates/fuel/form.html:160 app/templates/stations/prices.html:37
-#: app/templates/vehicles/form.html:59
+#: app/templates/vehicles/form.html:88
 msgid "Fuel Type"
 msgstr "연료 유형"
 
@@ -4325,7 +4325,7 @@ msgstr "정비로 돌아가기"
 
 #: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
 #: app/templates/stations/form.html:16 app/templates/tires/form.html:22
-#: app/templates/vehicles/form.html:18
+#: app/templates/vehicles/form.html:38
 #: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "이름"
@@ -5082,7 +5082,7 @@ msgstr "이 세트의 총 주행거리"
 msgid "Purchased"
 msgstr "구매"
 
-#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:254
+#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:148
 msgid "Status"
 msgstr "상태"
 
@@ -5352,215 +5352,236 @@ msgstr "자주 이용하는 경로를 템플릿으로 저장하면 더 빠르게
 msgid "Create Your First Template"
 msgstr "첫 템플릿 만들기"
 
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:28
 msgid "Edit Vehicle"
 msgstr "차량 편집"
 
-#: app/templates/vehicles/form.html:7 app/templates/vehicles/view.html:25
+#: app/templates/vehicles/form.html:14
+msgid "Custom label"
+msgstr "사용자 지정 라벨"
+
+#: app/templates/vehicles/form.html:16
+msgid "Value"
+msgstr "값"
+
+#: app/templates/vehicles/form.html:27 app/templates/vehicles/view.html:25
 msgid "Back to vehicles"
 msgstr "차량으로 돌아가기"
 
-#: app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:28
 msgid "Add New Vehicle"
 msgstr "새 차량 추가"
 
-#: app/templates/vehicles/form.html:14
+#: app/templates/vehicles/form.html:35
 msgid "Basic Information"
 msgstr "기본 정보"
 
-#: app/templates/vehicles/form.html:21
+#: app/templates/vehicles/form.html:40
 msgid "e.g., My Daily Driver"
 msgstr "예: 출퇴근용 차량"
 
-#: app/templates/vehicles/form.html:36
-msgid "Tracking Unit"
-msgstr "추적 단위"
+#: app/templates/vehicles/form.html:51
+msgid "Make"
+msgstr "제조사"
 
-#: app/templates/vehicles/form.html:43
-msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
-msgstr "트랙터, ATV, 보트 등에는 \"시간\"을 사용하십시오."
-
-#: app/templates/vehicles/form.html:47
-msgid "Odometer Unit"
-msgstr "주행거리계 단위"
-
-#: app/templates/vehicles/form.html:50
-msgid "Use account default"
-msgstr "계정 기본값 사용"
+#: app/templates/vehicles/form.html:52
+msgid "e.g., Toyota"
+msgstr "예: Toyota"
 
 #: app/templates/vehicles/form.html:55
-msgid ""
-"Override the odometer unit for this vehicle. Useful when you have vehicles "
-"with different odometer units."
-msgstr "이 차량의 주행거리계 단위를 재정의합니다. 차량마다 주행거리계 단위가 다를 때 유용합니다."
+msgid "Model"
+msgstr "모델"
 
-#: app/templates/vehicles/form.html:70
+#: app/templates/vehicles/form.html:56
+msgid "e.g., Corolla"
+msgstr "예: Corolla"
+
+#: app/templates/vehicles/form.html:61
+msgid "e.g., 2020"
+msgstr "예: 2020"
+
+#: app/templates/vehicles/form.html:66
+msgid "Registration / License Plate"
+msgstr "등록 번호 / 번호판"
+
+#: app/templates/vehicles/form.html:68
+msgid "e.g., ABC 123"
+msgstr "예: ABC 123"
+
+#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:384
+msgid "VIN"
+msgstr "VIN"
+
+#: app/templates/vehicles/form.html:73
+msgid "Vehicle Identification Number"
+msgstr "차대번호"
+
+#: app/templates/vehicles/form.html:77 app/templates/vehicles/view.html:51
+msgid "Purchase Date"
+msgstr "구입일"
+
+#: app/templates/vehicles/form.html:80
+msgid "The date you bought this vehicle."
+msgstr "이 차량을 구입한 날짜입니다."
+
+#: app/templates/vehicles/form.html:97
 msgid "Secondary Fuel Type"
 msgstr "보조 연료 유형"
 
-#: app/templates/vehicles/form.html:78
+#: app/templates/vehicles/form.html:102
 msgid ""
 "Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue "
 "alongside Diesel."
 msgstr "선택 사항입니다. 경유와 함께 AdBlue처럼 추가로 추적할 유체가 있는 차량에 사용하십시오."
 
-#: app/templates/vehicles/form.html:82
-msgid "Make"
-msgstr "제조사"
-
-#: app/templates/vehicles/form.html:85
-msgid "e.g., Toyota"
-msgstr "예: Toyota"
-
-#: app/templates/vehicles/form.html:90
-msgid "Model"
-msgstr "모델"
-
-#: app/templates/vehicles/form.html:93
-msgid "e.g., Corolla"
-msgstr "예: Corolla"
-
-#: app/templates/vehicles/form.html:102
-msgid "e.g., 2020"
-msgstr "예: 2020"
-
-#: app/templates/vehicles/form.html:107 app/templates/vehicles/view.html:51
-msgid "Purchase Date"
-msgstr "구입일"
-
-#: app/templates/vehicles/form.html:111
-msgid "The date you bought this vehicle."
-msgstr "이 차량을 구입한 날짜입니다."
-
-#: app/templates/vehicles/form.html:115
+#: app/templates/vehicles/form.html:106
 msgid "Tank Capacity (L)"
 msgstr "연료탱크 용량 (L)"
 
-#: app/templates/vehicles/form.html:118
+#: app/templates/vehicles/form.html:108
 msgid "e.g., 50"
 msgstr "예: 50"
 
+#: app/templates/vehicles/form.html:112
+msgid "Tracking Unit"
+msgstr "추적 단위"
+
+#: app/templates/vehicles/form.html:122
+msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
+msgstr "트랙터, ATV, 보트 등에는 \"시간\"을 사용하십시오."
+
 #: app/templates/vehicles/form.html:125
-msgid "Identification"
-msgstr "식별 정보"
+msgid "Odometer Unit"
+msgstr "주행거리계 단위"
 
-#: app/templates/vehicles/form.html:129
-msgid "Registration / License Plate"
-msgstr "등록 번호 / 번호판"
+#: app/templates/vehicles/form.html:127
+msgid "Use account default"
+msgstr "계정 기본값 사용"
 
-#: app/templates/vehicles/form.html:132
-msgid "e.g., ABC 123"
-msgstr "예: ABC 123"
+#: app/templates/vehicles/form.html:130
+msgid ""
+"Override the odometer unit for this vehicle. Useful when you have vehicles "
+"with different odometer units."
+msgstr "이 차량의 주행거리계 단위를 재정의합니다. 차량마다 주행거리계 단위가 다를 때 유용합니다."
 
-#: app/templates/vehicles/form.html:137 app/templates/vehicles/view.html:384
-msgid "VIN"
-msgstr "VIN"
-
-#: app/templates/vehicles/form.html:140
-msgid "Vehicle Identification Number"
-msgstr "차대번호"
-
-#: app/templates/vehicles/form.html:147
-msgid "Photo"
-msgstr "사진"
-
-#: app/templates/vehicles/form.html:150
+#: app/templates/vehicles/form.html:137
 msgid "Vehicle Image"
 msgstr "차량 이미지"
 
-#: app/templates/vehicles/form.html:164 app/templates/vehicles/view.html:580
-msgid "Specifications"
-msgstr "사양"
-
-#: app/templates/vehicles/form.html:165
-msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
-msgstr "타이어 크기, 오일 유형, 와이퍼 크기 등 기술 정보를 추가하십시오."
-
-#: app/templates/vehicles/form.html:199
-msgid "Add Specification"
-msgstr "사양 추가"
-
-#: app/templates/vehicles/form.html:204
-msgid "Annual Mileage Tracking"
-msgstr "연간 주행거리 추적"
-
-#: app/templates/vehicles/form.html:205
-msgid ""
-"Set a yearly distance limit to track progress — useful for leasing contracts"
-" or insurance policies."
-msgstr "진행 상황을 추적할 연간 거리 한도를 설정하십시오. 리스 계약이나 보험 약관에 유용합니다."
-
-#: app/templates/vehicles/form.html:210
-msgid "Annual Limit"
-msgstr "연간 한도"
-
-#: app/templates/vehicles/form.html:215
-msgid "e.g. 25000"
-msgstr "예: 25000"
-
-#: app/templates/vehicles/form.html:219
-msgid "Period Start Date"
-msgstr "기간 시작일"
-
-#: app/templates/vehicles/form.html:223
-msgid "e.g. the date your lease or insurance starts"
-msgstr "예: 리스나 보험이 시작되는 날짜"
-
-#: app/templates/vehicles/form.html:225
-msgid "Tracking resets on this date each year."
-msgstr "매년 이 날짜에 추적이 초기화됩니다."
-
-#: app/templates/vehicles/form.html:234
-msgid "General Notes"
-msgstr "일반 메모"
-
-#: app/templates/vehicles/form.html:236
-msgid "Any additional notes about this vehicle..."
-msgstr "이 차량에 대한 추가 메모..."
-
-#: app/templates/vehicles/form.html:241
-msgid "Default Trip Type"
-msgstr "기본 주행 목적"
-
-#: app/templates/vehicles/form.html:248
-msgid "Pre-selected when logging a new trip for this vehicle"
-msgstr "이 차량의 새 주행 기록 시 미리 선택됩니다"
-
-#: app/templates/vehicles/form.html:259
+#: app/templates/vehicles/form.html:151
 msgid "Active (show in lists and calculations)"
 msgstr "활성 (목록 및 계산에 표시)"
 
-#: app/templates/vehicles/form.html:265
+#: app/templates/vehicles/form.html:155
 msgid ""
 "Shared — all users on this instance can view and log against this vehicle"
 msgstr "공유됨 — 이 인스턴스의 모든 사용자가 이 차량을 조회하고 기록할 수 있습니다"
 
-#: app/templates/vehicles/form.html:281
+#: app/templates/vehicles/form.html:163
 msgid ""
 "Link this vehicle to Tessie for automatic odometer and battery tracking. "
 "When enabled, manual odometer entry will be disabled."
 msgstr ""
 "이 차량을 Tessie에 연결하여 주행거리계와 배터리를 자동으로 추적합니다. 활성화하면 수동 주행거리계 입력이 비활성화됩니다."
 
-#: app/templates/vehicles/form.html:285
+#: app/templates/vehicles/form.html:165
 msgid "Tessie VIN"
 msgstr "Tessie VIN"
 
-#: app/templates/vehicles/form.html:289
+#: app/templates/vehicles/form.html:168
 msgid "Enter Tesla VIN or select from list"
 msgstr "Tesla VIN을 입력하거나 목록에서 선택하십시오"
 
-#: app/templates/vehicles/form.html:297
+#: app/templates/vehicles/form.html:169
 msgid "Lookup"
 msgstr "조회"
 
-#: app/templates/vehicles/form.html:308
+#: app/templates/vehicles/form.html:176
 msgid "Enable Tessie tracking (disables manual odometer entry)"
 msgstr "Tessie 추적 활성화 (수동 주행거리계 입력 비활성화)"
 
-#: app/templates/vehicles/form.html:318
+#: app/templates/vehicles/form.html:179
 msgid "Tessie tracking is active for this vehicle"
 msgstr "이 차량에 대해 Tessie 추적이 활성화되어 있습니다"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:192
+#: app/templates/vehicles/view.html:580
+msgid "Specifications"
+msgstr "사양"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:202
+msgid "Annual Mileage Tracking"
+msgstr "연간 주행거리 추적"
+
+#: app/templates/vehicles/form.html:193
+msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
+msgstr "타이어 크기, 오일 유형, 와이퍼 크기 등 기술 정보를 추가하십시오."
+
+#: app/templates/vehicles/form.html:197
+msgid "Add Specification"
+msgstr "사양 추가"
+
+#: app/templates/vehicles/form.html:203
+msgid ""
+"Set a yearly distance limit to track progress — useful for leasing contracts"
+" or insurance policies."
+msgstr "진행 상황을 추적할 연간 거리 한도를 설정하십시오. 리스 계약이나 보험 약관에 유용합니다."
+
+#: app/templates/vehicles/form.html:207
+msgid "Annual Limit"
+msgstr "연간 한도"
+
+#: app/templates/vehicles/form.html:210
+msgid "e.g. 25000"
+msgstr "예: 25000"
+
+#: app/templates/vehicles/form.html:215
+msgid "Period Start Date"
+msgstr "기간 시작일"
+
+#: app/templates/vehicles/form.html:218
+msgid "e.g. the date your lease or insurance starts"
+msgstr "예: 리스나 보험이 시작되는 날짜"
+
+#: app/templates/vehicles/form.html:219
+msgid "Tracking resets on this date each year."
+msgstr "매년 이 날짜에 추적이 초기화됩니다."
+
+#: app/templates/vehicles/form.html:224
+msgid "Default Trip Type"
+msgstr "기본 주행 목적"
+
+#: app/templates/vehicles/form.html:228
+msgid "Pre-selected when logging a new trip for this vehicle"
+msgstr "이 차량의 새 주행 기록 시 미리 선택됩니다"
+
+#: app/templates/vehicles/form.html:231
+msgid "General Notes"
+msgstr "일반 메모"
+
+#: app/templates/vehicles/form.html:232
+msgid "Any additional notes about this vehicle..."
+msgstr "이 차량에 대한 추가 메모..."
+
+#: app/templates/vehicles/form.html:277
+msgid "Loading vehicles from Tessie..."
+msgstr "Tessie에서 차량을 불러오는 중…"
+
+#: app/templates/vehicles/form.html:277
+msgid "No vehicles found in your Tessie account"
+msgstr "Tessie 계정에서 차량을 찾을 수 없습니다"
+
+#: app/templates/vehicles/form.html:278
+msgid "Failed to fetch vehicles"
+msgstr "차량을 가져오지 못했습니다"
+
+#: app/templates/vehicles/form.html:278
+msgid "Error connecting to server"
+msgstr "서버 연결 오류"
+
+#: app/templates/vehicles/form.html:279
+msgid "Unnamed Vehicle"
+msgstr "이름 없는 차량"
 
 #: app/templates/vehicles/index.html:7
 msgid "Archived Vehicles"

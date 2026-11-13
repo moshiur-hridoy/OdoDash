@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 11:54+0600\n"
+"POT-Creation-Date: 2026-11-13 12:05+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fi <LL@li.org>\n"
@@ -1597,7 +1597,7 @@ msgstr "Renkaat"
 #: app/templates/search/index.html:110 app/templates/stations/form.html:54
 #: app/templates/tires/form.html:71 app/templates/trips/form.html:129
 #: app/templates/trips/template_form.html:58
-#: app/templates/vehicles/form.html:231
+#: app/templates/vehicles/form.html:187
 #: app/templates/vehicles/part_form.html:66
 #: app/templates/vehicles/view.html:589
 msgid "Notes"
@@ -1863,8 +1863,8 @@ msgstr "Päivämäärä"
 #: app/templates/dashboard.html:201 app/templates/documents/form.html:34
 #: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
-#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:26
-#: app/templates/vehicles/view.html:456
+#: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
+#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:456
 msgid "Type"
 msgstr "Tyyppi"
 
@@ -1996,7 +1996,7 @@ msgstr ""
 #: app/templates/notes/form.html:51 app/templates/recurring/form.html:112
 #: app/templates/stations/form.html:63 app/templates/tires/form.html:82
 #: app/templates/trips/form.html:134 app/templates/trips/template_form.html:63
-#: app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:237
 #: app/templates/vehicles/part_form.html:71
 msgid "Save Changes"
 msgstr "Tallenna muutokset"
@@ -2069,9 +2069,9 @@ msgstr "Poistetaanko tämä korvausmerkintä?"
 #: app/templates/tires/index.html:105 app/templates/tires/index.html:119
 #: app/templates/trips/index.html:136
 #: app/templates/trips/templates_index.html:44
-#: app/templates/vehicles/parts.html:49 app/templates/vehicles/view.html:488
-#: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
-#: app/templates/vehicles/view.html:643
+#: app/templates/vehicles/form.html:17 app/templates/vehicles/parts.html:49
+#: app/templates/vehicles/view.html:488 app/templates/vehicles/view.html:509
+#: app/templates/vehicles/view.html:528 app/templates/vehicles/view.html:643
 msgid "Delete"
 msgstr "Poista"
 
@@ -2340,7 +2340,7 @@ msgstr "km/l"
 msgid "Thousand Separator"
 msgstr "Tuhaterotin"
 
-#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:73
+#: app/templates/auth/settings.html:160 app/templates/vehicles/form.html:99
 msgid "None"
 msgstr "Ei mitään"
 
@@ -3044,7 +3044,7 @@ msgstr "Testaa"
 msgid "Save DVLA Settings"
 msgstr "Tallenna DVLA-asetukset"
 
-#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:277
+#: app/templates/auth/settings.html:1286 app/templates/vehicles/form.html:162
 msgid "Tessie Integration"
 msgstr "Tessie-integraatio"
 
@@ -3672,7 +3672,6 @@ msgstr "Kirjaa lataus"
 #: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/index.html:94
-#: app/templates/vehicles/form.html:330
 msgid "Cancel"
 msgstr "Peruuta"
 
@@ -3892,6 +3891,7 @@ msgstr ""
 "Valinnainen — merkitsee huoltosuunnitelman suoritetuksi kulun päivämääränä"
 
 #: app/templates/expenses/form.html:161 app/templates/fuel/form.html:186
+#: app/templates/vehicles/form.html:187
 msgid "More details"
 msgstr "Lisätiedot"
 
@@ -3920,7 +3920,7 @@ msgid "All Categories"
 msgstr "Kaikki kategoriat"
 
 #: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
-#: app/templates/vehicles/form.html:98
+#: app/templates/vehicles/form.html:59
 msgid "Year"
 msgstr "Vuosi"
 
@@ -4034,7 +4034,7 @@ msgid "Save & Add Another"
 msgstr "Tallenna ja lisää uusi"
 
 #: app/templates/fuel/_quick_no_vehicle.html:4
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:334
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:237
 #: app/templates/vehicles/index.html:15 app/templates/vehicles/index.html:85
 msgid "Add Vehicle"
 msgstr "Lisää ajoneuvo"
@@ -4085,7 +4085,7 @@ msgid "for quick selection and price tracking"
 msgstr "nopeaa valintaa ja hintaseurantaa varten"
 
 #: app/templates/fuel/form.html:160 app/templates/stations/prices.html:37
-#: app/templates/vehicles/form.html:59
+#: app/templates/vehicles/form.html:88
 msgid "Fuel Type"
 msgstr "Polttoainetyyppi"
 
@@ -4425,7 +4425,7 @@ msgstr "Takaisin huoltoon"
 
 #: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
 #: app/templates/stations/form.html:16 app/templates/tires/form.html:22
-#: app/templates/vehicles/form.html:18
+#: app/templates/vehicles/form.html:38
 #: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "Nimi"
@@ -5203,7 +5203,7 @@ msgstr "Kokonaismatka tällä sarjalla"
 msgid "Purchased"
 msgstr "Ostettu"
 
-#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:254
+#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:148
 msgid "Status"
 msgstr "Tila"
 
@@ -5474,55 +5474,83 @@ msgstr "Tallenna yleiset reitit malleiksi kirjataksesi matkat nopeammin."
 msgid "Create Your First Template"
 msgstr "Luo ensimmäinen mallisi"
 
-#: app/templates/vehicles/form.html:2 app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:5 app/templates/vehicles/form.html:28
 msgid "Edit Vehicle"
 msgstr "Muokkaa ajoneuvoa"
 
-#: app/templates/vehicles/form.html:7 app/templates/vehicles/view.html:25
+#: app/templates/vehicles/form.html:14
+msgid "Custom label"
+msgstr "Oma nimike"
+
+#: app/templates/vehicles/form.html:16
+msgid "Value"
+msgstr "Arvo"
+
+#: app/templates/vehicles/form.html:27 app/templates/vehicles/view.html:25
 msgid "Back to vehicles"
 msgstr "Takaisin ajoneuvoihin"
 
-#: app/templates/vehicles/form.html:8
+#: app/templates/vehicles/form.html:28
 msgid "Add New Vehicle"
 msgstr "Lisää uusi ajoneuvo"
 
-#: app/templates/vehicles/form.html:14
+#: app/templates/vehicles/form.html:35
 msgid "Basic Information"
 msgstr "Perustiedot"
 
-#: app/templates/vehicles/form.html:21
+#: app/templates/vehicles/form.html:40
 msgid "e.g., My Daily Driver"
 msgstr "esim. Arkiauto"
 
-#: app/templates/vehicles/form.html:36
-msgid "Tracking Unit"
-msgstr "Seurantayksikkö"
+#: app/templates/vehicles/form.html:51
+msgid "Make"
+msgstr "Merkki"
 
-#: app/templates/vehicles/form.html:43
-msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
-msgstr "Käytä \"Tunnit\" traktoreille, mönkijöille, veneille jne."
-
-#: app/templates/vehicles/form.html:47
-msgid "Odometer Unit"
-msgstr "Mittarilukeman yksikkö"
-
-#: app/templates/vehicles/form.html:50
-msgid "Use account default"
-msgstr "Käytä tilin oletusta"
+#: app/templates/vehicles/form.html:52
+msgid "e.g., Toyota"
+msgstr "esim. Toyota"
 
 #: app/templates/vehicles/form.html:55
-msgid ""
-"Override the odometer unit for this vehicle. Useful when you have vehicles "
-"with different odometer units."
-msgstr ""
-"Ohita mittarilukeman yksikkö tälle ajoneuvolle. Hyödyllinen, jos "
-"ajoneuvoillasi on eri mittarilukemayksiköt."
+msgid "Model"
+msgstr "Malli"
 
-#: app/templates/vehicles/form.html:70
+#: app/templates/vehicles/form.html:56
+msgid "e.g., Corolla"
+msgstr "esim. Corolla"
+
+#: app/templates/vehicles/form.html:61
+msgid "e.g., 2020"
+msgstr "esim. 2020"
+
+#: app/templates/vehicles/form.html:66
+msgid "Registration / License Plate"
+msgstr "Rekisterinumero"
+
+#: app/templates/vehicles/form.html:68
+msgid "e.g., ABC 123"
+msgstr "esim. ABC 123"
+
+#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:384
+msgid "VIN"
+msgstr "VIN"
+
+#: app/templates/vehicles/form.html:73
+msgid "Vehicle Identification Number"
+msgstr "Valmistenumero (VIN)"
+
+#: app/templates/vehicles/form.html:77 app/templates/vehicles/view.html:51
+msgid "Purchase Date"
+msgstr "Ostopäivä"
+
+#: app/templates/vehicles/form.html:80
+msgid "The date you bought this vehicle."
+msgstr "Päivä, jona ostit ajoneuvon."
+
+#: app/templates/vehicles/form.html:97
 msgid "Secondary Fuel Type"
 msgstr "Toissijainen polttoainetyyppi"
 
-#: app/templates/vehicles/form.html:78
+#: app/templates/vehicles/form.html:102
 msgid ""
 "Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue "
 "alongside Diesel."
@@ -5530,144 +5558,54 @@ msgstr ""
 "Valinnainen. Käytä ajoneuvoille, joilla on seurattava toissijainen neste, "
 "esim. AdBlue dieselin ohella."
 
-#: app/templates/vehicles/form.html:82
-msgid "Make"
-msgstr "Merkki"
-
-#: app/templates/vehicles/form.html:85
-msgid "e.g., Toyota"
-msgstr "esim. Toyota"
-
-#: app/templates/vehicles/form.html:90
-msgid "Model"
-msgstr "Malli"
-
-#: app/templates/vehicles/form.html:93
-msgid "e.g., Corolla"
-msgstr "esim. Corolla"
-
-#: app/templates/vehicles/form.html:102
-msgid "e.g., 2020"
-msgstr "esim. 2020"
-
-#: app/templates/vehicles/form.html:107 app/templates/vehicles/view.html:51
-msgid "Purchase Date"
-msgstr "Ostopäivä"
-
-#: app/templates/vehicles/form.html:111
-msgid "The date you bought this vehicle."
-msgstr "Päivä, jona ostit ajoneuvon."
-
-#: app/templates/vehicles/form.html:115
+#: app/templates/vehicles/form.html:106
 msgid "Tank Capacity (L)"
 msgstr "Tankin tilavuus (L)"
 
-#: app/templates/vehicles/form.html:118
+#: app/templates/vehicles/form.html:108
 msgid "e.g., 50"
 msgstr "esim. 50"
 
+#: app/templates/vehicles/form.html:112
+msgid "Tracking Unit"
+msgstr "Seurantayksikkö"
+
+#: app/templates/vehicles/form.html:122
+msgid "Use \"Hours\" for tractors, ATVs, boats, etc."
+msgstr "Käytä \"Tunnit\" traktoreille, mönkijöille, veneille jne."
+
 #: app/templates/vehicles/form.html:125
-msgid "Identification"
-msgstr "Tunnistetiedot"
+msgid "Odometer Unit"
+msgstr "Mittarilukeman yksikkö"
 
-#: app/templates/vehicles/form.html:129
-msgid "Registration / License Plate"
-msgstr "Rekisterinumero"
+#: app/templates/vehicles/form.html:127
+msgid "Use account default"
+msgstr "Käytä tilin oletusta"
 
-#: app/templates/vehicles/form.html:132
-msgid "e.g., ABC 123"
-msgstr "esim. ABC 123"
+#: app/templates/vehicles/form.html:130
+msgid ""
+"Override the odometer unit for this vehicle. Useful when you have vehicles "
+"with different odometer units."
+msgstr ""
+"Ohita mittarilukeman yksikkö tälle ajoneuvolle. Hyödyllinen, jos "
+"ajoneuvoillasi on eri mittarilukemayksiköt."
 
-#: app/templates/vehicles/form.html:137 app/templates/vehicles/view.html:384
-msgid "VIN"
-msgstr "VIN"
-
-#: app/templates/vehicles/form.html:140
-msgid "Vehicle Identification Number"
-msgstr "Valmistenumero (VIN)"
-
-#: app/templates/vehicles/form.html:147
-msgid "Photo"
-msgstr "Kuva"
-
-#: app/templates/vehicles/form.html:150
+#: app/templates/vehicles/form.html:137
 msgid "Vehicle Image"
 msgstr "Ajoneuvon kuva"
 
-#: app/templates/vehicles/form.html:164 app/templates/vehicles/view.html:580
-msgid "Specifications"
-msgstr "Tekniset tiedot"
-
-#: app/templates/vehicles/form.html:165
-msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
-msgstr ""
-"Lisää teknisiä tietoja, kuten rengaskokoja, öljytyyppi, pyyhkijöiden koot "
-"jne."
-
-#: app/templates/vehicles/form.html:199
-msgid "Add Specification"
-msgstr "Lisää tekninen tieto"
-
-#: app/templates/vehicles/form.html:204
-msgid "Annual Mileage Tracking"
-msgstr "Vuosittaisen ajomäärän seuranta"
-
-#: app/templates/vehicles/form.html:205
-msgid ""
-"Set a yearly distance limit to track progress — useful for leasing contracts"
-" or insurance policies."
-msgstr ""
-"Aseta vuosittainen matkaraja edistymisen seurantaa varten — hyödyllinen "
-"leasingsopimuksille tai vakuutuksille."
-
-#: app/templates/vehicles/form.html:210
-msgid "Annual Limit"
-msgstr "Vuosiraja"
-
-#: app/templates/vehicles/form.html:215
-msgid "e.g. 25000"
-msgstr "esim. 25000"
-
-#: app/templates/vehicles/form.html:219
-msgid "Period Start Date"
-msgstr "Jakson alkamispäivä"
-
-#: app/templates/vehicles/form.html:223
-msgid "e.g. the date your lease or insurance starts"
-msgstr "esim. leasingsopimuksesi tai vakuutuksesi alkamispäivä"
-
-#: app/templates/vehicles/form.html:225
-msgid "Tracking resets on this date each year."
-msgstr "Seuranta nollautuu tänä päivänä joka vuosi."
-
-#: app/templates/vehicles/form.html:234
-msgid "General Notes"
-msgstr "Yleiset muistiinpanot"
-
-#: app/templates/vehicles/form.html:236
-msgid "Any additional notes about this vehicle..."
-msgstr "Lisätietoja tästä ajoneuvosta..."
-
-#: app/templates/vehicles/form.html:241
-msgid "Default Trip Type"
-msgstr "Oletusmatkatyyppi"
-
-#: app/templates/vehicles/form.html:248
-msgid "Pre-selected when logging a new trip for this vehicle"
-msgstr "Valmiiksi valittu, kun kirjaat uuden matkan tälle ajoneuvolle"
-
-#: app/templates/vehicles/form.html:259
+#: app/templates/vehicles/form.html:151
 msgid "Active (show in lists and calculations)"
 msgstr "Aktiivinen (näytetään listoissa ja laskelmissa)"
 
-#: app/templates/vehicles/form.html:265
+#: app/templates/vehicles/form.html:155
 msgid ""
 "Shared — all users on this instance can view and log against this vehicle"
 msgstr ""
 "Jaettu — kaikki tämän instanssin käyttäjät voivat tarkastella ja kirjata "
 "tälle ajoneuvolle"
 
-#: app/templates/vehicles/form.html:281
+#: app/templates/vehicles/form.html:163
 msgid ""
 "Link this vehicle to Tessie for automatic odometer and battery tracking. "
 "When enabled, manual odometer entry will be disabled."
@@ -5676,27 +5614,110 @@ msgstr ""
 "seurantaa varten. Kun tämä on käytössä, manuaalinen mittarilukeman syöttö "
 "poistetaan käytöstä."
 
-#: app/templates/vehicles/form.html:285
+#: app/templates/vehicles/form.html:165
 msgid "Tessie VIN"
 msgstr "Tessie-VIN"
 
-#: app/templates/vehicles/form.html:289
+#: app/templates/vehicles/form.html:168
 msgid "Enter Tesla VIN or select from list"
 msgstr "Anna Teslan VIN tai valitse listasta"
 
-#: app/templates/vehicles/form.html:297
+#: app/templates/vehicles/form.html:169
 msgid "Lookup"
 msgstr "Hae"
 
-#: app/templates/vehicles/form.html:308
+#: app/templates/vehicles/form.html:176
 msgid "Enable Tessie tracking (disables manual odometer entry)"
 msgstr ""
 "Ota Tessie-seuranta käyttöön (poistaa manuaalisen mittarilukeman syötön "
 "käytöstä)"
 
-#: app/templates/vehicles/form.html:318
+#: app/templates/vehicles/form.html:179
 msgid "Tessie tracking is active for this vehicle"
 msgstr "Tessie-seuranta on käytössä tälle ajoneuvolle"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:192
+#: app/templates/vehicles/view.html:580
+msgid "Specifications"
+msgstr "Tekniset tiedot"
+
+#: app/templates/vehicles/form.html:187 app/templates/vehicles/form.html:202
+msgid "Annual Mileage Tracking"
+msgstr "Vuosittaisen ajomäärän seuranta"
+
+#: app/templates/vehicles/form.html:193
+msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
+msgstr ""
+"Lisää teknisiä tietoja, kuten rengaskokoja, öljytyyppi, pyyhkijöiden koot "
+"jne."
+
+#: app/templates/vehicles/form.html:197
+msgid "Add Specification"
+msgstr "Lisää tekninen tieto"
+
+#: app/templates/vehicles/form.html:203
+msgid ""
+"Set a yearly distance limit to track progress — useful for leasing contracts"
+" or insurance policies."
+msgstr ""
+"Aseta vuosittainen matkaraja edistymisen seurantaa varten — hyödyllinen "
+"leasingsopimuksille tai vakuutuksille."
+
+#: app/templates/vehicles/form.html:207
+msgid "Annual Limit"
+msgstr "Vuosiraja"
+
+#: app/templates/vehicles/form.html:210
+msgid "e.g. 25000"
+msgstr "esim. 25000"
+
+#: app/templates/vehicles/form.html:215
+msgid "Period Start Date"
+msgstr "Jakson alkamispäivä"
+
+#: app/templates/vehicles/form.html:218
+msgid "e.g. the date your lease or insurance starts"
+msgstr "esim. leasingsopimuksesi tai vakuutuksesi alkamispäivä"
+
+#: app/templates/vehicles/form.html:219
+msgid "Tracking resets on this date each year."
+msgstr "Seuranta nollautuu tänä päivänä joka vuosi."
+
+#: app/templates/vehicles/form.html:224
+msgid "Default Trip Type"
+msgstr "Oletusmatkatyyppi"
+
+#: app/templates/vehicles/form.html:228
+msgid "Pre-selected when logging a new trip for this vehicle"
+msgstr "Valmiiksi valittu, kun kirjaat uuden matkan tälle ajoneuvolle"
+
+#: app/templates/vehicles/form.html:231
+msgid "General Notes"
+msgstr "Yleiset muistiinpanot"
+
+#: app/templates/vehicles/form.html:232
+msgid "Any additional notes about this vehicle..."
+msgstr "Lisätietoja tästä ajoneuvosta..."
+
+#: app/templates/vehicles/form.html:277
+msgid "Loading vehicles from Tessie..."
+msgstr "Ladataan ajoneuvoja Tessiestä…"
+
+#: app/templates/vehicles/form.html:277
+msgid "No vehicles found in your Tessie account"
+msgstr "Tessie-tililtäsi ei löytynyt ajoneuvoja"
+
+#: app/templates/vehicles/form.html:278
+msgid "Failed to fetch vehicles"
+msgstr "Ajoneuvojen haku epäonnistui"
+
+#: app/templates/vehicles/form.html:278
+msgid "Error connecting to server"
+msgstr "Virhe yhdistettäessä palvelimeen"
+
+#: app/templates/vehicles/form.html:279
+msgid "Unnamed Vehicle"
+msgstr "Nimetön ajoneuvo"
 
 #: app/templates/vehicles/index.html:7
 msgid "Archived Vehicles"
