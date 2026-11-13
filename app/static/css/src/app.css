@@ -821,6 +821,71 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
   .ds-log__phone-meta { display: block; margin-top: 2px; font-family: var(--ds-font-mono); font-size: 11px; color: var(--ds-text-muted); }
 }
 
+/* ---- Expenses -------------------------------------------------------- */
+.exp-main { min-width: 0; }
+.exp-side { min-width: 0; align-self: flex-start; }
+.exp-item { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.exp-item__icon {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px;
+  border-radius: 9px; background: var(--ds-surface-sunken); color: var(--ds-text-muted);
+}
+.exp-item__text { min-width: 0; }
+.exp-clip { display: inline-flex; align-items: center; gap: 2px; font-family: var(--ds-font-mono); font-size: 11px; color: var(--ds-text-muted); }
+.exp-toggle svg { transition: transform var(--ds-duration-fast) ease; }
+.exp-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.ds-log tr.exp-detail[hidden] { display: none; }
+.ds-log tr.exp-detail td { padding-top: 0; background: transparent; }
+.ds-log tbody tr.exp-detail:hover { background: transparent; }
+.exp-detail__list {
+  display: flex; flex-direction: column; gap: 6px; margin: 0 0 4px 44px; padding: 10px 12px;
+  border-radius: var(--ds-radius-md); background: var(--ds-surface-sunken); font-size: var(--ds-text-sm);
+}
+.exp-detail__list > div { display: flex; flex-wrap: wrap; gap: 2px 8px; }
+.exp-detail__list dt { color: var(--ds-text-muted); }
+.exp-detail__list dd { margin: 0; overflow-wrap: anywhere; }
+.exp-detail__list a { color: var(--ds-accent-ink); }
+.exp-detail__files { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.exp-detail__files a { display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+.exp-detail__files a:hover { text-decoration: underline; }
+
+.exp-breakdown { padding: 20px 24px; }
+.exp-bars { display: flex; flex-direction: column; gap: 4px; margin: 14px 0 0; padding: 0; list-style: none; }
+.exp-bar {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 6px 8px; margin: 0 -8px;
+  border-radius: var(--ds-radius-md); color: var(--ds-text); text-decoration: none; font-size: var(--ds-text-sm);
+}
+.exp-bar:hover { background: var(--ds-surface-sunken); }
+.exp-bar:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.exp-bar__label { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.exp-bar__label svg { color: var(--ds-text-muted); flex: none; }
+.exp-bar__value { font-family: var(--ds-font-mono); font-weight: 600; }
+.exp-bar__track { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--ds-surface-sunken); overflow: hidden; }
+.exp-bar:hover .exp-bar__track { background: var(--ds-border-soft); }
+.exp-bar__fill { display: block; height: 100%; border-radius: 2px; background: var(--ds-accent); }
+.exp-odo { font-family: var(--ds-font-mono); }
+.exp-filters .ds-field { max-width: 240px; }
+.exp-vendors td { font-size: var(--ds-text-sm); }
+.exp-vendors td.ds-num { font-family: var(--ds-font-mono); }
+
+@media (max-width: 640px) {
+  .exp-item { gap: 10px; }
+  .exp-item__icon { width: 28px; height: 28px; }
+  .ds-log .ds-table--stack tr.exp-detail { display: block; padding: 0 16px 12px; border-bottom: 1px solid var(--ds-border-soft); }
+  .ds-log .ds-table--stack tr.exp-detail[hidden] { display: none; }
+  .ds-log .ds-table--stack tr.exp-detail td { display: block; }
+  .exp-detail__list { margin-left: 0; }
+  .exp-breakdown { padding: 16px; }
+  .exp-wide { display: none; }
+  .exp-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+  .exp-filters .ds-field { max-width: none; }
+  .exp-filters--vehicle > .ds-field:first-child { grid-column: 1 / -1; }
+  .exp-filters .ds-filters__actions { grid-column: 1 / -1; }
+  .log-summary--compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .log-summary--compact > div { padding: 12px; }
+  .log-summary--compact dd { font-size: 15px; }
+  .log-summary--compact dd span { display: block; margin: 0; }
+}
+
 /* ---- Import and restore ---------------------------------------------- */
 .import-page { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 .import-page--wide { max-width: 960px; }

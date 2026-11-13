@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 06:25+0600\n"
+"POT-Creation-Date: 2026-11-13 06:51+0600\n"
 "PO-Revision-Date: 2026-08-03 16:49+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ar <LL@li.org>\n"
@@ -56,10 +56,9 @@ msgstr "ساعات المحرك"
 
 #: app/models.py:403 app/templates/charging/form.html:86
 #: app/templates/dashboard.html:175 app/templates/dashboard.html:201
-#: app/templates/expenses/form.html:99 app/templates/expenses/index.html:55
-#: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:56
-#: app/templates/fuel/index.html:103 app/templates/fuel/index.html:223
-#: app/templates/maintenance/form.html:138
+#: app/templates/expenses/form.html:99 app/templates/fuel/_quick_form.html:35
+#: app/templates/fuel/form.html:56 app/templates/fuel/index.html:104
+#: app/templates/fuel/index.html:226 app/templates/maintenance/form.html:138
 #: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
 #: app/templates/notes/index.html:31 app/templates/tires/index.html:92
 #: app/templates/tires/index.html:115 app/templates/vehicles/index.html:71
@@ -572,7 +571,7 @@ msgstr "يجب أن تحتوي كلمة المرور على حرف صغير وا
 msgid "Password must contain at least one digit"
 msgstr "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل"
 
-#: app/routes/allowance.py:31 app/routes/expenses.py:179
+#: app/routes/allowance.py:31 app/routes/expenses.py:256
 #: app/routes/fuel.py:300 app/routes/fuel.py:716 app/routes/notes.py:31
 #: app/routes/reminders.py:64 app/routes/tires.py:77 app/routes/trips.py:76
 #: app/templates/fuel/_quick_no_vehicle.html:2
@@ -584,9 +583,9 @@ msgstr "يرجى إضافة مركبة أولاً"
 #: app/routes/charging.py:153 app/routes/charging.py:210
 #: app/routes/documents.py:130 app/routes/documents.py:146
 #: app/routes/documents.py:165 app/routes/documents.py:205
-#: app/routes/expenses.py:188 app/routes/expenses.py:278
-#: app/routes/expenses.py:333 app/routes/expenses.py:362
-#: app/routes/expenses.py:367 app/routes/fuel.py:309 app/routes/fuel.py:456
+#: app/routes/expenses.py:265 app/routes/expenses.py:355
+#: app/routes/expenses.py:410 app/routes/expenses.py:441
+#: app/routes/expenses.py:446 app/routes/fuel.py:309 app/routes/fuel.py:456
 #: app/routes/fuel.py:616 app/routes/fuel.py:671 app/routes/fuel.py:676
 #: app/routes/fuel.py:728 app/routes/fuel.py:729 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
@@ -964,29 +963,29 @@ msgstr "تم تحديث المستند"
 msgid "Document \"%(title)s\" deleted"
 msgstr "تم حذف المستند \"%(title)s\""
 
-#: app/routes/expenses.py:61 app/routes/vehicles.py:444
+#: app/routes/expenses.py:62 app/routes/vehicles.py:444
 #, python-format
 msgid ""
 "These files were not saved because the file type is not supported: %(names)s"
 msgstr "لم تُحفظ هذه الملفات لأن نوع الملف غير مدعوم: %(names)s"
 
-#: app/routes/expenses.py:238
+#: app/routes/expenses.py:315
 msgid "Expense added successfully"
 msgstr "تمت إضافة المصروف بنجاح"
 
-#: app/routes/expenses.py:296
+#: app/routes/expenses.py:373
 msgid "Invalid data submitted. Please check the date and cost fields."
 msgstr "البيانات المُدخلة غير صالحة. يرجى التحقق من حقلي التاريخ والتكلفة."
 
-#: app/routes/expenses.py:308
+#: app/routes/expenses.py:385
 msgid "Expense updated successfully"
 msgstr "تم تحديث المصروف بنجاح"
 
-#: app/routes/expenses.py:346
+#: app/routes/expenses.py:423
 msgid "Expense deleted successfully"
 msgstr "تم حذف المصروف بنجاح"
 
-#: app/routes/expenses.py:376 app/routes/fuel.py:685
+#: app/routes/expenses.py:455 app/routes/fuel.py:685
 msgid "Attachment deleted"
 msgstr "تم حذف المرفق"
 
@@ -1017,7 +1016,7 @@ msgstr "الوقود"
 
 #: app/routes/main.py:149 app/routes/vehicles.py:232
 #: app/templates/dashboard.html:75 app/templates/dashboard.html:212
-#: app/templates/fuel/index.html:249 app/templates/timeline/index.html:126
+#: app/templates/fuel/index.html:252 app/templates/timeline/index.html:126
 #: app/templates/vehicles/view.html:444 app/templates/vehicles/view.html:494
 #: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:544
 msgid "Charging"
@@ -1510,8 +1509,9 @@ msgid "Fuel Logs"
 msgstr "سجلات الوقود"
 
 #: app/templates/auth/settings.html:442 app/templates/auth/settings.html:500
-#: app/templates/base.html:533 app/templates/expenses/index.html:2
-#: app/templates/expenses/index.html:7 app/templates/expenses/index.html:174
+#: app/templates/base.html:533 app/templates/expenses/index.html:4
+#: app/templates/expenses/index.html:22 app/templates/expenses/index.html:82
+#: app/templates/expenses/index.html:91 app/templates/expenses/index.html:231
 #: app/templates/import/csv_upload.html:18
 #: app/templates/partials/mobile_nav.html:24
 #: app/templates/search/index.html:43 app/templates/timeline/index.html:120
@@ -1651,13 +1651,13 @@ msgstr "مساء الخير، %(name)s"
 msgid "Good evening, %(name)s"
 msgstr "مساء الخير، %(name)s"
 
-#: app/templates/dashboard.html:27 app/templates/fuel/index.html:48
-#: app/templates/fuel/index.html:191
+#: app/templates/dashboard.html:27 app/templates/expenses/index.html:78
+#: app/templates/fuel/index.html:48 app/templates/fuel/index.html:193
 msgid "This month"
 msgstr "هذا الشهر"
 
 #: app/templates/dashboard.html:28 app/templates/dashboard.html:150
-#: app/templates/fuel/index.html:52 app/templates/fuel/index.html:196
+#: app/templates/fuel/index.html:52 app/templates/fuel/index.html:198
 msgid "This year"
 msgstr "هذا العام"
 
@@ -1828,9 +1828,9 @@ msgstr "النشاط الأخير"
 
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
 #: app/templates/charging/form.html:37 app/templates/dashboard.html:197
-#: app/templates/expenses/form.html:44 app/templates/expenses/index.html:50
-#: app/templates/fuel/form.html:48 app/templates/fuel/index.html:98
-#: app/templates/fuel/index.html:218 app/templates/maintenance/form.html:131
+#: app/templates/expenses/form.html:44 app/templates/expenses/index.html:96
+#: app/templates/fuel/form.html:48 app/templates/fuel/index.html:99
+#: app/templates/fuel/index.html:221 app/templates/maintenance/form.html:131
 #: app/templates/notes/form.html:34 app/templates/notes/index.html:28
 #: app/templates/tires/index.html:87 app/templates/tires/index.html:110
 #: app/templates/trips/form.html:67 app/templates/trips/report.html:98
@@ -1839,8 +1839,7 @@ msgid "Date"
 msgstr "التاريخ"
 
 #: app/templates/dashboard.html:198 app/templates/documents/form.html:50
-#: app/templates/expenses/index.html:53 app/templates/fuel/index.html:39
-#: app/templates/maintenance/history.html:20
+#: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:53 app/templates/reminders/index.html:36
 #: app/templates/tires/form.html:43 app/templates/vehicles/form.html:26
 #: app/templates/vehicles/view.html:456
@@ -1850,7 +1849,7 @@ msgstr "النوع"
 #: app/templates/allowance/form.html:19 app/templates/allowance/index.html:28
 #: app/templates/charging/form.html:19 app/templates/charging/index.html:38
 #: app/templates/dashboard.html:199 app/templates/documents/form.html:21
-#: app/templates/expenses/form.html:29 app/templates/expenses/index.html:51
+#: app/templates/expenses/form.html:29 app/templates/expenses/index.html:28
 #: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:24
 #: app/templates/fuel/index.html:18 app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
@@ -1863,7 +1862,8 @@ msgstr "النوع"
 msgid "Vehicle"
 msgstr "المركبة"
 
-#: app/templates/dashboard.html:200 app/templates/vehicles/view.html:457
+#: app/templates/dashboard.html:200 app/templates/expenses/index.html:147
+#: app/templates/expenses/index.html:148 app/templates/vehicles/view.html:457
 msgid "Details"
 msgstr "التفاصيل"
 
@@ -1954,7 +1954,7 @@ msgstr "اختياري. إذا تم تحديده مع المسافة، يُحس�
 
 #: app/templates/allowance/form.html:65 app/templates/allowance/index.html:29
 #: app/templates/documents/form.html:85 app/templates/documents/view.html:98
-#: app/templates/expenses/form.html:84 app/templates/expenses/index.html:54
+#: app/templates/expenses/form.html:84 app/templates/expenses/index.html:97
 #: app/templates/maintenance/form.html:80
 #: app/templates/recurring/form.html:111 app/templates/trips/form.html:134
 #: app/templates/trips/report.html:101
@@ -1998,16 +1998,16 @@ msgid ""
 "Record allowance income for business use; it offsets your running costs"
 msgstr "سجّل دخل البدل للاستخدام في العمل؛ فهو يعوّض تكاليف التشغيل"
 
-#: app/templates/allowance/index.html:32 app/templates/expenses/index.html:57
-#: app/templates/fuel/index.html:105 app/templates/fuel/index.html:225
+#: app/templates/allowance/index.html:32 app/templates/expenses/index.html:99
+#: app/templates/fuel/index.html:106 app/templates/fuel/index.html:228
 #: app/templates/notes/index.html:32 app/templates/tires/index.html:136
 #: app/templates/vehicles/view.html:223 app/templates/vehicles/view.html:460
 msgid "Actions"
 msgstr "الإجراءات"
 
 #: app/templates/allowance/index.html:51 app/templates/documents/view.html:31
-#: app/templates/expenses/index.html:95 app/templates/fuel/index.html:159
-#: app/templates/fuel/index.html:266 app/templates/maintenance/index.html:86
+#: app/templates/expenses/index.html:152 app/templates/fuel/index.html:160
+#: app/templates/fuel/index.html:269 app/templates/maintenance/index.html:86
 #: app/templates/notes/index.html:55 app/templates/stations/index.html:80
 #: app/templates/tires/index.html:166 app/templates/vehicles/view.html:68
 #: app/templates/vehicles/view.html:176 app/templates/vehicles/view.html:319
@@ -2021,8 +2021,8 @@ msgid "Delete this allowance entry?"
 msgstr "هل تريد حذف إدخال البدل هذا؟"
 
 #: app/templates/allowance/index.html:57 app/templates/documents/form.html:108
-#: app/templates/expenses/form.html:149 app/templates/expenses/index.html:101
-#: app/templates/fuel/form.html:197 app/templates/fuel/index.html:164
+#: app/templates/expenses/form.html:149 app/templates/expenses/index.html:157
+#: app/templates/fuel/form.html:197 app/templates/fuel/index.html:165
 #: app/templates/notes/index.html:61 app/templates/recurring/form.html:135
 #: app/templates/stations/form.html:93 app/templates/tires/index.html:152
 #: app/templates/tires/index.html:170 app/templates/vehicles/view.html:488
@@ -2253,7 +2253,7 @@ msgid "DD.MM.YYYY"
 msgstr "يوم.شهر.سنة"
 
 #: app/templates/auth/settings.html:136 app/templates/fuel/_quick_form.html:57
-#: app/templates/fuel/form.html:75 app/templates/fuel/index.html:100
+#: app/templates/fuel/form.html:75 app/templates/fuel/index.html:101
 msgid "Volume"
 msgstr "الحجم"
 
@@ -3513,7 +3513,7 @@ msgstr "وقت البدء"
 msgid "End Time"
 msgstr "وقت الانتهاء"
 
-#: app/templates/charging/form.html:69 app/templates/fuel/index.html:219
+#: app/templates/charging/form.html:69 app/templates/fuel/index.html:222
 msgid "Location"
 msgstr "الموقع"
 
@@ -3546,14 +3546,14 @@ msgid "End SOC"
 msgstr "نسبة الشحن عند الانتهاء"
 
 #: app/templates/charging/form.html:130 app/templates/expenses/form.html:92
-#: app/templates/expenses/index.html:56 app/templates/fuel/index.html:104
-#: app/templates/fuel/index.html:224 app/templates/tires/form.html:61
+#: app/templates/expenses/index.html:98 app/templates/fuel/index.html:105
+#: app/templates/fuel/index.html:227 app/templates/tires/form.html:61
 #: app/templates/tires/index.html:62 app/templates/vehicles/view.html:459
 msgid "Cost"
 msgstr "التكلفة"
 
-#: app/templates/charging/form.html:133 app/templates/fuel/index.html:200
-#: app/templates/fuel/index.html:221
+#: app/templates/charging/form.html:133 app/templates/fuel/index.html:202
+#: app/templates/fuel/index.html:224
 msgid "Cost per kWh"
 msgstr "التكلفة لكل كيلوواط/ساعة"
 
@@ -3575,27 +3575,27 @@ msgid "Total Energy"
 msgstr "إجمالي الطاقة"
 
 #: app/templates/charging/index.html:40 app/templates/documents/index.html:25
-#: app/templates/fuel/index.html:20 app/templates/maintenance/history.html:16
+#: app/templates/expenses/index.html:30 app/templates/fuel/index.html:20
+#: app/templates/maintenance/history.html:16
 #: app/templates/reminders/index.html:29 app/templates/trips/index.html:55
 msgid "All Vehicles"
 msgstr "جميع المركبات"
 
-#: app/templates/charging/index.html:47 app/templates/expenses/index.html:36
+#: app/templates/charging/index.html:47 app/templates/expenses/index.html:65
 #: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
 #: app/templates/reminders/index.html:50 app/templates/trips/index.html:80
 msgid "Filter"
 msgstr "تصفية"
 
-#: app/templates/charging/index.html:51 app/templates/expenses/index.html:38
-#: app/templates/trips/index.html:84
+#: app/templates/charging/index.html:51 app/templates/trips/index.html:84
 msgid "Clear"
 msgstr "مسح"
 
-#: app/templates/charging/index.html:145 app/templates/fuel/index.html:281
+#: app/templates/charging/index.html:145 app/templates/fuel/index.html:285
 msgid "No charging sessions"
 msgstr "لا توجد جلسات شحن"
 
-#: app/templates/charging/index.html:146 app/templates/fuel/index.html:281
+#: app/templates/charging/index.html:146 app/templates/fuel/index.html:285
 msgid "Start tracking your EV charging to monitor energy usage and costs."
 msgstr "ابدأ بتتبّع شحن مركبتك الكهربائية لمراقبة استهلاك الطاقة والتكاليف."
 
@@ -3740,8 +3740,8 @@ msgid "Edit Expense"
 msgstr "تعديل المصروف"
 
 #: app/templates/expenses/form.html:2 app/templates/expenses/form.html:11
-#: app/templates/expenses/form.html:173 app/templates/expenses/index.html:16
-#: app/templates/expenses/index.html:156
+#: app/templates/expenses/form.html:173 app/templates/expenses/index.html:23
+#: app/templates/expenses/index.html:197
 #: app/templates/partials/mobile_nav.html:62
 #: app/templates/vehicles/view.html:232
 msgid "Add Expense"
@@ -3760,20 +3760,20 @@ msgstr "حفظ هذا المصروف سيُكمل أيضًا التذكير \"%(
 msgid "Its next occurrence will be scheduled."
 msgstr "وسيتم جدولة تكراره التالي."
 
-#: app/templates/expenses/form.html:51 app/templates/expenses/index.html:52
+#: app/templates/expenses/form.html:51 app/templates/expenses/index.html:35
 #: app/templates/recurring/form.html:42
 msgid "Category"
 msgstr "الفئة"
 
-#: app/templates/expenses/form.html:63 app/templates/expenses/index.html:23
+#: app/templates/expenses/form.html:63 app/templates/expenses/index.html:50
 msgid "Maintenance Type"
 msgstr "نوع الصيانة"
 
-#: app/templates/expenses/form.html:66 app/templates/expenses/index.html:85
+#: app/templates/expenses/form.html:66 app/templates/expenses/index.html:127
 msgid "Uncategorized"
 msgstr "غير مصنف"
 
-#: app/templates/expenses/form.html:71 app/templates/expenses/index.html:30
+#: app/templates/expenses/form.html:71 app/templates/expenses/index.html:57
 msgid "Part Name"
 msgstr "اسم القطعة"
 
@@ -3817,69 +3817,91 @@ msgstr "هل تريد حذف هذا المرفق؟"
 msgid "You can select more than one file"
 msgstr "يمكنك اختيار أكثر من ملف"
 
-#: app/templates/expenses/index.html:8
+#: app/templates/expenses/index.html:22
 msgid "Track maintenance, repairs, insurance, and other costs"
 msgstr "تتبّع الصيانة والإصلاحات والتأمين والتكاليف الأخرى"
 
-#: app/templates/expenses/index.html:25
+#: app/templates/expenses/index.html:37
+msgid "All Categories"
+msgstr "كل الفئات"
+
+#: app/templates/expenses/index.html:42 app/templates/trips/index.html:71
+#: app/templates/vehicles/form.html:98
+msgid "Year"
+msgstr "السنة"
+
+#: app/templates/expenses/index.html:44 app/templates/trips/index.html:73
+msgid "All Years"
+msgstr "جميع السنوات"
+
+#: app/templates/expenses/index.html:52
 #: app/templates/maintenance/history.html:22
 #: app/templates/reminders/index.html:38
 msgid "All Types"
 msgstr "جميع الأنواع"
 
-#: app/templates/expenses/index.html:32
+#: app/templates/expenses/index.html:59
 #: app/templates/maintenance/history.html:29
 msgid "All Parts"
 msgstr "كل القطع"
 
-#: app/templates/expenses/index.html:41
-#, python-format
-msgid "Showing %(count)s expenses"
-msgstr "عرض %(count)s من المصروفات"
+#: app/templates/expenses/index.html:67 app/templates/expenses/index.html:192
+#: app/templates/maintenance/history.html:36
+#: app/templates/reminders/index.html:53
+msgid "Clear filters"
+msgstr "مسح عوامل التصفية"
 
-#: app/templates/expenses/index.html:41
+#: app/templates/expenses/index.html:74
 #: app/templates/maintenance/history.html:44
 msgid "Filtered total"
 msgstr "الإجمالي بعد التصفية"
 
-#: app/templates/expenses/index.html:99 app/templates/vehicles/view.html:526
-msgid "Delete this expense?"
-msgstr "هل تريد حذف هذا المصروف؟"
-
-#: app/templates/expenses/index.html:113
-msgid "Vendor / Provider:"
-msgstr "المورّد / مقدّم الخدمة:"
-
-#: app/templates/expenses/index.html:119
-msgid "Notes:"
-msgstr "ملاحظات:"
-
-#: app/templates/expenses/index.html:125
-msgid "Receipts:"
-msgstr "الإيصالات:"
-
-#: app/templates/expenses/index.html:147
-msgid "No expenses"
-msgstr "لا توجد مصروفات"
-
-#: app/templates/expenses/index.html:148
-msgid "Start tracking your vehicle expenses."
-msgstr "ابدأ بتتبّع مصروفات مركبتك."
-
-#: app/templates/expenses/index.html:167
-msgid "Spend by Vendor"
-msgstr "الإنفاق حسب المورّد"
-
-#: app/templates/expenses/index.html:173
-#: app/templates/maintenance/index.html:152
-msgid "Vendor"
-msgstr "المورّد"
-
-#: app/templates/expenses/index.html:175
+#: app/templates/expenses/index.html:74 app/templates/expenses/index.html:231
 #: app/templates/import/backup_preview.html:41
 #: app/templates/trips/report.html:126
 msgid "Total"
 msgstr "الإجمالي"
+
+#: app/templates/expenses/index.html:128 app/templates/expenses/index.html:171
+msgid "Receipts:"
+msgstr "الإيصالات:"
+
+#: app/templates/expenses/index.html:154 app/templates/vehicles/view.html:526
+msgid "Delete this expense?"
+msgstr "هل تريد حذف هذا المصروف؟"
+
+#: app/templates/expenses/index.html:168
+msgid "Vendor / Provider:"
+msgstr "المورّد / مقدّم الخدمة:"
+
+#: app/templates/expenses/index.html:169
+msgid "Notes:"
+msgstr "ملاحظات:"
+
+#: app/templates/expenses/index.html:192 app/templates/expenses/index.html:196
+msgid "No expenses"
+msgstr "لا توجد مصروفات"
+
+#: app/templates/expenses/index.html:192
+msgid "No expenses match these filters."
+msgstr "لا توجد مصروفات تطابق عوامل التصفية هذه."
+
+#: app/templates/expenses/index.html:196
+msgid "Start tracking your vehicle expenses."
+msgstr "ابدأ بتتبّع مصروفات مركبتك."
+
+#: app/templates/expenses/index.html:207
+msgid "By Category"
+msgstr "حسب الفئة"
+
+#: app/templates/expenses/index.html:227
+msgid "Spend by Vendor"
+msgstr "الإنفاق حسب المورّد"
+
+#: app/templates/expenses/index.html:231
+#: app/templates/maintenance/index.html:152
+msgid "Vendor"
+msgstr "المورّد"
 
 #: app/templates/fuel/_quick_form.html:9
 #: app/templates/fuel/_quick_form.html:50
@@ -3900,7 +3922,7 @@ msgid "Full tank"
 msgstr "خزان كامل"
 
 #: app/templates/fuel/_quick_form.html:92 app/templates/fuel/form.html:124
-#: app/templates/fuel/index.html:99
+#: app/templates/fuel/index.html:100
 msgid "Station"
 msgstr "المحطة"
 
@@ -3934,7 +3956,7 @@ msgstr "تعديل سجل الوقود"
 
 #: app/templates/fuel/form.html:2 app/templates/fuel/form.html:16
 #: app/templates/fuel/form.html:220 app/templates/fuel/index.html:31
-#: app/templates/fuel/index.html:181 app/templates/partials/mobile_nav.html:60
+#: app/templates/fuel/index.html:183 app/templates/partials/mobile_nav.html:60
 #: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:540
 msgid "Add Fuel Log"
 msgstr "إضافة سجل وقود"
@@ -4029,13 +4051,13 @@ msgstr "الإيصال / المرفق"
 msgid "Track your fuel fill-ups and consumption"
 msgstr "تتبّع تعبئات الوقود والاستهلاك"
 
-#: app/templates/fuel/index.html:29 app/templates/fuel/index.html:282
+#: app/templates/fuel/index.html:29 app/templates/fuel/index.html:286
 #: app/templates/partials/mobile_nav.html:58
 #: app/templates/partials/mobile_nav.html:64
 msgid "Add Charging Session"
 msgstr "إضافة جلسة شحن"
 
-#: app/templates/fuel/index.html:38 app/templates/fuel/index.html:214
+#: app/templates/fuel/index.html:38 app/templates/fuel/index.html:216
 msgid "Charging History"
 msgstr "سجل الشحن"
 
@@ -4051,52 +4073,52 @@ msgstr "آخر تعبئة"
 msgid "Sales Tax Paid"
 msgstr "الضريبة المدفوعة"
 
-#: app/templates/fuel/index.html:101
+#: app/templates/fuel/index.html:102
 msgid "Price/Unit"
 msgstr "السعر/الوحدة"
 
-#: app/templates/fuel/index.html:102
+#: app/templates/fuel/index.html:103
 msgid "Consumption"
 msgstr "الاستهلاك"
 
-#: app/templates/fuel/index.html:123
+#: app/templates/fuel/index.html:124
 msgid "Better than average"
 msgstr "أفضل من المتوسط"
 
-#: app/templates/fuel/index.html:123
+#: app/templates/fuel/index.html:124
 msgid "Worse than average"
 msgstr "أسوأ من المتوسط"
 
-#: app/templates/fuel/index.html:132
+#: app/templates/fuel/index.html:133
 msgid "Partial"
 msgstr "جزئي"
 
-#: app/templates/fuel/index.html:133
+#: app/templates/fuel/index.html:134
 msgid "Missed"
 msgstr "مفقود"
 
-#: app/templates/fuel/index.html:154
+#: app/templates/fuel/index.html:155
 #, python-format
 msgid "incl. tax %(amount)s"
 msgstr "شامل الضريبة %(amount)s"
 
-#: app/templates/fuel/index.html:161 app/templates/vehicles/view.html:485
+#: app/templates/fuel/index.html:162 app/templates/vehicles/view.html:485
 msgid "Delete this fuel log?"
 msgstr "هل تريد حذف سجل الوقود هذا؟"
 
-#: app/templates/fuel/index.html:180
+#: app/templates/fuel/index.html:182
 msgid "No fuel logs"
 msgstr "لا توجد سجلات وقود"
 
-#: app/templates/fuel/index.html:180
+#: app/templates/fuel/index.html:182
 msgid "Start tracking your fuel fill-ups."
 msgstr "ابدأ بتتبّع تعبئات الوقود الخاصة بك."
 
-#: app/templates/fuel/index.html:205 app/templates/vehicles/view.html:158
+#: app/templates/fuel/index.html:207 app/templates/vehicles/view.html:158
 msgid "Last charge"
 msgstr "آخر شحن"
 
-#: app/templates/fuel/index.html:220
+#: app/templates/fuel/index.html:223
 msgid "kWh"
 msgstr "كيلوواط/ساعة"
 
@@ -4454,11 +4476,6 @@ msgstr "هل تريد حذف جدول الصيانة هذا؟"
 #: app/templates/vehicles/view.html:239
 msgid "Maintenance History"
 msgstr "سجل الصيانة"
-
-#: app/templates/maintenance/history.html:36
-#: app/templates/reminders/index.html:53
-msgid "Clear filters"
-msgstr "مسح عوامل التصفية"
 
 #: app/templates/maintenance/history.html:66
 msgid "No maintenance history yet."
@@ -5221,14 +5238,6 @@ msgstr "مسافة العمل"
 #: app/templates/trips/index.html:64
 msgid "All Purposes"
 msgstr "جميع الأغراض"
-
-#: app/templates/trips/index.html:71 app/templates/vehicles/form.html:98
-msgid "Year"
-msgstr "السنة"
-
-#: app/templates/trips/index.html:73
-msgid "All Years"
-msgstr "جميع السنوات"
 
 #: app/templates/trips/index.html:162
 msgid "No trips logged"

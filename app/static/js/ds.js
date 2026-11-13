@@ -70,3 +70,18 @@
         });
     });
 })();
+
+/* Disclosure buttons: [data-disclosure][aria-controls] shows and hides the
+   element it names, keeping aria-expanded in step. */
+(function () {
+    'use strict';
+    document.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-disclosure][aria-controls]');
+        if (!button) return;
+        var target = document.getElementById(button.getAttribute('aria-controls'));
+        if (!target) return;
+        var open = button.getAttribute('aria-expanded') !== 'true';
+        button.setAttribute('aria-expanded', open ? 'true' : 'false');
+        target.hidden = !open;
+    });
+})();
