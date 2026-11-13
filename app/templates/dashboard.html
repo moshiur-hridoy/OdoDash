@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryEl = document.getElementById('categoryChart');
     if (categoryEl) {
         const categoryData = {{ expenses_by_category | tojson }};
-        createExpenseCategoryChart(categoryEl, categoryData, currency);
+        createExpenseCategoryChart(categoryEl, categoryData, currency, {{ _('Charging')|tojson }});
     }
 });
 </script>

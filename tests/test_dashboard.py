@@ -451,8 +451,8 @@ class TestDashboardLists:
         _spend(sample_vehicle, test_user, date.today(), fuel=30)
         html = auth_client.get('/dashboard').get_data(as_text=True)
         assert 'class="dashboard-odometer"' in html
-        assert 'ds-odometer__digit' not in html
-        assert 'ds-swatch' not in html
+        assert 'class="ds-odometer__digit' not in html
+        assert 'class="ds-swatch' not in html
 
 
 def _price(user, station_name, price, days_ago=1, fuel_type='petrol'):

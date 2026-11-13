@@ -955,7 +955,7 @@ document.addEventListener('DOMContentLoaded', function() {
     restoreChartState('expenses');
     const categoryData = {{ expenses_by_category | tojson }};
     const expenseCurrency = {{ (current_user.currency or '')|tojson }};
-    chartInstances['expenses'] = createExpenseCategoryChart(expensesEl, categoryData, expenseCurrency);
+    chartInstances['expenses'] = createExpenseCategoryChart(expensesEl, categoryData, expenseCurrency, {{ _('Charging')|tojson }});
 });
 
 const refreshIcon = {{ icon('repeat', 16)|string|tojson }};

@@ -555,6 +555,7 @@
 
         <!-- Desktop sidebar -->
         <aside class="ds-side">
+            <div class="ds-side__head">
             <a href="{{ url_for('main.index') }}" class="ds-brand">
                 {% if APP_LOGO %}
                 <img src="{{ url_for('api.uploaded_file', filename=APP_LOGO) }}" alt="{{ APP_NAME }}" class="ds-brand__image">
@@ -563,6 +564,9 @@
                 <span class="ds-brand__name">{{ APP_NAME }}</span>
                 {% endif %}
             </a>
+            <a href="https://github.com/{{ GITHUB_REPO }}/releases/tag/v{{ APP_VERSION }}" target="_blank" rel="noopener"
+               class="ds-side__version" title="{{ _("What's new") }}">v{{ DISPLAY_VERSION }}</a>
+            </div>
 
             <a href="{{ url_for('search.index') }}" class="ds-side__search{% if ep.startswith('search.') %} is-active{% endif %}">
                 {{ icon('search', 16) }}<span>{{ _('Search') }}</span>
@@ -638,8 +642,6 @@
                         {{ icon('logout', 16) }}
                     </a>
                 </div>
-                <a href="https://github.com/{{ GITHUB_REPO }}/releases/tag/v{{ APP_VERSION }}" target="_blank" rel="noopener"
-                   class="ds-side__version" title="{{ _("What's new") }}">v{{ DISPLAY_VERSION }}</a>
             </div>
         </aside>
 

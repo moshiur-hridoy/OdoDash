@@ -1812,8 +1812,12 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 }
 .ds-btn.is-active { color: var(--ds-accent-ink); }
 .ds-side__logout:hover { background: var(--ds-danger-soft); color: var(--ds-danger); }
+.ds-side__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; padding-inline-end: 8px; }
+.ds-side__head .ds-brand { flex: 0 1 auto; }
 .ds-side__version {
-  align-self: flex-start; padding: 0 2px; font-size: var(--ds-text-xs); color: var(--ds-text-subtle); text-decoration: none;
+  min-width: 0; max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 0 2px; font-size: var(--ds-text-xs); color: var(--ds-text-subtle); text-decoration: none;
+  font-family: var(--ds-font-mono);
 }
 .ds-side__version:hover { color: var(--ds-text-muted); }
 
