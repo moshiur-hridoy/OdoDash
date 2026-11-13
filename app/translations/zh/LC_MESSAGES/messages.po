@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 11:07+0600\n"
+"POT-Creation-Date: 2026-11-13 11:17+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh <LL@li.org>\n"
@@ -59,8 +59,8 @@ msgstr "发动机小时"
 #: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:81
 #: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:138
 #: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
-#: app/templates/notes/index.html:35 app/templates/tires/index.html:92
-#: app/templates/tires/index.html:115 app/templates/trips/index.html:80
+#: app/templates/notes/index.html:35 app/templates/tires/index.html:58
+#: app/templates/tires/index.html:76 app/templates/trips/index.html:80
 #: app/templates/vehicles/index.html:71 app/templates/vehicles/view.html:87
 #: app/templates/vehicles/view.html:381 app/templates/vehicles/view.html:458
 #: app/templates/vehicles/view.html:479 app/templates/vehicles/view.html:501
@@ -73,10 +73,9 @@ msgid "Hours"
 msgstr "小时"
 
 #: app/models.py:409 app/templates/allowance/form.html:48
-#: app/templates/allowance/index.html:30 app/templates/auth/settings.html:127
-#: app/templates/tires/index.html:135 app/templates/trips/form.html:97
-#: app/templates/trips/form.html:188 app/templates/trips/index.html:82
-#: app/templates/trips/report.html:102
+#: app/templates/allowance/index.html:52 app/templates/auth/settings.html:127
+#: app/templates/trips/form.html:97 app/templates/trips/form.html:188
+#: app/templates/trips/index.html:82 app/templates/trips/report.html:102
 msgid "Distance"
 msgstr "距离"
 
@@ -536,15 +535,15 @@ msgstr "雨刷片"
 msgid "Light Bulb"
 msgstr "灯泡"
 
-#: app/models.py:2606 app/templates/tires/index.html:104
+#: app/models.py:2606 app/templates/tires/index.html:68
 msgid "All axles"
 msgstr "所有车轴"
 
-#: app/models.py:2606 app/templates/tires/index.html:105
+#: app/models.py:2606 app/templates/tires/index.html:69
 msgid "Front axle"
 msgstr "前轴"
 
-#: app/models.py:2606 app/templates/tires/index.html:106
+#: app/models.py:2606 app/templates/tires/index.html:70
 msgid "Rear axle"
 msgstr "后轴"
 
@@ -572,15 +571,15 @@ msgstr "密码必须至少包含一个小写字母"
 msgid "Password must contain at least one digit"
 msgstr "密码必须至少包含一个数字"
 
-#: app/routes/allowance.py:31 app/routes/expenses.py:256
+#: app/routes/allowance.py:62 app/routes/expenses.py:256
 #: app/routes/fuel.py:248 app/routes/fuel.py:664 app/routes/notes.py:44
 #: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:2
 msgid "Please add a vehicle first"
 msgstr "请先添加车辆"
 
-#: app/routes/allowance.py:40 app/routes/allowance.py:78
-#: app/routes/allowance.py:110 app/routes/charging.py:121
+#: app/routes/allowance.py:71 app/routes/allowance.py:109
+#: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
 #: app/routes/documents.py:132 app/routes/documents.py:148
 #: app/routes/documents.py:167 app/routes/documents.py:207
@@ -609,19 +608,19 @@ msgstr "请先添加车辆"
 msgid "Access denied"
 msgstr "访问被拒绝"
 
-#: app/routes/allowance.py:55 app/routes/allowance.py:90
+#: app/routes/allowance.py:86 app/routes/allowance.py:121
 msgid "Invalid data submitted. Please check the date and amount fields."
 msgstr "提交的数据无效，请检查日期和金额字段。"
 
-#: app/routes/allowance.py:61
+#: app/routes/allowance.py:92
 msgid "Mileage allowance added successfully"
 msgstr "里程补贴已成功添加"
 
-#: app/routes/allowance.py:95
+#: app/routes/allowance.py:126
 msgid "Mileage allowance updated successfully"
 msgstr "里程补贴已成功更新"
 
-#: app/routes/allowance.py:116
+#: app/routes/allowance.py:147
 msgid "Mileage allowance deleted successfully"
 msgstr "里程补贴已成功删除"
 
@@ -1140,41 +1139,41 @@ msgstr "加油站已更新"
 msgid "Station \"%(name)s\" deleted"
 msgstr "加油站\"%(name)s\"已删除"
 
-#: app/routes/stations.py:170
+#: app/routes/stations.py:171
 #, python-format
 msgid "Updated %(prices)s live prices from %(matched)s forecourts"
 msgstr "已从 %(matched)s 个加油站更新 %(prices)s 条实时价格"
 
-#: app/routes/stations.py:175
+#: app/routes/stations.py:176
 msgid "Fuel price sources are unavailable. Saved prices have been kept."
 msgstr "燃油价格来源不可用。已保留保存的价格。"
 
-#: app/routes/stations.py:177
+#: app/routes/stations.py:178
 msgid ""
 "Some stations could not be matched because fuel price coverage is "
 "incomplete."
 msgstr "由于价格数据不完整，部分加油站无法匹配。"
 
-#: app/routes/stations.py:180
+#: app/routes/stations.py:181
 msgid ""
 "No unique forecourt match found. Check the station postcode, address and "
 "brand."
 msgstr "未找到唯一匹配的加油站。请检查邮政编码、地址和品牌。"
 
-#: app/routes/stations.py:186
+#: app/routes/stations.py:187
 #, python-format
 msgid "Some retailer feeds could not be read: %(errors)s"
 msgstr "部分零售商数据源无法读取：%(errors)s"
 
-#: app/routes/stations.py:197 app/routes/stations.py:213
+#: app/routes/stations.py:198 app/routes/stations.py:214
 msgid "UK fuel prices are not enabled. An admin can turn them on in Settings."
 msgstr "英国燃油价格未启用。管理员可在设置中开启。"
 
-#: app/routes/stations.py:233
+#: app/routes/stations.py:234
 msgid "You can only delete your own price entries"
 msgstr "您只能删除自己添加的价格记录"
 
-#: app/routes/stations.py:240
+#: app/routes/stations.py:241
 msgid "Price entry deleted"
 msgstr "价格记录已删除"
 
@@ -1523,7 +1522,8 @@ msgstr "文档"
 
 #: app/templates/auth/settings.html:447 app/templates/auth/settings.html:525
 #: app/templates/base.html:539 app/templates/partials/mobile_nav.html:30
-#: app/templates/stations/index.html:2 app/templates/stations/index.html:7
+#: app/templates/stations/index.html:4 app/templates/stations/index.html:9
+#: app/templates/stations/index.html:20
 msgid "Fuel Stations"
 msgstr "加油站"
 
@@ -1532,7 +1532,8 @@ msgstr "加油站"
 msgid "EV Charging"
 msgstr "电动车充电"
 
-#: app/templates/allowance/index.html:2 app/templates/allowance/index.html:7
+#: app/templates/allowance/index.html:3 app/templates/allowance/index.html:11
+#: app/templates/allowance/index.html:45 app/templates/allowance/index.html:75
 #: app/templates/auth/settings.html:450 app/templates/auth/settings.html:540
 #: app/templates/base.html:541 app/templates/dashboard.html:276
 #: app/templates/partials/mobile_nav.html:32
@@ -1541,8 +1542,8 @@ msgid "Mileage Allowance"
 msgstr "里程补贴"
 
 #: app/templates/auth/settings.html:545 app/templates/base.html:542
-#: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:2
-#: app/templates/tires/index.html:7
+#: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:4
+#: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "轮胎"
 
@@ -1633,8 +1634,9 @@ msgstr "晚上好，%(name)s"
 msgid "This month"
 msgstr "本月"
 
-#: app/templates/charging/_log.html:13 app/templates/dashboard.html:28
-#: app/templates/dashboard.html:150 app/templates/fuel/index.html:52
+#: app/templates/allowance/index.html:30 app/templates/charging/_log.html:13
+#: app/templates/dashboard.html:28 app/templates/dashboard.html:150
+#: app/templates/fuel/index.html:52
 msgid "This year"
 msgstr "今年"
 
@@ -1774,7 +1776,7 @@ msgid "On track for %(amount)s"
 msgstr "预计 %(amount)s"
 
 #: app/templates/dashboard.html:158 app/templates/stations/cheapest.html:3
-#: app/templates/stations/cheapest.html:9 app/templates/stations/index.html:28
+#: app/templates/stations/cheapest.html:9 app/templates/stations/index.html:15
 msgid "Cheapest Fuel"
 msgstr "最低油价"
 
@@ -1804,15 +1806,16 @@ msgstr "添加您的第一辆车辆"
 msgid "Recent activity"
 msgstr "最近动态"
 
-#: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
+#: app/templates/allowance/form.html:34 app/templates/allowance/index.html:50
 #: app/templates/charging/_log.html:36 app/templates/charging/form.html:37
 #: app/templates/dashboard.html:197 app/templates/expenses/form.html:66
 #: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
 #: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:131
 #: app/templates/notes/form.html:34 app/templates/notes/index.html:33
-#: app/templates/tires/index.html:87 app/templates/tires/index.html:110
-#: app/templates/trips/form.html:67 app/templates/trips/index.html:78
-#: app/templates/trips/report.html:98 app/templates/vehicles/view.html:455
+#: app/templates/stations/prices.html:36 app/templates/tires/index.html:55
+#: app/templates/tires/index.html:73 app/templates/trips/form.html:67
+#: app/templates/trips/index.html:78 app/templates/trips/report.html:98
+#: app/templates/vehicles/view.html:455
 msgid "Date"
 msgstr "日期"
 
@@ -1824,7 +1827,7 @@ msgstr "日期"
 msgid "Type"
 msgstr "类型"
 
-#: app/templates/allowance/form.html:19 app/templates/allowance/index.html:28
+#: app/templates/allowance/form.html:19 app/templates/allowance/index.html:14
 #: app/templates/charging/form.html:19 app/templates/charging/index.html:16
 #: app/templates/dashboard.html:199 app/templates/documents/form.html:21
 #: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
@@ -1848,7 +1851,7 @@ msgstr "车辆"
 msgid "Details"
 msgstr "详情"
 
-#: app/templates/allowance/form.html:41 app/templates/allowance/index.html:31
+#: app/templates/allowance/form.html:41 app/templates/allowance/index.html:53
 #: app/templates/dashboard.html:202 app/templates/recurring/form.html:65
 msgid "Amount"
 msgstr "金额"
@@ -1915,8 +1918,8 @@ msgid "Edit Allowance"
 msgstr "编辑补贴"
 
 #: app/templates/allowance/form.html:2 app/templates/allowance/form.html:11
-#: app/templates/allowance/form.html:81 app/templates/allowance/index.html:16
-#: app/templates/allowance/index.html:81
+#: app/templates/allowance/form.html:81 app/templates/allowance/index.html:24
+#: app/templates/allowance/index.html:111
 msgid "Add Allowance"
 msgstr "添加补贴"
 
@@ -1932,7 +1935,7 @@ msgstr "单位费率"
 msgid "Optional. If set with distance, the amount is calculated for you."
 msgstr "可选。如果与距离一起设置，系统将自动为您计算金额。"
 
-#: app/templates/allowance/form.html:65 app/templates/allowance/index.html:29
+#: app/templates/allowance/form.html:65 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:85 app/templates/documents/view.html:98
 #: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
 #: app/templates/maintenance/form.html:80
@@ -1973,53 +1976,84 @@ msgstr "取消"
 msgid "Save Changes"
 msgstr "保存更改"
 
-#: app/templates/allowance/index.html:8
+#: app/templates/allowance/index.html:11
 msgid ""
 "Record allowance income for business use; it offsets your running costs"
 msgstr "记录用于商务用途的补贴收入，用以抵消您的运营成本"
 
-#: app/templates/allowance/index.html:32 app/templates/charging/_log.html:43
+#: app/templates/allowance/index.html:16 app/templates/charging/index.html:18
+#: app/templates/documents/index.html:16 app/templates/documents/index.html:64
+#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:20
+#: app/templates/maintenance/history.html:16 app/templates/notes/index.html:16
+#: app/templates/reminders/index.html:32 app/templates/trips/index.html:30
+msgid "All Vehicles"
+msgstr "所有车辆"
+
+#: app/templates/allowance/index.html:21 app/templates/charging/index.html:23
+#: app/templates/documents/index.html:21 app/templates/expenses/index.html:63
+#: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
+#: app/templates/notes/index.html:21 app/templates/reminders/index.html:47
+#: app/templates/trips/index.html:49
+msgid "Filter"
+msgstr "筛选"
+
+#: app/templates/allowance/index.html:34 app/templates/expenses/index.html:72
+#: app/templates/expenses/index.html:229
+#: app/templates/import/backup_preview.html:41
+#: app/templates/trips/report.html:126
+msgid "Total"
+msgstr "总计"
+
+#: app/templates/allowance/index.html:38
+msgid "Entries"
+msgstr "条目"
+
+#: app/templates/allowance/index.html:54 app/templates/charging/_log.html:43
 #: app/templates/expenses/index.html:97 app/templates/fuel/index.html:106
-#: app/templates/notes/index.html:36 app/templates/tires/index.html:136
+#: app/templates/notes/index.html:36 app/templates/stations/prices.html:39
 #: app/templates/trips/index.html:83 app/templates/vehicles/view.html:223
 #: app/templates/vehicles/view.html:460
 msgid "Actions"
 msgstr "操作"
 
-#: app/templates/allowance/index.html:51 app/templates/charging/_log.html:84
+#: app/templates/allowance/index.html:88 app/templates/charging/_log.html:84
 #: app/templates/documents/view.html:31 app/templates/expenses/index.html:150
 #: app/templates/fuel/index.html:160 app/templates/maintenance/index.html:49
 #: app/templates/notes/index.html:77 app/templates/recurring/index.html:49
 #: app/templates/reminders/_reminder_row.html:55
-#: app/templates/stations/index.html:80 app/templates/tires/index.html:166
-#: app/templates/trips/index.html:131 app/templates/vehicles/view.html:68
+#: app/templates/stations/index.html:39 app/templates/tires/index.html:115
+#: app/templates/trips/index.html:131
+#: app/templates/trips/templates_index.html:37
+#: app/templates/vehicles/parts.html:45 app/templates/vehicles/view.html:68
 #: app/templates/vehicles/view.html:176 app/templates/vehicles/view.html:319
 #: app/templates/vehicles/view.html:484 app/templates/vehicles/view.html:506
 #: app/templates/vehicles/view.html:525
 msgid "Edit"
 msgstr "编辑"
 
-#: app/templates/allowance/index.html:55
+#: app/templates/allowance/index.html:90
 msgid "Delete this allowance entry?"
 msgstr "删除此补贴记录？"
 
-#: app/templates/allowance/index.html:57 app/templates/documents/form.html:108
+#: app/templates/allowance/index.html:93 app/templates/documents/form.html:108
 #: app/templates/expenses/form.html:176 app/templates/expenses/index.html:155
 #: app/templates/fuel/form.html:235 app/templates/fuel/index.html:165
 #: app/templates/notes/index.html:82 app/templates/recurring/form.html:135
 #: app/templates/reminders/_reminder_row.html:60
-#: app/templates/stations/form.html:93 app/templates/tires/index.html:152
-#: app/templates/tires/index.html:170 app/templates/trips/index.html:136
-#: app/templates/vehicles/view.html:488 app/templates/vehicles/view.html:509
-#: app/templates/vehicles/view.html:528 app/templates/vehicles/view.html:643
+#: app/templates/stations/form.html:93 app/templates/tires/index.html:105
+#: app/templates/tires/index.html:119 app/templates/trips/index.html:136
+#: app/templates/trips/templates_index.html:41
+#: app/templates/vehicles/parts.html:49 app/templates/vehicles/view.html:488
+#: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
+#: app/templates/vehicles/view.html:643
 msgid "Delete"
 msgstr "删除"
 
-#: app/templates/allowance/index.html:72
+#: app/templates/allowance/index.html:110
 msgid "No allowance entries"
 msgstr "暂无补贴记录"
 
-#: app/templates/allowance/index.html:73
+#: app/templates/allowance/index.html:110
 msgid "Track mileage allowance you receive for business journeys."
 msgstr "记录您因商务出行获得的里程补贴。"
 
@@ -3457,7 +3491,7 @@ msgstr "千瓦时 (kWh)"
 #: app/templates/charging/_log.html:42 app/templates/charging/form.html:130
 #: app/templates/expenses/form.html:124 app/templates/expenses/index.html:96
 #: app/templates/fuel/index.html:105 app/templates/tires/form.html:61
-#: app/templates/tires/index.html:62 app/templates/vehicles/view.html:459
+#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:459
 msgid "Cost"
 msgstr "费用"
 
@@ -3540,21 +3574,6 @@ msgstr "充电记录"
 #: app/templates/charging/index.html:13
 msgid "Track your EV charging sessions"
 msgstr "追踪您的电动车充电记录"
-
-#: app/templates/charging/index.html:18 app/templates/documents/index.html:16
-#: app/templates/documents/index.html:64 app/templates/expenses/index.html:28
-#: app/templates/fuel/index.html:20 app/templates/maintenance/history.html:16
-#: app/templates/notes/index.html:16 app/templates/reminders/index.html:32
-#: app/templates/trips/index.html:30
-msgid "All Vehicles"
-msgstr "所有车辆"
-
-#: app/templates/charging/index.html:23 app/templates/documents/index.html:21
-#: app/templates/expenses/index.html:63 app/templates/fuel/index.html:25
-#: app/templates/maintenance/history.html:35 app/templates/notes/index.html:21
-#: app/templates/reminders/index.html:47 app/templates/trips/index.html:49
-msgid "Filter"
-msgstr "筛选"
 
 #: app/templates/charging/index.html:26
 msgid "Log Charge"
@@ -3833,12 +3852,6 @@ msgstr "清除筛选"
 msgid "Filtered total"
 msgstr "筛选合计"
 
-#: app/templates/expenses/index.html:72 app/templates/expenses/index.html:229
-#: app/templates/import/backup_preview.html:41
-#: app/templates/trips/report.html:126
-msgid "Total"
-msgstr "总计"
-
 #: app/templates/expenses/index.html:126 app/templates/expenses/index.html:169
 msgid "Receipts:"
 msgstr "收据："
@@ -3974,7 +3987,8 @@ msgstr "添加已保存的加油站"
 msgid "for quick selection and price tracking"
 msgstr "用于快速选择和价格追踪"
 
-#: app/templates/fuel/form.html:160 app/templates/vehicles/form.html:59
+#: app/templates/fuel/form.html:160 app/templates/stations/prices.html:37
+#: app/templates/vehicles/form.html:59
 msgid "Fuel Type"
 msgstr "燃油类型"
 
@@ -4038,7 +4052,7 @@ msgstr "上次加油"
 msgid "Sales Tax Paid"
 msgstr "已付税额"
 
-#: app/templates/fuel/index.html:102
+#: app/templates/fuel/index.html:102 app/templates/stations/prices.html:38
 msgid "Price/Unit"
 msgstr "单价"
 
@@ -4826,7 +4840,7 @@ msgid "Try a different search term or a wider date range."
 msgstr "请尝试其他搜索词或更宽的日期范围。"
 
 #: app/templates/stations/cheapest.html:8
-#: app/templates/stations/prices.html:11
+#: app/templates/stations/prices.html:14
 msgid "Back to stations"
 msgstr "返回加油站列表"
 
@@ -4840,7 +4854,7 @@ msgid "Add a Station"
 msgstr "添加加油站"
 
 #: app/templates/stations/cheapest.html:27
-#: app/templates/stations/prices.html:15
+#: app/templates/stations/index.html:32 app/templates/stations/prices.html:15
 msgid "No address"
 msgstr "无地址"
 
@@ -4900,12 +4914,13 @@ msgstr "邮政编码"
 msgid "e.g., Good prices, open 24h"
 msgstr "例如：价格实惠，24小时营业"
 
-#: app/templates/stations/form.html:83
+#: app/templates/stations/form.html:83 app/templates/stations/index.html:25
+#: app/templates/stations/index.html:27
 msgid "Mark as favorite"
 msgstr "标记为收藏"
 
-#: app/templates/stations/form.html:105 app/templates/stations/index.html:36
-#: app/templates/stations/index.html:107
+#: app/templates/stations/form.html:105 app/templates/stations/index.html:16
+#: app/templates/stations/index.html:49
 msgid "Add Station"
 msgstr "添加加油站"
 
@@ -4913,37 +4928,37 @@ msgstr "添加加油站"
 msgid "Delete this station?"
 msgstr "删除此加油站？"
 
-#: app/templates/stations/index.html:8
+#: app/templates/stations/index.html:9
 msgid "Your favorite fuel stations"
 msgstr "您收藏的加油站"
 
-#: app/templates/stations/index.html:15 app/templates/stations/prices.html:26
-msgid "Fetch live prices from UK retailer feeds"
-msgstr "从英国零售商数据源获取实时价格"
-
-#: app/templates/stations/index.html:19 app/templates/stations/prices.html:30
+#: app/templates/stations/index.html:12 app/templates/stations/prices.html:18
 msgid "Update UK Prices"
 msgstr "更新英国价格"
 
-#: app/templates/stations/index.html:70
+#: app/templates/stations/index.html:12 app/templates/stations/prices.html:18
+msgid "Fetch live prices from UK retailer feeds"
+msgstr "从英国零售商数据源获取实时价格"
+
+#: app/templates/stations/index.html:35
 #, python-format
 msgid "Used %(count)dx"
 msgstr "已使用 %(count)dx"
 
-#: app/templates/stations/index.html:73 app/templates/stations/prices.html:2
-#: app/templates/stations/prices.html:21
+#: app/templates/stations/index.html:37 app/templates/stations/prices.html:3
+#: app/templates/stations/prices.html:25 app/templates/stations/prices.html:31
 msgid "Price History"
 msgstr "价格历史"
 
-#: app/templates/stations/index.html:98
+#: app/templates/stations/index.html:48
 msgid "No fuel stations"
 msgstr "暂无加油站"
 
-#: app/templates/stations/index.html:99
+#: app/templates/stations/index.html:48
 msgid "Save your favorite stations for quick access when logging fuel."
 msgstr "保存常用加油站，方便记录加油时快速选择。"
 
-#: app/templates/stations/prices.html:56
+#: app/templates/stations/prices.html:58
 msgid "Delete this price entry? This cannot be undone."
 msgstr "删除此价格记录？此操作无法撤销。"
 
@@ -4955,7 +4970,7 @@ msgstr "删除此记录"
 msgid "No price history available for this station."
 msgstr "此加油站暂无价格历史记录。"
 
-#: app/templates/stations/prices.html:73
+#: app/templates/stations/prices.html:72
 msgid "Prices are automatically recorded when you log fuel at this station."
 msgstr "在此加油站记录加油时，价格会被自动记录。"
 
@@ -4993,8 +5008,8 @@ msgid "Edit Tire Set"
 msgstr "编辑轮胎组"
 
 #: app/templates/tires/form.html:2 app/templates/tires/form.html:8
-#: app/templates/tires/form.html:107 app/templates/tires/index.html:16
-#: app/templates/tires/index.html:191
+#: app/templates/tires/form.html:107 app/templates/tires/index.html:11
+#: app/templates/tires/index.html:130
 msgid "Add Tire Set"
 msgstr "添加轮胎组"
 
@@ -5023,7 +5038,7 @@ msgid "Engine hours when bought"
 msgstr "购买时的发动机小时数"
 
 #: app/templates/tires/form.html:75 app/templates/tires/form.html:116
-#: app/templates/tires/index.html:58
+#: app/templates/tires/index.html:44
 msgid "Odometer when bought"
 msgstr "购买时的里程表读数"
 
@@ -5037,86 +5052,78 @@ msgstr "可选。仅作参考；行驶里程按轮胎组装车期间计算。"
 msgid "Retired (worn out or sold)"
 msgstr "已停用（磨损或售出）"
 
-#: app/templates/tires/index.html:8
+#: app/templates/tires/index.html:10
 msgid ""
 "Track each set of tires on and off the vehicle, and the distance it has "
 "covered"
 msgstr "记录每组轮胎的装卸情况及其行驶里程"
 
-#: app/templates/tires/index.html:34
+#: app/templates/tires/index.html:27
 msgid "Fitted"
 msgstr "已安装"
 
-#: app/templates/tires/index.html:36
+#: app/templates/tires/index.html:28
 msgid "Retired"
 msgstr "已停用"
 
-#: app/templates/tires/index.html:38
+#: app/templates/tires/index.html:29
 msgid "In storage"
 msgstr "存放中"
 
-#: app/templates/tires/index.html:48
+#: app/templates/tires/index.html:38
 msgid "Total distance on this set"
 msgstr "该轮胎组的总行驶里程"
 
-#: app/templates/tires/index.html:54
+#: app/templates/tires/index.html:43
 msgid "Purchased"
 msgstr "购买"
 
-#: app/templates/tires/index.html:66 app/templates/vehicles/form.html:254
+#: app/templates/tires/index.html:46 app/templates/vehicles/form.html:254
 msgid "Status"
 msgstr "状态"
 
-#: app/templates/tires/index.html:69
+#: app/templates/tires/index.html:46
 #, python-format
 msgid "On since %(date)s"
 msgstr "自 %(date)s 起安装"
 
-#: app/templates/tires/index.html:71
+#: app/templates/tires/index.html:46
 msgid "Not on the vehicle"
 msgstr "未装在车辆上"
 
-#: app/templates/tires/index.html:96
+#: app/templates/tires/index.html:61
 msgid "Take Off"
 msgstr "拆下"
 
-#: app/templates/tires/index.html:102
+#: app/templates/tires/index.html:66
 msgid "Axle"
 msgstr "车轴"
 
-#: app/templates/tires/index.html:119
+#: app/templates/tires/index.html:79
 msgid "Put On"
 msgstr "安装"
 
-#: app/templates/tires/index.html:128
+#: app/templates/tires/index.html:88
 msgid "Fitting history"
 msgstr "安装历史"
 
-#: app/templates/tires/index.html:133
-msgid "On"
-msgstr "装上"
-
-#: app/templates/tires/index.html:134
-msgid "Off"
-msgstr "拆下"
-
-#: app/templates/tires/index.html:144
+#: app/templates/tires/index.html:97
 msgid "Still on"
 msgstr "仍在车上"
 
-#: app/templates/tires/index.html:150
+#: app/templates/tires/index.html:103
 msgid "Delete this fitting record?"
 msgstr "删除此安装记录？"
 
-#: app/templates/tires/index.html:168
+#: app/templates/tires/index.html:117
 msgid "Delete this tire set and its fitting history?"
 msgstr "删除此轮胎组及其安装历史？"
 
-#: app/templates/tires/index.html:182
+#: app/templates/tires/index.html:129
 msgid "No tire sets"
 msgstr "暂无轮胎组"
 
-#: app/templates/tires/index.html:183
+#: app/templates/tires/index.html:129
 msgid "Add a set of tires to track when it goes on and off the vehicle."
 msgstr "添加一组轮胎，即可记录它何时装上和拆下车辆。"
 
@@ -5125,7 +5132,7 @@ msgid "Edit Trip"
 msgstr "编辑行程"
 
 #: app/templates/trips/form.html:12 app/templates/trips/report.html:12
-#: app/templates/trips/templates_index.html:7
+#: app/templates/trips/templates_index.html:11
 msgid "Back to trips"
 msgstr "返回行程列表"
 
@@ -5278,7 +5285,7 @@ msgstr "编辑模板"
 
 #: app/templates/trips/template_form.html:2
 #: app/templates/trips/template_form.html:9
-#: app/templates/trips/templates_index.html:17
+#: app/templates/trips/templates_index.html:13
 msgid "New Template"
 msgstr "新建模板"
 
@@ -5295,7 +5302,7 @@ msgid "e.g., Office Commute, Client Visit"
 msgstr "例如：上班通勤、客户拜访"
 
 #: app/templates/trips/template_form.html:30
-#: app/templates/trips/templates_index.html:40
+#: app/templates/trips/templates_index.html:28
 msgid "Any vehicle"
 msgstr "任意车辆"
 
@@ -5311,32 +5318,33 @@ msgstr "例如：每周客户会议"
 msgid "Save Template"
 msgstr "保存模板"
 
-#: app/templates/trips/templates_index.html:2
-#: app/templates/trips/templates_index.html:8
+#: app/templates/trips/templates_index.html:4
+#: app/templates/trips/templates_index.html:12
+#: app/templates/trips/templates_index.html:17
 msgid "Trip Templates"
 msgstr "行程模板"
 
-#: app/templates/trips/templates_index.html:9
+#: app/templates/trips/templates_index.html:12
 msgid "Save common routes to quickly fill in trip details"
 msgstr "保存常用路线，快速填写行程详情"
 
-#: app/templates/trips/templates_index.html:53
+#: app/templates/trips/templates_index.html:36
 msgid "Use"
 msgstr "使用"
 
-#: app/templates/trips/templates_index.html:66
+#: app/templates/trips/templates_index.html:39
 msgid "Delete this template?"
 msgstr "删除此模板？"
 
-#: app/templates/trips/templates_index.html:86
+#: app/templates/trips/templates_index.html:51
 msgid "No templates yet"
 msgstr "暂无模板"
 
-#: app/templates/trips/templates_index.html:87
+#: app/templates/trips/templates_index.html:51
 msgid "Save common routes as templates to log trips faster."
 msgstr "将常用路线保存为模板，更快记录行程。"
 
-#: app/templates/trips/templates_index.html:95
+#: app/templates/trips/templates_index.html:52
 msgid "Create Your First Template"
 msgstr "创建您的第一个模板"
 
@@ -5585,7 +5593,7 @@ msgstr "编辑配件"
 #: app/templates/vehicles/part_form.html:2
 #: app/templates/vehicles/part_form.html:8
 #: app/templates/vehicles/part_form.html:102
-#: app/templates/vehicles/parts.html:20 app/templates/vehicles/view.html:575
+#: app/templates/vehicles/parts.html:11 app/templates/vehicles/view.html:575
 msgid "Add Part"
 msgstr "添加配件"
 
@@ -5654,6 +5662,7 @@ msgid "Part Number"
 msgstr "配件编号"
 
 #: app/templates/vehicles/part_form.html:78
+#: app/templates/vehicles/parts.html:42
 msgid "Supplier URL"
 msgstr "供应商链接"
 
@@ -5661,24 +5670,28 @@ msgstr "供应商链接"
 msgid "Link to purchase this part"
 msgstr "购买此配件的链接"
 
-#: app/templates/vehicles/parts.html:2 app/templates/vehicles/parts.html:11
+#: app/templates/vehicles/parts.html:4 app/templates/vehicles/parts.html:10
 #: app/templates/vehicles/view.html:555
 msgid "Parts & Consumables"
 msgstr "配件与耗材"
 
-#: app/templates/vehicles/parts.html:49
+#: app/templates/vehicles/parts.html:31
 msgid "Qty:"
 msgstr "数量："
 
-#: app/templates/vehicles/parts.html:100
+#: app/templates/vehicles/parts.html:47
+msgid "Delete this part?"
+msgstr "删除此部件？"
+
+#: app/templates/vehicles/parts.html:60
 msgid "No parts added"
 msgstr "暂未添加配件"
 
-#: app/templates/vehicles/parts.html:101
+#: app/templates/vehicles/parts.html:60
 msgid "Track the parts and consumables needed for servicing this vehicle."
 msgstr "记录保养此车辆所需的配件和耗材。"
 
-#: app/templates/vehicles/parts.html:109
+#: app/templates/vehicles/parts.html:61
 msgid "Add First Part"
 msgstr "添加第一个配件"
 

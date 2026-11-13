@@ -1,25 +1,56 @@
-from datetime import datetime
+from datetime import date, datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from flask_babel import gettext as _
 from app import db
 from app.utils import parse_decimal
 from app.models import Vehicle, MileageAllowance
+from app.security import get_safe_redirect_url
 
 bp = Blueprint('allowance', __name__, url_prefix='/allowance')
+
+
+ALLOWANCES_PER_PAGE = 50
 
 
 @bp.route('/')
 @login_required
 def index():
+    from app.routes.log_helpers import month_start, group_by_month, monthly_totals
+    from app.utils import utcnow
+
     vehicles = current_user.get_all_vehicles()
-    vehicle_ids = [v.id for v in vehicles]
+    selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    vehicle_ids = [selected_vehicle.id] if selected_vehicle else [v.id for v in vehicles]
+    query = MileageAllowance.query.filter(MileageAllowance.vehicle_id.in_(vehicle_ids))
 
-    allowances = MileageAllowance.query.filter(
-        MileageAllowance.vehicle_id.in_(vehicle_ids)
-    ).order_by(MileageAllowance.date.desc()).all()
+    pagination = query.order_by(MileageAllowance.date.desc(), MileageAllowance.id.desc()).paginate(
+        page=request.args.get('page', 1, type=int), per_page=ALLOWANCES_PER_PAGE, error_out=False)
+    allowances = pagination.items
+    totals = monthly_totals(MileageAllowance, MileageAllowance.amount, vehicle_ids,
+                            [month_start(a.date) for a in allowances if a.date])
 
-    return render_template('allowance/index.html', allowances=allowances, vehicles=vehicles)
+    def amount_since(since=None):
+        q = db.session.query(db.func.sum(MileageAllowance.amount)).filter(
+            MileageAllowance.vehicle_id.in_(vehicle_ids))
+        if since:
+            q = q.filter(MileageAllowance.date >= since)
+        return q.scalar() or 0
+
+    now = utcnow()
+    summary = {
+        'year': amount_since(date(now.year, 1, 1)),
+        'total': amount_since(),
+        'count': pagination.total,
+    }
+
+    return render_template('allowance/index.html',
+                           allowances=allowances,
+                           pagination=pagination,
+                           groups=group_by_month(allowances, lambda a: a.date, totals),
+                           summary=summary,
+                           vehicles=vehicles,
+                           selected_vehicle=selected_vehicle)
 
 
 @bp.route('/new', methods=['GET', 'POST'])
@@ -114,4 +145,7 @@ def delete(allowance_id):
     db.session.delete(allowance)
     db.session.commit()
     flash(_('Mileage allowance deleted successfully'), 'success')
+    # The list page sends where to go back to; the vehicle page does not.
+    if request.form.get('next'):
+        return redirect(get_safe_redirect_url(request.form.get('next'), 'allowance.index'))
     return redirect(url_for('vehicles.view', vehicle_id=vehicle_id))

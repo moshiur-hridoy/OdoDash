@@ -101,3 +101,41 @@ class TestChargingPage:
         resp = auth_client.get('/charging/')
         assert resp.status_code == 200
         assert 'No charging sessions' in resp.get_data(as_text=True)
+
+
+class TestWaveTwoPages:
+    def test_trip_template_names_its_vehicle(self, auth_client, test_user, sample_vehicle):
+        from app.models import TripTemplate
+        db.session.add(TripTemplate(user_id=test_user.id, vehicle_id=sample_vehicle.id, name='Office run', purpose='business'))
+        db.session.commit()
+        text = _text(auth_client.get('/trips/templates'))
+        assert sample_vehicle.name in text
+        assert 'Any vehicle' not in text
+
+    def test_allowance_list_has_totals_and_returns_after_delete(self, auth_client, test_user, sample_vehicle):
+        from app.models import MileageAllowance
+        db.session.add_all([
+            MileageAllowance(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=date.today(), amount=100),
+            MileageAllowance(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=date.today(), amount=50),
+        ])
+        db.session.commit()
+        assert '150.00' in auth_client.get('/allowance/').get_data(as_text=True)
+        first = MileageAllowance.query.first()
+        resp = auth_client.post(f'/allowance/{first.id}/delete', data={'next': '/allowance/'})
+        assert resp.headers['Location'].endswith('/allowance/')
+
+    def test_allowance_delete_without_next_still_goes_to_the_vehicle(self, auth_client, test_user, sample_vehicle):
+        from app.models import MileageAllowance
+        db.session.add(MileageAllowance(vehicle_id=sample_vehicle.id, user_id=test_user.id, date=date.today(), amount=10))
+        db.session.commit()
+        resp = auth_client.post(f'/allowance/{MileageAllowance.query.first().id}/delete')
+        assert f'/vehicles/{sample_vehicle.id}' in resp.headers['Location']
+
+    def test_station_favourite_star_reflects_state(self, auth_client, test_user):
+        from app.models import FuelStation
+        db.session.add_all([FuelStation(user_id=test_user.id, name='Fav', is_favorite=True),
+                            FuelStation(user_id=test_user.id, name='Plain')])
+        db.session.commit()
+        body = auth_client.get('/stations/').get_data(as_text=True)
+        stars = re.findall(r'data-favorite="[^"]+"\s+aria-pressed="(\w+)"', body)
+        assert sorted(stars) == ['false', 'true']

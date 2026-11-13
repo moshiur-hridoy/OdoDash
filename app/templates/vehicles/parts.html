@@ -1,115 +1,66 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, back_link, button, badge, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Parts & Consumables') }} - {{ vehicle.name }}{% endblock %}
 
 {% block content %}
-<div class="mb-6">
-    <a href="{{ url_for('vehicles.view', vehicle_id=vehicle.id) }}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">&larr; Back to {{ vehicle.name }}</a>
-</div>
+<div class="ds log-page">
 
-<div class="flex items-center justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Parts & Consumables') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ vehicle.name }}</p>
-    </div>
-    {% if can_write('vehicles') %}
-    <a href="{{ url_for('vehicles.new_part', vehicle_id=vehicle.id) }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Part') }}
-    </a>
-    {% endif %}
-</div>
+{{ back_link(vehicle.name, url_for('vehicles.view', vehicle_id=vehicle.id)) }}
+{% call page_header(_('Parts & Consumables'), subtitle=vehicle.name) %}
+    {% if can_write('vehicles') %}{{ button(_('Add Part'), href=url_for('vehicles.new_part', vehicle_id=vehicle.id), icon_name='plus') }}{% endif %}
+{% endcall %}
 
 {% if parts_by_type %}
-<div class="space-y-6">
-    {% for type_label, type_parts in parts_by_type.items() %}
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">{{ type_label }}</h2>
-        </div>
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for part in type_parts %}
-            <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-                <div class="flex items-start justify-between">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-3">
-                            <h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ part.name }}</h3>
-                            {% if part.specification %}
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                {{ part.specification }}
-                            </span>
-                            {% endif %}
-                        </div>
-                        <div class="mt-1 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                            {% if part.quantity and part.unit %}
-                            <span>{{ part.quantity }} {{ part.unit }}</span>
-                            {% elif part.quantity %}
-                            <span>{{ _('Qty:') }} {{ part.quantity }}</span>
-                            {% endif %}
-                            {% if part.part_number %}
-                            <span class="font-mono text-xs">{{ part.part_number }}</span>
-                            {% endif %}
-                        </div>
-                        {% if part.notes %}
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 truncate">{{ part.notes }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="ml-4 flex items-center space-x-3">
-                        {% if part.supplier_url %}
-                        <a href="{{ part.supplier_url }}" target="_blank" rel="noopener noreferrer"
-                           class="p-2 text-gray-400 hover:text-primary-500" title="Open supplier link">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
-                        </a>
-                        {% endif %}
-                        {% if can_write('vehicles') %}
-                        <a href="{{ url_for('vehicles.edit_part', vehicle_id=vehicle.id, part_id=part.id) }}"
-                           class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" title="Edit">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
-                        {% endif %}
-                        {% if can_write('vehicles') %}
-                        <form method="POST" action="{{ url_for('vehicles.delete_part', vehicle_id=vehicle.id, part_id=part.id) }}"
-                              class="inline" onsubmit="return confirm('Delete this part?');">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="p-2 text-gray-400 hover:text-red-500" title="Delete">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
-                        </form>
-                        {% endif %}
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endfor %}
-</div>
+{% for type_label, type_parts in parts_by_type.items() %}
+<section class="ds-card ds-card--flush ds-section" aria-label="{{ type_label }}">
+    <header class="ds-section__head">
+        {{ icon('wrench', 18) }}
+        <h2 class="ds-section__title">{{ type_label }}</h2>
+        {{ badge(type_parts|length) }}
+    </header>
+    <ul class="ds-list">
+        {% for part in type_parts %}
+        <li class="ds-list__item">
+            <span class="ds-list__lead" aria-hidden="true">{{ icon('settings', 16) }}</span>
+            <div class="ds-list__main">
+                <h3 class="ds-list__title">
+                    <span>{{ part.name }}</span>
+                    {% if part.specification %}{{ badge(part.specification, 'accent') }}{% endif %}
+                </h3>
+                {% set qty = (part.quantity ~ ' ' ~ part.unit) if part.quantity and part.unit else ((_('Qty:') ~ ' ' ~ part.quantity) if part.quantity else None) %}
+                {% if qty or part.part_number %}
+                <span class="ds-list__sub">
+                    {{- qty or '' }}{% if qty and part.part_number %} · {% endif %}{% if part.part_number %}<span class="part-number">{{ part.part_number }}</span>{% endif -%}
+                </span>
+                {% endif %}
+                {% if part.notes %}<span class="ds-list__sub">{{ part.notes }}</span>{% endif %}
+            </div>
+            <div class="ds-list__meta"></div>
+            <div class="ds-list__actions">
+                {% if part.supplier_url %}
+                {{ button(_('Supplier URL'), href=part.supplier_url, variant='ghost', size='sm', icon_name='external', icon_only=true, attrs={'target': '_blank', 'rel': 'noopener noreferrer'}) }}
+                {% endif %}
+                {% if can_write('vehicles') %}
+                {{ button(_('Edit'), href=url_for('vehicles.edit_part', vehicle_id=vehicle.id, part_id=part.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                <form method="POST" action="{{ url_for('vehicles.delete_part', vehicle_id=vehicle.id, part_id=part.id) }}"
+                      onsubmit='return confirm({{ _("Delete this part?")|tojson }});'>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
+                </form>
+                {% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endfor %}
 {% else %}
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No parts added') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Track the parts and consumables needed for servicing this vehicle.') }}</p>
-    <div class="mt-6">
-        {% if can_write('vehicles') %}
-        <a href="{{ url_for('vehicles.new_part', vehicle_id=vehicle.id) }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add First Part') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No parts added'), _('Track the parts and consumables needed for servicing this vehicle.'), 'wrench',
+                   _('Add First Part') if can_write('vehicles') else None, url_for('vehicles.new_part', vehicle_id=vehicle.id)) }}
 </div>
 {% endif %}
+
+</div>
 {% endblock %}
