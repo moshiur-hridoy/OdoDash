@@ -25,11 +25,12 @@ def index():
     vehicle_ids = [v.id for v in vehicles]
 
     # Filter by vehicle if specified
-    vehicle_filter = request.args.get('vehicle')
+    selected_vehicle = next((v for v in vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    vehicle_filter = selected_vehicle.id if selected_vehicle else None
 
     query = Document.query.filter(Document.vehicle_id.in_(vehicle_ids))
-    if vehicle_filter:
-        query = query.filter(Document.vehicle_id == vehicle_filter)
+    if selected_vehicle:
+        query = query.filter(Document.vehicle_id == selected_vehicle.id)
 
     documents = query.order_by(Document.created_at.desc()).all()
 
@@ -45,6 +46,7 @@ def index():
                            docs_by_type=docs_by_type,
                            vehicles=vehicles,
                            vehicle_filter=vehicle_filter,
+                           selected_vehicle=selected_vehicle,
                            document_types=DOCUMENT_TYPES)
 
 

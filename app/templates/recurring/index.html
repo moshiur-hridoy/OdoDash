@@ -1,141 +1,64 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Recurring Expenses') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6 flex items-center justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Recurring Expenses') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Auto-generate regular expenses') }}</p>
-    </div>
-    {% if can_write('recurring') %}
-    <a href="{{ url_for('recurring.new') }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Recurring') }}
-    </a>
-    {% endif %}
-</div>
+{%- set category_labels = dict(categories) -%}
+{%- set frequency_labels = {'monthly': _('Monthly'), 'quarterly': _('Quarterly (every 3 months)'), 'biannual': _('Biannual (every 6 months)'), 'yearly': _('Yearly')} -%}
+<div class="ds log-page">
+
+{% call page_header(_('Recurring Expenses'), subtitle=_('Auto-generate regular expenses')) %}
+    {% if can_write('recurring') %}{{ button(_('Add Recurring'), href=url_for('recurring.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
 
 {% if recurring %}
-<div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+<section class="ds-card ds-card--flush" aria-label="{{ _('Recurring Expenses') }}">
+    <ul class="ds-list">
         {% for item in recurring %}
-        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 {% if not item.is_active %}opacity-50{% endif %}">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center min-w-0">
-                    <div class="flex-shrink-0">
-                        {% if item.is_due() %}
-                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-red-100 dark:bg-red-900">
-                            <svg class="h-5 w-5 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </span>
-                        {% elif item.is_due_soon() %}
-                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900">
-                            <svg class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </span>
-                        {% else %}
-                        <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700">
-                            <svg class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                            </svg>
-                        </span>
-                        {% endif %}
-                    </div>
-                    <div class="ml-4 min-w-0">
-                        <h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ item.name }}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ item.vehicle.name }} &middot;
-                            {{ dict(categories).get(item.category, item.category) }} &middot;
-                            {{ item.frequency|capitalize }}
-                        </p>
-                    </div>
-                </div>
-                <div class="ml-4 flex flex-shrink-0 items-center gap-4">
-                    {% if item.amount %}
-                    <div class="text-right">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ item.vehicle.currency_symbol }}{{ item.amount|money }}</p>
-                    </div>
-                    {% endif %}
-                    {% if item.next_due %}
-                    <div class="text-right">
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ _('Next due') }}</p>
-                        <p class="text-sm {% if item.is_due() %}text-red-600{% elif item.is_due_soon() %}text-amber-600{% else %}text-gray-900 dark:text-white{% endif %}">
-                            {{ item.next_due|format_date }}
-                        </p>
-                    </div>
-                    {% endif %}
-                    <div class="flex items-center gap-2">
-                        {% if item.is_due() or item.is_due_soon() %}
-                        {% if can_write('recurring') %}
-                        <form method="POST" action="{{ url_for('recurring.generate', recurring_id=item.id) }}" class="inline">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit"
-                                    class="p-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
-                                    title="{{ _('Generate Expense') }}">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                </svg>
-                            </button>
-                        </form>
-                        {% endif %}
-                        {% endif %}
-                        {% if can_write('recurring') %}
-                        <form method="POST" action="{{ url_for('recurring.toggle_active', recurring_id=item.id) }}" class="inline">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit"
-                                    class="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
-                                    title="{{ _('Pause') if item.is_active else _('Activate') }}">
-                                {% if item.is_active %}
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {% else %}
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                {% endif %}
-                            </button>
-                        </form>
-                        {% endif %}
-                        {% if can_write('recurring') %}
-                        <a href="{{ url_for('recurring.edit', recurring_id=item.id) }}"
-                           class="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
+        {%- set due = item.is_due() -%}
+        {%- set soon = not due and item.is_due_soon() -%}
+        {%- set tone = 'danger' if due else ('warning' if soon else None) -%}
+        <li class="ds-list__item{% if not item.is_active %} ds-list__item--muted{% endif %}">
+            <span class="ds-list__lead{% if tone %} ds-list__lead--{{ tone }}{% endif %}" aria-hidden="true">{{ icon('alert' if due else ('clock' if soon else 'repeat'), 16) }}</span>
+            <div class="ds-list__main">
+                <h3 class="ds-list__title">
+                    <span>{{ item.name }}</span>
+                    {% if not item.is_active %}{{ badge(_('Inactive')) }}{% endif %}
+                </h3>
+                <span class="ds-list__sub">
+                    {{- [item.vehicle.name, category_labels.get(item.category, item.category), frequency_labels.get(item.frequency, item.frequency|capitalize)]|join(' · ') -}}
+                </span>
+            </div>
+            <div class="ds-list__meta{% if tone %} ds-list__meta--{{ tone }}{% endif %}">
+                {% if item.amount %}<strong>{{ item.vehicle.currency_symbol }}{{ item.amount|money }}</strong>{% endif %}
+                {% if item.next_due %}<small>{{ _('Next due') }}: {{ item.next_due|format_date }}</small>{% endif %}
+            </div>
+            <div class="ds-list__actions">
+                {% if can_write('recurring') %}
+                {% if due or soon %}
+                <form method="POST" action="{{ url_for('recurring.generate', recurring_id=item.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {{ button(_('Generate Expense'), type='submit', variant='secondary' if due else 'ghost', size='sm', icon_name='plus', icon_only=true) }}
+                </form>
+                {% endif %}
+                <form method="POST" action="{{ url_for('recurring.toggle_active', recurring_id=item.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {{ button(_('Pause') if item.is_active else _('Activate'), type='submit', variant='ghost', size='sm', icon_name='pause' if item.is_active else 'play', icon_only=true) }}
+                </form>
+                {{ button(_('Edit'), href=url_for('recurring.edit', recurring_id=item.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                {% endif %}
             </div>
         </li>
         {% endfor %}
     </ul>
-</div>
+</section>
 {% else %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No recurring expenses') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Set up recurring expenses like insurance, road tax, or parking permits.') }}</p>
-    <div class="mt-6">
-        {% if can_write('recurring') %}
-        <a href="{{ url_for('recurring.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Recurring Expense') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No recurring expenses'), _('Set up recurring expenses like insurance, road tax, or parking permits.'), 'repeat',
+                   _('Add Recurring Expense') if can_write('recurring') else None, url_for('recurring.new')) }}
 </div>
 {% endif %}
+
+</div>
 {% endblock %}

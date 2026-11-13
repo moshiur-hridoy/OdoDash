@@ -1,117 +1,74 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Documents') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6 flex items-center justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Documents') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Vehicle documents, insurance, MOT certificates') }}</p>
-    </div>
-    {% if can_write('documents') %}
-    <a href="{{ url_for('documents.new') }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Upload Document') }}
-    </a>
-    {% endif %}
-</div>
+{%- set type_labels = dict(document_types) -%}
+{%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
+<div class="ds log-page">
 
-<!-- Filter by vehicle -->
-<div class="mb-4">
-    <select onchange="window.location.href='?vehicle=' + this.value"
-            class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-        <option value="">{{ _('All Vehicles') }}</option>
-        {% for vehicle in vehicles %}
-        <option value="{{ vehicle.id }}" {% if vehicle_filter and vehicle_filter|int == vehicle.id %}selected{% endif %}>
-            {{ vehicle.name }}
-        </option>
-        {% endfor %}
-    </select>
-</div>
+{% call page_header(_('Documents'), subtitle=_('Vehicle documents, insurance, MOT certificates')) %}
+    {% if vehicles|length > 1 %}
+    <form method="GET" class="log-vehicle">
+        <label class="ds-sr-only" for="log-vehicle">{{ _('Vehicle') }}</label>
+        <select id="log-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+            <option value="">{{ _('All Vehicles') }}</option>
+            {% for vehicle in vehicles %}
+            <option value="{{ vehicle.id }}"{% if vehicle_filter == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>
+            {% endfor %}
+        </select>
+        <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    </form>
+    {% endif %}
+    {% if can_write('documents') %}{{ button(_('Upload Document'), href=url_for('documents.new'), icon_name='upload') }}{% endif %}
+{% endcall %}
 
 {% if documents %}
-<div class="space-y-6">
-    {% for type_id, type_docs in docs_by_type.items() %}
-    <div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-medium text-gray-900 dark:text-white">
-                {{ dict(document_types).get(type_id, type_id|capitalize) }}
-            </h2>
-        </div>
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-            {% for doc in type_docs %}
-            <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 {% if doc.is_expired() %}bg-red-50 dark:bg-red-900/20{% elif doc.is_expiring_soon() %}bg-amber-50 dark:bg-amber-900/20{% endif %}">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center min-w-0">
-                        <div class="flex-shrink-0">
-                            {% if doc.file_type in ['pdf'] %}
-                            <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
-                            </svg>
-                            {% elif doc.file_type in ['png', 'jpg', 'jpeg', 'gif', 'webp'] %}
-                            <svg class="h-8 w-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
-                            </svg>
-                            {% else %}
-                            <svg class="h-8 w-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
-                            </svg>
-                            {% endif %}
-                        </div>
-                        <div class="ml-4 min-w-0">
-                            <a href="{{ url_for('documents.view', document_id=doc.id) }}" class="text-sm font-medium text-gray-900 dark:text-white hover:text-primary-600 truncate block">
-                                {{ doc.title }}
-                            </a>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ doc.vehicle.name }}
-                                {% if doc.reference_number %} &middot; {{ doc.reference_number }}{% endif %}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="ml-4 flex-shrink-0 flex items-center gap-4">
-                        {% if doc.expiry_date %}
-                        <div class="text-right">
-                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ _('Expires') }}</p>
-                            <p class="text-sm {% if doc.is_expired() %}text-red-600{% elif doc.is_expiring_soon() %}text-amber-600{% else %}text-gray-900 dark:text-white{% endif %}">
-                                {{ doc.expiry_date|format_date }}
-                            </p>
-                        </div>
-                        {% endif %}
-                        <a href="{{ url_for('documents.download', document_id=doc.id) }}"
-                           class="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
-                           title="{{ _('Download') }}">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endfor %}
+{% for type_id, type_docs in docs_by_type.items() %}
+<section class="ds-card ds-card--flush ds-section" aria-label="{{ type_labels.get(type_id, type_id|capitalize) }}">
+    <header class="ds-section__head">
+        {{ icon('document', 18) }}
+        <h2 class="ds-section__title">{{ type_labels.get(type_id, type_id|capitalize) }}</h2>
+        {{ badge(type_docs|length) }}
+    </header>
+    <ul class="ds-list">
+        {% for doc in type_docs %}
+        {%- set expired = doc.is_expired() -%}
+        {%- set expiring = not expired and doc.is_expiring_soon() -%}
+        {%- set tone = 'danger' if expired else ('warning' if expiring else None) -%}
+        {%- set is_image = doc.file_type in ['png', 'jpg', 'jpeg', 'gif', 'webp'] -%}
+        <li class="ds-list__item">
+            <span class="ds-list__lead{% if tone %} ds-list__lead--{{ tone }}{% endif %}" aria-hidden="true">{{ icon('image' if is_image else 'document', 16) }}</span>
+            <div class="ds-list__main">
+                <h3 class="ds-list__title">
+                    <a href="{{ url_for('documents.view', document_id=doc.id) }}">{{ doc.title }}</a>
+                    {% if expired %}{{ badge(_('Expired'), 'danger') }}{% elif expiring %}{{ badge(_('Expiring soon'), 'warning') }}{% endif %}
+                </h3>
+                {% set sub = [doc.vehicle.name if multi_vehicle else None, doc.reference_number, (doc.file_type or '')|upper or None]|select|join(' · ') %}
+                {% if sub %}<span class="ds-list__sub">{{ sub }}</span>{% endif %}
+            </div>
+            <div class="ds-list__meta{% if tone %} ds-list__meta--{{ tone }}{% endif %}">
+                {% if doc.expiry_date %}<small>{{ _('Expires') }}</small> <strong>{{ doc.expiry_date|format_date }}</strong>{% endif %}
+            </div>
+            <div class="ds-list__actions">
+                {{ button(_('Download'), href=url_for('documents.download', document_id=doc.id), variant='ghost', size='sm', icon_name='download', icon_only=true) }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endfor %}
+{% elif vehicle_filter %}
+<div class="ds-card">
+    {{ empty_state(_('No documents'), _('No documents for this vehicle yet.'), 'document', _('All Vehicles'), url_for('documents.index')) }}
 </div>
 {% else %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No documents') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Store your vehicle documents, insurance policies, and MOT certificates.') }}</p>
-    <div class="mt-6">
-        {% if can_write('documents') %}
-        <a href="{{ url_for('documents.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Upload Document') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No documents'), _('Store your vehicle documents, insurance policies, and MOT certificates.'), 'document',
+                   _('Upload Document') if can_write('documents') else None, url_for('documents.new')) }}
 </div>
 {% endif %}
+
+</div>
 {% endblock %}

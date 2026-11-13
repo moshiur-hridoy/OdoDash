@@ -1,160 +1,32 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button %}
 {% block title %}{{ _('Charging Sessions') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Charging Sessions') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Track your EV charging sessions') }}</p>
-    </div>
-    {% if can_write('charging') %}
-    <a href="{{ url_for('charging.new') }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Log Charge') }}
-    </a>
-    {% endif %}
-</div>
+{%- set currency = current_user.currency -%}
+{%- set scope_args = {'vehicle': selected_vehicle.id} if selected_vehicle else {} -%}
+{%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
+{%- set pager_endpoint = 'charging.index' -%}
+{%- set pager_args = scope_args -%}
+<div class="ds log-page">
 
-<!-- Summary Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div class="surface-card bg-white dark:bg-gray-800 p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Energy') }}</dt>
-        <dd class="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">{{ "%.1f"|format(total_kwh) }} kWh</dd>
-    </div>
-    <div class="surface-card bg-white dark:bg-gray-800 p-4">
-        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Total Cost') }}</dt>
-        <dd class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">{{ total_cost|money }} {{ current_user.currency }}</dd>
-    </div>
-</div>
-
-<!-- Filters -->
-{% if vehicles|length > 1 %}
-<div class="surface-card bg-white dark:bg-gray-800 p-4 mb-6">
-    <form method="GET" class="flex flex-wrap gap-4 items-end">
-        <div>
-            <label for="vehicle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vehicle') }}</label>
-            <select name="vehicle" id="vehicle" class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                <option value="">{{ _('All Vehicles') }}</option>
-                {% for vehicle in vehicles %}
-                <option value="{{ vehicle.id }}" {% if vehicle_filter == vehicle.id %}selected{% endif %}>{{ vehicle.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <button type="submit" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium">
-            {{ _('Filter') }}
-        </button>
-        {% if vehicle_filter %}
-        <a href="{{ url_for('charging.index') }}" class="px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-sm">
-            {{ _('Clear') }}
-        </a>
-        {% endif %}
+{% call page_header(_('Charging Sessions'), subtitle=_('Track your EV charging sessions')) %}
+    {% if vehicles|length > 1 %}
+    <form method="GET" class="log-vehicle">
+        <label class="ds-sr-only" for="log-vehicle">{{ _('Vehicle') }}</label>
+        <select id="log-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+            <option value="">{{ _('All Vehicles') }}</option>
+            {% for vehicle in vehicles %}
+            <option value="{{ vehicle.id }}"{% if selected_vehicle and selected_vehicle.id == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>
+            {% endfor %}
+        </select>
+        <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
     </form>
-</div>
-{% endif %}
+    {% endif %}
+    {% if can_write('charging') %}{{ button(_('Log Charge'), href=url_for('charging.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
 
-<!-- Sessions List -->
-{% if sessions %}
-<div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        {% for session in sessions %}
-        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">
-                            {{ session.date|format_date }}
-                            {% if session.start_time %}
-                            <span class="text-gray-500 dark:text-gray-400">{{ session.start_time.strftime('%H:%M') }}</span>
-                            {% endif %}
-                        </p>
-                        {% if session.charger_type %}
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                     {% if session.charger_type == 'home' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                     {% elif session.charger_type == 'dcfc' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                     {% elif session.charger_type == 'tesla' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                     {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300{% endif %}">
-                            {{ dict(charger_types)[session.charger_type] if session.charger_type in dict(charger_types) else session.charger_type }}
-                        </span>
-                        {% endif %}
-                    </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {{ session.vehicle.name }}
-                        {% if session.location %}&middot; {{ session.location }}{% endif %}
-                        {% if session.network %}<span class="text-gray-400 dark:text-gray-500">({{ session.network }})</span>{% endif %}
-                    </p>
-                    {% if session.start_soc is not none and session.end_soc is not none %}
-                    <div class="mt-2 flex items-center gap-2">
-                        <div class="flex-1 max-w-xs">
-                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-                                <span>{{ session.start_soc }}%</span>
-                                <span>{{ session.end_soc }}%</span>
-                            </div>
-                            <div class="h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                                <div class="h-full bg-green-500 rounded-full" style="width: {{ session.end_soc }}%;">
-                                    <div class="h-full bg-green-300" style="width: {{ (session.start_soc / session.end_soc * 100) if session.end_soc > 0 else 0 }}%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="ml-4 flex items-center gap-4">
-                    <div class="text-right">
-                        {% if session.kwh_added %}
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ "%.1f"|format(session.kwh_added) }} kWh</p>
-                        {% endif %}
-                        {% if session.total_cost %}
-                        <p class="text-sm text-green-600 dark:text-green-400">{{ session.total_cost|money }} {{ current_user.currency }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="flex items-center gap-2">
-                        {% if can_write('charging') %}
-                        <a href="{{ url_for('charging.edit', session_id=session.id) }}"
-                           class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
-                        {% endif %}
-                        {% if can_write('charging') %}
-                        <form method="POST" action="{{ url_for('charging.delete', session_id=session.id) }}" class="inline"
-                              onsubmit="return confirm('Delete this charging session?');">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="text-gray-400 hover:text-red-600">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
-                        </form>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+{% include 'charging/_log.html' %}
+
 </div>
-{% else %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No charging sessions') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Start tracking your EV charging to monitor energy usage and costs.') }}</p>
-    <div class="mt-6">
-        {% if can_write('charging') %}
-        <a href="{{ url_for('charging.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Log Your First Charge') }}
-        </a>
-        {% endif %}
-    </div>
-</div>
-{% endif %}
 {% endblock %}

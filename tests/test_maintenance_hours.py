@@ -212,8 +212,10 @@ class TestMaintenanceRoutes:
         body = auth_client.get('/maintenance/').data.decode()
 
         assert 'Every 250 h' in body
-        assert '1,250 h' in body
-        assert '1,250 mi' not in body
+        # Readings follow the account's thousands-separator preference (#134);
+        # the test user has none.
+        assert '1250 h' in body
+        assert '1250 mi' not in body
 
 
 class TestHoursDisplayLabels:

@@ -1,112 +1,116 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, empty_state, pager %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Notes') }}{% endblock %}
 
 {% block content %}
-<div class="sm:flex sm:items-center sm:justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Notes') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400">{{ _('Record events and observations that don\'t fit fuel, expenses or maintenance') }}</p>
-    </div>
-    {% if can_write('notes') %}
-    <a href="{{ url_for('notes.new') }}"
-       class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Note') }}
-    </a>
+{%- set scope_args = {'vehicle': selected_vehicle.id} if selected_vehicle else {} -%}
+{%- set multi_vehicle = vehicles|length > 1 and not selected_vehicle -%}
+<div class="ds log-page">
+
+{% call page_header(_('Notes'), subtitle=_('Record events and observations that don\'t fit fuel, expenses or maintenance')) %}
+    {% if vehicles|length > 1 %}
+    <form method="GET" class="log-vehicle">
+        <label class="ds-sr-only" for="log-vehicle">{{ _('Vehicle') }}</label>
+        <select id="log-vehicle" name="vehicle" class="ds-control" onchange="this.form.submit()">
+            <option value="">{{ _('All Vehicles') }}</option>
+            {% for vehicle in vehicles %}
+            <option value="{{ vehicle.id }}"{% if selected_vehicle and selected_vehicle.id == vehicle.id %} selected{% endif %}>{{ vehicle.name }}</option>
+            {% endfor %}
+        </select>
+        <noscript>{{ button(_('Filter'), type='submit', variant='secondary') }}</noscript>
+    </form>
     {% endif %}
-</div>
+    {% if can_write('notes') %}{{ button(_('Add Note'), href=url_for('notes.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
 
 {% if notes %}
-<div class="table-surface bg-white dark:bg-gray-800 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                    <th class="w-8 px-3 py-3"></th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Date') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Vehicle') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Note') }}</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Odometer') }}</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Actions') }}</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {% for note in notes %}
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" onclick="toggleNoteDetail({{ note.id }})">
-                    <td class="px-3 py-4 text-center">
-                        <svg id="chevron-{{ note.id }}" class="h-4 w-4 text-gray-400 transition-transform duration-150 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ note.date|format_date }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        <a href="{{ url_for('vehicles.view', vehicle_id=note.vehicle_id) }}" class="text-primary-600 hover:text-primary-500" onclick="event.stopPropagation()">
-                            {{ note.vehicle.name }}
-                        </a>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ note.title or (note.content[:60] ~ ('…' if note.content|length > 60 else '')) }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {% if note.odometer %}{{ note.odometer|groupnum }} {{ note.vehicle.get_reading_unit() }}{% else %}-{% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onclick="event.stopPropagation()">
-                        {% if can_write('notes') %}
-                        <a href="{{ url_for('notes.edit', note_id=note.id) }}" class="text-primary-600 hover:text-primary-900 mr-3">{{ _('Edit') }}</a>
+<section class="ds-card ds-card--flush ds-log" aria-label="{{ _('Notes') }}">
+    <div class="ds-table-wrap">
+    <table class="ds-table ds-table--stack">
+        <thead>
+            <tr>
+                <th scope="col">{{ _('Date') }}</th>
+                <th scope="col">{{ _('Note') }}</th>
+                <th scope="col" class="ds-num">{{ _('Odometer') }}</th>
+                <th scope="col"><span class="ds-sr-only">{{ _('Actions') }}</span></th>
+            </tr>
+        </thead>
+        {% for group in groups %}
+        <tbody>
+            {% if group.month %}
+            <tr class="ds-log__month">
+                <th scope="colgroup" colspan="3">{{ group.month|dateformat('LLLL yyyy') }}</th>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% for note in group.rows %}
+            {%- set long = note.title or note.content|length > 140 or '\n' in note.content -%}
+            <tr>
+                <td class="ds-log__date ds-log__wide">
+                    <span class="ds-log__day">{{ note.date|dateformat('d') }}</span>
+                    <span class="ds-log__dow">{{ note.date|dateformat('EEE') }}</span>
+                </td>
+                <td data-cell="title">
+                    {% if note.title %}
+                    <span class="ds-log__title">{{ note.title }}</span>
+                    <span class="note-preview">{{ note.content }}</span>
+                    {% else %}
+                    <span class="note-preview note-preview--lead">{{ note.content }}</span>
+                    {% endif %}
+                    {% if multi_vehicle %}<span class="ds-log__sub"><a href="{{ url_for('vehicles.view', vehicle_id=note.vehicle_id) }}">{{ note.vehicle.name }}</a></span>{% endif %}
+                    <span class="ds-log__phone-meta">
+                        {{- note.date|dateformat('d MMM') }}
+                        {%- if note.odometer %} · {{ note.odometer|groupnum }} {{ note.vehicle.get_reading_unit() }}{% endif -%}
+                    </span>
+                </td>
+                <td class="ds-num ds-muted ds-log__wide">{% if note.odometer %}{{ note.odometer|groupnum }} <span class="ds-log__unit">{{ note.vehicle.get_reading_unit() }}</span>{% else %}&mdash;{% endif %}</td>
+                <td data-cell="actions">
+                    <div class="ds-table__actions">
+                        {% if long %}
+                        <button type="button" class="ds-btn ds-btn--ghost ds-btn--sm ds-btn--icon exp-toggle" data-disclosure
+                                aria-controls="detail-{{ note.id }}" aria-expanded="false" title="{{ _('Details') }}">
+                            {{ icon('chevron-down', 16) }}<span class="ds-sr-only">{{ _('Details') }}</span>
+                        </button>
                         {% endif %}
                         {% if can_write('notes') %}
-                        <form method="POST" action="{{ url_for('notes.delete', note_id=note.id) }}" class="inline"
-                              onsubmit="return confirm('{{ _('Delete this note?') }}');">
+                        {{ button(_('Edit'), href=url_for('notes.edit', note_id=note.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                        <form method="POST" action="{{ url_for('notes.delete', note_id=note.id) }}"
+                              onsubmit='return confirm({{ _("Delete this note?")|tojson }});'>
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="text-red-600 hover:text-red-900">{{ _('Delete') }}</button>
+                            <input type="hidden" name="next" value="{{ request.full_path }}">
+                            {{ button(_('Delete'), type='submit', variant='ghost', size='sm', icon_name='trash', icon_only=true) }}
                         </form>
                         {% endif %}
-                    </td>
-                </tr>
-                <tr id="detail-{{ note.id }}" class="hidden bg-gray-50 dark:bg-gray-700/50">
-                    <td></td>
-                    <td colspan="5" class="px-6 py-3">
-                        {% if note.title %}<p class="text-sm font-medium text-gray-900 dark:text-white mb-1">{{ note.title }}</p>{% endif %}
-                        <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{{ note.content|linkify }}</p>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </td>
+            </tr>
+            {% if long %}
+            <tr class="exp-detail" id="detail-{{ note.id }}" hidden>
+                <td class="ds-log__wide"></td>
+                <td colspan="3">
+                    <div class="exp-detail__list">
+                        {% if note.title %}<strong>{{ note.title }}</strong>{% endif %}
+                        <p class="note-body">{{ note.content|linkify }}</p>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+        {% endfor %}
+    </table>
     </div>
-</div>
+    {{ pager(pagination,
+             url_for('notes.index', page=pagination.prev_num, **scope_args) if pagination.has_prev else None,
+             url_for('notes.index', page=pagination.next_num, **scope_args) if pagination.has_next else None) }}
+</section>
 {% else %}
-<div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No notes') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Jot down anything worth remembering about your vehicles.') }}</p>
-    <div class="mt-6">
-        {% if can_write('notes') %}
-        <a href="{{ url_for('notes.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Note') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No notes'), _('Jot down anything worth remembering about your vehicles.'), 'note',
+                   _('Add Note') if can_write('notes') else None, url_for('notes.new')) }}
 </div>
 {% endif %}
 
-<script>
-function toggleNoteDetail(id) {
-    const row = document.getElementById('detail-' + id);
-    const chevron = document.getElementById('chevron-' + id);
-    if (row.classList.contains('hidden')) {
-        row.classList.remove('hidden');
-        chevron.style.transform = 'rotate(90deg)';
-    } else {
-        row.classList.add('hidden');
-        chevron.style.transform = '';
-    }
-}
-</script>
+</div>
 {% endblock %}

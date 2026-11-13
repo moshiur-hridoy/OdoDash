@@ -979,6 +979,113 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
   .log-summary--compact dd span { display: block; margin: 0; }
 }
 
+/* ---- Item lists (reminders, schedules, documents, recurring) ----------
+   One row per item: a lead icon or check button, the title block, a
+   right-aligned meta column (due date, amount) and the action icons. On
+   phones the meta drops under the title so nothing scrolls sideways. */
+.ds-list { margin: 0; padding: 0; list-style: none; }
+.ds-list__item {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 4px 16px;
+  padding: 14px 24px; border-bottom: 1px solid var(--ds-border-soft);
+}
+.ds-list__item:last-child { border-bottom: 0; }
+.ds-list__item:hover { background: color-mix(in srgb, var(--ds-surface-sunken) 55%, var(--ds-surface)); }
+.ds-list__item--muted .ds-list__main,
+.ds-list__item--muted .ds-list__meta { opacity: 0.6; }
+.ds-list__lead {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: 32px; height: 32px;
+  border-radius: 9px; background: var(--ds-surface-sunken); color: var(--ds-text-muted);
+}
+.ds-list__lead--danger { background: var(--ds-danger-soft); color: var(--ds-danger); }
+.ds-list__lead--warning { background: var(--ds-warning-soft); color: var(--ds-warning); }
+.ds-list__lead--success { background: var(--ds-success-soft); color: var(--ds-success); }
+.ds-list__lead--accent { background: var(--ds-accent-soft); color: var(--ds-accent-ink); }
+.ds-list__check { display: flex; justify-content: center; width: 32px; margin: 0; }
+.ds-list__main { min-width: 0; }
+.ds-list__title {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0;
+  font-size: var(--ds-text-sm); font-weight: 500; color: var(--ds-text); overflow-wrap: anywhere;
+}
+.ds-list__title a { color: inherit; text-decoration: none; }
+.ds-list__title a:hover { color: var(--ds-accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+.ds-list__title svg { color: var(--ds-text-subtle); }
+.ds-list__title--done { text-decoration: line-through; color: var(--ds-text-muted); }
+.ds-list__sub { display: block; margin-top: 2px; font-size: var(--ds-text-xs); color: var(--ds-text-muted); overflow-wrap: anywhere; }
+.ds-list__sub a { color: inherit; text-decoration: none; }
+.ds-list__sub a:hover { color: var(--ds-accent-ink); text-decoration: underline; }
+.ds-list__meta { text-align: right; font-size: var(--ds-text-sm); white-space: nowrap; }
+.ds-list__meta strong { display: block; font-family: var(--ds-font-mono); font-weight: 600; }
+.ds-list__meta small { display: block; font-size: var(--ds-text-xs); color: var(--ds-text-muted); }
+.ds-list__meta--danger, .ds-list__meta--danger small { color: var(--ds-danger); }
+.ds-list__meta--warning, .ds-list__meta--warning small { color: var(--ds-warning); }
+.ds-list__actions { display: flex; justify-content: flex-end; gap: 4px; }
+.ds-list__actions form { margin: 0; }
+
+/* The round "mark done" button in a list's lead column. */
+.ds-check {
+  display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0;
+  border: 2px solid var(--ds-border); border-radius: 50%; background: var(--ds-surface); color: transparent; cursor: pointer;
+  transition: border-color var(--ds-duration-fast) ease, color var(--ds-duration-fast) ease;
+}
+.ds-check:hover { border-color: var(--ds-success); color: var(--ds-success); }
+.ds-check:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.ds-check--done { border-color: var(--ds-success); background: var(--ds-success); color: var(--ds-surface); }
+.ds-check--done:hover { color: var(--ds-surface); opacity: 0.85; }
+
+/* A titled block of list rows, e.g. "Overdue · 2". */
+.ds-section__head { display: flex; align-items: center; gap: 8px; padding: 16px 24px 12px; border-bottom: 1px solid var(--ds-border-soft); }
+.ds-section__title { margin: 0; font-size: var(--ds-text-base); font-weight: 600; }
+.ds-section__head svg { color: var(--ds-text-muted); }
+.ds-section--danger .ds-section__head svg, .ds-section--danger .ds-section__title { color: var(--ds-danger); }
+.ds-section--warning .ds-section__head svg, .ds-section--warning .ds-section__title { color: var(--ds-warning); }
+.ds-section--success .ds-section__head svg { color: var(--ds-success); }
+
+.ds-filters .ds-switch { align-self: flex-end; min-height: 38px; }
+
+@media (max-width: 640px) {
+  .ds-list__item { grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 16px; }
+  .ds-list__lead { width: 28px; height: 28px; }
+  .ds-list__meta { grid-column: 2; grid-row: 2; text-align: left; white-space: normal; }
+  .ds-list__meta strong, .ds-list__meta small { display: inline; white-space: nowrap; }
+  .ds-list__meta small + small::before { content: " · "; }
+  .ds-list__meta > :first-child::before { content: none; }
+  .ds-list__meta strong + small::before { content: " · "; }
+  .ds-list__meta small + strong { margin-inline-start: 2px; }
+  .ds-list__actions { grid-column: 3; grid-row: 1 / span 2; }
+  .ds-list__item > .ds-list__lead,
+  .ds-list__item > .ds-list__check { grid-row: 1 / span 2; align-self: start; }
+  .ds-list__check { width: 28px; padding-top: 2px; }
+  .ds-section__head { padding: 14px 16px 10px; }
+}
+
+/* ---- Dialog -------------------------------------------------------- */
+.ds-dialog {
+  width: min(440px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-card);
+  background: var(--ds-surface); color: var(--ds-text); box-shadow: var(--ds-shadow-popover);
+}
+.ds-dialog::backdrop { background: rgb(0 0 0 / 0.45); }
+.ds-dialog__body { display: flex; flex-direction: column; gap: 14px; padding: 20px 24px; }
+.ds-dialog__title { margin: 0; font-size: var(--ds-text-lg); font-weight: 600; overflow-wrap: anywhere; }
+.ds-dialog__actions {
+  display: flex; justify-content: flex-end; gap: 8px; padding: 12px 24px;
+  border-top: 1px solid var(--ds-border-soft); background: var(--ds-surface-sunken);
+  border-radius: 0 0 var(--ds-radius-card) var(--ds-radius-card);
+}
+.ds-dialog__group { display: flex; flex-direction: column; gap: 14px; }
+.ds-dialog [hidden] { display: none; }
+
+/* ---- Trips --------------------------------------------------------- */
+.trip-route { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; }
+.trip-route svg { color: var(--ds-text-subtle); }
+
+/* ---- Notes --------------------------------------------------------- */
+.note-preview {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  margin-top: 2px; font-size: var(--ds-text-xs); color: var(--ds-text-muted); overflow-wrap: anywhere;
+}
+.note-preview--lead { margin-top: 0; font-size: var(--ds-text-sm); font-weight: 500; color: var(--ds-text); }
+.note-body { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+
 /* ---- Import and restore ---------------------------------------------- */
 .import-page { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 .import-page--wide { max-width: 960px; }

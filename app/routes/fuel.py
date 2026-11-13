@@ -18,6 +18,10 @@ from app.security import (
 )
 from flask_babel import gettext as _
 from app.services.tessie import TessieService
+from app.routes.log_helpers import (
+    month_start as _month_start, group_by_month as _group_by_month,
+    monthly_totals as _monthly_totals,
+)
 
 bp = Blueprint('fuel', __name__, url_prefix='/fuel')
 
@@ -68,10 +72,6 @@ LOWER_IS_BETTER = {'L/100km', 'L / h'}
 CONSUMPTION_TREND_MARGIN = 0.05
 
 
-def _month_start(value):
-    return date(value.year, value.month, 1)
-
-
 def _consumption_trend(value, average, unit):
     """'better', 'worse' or None for one fill against its vehicle's average."""
     if not value or not average:
@@ -109,42 +109,16 @@ def _fuel_rows(logs):
     return rows
 
 
-def _group_by_month(rows, date_of, totals):
-    """Split already-sorted rows into [{month, total, rows}] blocks."""
-    groups = []
-    for row in rows:
-        when = date_of(row)
-        month = _month_start(when) if when else None
-        if not groups or groups[-1]['month'] != month:
-            groups.append({'month': month, 'total': totals.get(month), 'rows': []})
-        groups[-1]['rows'].append(row)
-    return groups
 
 
-def _monthly_totals(model, cost_column, vehicle_ids, months):
-    """Cost per calendar month over every log, not just the page shown."""
-    months = [m for m in months if m]
-    if not months:
-        return {}
-    year = extract('year', model.date)
-    month = extract('month', model.date)
-    rows = (db.session.query(year, month, func.sum(cost_column))
-            .filter(model.vehicle_id.in_(vehicle_ids),
-                    model.date >= min(months),
-                    model.date < _add_month(max(months)))
-            .group_by(year, month).all())
-    return {date(int(y), int(m), 1): round(total or 0, 2) for y, m, total in rows}
 
 
-def _add_month(value):
-    return date(value.year + value.month // 12, value.month % 12 + 1, 1)
 
 
 @bp.route('/')
 @login_required
 def index():
     from app.models import ChargingSession
-    from app.models import CHARGER_TYPES
     from app.utils import utcnow
 
     vehicles = current_user.get_all_vehicles()
@@ -163,8 +137,7 @@ def index():
     this_year = date(now.year, 1, 1)
 
     fuel_count = FuelLog.query.filter(FuelLog.vehicle_id.in_(vehicle_ids)).count()
-    charging_query = ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids))
-    charging_count = charging_query.count()
+    charging_count = ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids)).count()
 
     context = dict(
         vehicles=vehicles,
@@ -176,35 +149,10 @@ def index():
     )
 
     if active_tab == 'charging':
-        # One page of sessions, newest first; same-day sessions by odometer (#329).
-        pagination = charging_query.options(joinedload(ChargingSession.vehicle)).order_by(
-            ChargingSession.date.desc(), ChargingSession.odometer.desc(), ChargingSession.id.desc()
-        ).paginate(page=page, per_page=FUEL_LOGS_PER_PAGE, error_out=False)
-        sessions = pagination.items
-        totals = _monthly_totals(ChargingSession, ChargingSession.total_cost, vehicle_ids,
-                                 [_month_start(s.date) for s in sessions if s.date])
-
-        def charging_sum(column, since):
-            return db.session.query(func.sum(column)).filter(
-                ChargingSession.vehicle_id.in_(vehicle_ids), ChargingSession.date >= since).scalar() or 0
-
-        year_kwh = charging_sum(ChargingSession.kwh_added, this_year)
-        year_cost = charging_sum(ChargingSession.total_cost, this_year)
-        last = charging_query.order_by(ChargingSession.date.desc(), ChargingSession.id.desc()).first()
-        summary = {
-            'month_cost': charging_sum(ChargingSession.total_cost, this_month),
-            'month_kwh': charging_sum(ChargingSession.kwh_added, this_month),
-            'year_cost': year_cost,
-            'cost_per_kwh': (year_cost / year_kwh) if year_kwh and year_cost else None,
-            'last': last,
-        }
+        from app.routes.charging import charging_log
         return render_template('fuel/index.html',
-                               pagination=pagination,
-                               charging_sessions=sessions,
-                               groups=_group_by_month(sessions, lambda s: s.date, totals),
-                               summary=summary,
-                               charger_types=dict(CHARGER_TYPES),
                                logs=[], sales_tax_by_year=[],
+                               **charging_log(vehicle_ids, page, FUEL_LOGS_PER_PAGE),
                                **context)
 
     # One page of fuel logs. Each row's consumption figure costs a few

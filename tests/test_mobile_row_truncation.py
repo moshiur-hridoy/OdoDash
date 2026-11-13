@@ -1,7 +1,7 @@
 """Mobile list rows must not crush the name column to a single letter (#347).
 
 Both the Recurring Expenses list (`recurring/index.html`) and the Upcoming
-Reminders row (`reminders/_reminder_row.html`) lay each entry out as a flex row:
+Reminders row (`reminders/_reminder_row.html`) used to lay each entry out as a flex row:
 a name/title block on the left and a cluster of metadata plus action buttons on
 the right. The right cluster had no `flex-shrink-0`, so on a narrow (mobile)
 viewport flexbox shrank *both* sides to fit, and the `truncate` on the name then
@@ -9,8 +9,9 @@ collapsed it to the first letter ("R..." for "Roadside Assistance").
 
 The fix pins the right cluster with `flex-shrink-0` and gives the name column a
 `min-w-0` ancestor so it truncates gracefully with room, rather than vanishing.
-These tests assert that structure survives, and that the full name is still in
-the DOM (truncation is visual only, so nothing is actually lost).
+Both lists now use the design system's `.ds-list` grid, whose title column is
+`minmax(0, 1fr)`. These tests assert that structure and that the full name is
+still in the DOM.
 """
 
 from datetime import date
@@ -41,10 +42,11 @@ class TestRecurringRowLayout:
         body = resp.get_data(as_text=True)
         # The full name survives in the DOM — truncation is CSS-only.
         assert LONG_NAME in body
-        # The action/metadata cluster must not shrink and steal the name's width.
-        assert 'flex flex-shrink-0 items-center gap-4' in body
-        # The name still truncates gracefully when there genuinely isn't room.
-        assert 'truncate' in body
+        # The row is a .ds-list grid: the name column is minmax(0, 1fr), so it
+        # takes the room the meta and actions leave and wraps instead of
+        # collapsing, and on phones the meta drops under it.
+        assert 'class="ds-list__item' in body
+        assert 'class="ds-list__main"' in body
 
 
 class TestReminderRowLayout:
@@ -64,8 +66,7 @@ class TestReminderRowLayout:
         assert resp.status_code == 200
         body = resp.get_data(as_text=True)
         assert LONG_NAME in body
-        # Right cluster (due date + actions) pinned so it can't crush the title.
-        assert 'flex flex-shrink-0 items-center space-x-4' in body
-        # Left block carries min-w-0 so the truncate on the title actually engages.
-        assert 'flex items-center space-x-4 min-w-0' in body
-        assert 'truncate' in body
+        # Same .ds-list grid as the recurring list: the title column flexes,
+        # the due date and actions keep their width.
+        assert 'class="ds-list__item' in body
+        assert 'class="ds-list__main"' in body

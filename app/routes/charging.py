@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import date, datetime
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from flask_babel import gettext as _
+from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 from app import db
-from app.utils import parse_decimal
+from app.utils import parse_decimal, utcnow
 from app.models import Vehicle, ChargingSession, CHARGER_TYPES
 
 bp = Blueprint('charging', __name__, url_prefix='/charging')
@@ -32,39 +34,72 @@ def parse_soc(raw):
     return int(number), None
 
 
+#: Sessions per page on the charging history.
+SESSIONS_PER_PAGE = 50
+
+
+def charging_log(vehicle_ids, page, per_page=SESSIONS_PER_PAGE):
+    """One page of charging history plus its summary, for these vehicles.
+
+    Shared by the charging page and the Charging tab of the fuel page, so the
+    two always show the same figures.
+    """
+    from app.routes.log_helpers import month_start, group_by_month, monthly_totals
+
+    now = utcnow()
+    this_month = month_start(now)
+    this_year = date(now.year, 1, 1)
+    query = ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids))
+
+    # Newest first; same-day sessions by odometer (#329).
+    pagination = query.options(joinedload(ChargingSession.vehicle)).order_by(
+        ChargingSession.date.desc(), ChargingSession.odometer.desc(), ChargingSession.id.desc()
+    ).paginate(page=page, per_page=per_page, error_out=False)
+    sessions = pagination.items
+    totals = monthly_totals(ChargingSession, ChargingSession.total_cost, vehicle_ids,
+                            [month_start(s.date) for s in sessions if s.date])
+
+    def total(column, since):
+        return db.session.query(func.sum(column)).filter(
+            ChargingSession.vehicle_id.in_(vehicle_ids), ChargingSession.date >= since).scalar() or 0
+
+    year_kwh = total(ChargingSession.kwh_added, this_year)
+    year_cost = total(ChargingSession.total_cost, this_year)
+    summary = {
+        'month_cost': total(ChargingSession.total_cost, this_month),
+        'month_kwh': total(ChargingSession.kwh_added, this_month),
+        'year_cost': year_cost,
+        'cost_per_kwh': (year_cost / year_kwh) if year_kwh and year_cost else None,
+        'last': query.order_by(ChargingSession.date.desc(), ChargingSession.id.desc()).first(),
+    }
+    return dict(
+        pagination=pagination,
+        charging_sessions=sessions,
+        groups=group_by_month(sessions, lambda s: s.date, totals),
+        summary=summary,
+        charger_types=dict(CHARGER_TYPES),
+    )
+
+
 @bp.route('/')
 @login_required
 def index():
-    """List all charging sessions"""
+    """Charging history: the same log as the fuel page's Charging tab."""
     vehicles = current_user.get_all_vehicles()
-    vehicle_ids = [v.id for v in vehicles]
+    # Vehicles that charge, plus any that already have sessions logged.
+    charged = {vid for (vid,) in db.session.query(ChargingSession.vehicle_id).filter(
+        ChargingSession.vehicle_id.in_([v.id for v in vehicles])).distinct()}
+    ev_vehicles = [v for v in vehicles if v.is_electric() or v.id in charged]
+    selected_vehicle = next((v for v in ev_vehicles if v.id == request.args.get('vehicle', type=int)), None)
+    scope = [selected_vehicle] if selected_vehicle else ev_vehicles
+    page = request.args.get('page', 1, type=int)
 
-    # Only show vehicles that can charge (EVs, hybrids, plug-in hybrids)
-    ev_vehicles = [v for v in vehicles if v.is_electric()]
-
-    # Get filter parameters
-    vehicle_filter = request.args.get('vehicle', type=int)
-
-    # Base query
-    query = ChargingSession.query.filter(ChargingSession.vehicle_id.in_(vehicle_ids))
-
-    # Apply filters
-    if vehicle_filter:
-        query = query.filter(ChargingSession.vehicle_id == vehicle_filter)
-
-    sessions = query.order_by(ChargingSession.date.desc(), ChargingSession.odometer.desc()).all()
-
-    # Calculate totals
-    total_kwh = sum(s.kwh_added or 0 for s in sessions)
-    total_cost = sum(s.total_cost or 0 for s in sessions)
-
+    log = charging_log([v.id for v in scope], page)
     return render_template('charging/index.html',
-                           sessions=sessions,
                            vehicles=ev_vehicles,
-                           charger_types=CHARGER_TYPES,
-                           vehicle_filter=vehicle_filter,
-                           total_kwh=total_kwh,
-                           total_cost=total_cost)
+                           selected_vehicle=selected_vehicle,
+                           charging_count=log['pagination'].total,
+                           **log)
 
 
 @bp.route('/new', methods=['GET', 'POST'])

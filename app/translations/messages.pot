@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 07:18+0600\n"
+"POT-Creation-Date: 2026-11-13 11:07+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,17 +52,18 @@ msgstr ""
 msgid "Engine hours"
 msgstr ""
 
-#: app/models.py:403 app/templates/charging/form.html:86
-#: app/templates/dashboard.html:175 app/templates/dashboard.html:201
-#: app/templates/expenses/form.html:71 app/templates/fuel/_quick_form.html:35
-#: app/templates/fuel/form.html:81 app/templates/fuel/index.html:104
-#: app/templates/fuel/index.html:226 app/templates/maintenance/form.html:138
+#: app/models.py:403 app/templates/charging/_log.html:41
+#: app/templates/charging/form.html:86 app/templates/dashboard.html:175
+#: app/templates/dashboard.html:201 app/templates/expenses/form.html:71
+#: app/templates/fuel/_quick_form.html:35 app/templates/fuel/form.html:81
+#: app/templates/fuel/index.html:104 app/templates/maintenance/form.html:138
 #: app/templates/maintenance/form.html:139 app/templates/notes/form.html:41
-#: app/templates/notes/index.html:31 app/templates/tires/index.html:92
-#: app/templates/tires/index.html:115 app/templates/vehicles/index.html:71
-#: app/templates/vehicles/view.html:87 app/templates/vehicles/view.html:381
-#: app/templates/vehicles/view.html:458 app/templates/vehicles/view.html:479
-#: app/templates/vehicles/view.html:501 app/templates/vehicles/view.html:520
+#: app/templates/notes/index.html:35 app/templates/tires/index.html:92
+#: app/templates/tires/index.html:115 app/templates/trips/index.html:80
+#: app/templates/vehicles/index.html:71 app/templates/vehicles/view.html:87
+#: app/templates/vehicles/view.html:381 app/templates/vehicles/view.html:458
+#: app/templates/vehicles/view.html:479 app/templates/vehicles/view.html:501
+#: app/templates/vehicles/view.html:520
 msgid "Odometer"
 msgstr ""
 
@@ -73,7 +74,8 @@ msgstr ""
 #: app/models.py:409 app/templates/allowance/form.html:48
 #: app/templates/allowance/index.html:30 app/templates/auth/settings.html:127
 #: app/templates/tires/index.html:135 app/templates/trips/form.html:97
-#: app/templates/trips/form.html:188 app/templates/trips/report.html:102
+#: app/templates/trips/form.html:188 app/templates/trips/index.html:82
+#: app/templates/trips/report.html:102
 msgid "Distance"
 msgstr ""
 
@@ -569,32 +571,32 @@ msgstr ""
 msgid "Password must contain at least one digit"
 msgstr ""
 
-#: app/routes/allowance.py:31 app/routes/expenses.py:256 app/routes/fuel.py:300
-#: app/routes/fuel.py:716 app/routes/notes.py:31 app/routes/reminders.py:64
-#: app/routes/tires.py:77 app/routes/trips.py:76
+#: app/routes/allowance.py:31 app/routes/expenses.py:256 app/routes/fuel.py:248
+#: app/routes/fuel.py:664 app/routes/notes.py:44 app/routes/reminders.py:70
+#: app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:2
 msgid "Please add a vehicle first"
 msgstr ""
 
 #: app/routes/allowance.py:40 app/routes/allowance.py:78
-#: app/routes/allowance.py:110 app/routes/charging.py:86
-#: app/routes/charging.py:153 app/routes/charging.py:210
-#: app/routes/documents.py:130 app/routes/documents.py:146
-#: app/routes/documents.py:165 app/routes/documents.py:205
+#: app/routes/allowance.py:110 app/routes/charging.py:121
+#: app/routes/charging.py:188 app/routes/charging.py:245
+#: app/routes/documents.py:132 app/routes/documents.py:148
+#: app/routes/documents.py:167 app/routes/documents.py:207
 #: app/routes/expenses.py:265 app/routes/expenses.py:355
 #: app/routes/expenses.py:410 app/routes/expenses.py:441
-#: app/routes/expenses.py:446 app/routes/fuel.py:309 app/routes/fuel.py:456
-#: app/routes/fuel.py:616 app/routes/fuel.py:671 app/routes/fuel.py:676
-#: app/routes/fuel.py:728 app/routes/fuel.py:729 app/routes/maintenance.py:220
+#: app/routes/expenses.py:446 app/routes/fuel.py:257 app/routes/fuel.py:404
+#: app/routes/fuel.py:564 app/routes/fuel.py:619 app/routes/fuel.py:624
+#: app/routes/fuel.py:676 app/routes/fuel.py:677 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
-#: app/routes/notes.py:40 app/routes/notes.py:87 app/routes/notes.py:128
-#: app/routes/reminders.py:72 app/routes/reminders.py:127
-#: app/routes/reminders.py:214 app/routes/reminders.py:237
-#: app/routes/reminders.py:256 app/routes/tires.py:84 app/routes/tires.py:128
+#: app/routes/notes.py:53 app/routes/notes.py:100 app/routes/notes.py:141
+#: app/routes/reminders.py:78 app/routes/reminders.py:133
+#: app/routes/reminders.py:220 app/routes/reminders.py:243
+#: app/routes/reminders.py:262 app/routes/tires.py:84 app/routes/tires.py:128
 #: app/routes/tires.py:168 app/routes/tires.py:227 app/routes/tires.py:259
-#: app/routes/tires.py:274 app/routes/trips.py:84 app/routes/trips.py:157
-#: app/routes/trips.py:201 app/routes/trips.py:234 app/routes/trips.py:266
-#: app/routes/trips.py:277 app/routes/trips.py:306 app/routes/vehicles.py:165
+#: app/routes/tires.py:274 app/routes/trips.py:104 app/routes/trips.py:177
+#: app/routes/trips.py:221 app/routes/trips.py:254 app/routes/trips.py:286
+#: app/routes/trips.py:297 app/routes/trips.py:326 app/routes/vehicles.py:165
 #: app/routes/vehicles.py:292 app/routes/vehicles.py:386
 #: app/routes/vehicles.py:412 app/routes/vehicles.py:463
 #: app/routes/vehicles.py:468 app/routes/vehicles.py:500
@@ -627,7 +629,7 @@ msgid "No file uploaded"
 msgstr ""
 
 #: app/routes/api.py:2703 app/routes/api.py:2917 app/routes/api.py:3093
-#: app/routes/documents.py:67 app/routes/documents.py:72
+#: app/routes/documents.py:69 app/routes/documents.py:74
 msgid "No file selected"
 msgstr ""
 
@@ -901,44 +903,44 @@ msgstr ""
 msgid "User %(username)s created successfully"
 msgstr ""
 
-#: app/routes/charging.py:26
+#: app/routes/charging.py:28
 msgid "State of charge must be a whole number between 0 and 100"
 msgstr ""
 
-#: app/routes/charging.py:78
+#: app/routes/charging.py:113
 msgid "No electric vehicles found. Add an EV or hybrid vehicle first."
 msgstr ""
 
-#: app/routes/charging.py:131
+#: app/routes/charging.py:166
 msgid "Charging session logged successfully"
 msgstr ""
 
-#: app/routes/charging.py:192
+#: app/routes/charging.py:227
 msgid "Charging session updated successfully"
 msgstr ""
 
-#: app/routes/charging.py:215
+#: app/routes/charging.py:250
 msgid "Charging session deleted successfully"
 msgstr ""
 
-#: app/routes/documents.py:62 app/routes/maintenance.py:159
+#: app/routes/documents.py:64 app/routes/maintenance.py:159
 msgid "Invalid vehicle"
 msgstr ""
 
-#: app/routes/documents.py:108
+#: app/routes/documents.py:110
 #, python-format
 msgid "Document \"%(title)s\" uploaded"
 msgstr ""
 
-#: app/routes/documents.py:111
+#: app/routes/documents.py:113
 msgid "Invalid file type"
 msgstr ""
 
-#: app/routes/documents.py:187
+#: app/routes/documents.py:189
 msgid "Document updated"
 msgstr ""
 
-#: app/routes/documents.py:220
+#: app/routes/documents.py:222
 #, python-format
 msgid "Document \"%(title)s\" deleted"
 msgstr ""
@@ -966,38 +968,38 @@ msgstr ""
 msgid "Expense deleted successfully"
 msgstr ""
 
-#: app/routes/expenses.py:455 app/routes/fuel.py:685
+#: app/routes/expenses.py:455 app/routes/fuel.py:633
 msgid "Attachment deleted"
 msgstr ""
 
-#: app/routes/fuel.py:426
+#: app/routes/fuel.py:374
 msgid "Fuel log added successfully"
 msgstr ""
 
-#: app/routes/fuel.py:589
+#: app/routes/fuel.py:537
 msgid "Fuel log updated successfully"
 msgstr ""
 
-#: app/routes/fuel.py:650
+#: app/routes/fuel.py:598
 msgid "Fuel log deleted successfully"
 msgstr ""
 
-#: app/routes/fuel.py:787 app/routes/fuel.py:790
+#: app/routes/fuel.py:735 app/routes/fuel.py:738
 msgid "Fuel log added!"
 msgstr ""
 
 #: app/routes/main.py:146 app/routes/vehicles.py:229
 #: app/templates/base.html:588 app/templates/dashboard.html:74
 #: app/templates/dashboard.html:211 app/templates/partials/mobile_nav.html:23
-#: app/templates/timeline/index.html:114 app/templates/trips/index.html:127
+#: app/templates/timeline/index.html:114 app/templates/trips/index.html:81
 #: app/templates/vehicles/view.html:443 app/templates/vehicles/view.html:470
 #: app/templates/vehicles/view.html:472
 msgid "Fuel"
 msgstr ""
 
 #: app/routes/main.py:149 app/routes/vehicles.py:232
-#: app/templates/dashboard.html:75 app/templates/dashboard.html:212
-#: app/templates/fuel/index.html:252 app/templates/timeline/index.html:126
+#: app/templates/charging/_log.html:67 app/templates/dashboard.html:75
+#: app/templates/dashboard.html:212 app/templates/timeline/index.html:126
 #: app/templates/vehicles/view.html:444 app/templates/vehicles/view.html:494
 #: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:544
 msgid "Charging"
@@ -1040,23 +1042,23 @@ msgstr ""
 msgid "Maintenance schedule \"%(name)s\" deleted"
 msgstr ""
 
-#: app/routes/notes.py:54 app/routes/notes.py:98
+#: app/routes/notes.py:67 app/routes/notes.py:111
 msgid "Invalid data submitted. Please check the date and odometer fields."
 msgstr ""
 
-#: app/routes/notes.py:59 app/routes/notes.py:103
+#: app/routes/notes.py:72 app/routes/notes.py:116
 msgid "Please enter some note text"
 msgstr ""
 
-#: app/routes/notes.py:65
+#: app/routes/notes.py:78
 msgid "Note added successfully"
 msgstr ""
 
-#: app/routes/notes.py:108
+#: app/routes/notes.py:121
 msgid "Note updated successfully"
 msgstr ""
 
-#: app/routes/notes.py:134
+#: app/routes/notes.py:147
 msgid "Note deleted successfully"
 msgstr ""
 
@@ -1090,33 +1092,33 @@ msgstr ""
 msgid "Recurring expense %(status)s."
 msgstr ""
 
-#: app/routes/reminders.py:78 app/routes/reminders.py:134
+#: app/routes/reminders.py:84 app/routes/reminders.py:140
 msgid "Invalid date format"
 msgstr ""
 
-#: app/routes/reminders.py:96
+#: app/routes/reminders.py:102
 #, python-format
 msgid "Reminder \"%(title)s\" created successfully"
 msgstr ""
 
-#: app/routes/reminders.py:146
+#: app/routes/reminders.py:152
 msgid "Reminder updated successfully"
 msgstr ""
 
-#: app/routes/reminders.py:201
+#: app/routes/reminders.py:207
 #, python-format
 msgid "Reminder completed. Next occurrence created for %(date)s"
 msgstr ""
 
-#: app/routes/reminders.py:203
+#: app/routes/reminders.py:209
 msgid "Reminder marked as completed"
 msgstr ""
 
-#: app/routes/reminders.py:244
+#: app/routes/reminders.py:250
 msgid "Reminder marked as not completed"
 msgstr ""
 
-#: app/routes/reminders.py:263
+#: app/routes/reminders.py:269
 msgid "Reminder deleted"
 msgstr ""
 
@@ -1232,31 +1234,31 @@ msgstr ""
 msgid "Tire set \"%(name)s\" deleted"
 msgstr ""
 
-#: app/routes/trips.py:94 app/routes/trips.py:165
+#: app/routes/trips.py:114 app/routes/trips.py:185
 msgid "Fuel levels must be a percentage between 0 and 100."
 msgstr ""
 
-#: app/routes/trips.py:115
+#: app/routes/trips.py:135
 msgid "Trip logged successfully"
 msgstr ""
 
-#: app/routes/trips.py:181
+#: app/routes/trips.py:201
 msgid "Trip updated successfully"
 msgstr ""
 
-#: app/routes/trips.py:206
+#: app/routes/trips.py:226
 msgid "Trip deleted successfully"
 msgstr ""
 
-#: app/routes/trips.py:251
+#: app/routes/trips.py:271
 msgid "Template saved"
 msgstr ""
 
-#: app/routes/trips.py:291
+#: app/routes/trips.py:311
 msgid "Template updated"
 msgstr ""
 
-#: app/routes/trips.py:311
+#: app/routes/trips.py:331
 msgid "Template deleted"
 msgstr ""
 
@@ -1483,25 +1485,27 @@ msgstr ""
 
 #: app/templates/auth/settings.html:443 app/templates/auth/settings.html:505
 #: app/templates/base.html:534 app/templates/partials/mobile_nav.html:25
-#: app/templates/reminders/index.html:2 app/templates/reminders/index.html:7
+#: app/templates/reminders/index.html:4 app/templates/reminders/index.html:24
 msgid "Reminders"
 msgstr ""
 
 #: app/templates/auth/settings.html:448 app/templates/auth/settings.html:530
 #: app/templates/base.html:535 app/templates/import/csv_upload.html:19
 #: app/templates/partials/mobile_nav.html:26
-#: app/templates/search/index.html:130 app/templates/trips/index.html:2
-#: app/templates/trips/index.html:7
+#: app/templates/search/index.html:130 app/templates/trips/index.html:4
+#: app/templates/trips/index.html:20 app/templates/trips/index.html:66
+#: app/templates/trips/index.html:73
 msgid "Trips"
 msgstr ""
 
 #: app/templates/base.html:537 app/templates/partials/mobile_nav.html:28
+#: app/templates/reminders/_reminder_row.html:24
 msgid "Recurring"
 msgstr ""
 
 #: app/templates/auth/settings.html:446 app/templates/auth/settings.html:520
-#: app/templates/base.html:538 app/templates/documents/index.html:2
-#: app/templates/documents/index.html:7
+#: app/templates/base.html:538 app/templates/documents/index.html:4
+#: app/templates/documents/index.html:11
 #: app/templates/partials/mobile_nav.html:29 app/templates/search/index.html:89
 msgid "Documents"
 msgstr ""
@@ -1534,8 +1538,9 @@ msgstr ""
 #: app/templates/auth/settings.html:451 app/templates/auth/settings.html:550
 #: app/templates/base.html:543 app/templates/charging/form.html:149
 #: app/templates/dashboard.html:244 app/templates/expenses/form.html:166
-#: app/templates/fuel/form.html:222 app/templates/notes/index.html:2
-#: app/templates/notes/index.html:7 app/templates/partials/mobile_nav.html:34
+#: app/templates/fuel/form.html:222 app/templates/notes/index.html:4
+#: app/templates/notes/index.html:11 app/templates/notes/index.html:28
+#: app/templates/partials/mobile_nav.html:34
 #: app/templates/search/index.html:110 app/templates/stations/form.html:74
 #: app/templates/tires/form.html:83 app/templates/trips/form.html:142
 #: app/templates/trips/template_form.html:76
@@ -1611,13 +1616,13 @@ msgstr ""
 msgid "Good evening, %(name)s"
 msgstr ""
 
-#: app/templates/dashboard.html:27 app/templates/expenses/index.html:76
-#: app/templates/fuel/index.html:48 app/templates/fuel/index.html:193
+#: app/templates/charging/_log.html:8 app/templates/dashboard.html:27
+#: app/templates/expenses/index.html:76 app/templates/fuel/index.html:48
 msgid "This month"
 msgstr ""
 
-#: app/templates/dashboard.html:28 app/templates/dashboard.html:150
-#: app/templates/fuel/index.html:52 app/templates/fuel/index.html:198
+#: app/templates/charging/_log.html:13 app/templates/dashboard.html:28
+#: app/templates/dashboard.html:150 app/templates/fuel/index.html:52
 msgid "This year"
 msgstr ""
 
@@ -1671,25 +1676,25 @@ msgid "View all"
 msgstr ""
 
 #: app/templates/dashboard.html:95
-#: app/templates/reminders/_reminder_row.html:69
+#: app/templates/reminders/_reminder_row.html:38
 #, python-format
 msgid "%(num)d days overdue"
 msgstr ""
 
 #: app/templates/dashboard.html:96
-#: app/templates/reminders/_reminder_row.html:71
+#: app/templates/reminders/_reminder_row.html:40
 #: app/templates/vehicles/view.html:313
 msgid "Due today"
 msgstr ""
 
 #: app/templates/dashboard.html:97
-#: app/templates/reminders/_reminder_row.html:73
+#: app/templates/reminders/_reminder_row.html:42
 #: app/templates/vehicles/view.html:314
 msgid "Due tomorrow"
 msgstr ""
 
 #: app/templates/dashboard.html:98
-#: app/templates/reminders/_reminder_row.html:75
+#: app/templates/reminders/_reminder_row.html:44
 #, python-format
 msgid "In %(num)d days"
 msgstr ""
@@ -1704,12 +1709,13 @@ msgstr ""
 msgid "Nothing due in the next %(num)d days"
 msgstr ""
 
-#: app/templates/dashboard.html:107 app/templates/reminders/index.html:132
+#: app/templates/dashboard.html:107 app/templates/reminders/index.html:61
+#: app/templates/reminders/index.html:63
 msgid "No reminders"
 msgstr ""
 
 #: app/templates/dashboard.html:111 app/templates/partials/mobile_nav.html:65
-#: app/templates/reminders/index.html:17 app/templates/reminders/index.html:141
+#: app/templates/reminders/index.html:25 app/templates/reminders/index.html:64
 #: app/templates/vehicles/view.html:235
 msgid "Add Reminder"
 msgstr ""
@@ -1740,9 +1746,9 @@ msgid "all time %(all_time)s"
 msgstr ""
 
 #: app/templates/dashboard.html:142 app/templates/dashboard.html:274
-#: app/templates/trips/index.html:41 app/templates/trips/index.html:45
-#: app/templates/trips/report.html:36 app/templates/trips/report.html:40
-#: app/templates/trips/report.html:68 app/templates/trips/report.html:127
+#: app/templates/trips/index.html:16 app/templates/trips/report.html:36
+#: app/templates/trips/report.html:40 app/templates/trips/report.html:68
+#: app/templates/trips/report.html:127
 msgid "mixed units"
 msgstr ""
 
@@ -1768,7 +1774,7 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
-#: app/templates/dashboard.html:180 app/templates/reminders/index.html:65
+#: app/templates/dashboard.html:180 app/templates/reminders/index.html:53
 #: app/templates/vehicles/view.html:278
 msgid "Overdue"
 msgstr ""
@@ -1787,44 +1793,46 @@ msgid "Recent activity"
 msgstr ""
 
 #: app/templates/allowance/form.html:34 app/templates/allowance/index.html:27
-#: app/templates/charging/form.html:37 app/templates/dashboard.html:197
-#: app/templates/expenses/form.html:66 app/templates/expenses/index.html:94
-#: app/templates/fuel/form.html:74 app/templates/fuel/index.html:99
-#: app/templates/fuel/index.html:221 app/templates/maintenance/form.html:131
-#: app/templates/notes/form.html:34 app/templates/notes/index.html:28
+#: app/templates/charging/_log.html:36 app/templates/charging/form.html:37
+#: app/templates/dashboard.html:197 app/templates/expenses/form.html:66
+#: app/templates/expenses/index.html:94 app/templates/fuel/form.html:74
+#: app/templates/fuel/index.html:99 app/templates/maintenance/form.html:131
+#: app/templates/notes/form.html:34 app/templates/notes/index.html:33
 #: app/templates/tires/index.html:87 app/templates/tires/index.html:110
-#: app/templates/trips/form.html:67 app/templates/trips/report.html:98
-#: app/templates/vehicles/view.html:455
+#: app/templates/trips/form.html:67 app/templates/trips/index.html:78
+#: app/templates/trips/report.html:98 app/templates/vehicles/view.html:455
 msgid "Date"
 msgstr ""
 
 #: app/templates/dashboard.html:198 app/templates/documents/form.html:50
 #: app/templates/fuel/index.html:39 app/templates/maintenance/history.html:20
-#: app/templates/reminders/form.html:53 app/templates/reminders/index.html:36
+#: app/templates/reminders/form.html:53 app/templates/reminders/index.html:37
 #: app/templates/tires/form.html:43 app/templates/vehicles/form.html:26
 #: app/templates/vehicles/view.html:456
 msgid "Type"
 msgstr ""
 
 #: app/templates/allowance/form.html:19 app/templates/allowance/index.html:28
-#: app/templates/charging/form.html:19 app/templates/charging/index.html:38
+#: app/templates/charging/form.html:19 app/templates/charging/index.html:16
 #: app/templates/dashboard.html:199 app/templates/documents/form.html:21
-#: app/templates/expenses/form.html:36 app/templates/expenses/form.html:52
-#: app/templates/expenses/index.html:26 app/templates/fuel/_quick_form.html:14
-#: app/templates/fuel/form.html:47 app/templates/fuel/form.html:63
-#: app/templates/fuel/index.html:18 app/templates/import/csv_mapping.html:19
+#: app/templates/documents/index.html:14 app/templates/expenses/form.html:36
+#: app/templates/expenses/form.html:52 app/templates/expenses/index.html:26
+#: app/templates/fuel/_quick_form.html:14 app/templates/fuel/form.html:47
+#: app/templates/fuel/form.html:63 app/templates/fuel/index.html:18
+#: app/templates/import/csv_mapping.html:19
 #: app/templates/import/csv_upload.html:29
 #: app/templates/maintenance/form.html:30
 #: app/templates/maintenance/history.html:14 app/templates/notes/form.html:19
-#: app/templates/notes/index.html:29 app/templates/recurring/form.html:21
-#: app/templates/reminders/form.html:26 app/templates/reminders/index.html:27
+#: app/templates/notes/index.html:14 app/templates/recurring/form.html:21
+#: app/templates/reminders/form.html:26 app/templates/reminders/index.html:30
 #: app/templates/tires/form.html:16 app/templates/trips/form.html:37
-#: app/templates/trips/index.html:53 app/templates/trips/report.html:99
+#: app/templates/trips/index.html:28 app/templates/trips/report.html:99
 msgid "Vehicle"
 msgstr ""
 
 #: app/templates/dashboard.html:200 app/templates/expenses/index.html:145
-#: app/templates/expenses/index.html:146 app/templates/vehicles/view.html:457
+#: app/templates/expenses/index.html:146 app/templates/notes/index.html:72
+#: app/templates/notes/index.html:73 app/templates/vehicles/view.html:457
 msgid "Details"
 msgstr ""
 
@@ -1845,13 +1853,13 @@ msgstr ""
 msgid "No expenses yet."
 msgstr ""
 
-#: app/templates/dashboard.html:255 app/templates/notes/index.html:83
+#: app/templates/dashboard.html:255 app/templates/notes/index.html:110
 msgid "No notes"
 msgstr ""
 
 #: app/templates/dashboard.html:259 app/templates/notes/form.html:2
 #: app/templates/notes/form.html:11 app/templates/notes/form.html:76
-#: app/templates/notes/index.html:16 app/templates/notes/index.html:92
+#: app/templates/notes/index.html:24 app/templates/notes/index.html:111
 #: app/templates/partials/mobile_nav.html:66
 msgid "Add Note"
 msgstr ""
@@ -1860,9 +1868,9 @@ msgstr ""
 msgid "All time"
 msgstr ""
 
-#: app/templates/charging/form.html:140 app/templates/charging/index.html:28
-#: app/templates/dashboard.html:268 app/templates/fuel/_quick_form.html:75
-#: app/templates/fuel/form.html:126 app/templates/maintenance/history.html:44
+#: app/templates/charging/form.html:140 app/templates/dashboard.html:268
+#: app/templates/fuel/_quick_form.html:75 app/templates/fuel/form.html:126
+#: app/templates/maintenance/history.html:44
 #: app/templates/vehicles/index.html:76
 msgid "Total Cost"
 msgstr ""
@@ -1875,15 +1883,14 @@ msgstr ""
 msgid "Total Charging Cost"
 msgstr ""
 
-#: app/templates/dashboard.html:274 app/templates/trips/index.html:40
+#: app/templates/dashboard.html:274 app/templates/trips/index.html:58
 #: app/templates/trips/report.html:35 app/templates/vehicles/view.html:208
 msgid "Total Distance"
 msgstr ""
 
-#: app/templates/dashboard.html:274 app/templates/trips/index.html:41
-#: app/templates/trips/index.html:45 app/templates/trips/report.html:36
-#: app/templates/trips/report.html:40 app/templates/trips/report.html:68
-#: app/templates/trips/report.html:127
+#: app/templates/dashboard.html:274 app/templates/trips/index.html:16
+#: app/templates/trips/report.html:36 app/templates/trips/report.html:40
+#: app/templates/trips/report.html:68 app/templates/trips/report.html:127
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr ""
 
@@ -1931,7 +1938,7 @@ msgstr ""
 #: app/templates/fuel/form.html:254 app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/form.html:189
-#: app/templates/maintenance/index.html:163 app/templates/notes/form.html:72
+#: app/templates/maintenance/index.html:94 app/templates/notes/form.html:72
 #: app/templates/recurring/form.html:143 app/templates/reminders/form.html:126
 #: app/templates/stations/form.html:101 app/templates/tires/form.html:103
 #: app/templates/trips/form.html:152 app/templates/trips/template_form.html:86
@@ -1956,18 +1963,21 @@ msgstr ""
 msgid "Record allowance income for business use; it offsets your running costs"
 msgstr ""
 
-#: app/templates/allowance/index.html:32 app/templates/expenses/index.html:97
-#: app/templates/fuel/index.html:106 app/templates/fuel/index.html:228
-#: app/templates/notes/index.html:32 app/templates/tires/index.html:136
-#: app/templates/vehicles/view.html:223 app/templates/vehicles/view.html:460
+#: app/templates/allowance/index.html:32 app/templates/charging/_log.html:43
+#: app/templates/expenses/index.html:97 app/templates/fuel/index.html:106
+#: app/templates/notes/index.html:36 app/templates/tires/index.html:136
+#: app/templates/trips/index.html:83 app/templates/vehicles/view.html:223
+#: app/templates/vehicles/view.html:460
 msgid "Actions"
 msgstr ""
 
-#: app/templates/allowance/index.html:51 app/templates/documents/view.html:31
-#: app/templates/expenses/index.html:150 app/templates/fuel/index.html:160
-#: app/templates/fuel/index.html:269 app/templates/maintenance/index.html:86
-#: app/templates/notes/index.html:55 app/templates/stations/index.html:80
-#: app/templates/tires/index.html:166 app/templates/vehicles/view.html:68
+#: app/templates/allowance/index.html:51 app/templates/charging/_log.html:84
+#: app/templates/documents/view.html:31 app/templates/expenses/index.html:150
+#: app/templates/fuel/index.html:160 app/templates/maintenance/index.html:49
+#: app/templates/notes/index.html:77 app/templates/recurring/index.html:49
+#: app/templates/reminders/_reminder_row.html:55
+#: app/templates/stations/index.html:80 app/templates/tires/index.html:166
+#: app/templates/trips/index.html:131 app/templates/vehicles/view.html:68
 #: app/templates/vehicles/view.html:176 app/templates/vehicles/view.html:319
 #: app/templates/vehicles/view.html:484 app/templates/vehicles/view.html:506
 #: app/templates/vehicles/view.html:525
@@ -1981,11 +1991,12 @@ msgstr ""
 #: app/templates/allowance/index.html:57 app/templates/documents/form.html:108
 #: app/templates/expenses/form.html:176 app/templates/expenses/index.html:155
 #: app/templates/fuel/form.html:235 app/templates/fuel/index.html:165
-#: app/templates/notes/index.html:61 app/templates/recurring/form.html:135
+#: app/templates/notes/index.html:82 app/templates/recurring/form.html:135
+#: app/templates/reminders/_reminder_row.html:60
 #: app/templates/stations/form.html:93 app/templates/tires/index.html:152
-#: app/templates/tires/index.html:170 app/templates/vehicles/view.html:488
-#: app/templates/vehicles/view.html:509 app/templates/vehicles/view.html:528
-#: app/templates/vehicles/view.html:643
+#: app/templates/tires/index.html:170 app/templates/trips/index.html:136
+#: app/templates/vehicles/view.html:488 app/templates/vehicles/view.html:509
+#: app/templates/vehicles/view.html:528 app/templates/vehicles/view.html:643
 msgid "Delete"
 msgstr ""
 
@@ -2412,7 +2423,8 @@ msgid "Which page to show when you log in"
 msgstr ""
 
 #: app/templates/auth/settings.html:445 app/templates/auth/settings.html:515
-#: app/templates/recurring/index.html:2 app/templates/recurring/index.html:7
+#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
+#: app/templates/recurring/index.html:16
 msgid "Recurring Expenses"
 msgstr ""
 
@@ -3403,6 +3415,48 @@ msgstr ""
 msgid "Error checking for updates"
 msgstr ""
 
+#: app/templates/charging/_log.html:17 app/templates/charging/_log.html:39
+#: app/templates/charging/form.html:133
+msgid "Cost per kWh"
+msgstr ""
+
+#: app/templates/charging/_log.html:22 app/templates/vehicles/view.html:158
+msgid "Last charge"
+msgstr ""
+
+#: app/templates/charging/_log.html:31 app/templates/fuel/index.html:38
+msgid "Charging History"
+msgstr ""
+
+#: app/templates/charging/_log.html:37 app/templates/charging/form.html:69
+msgid "Location"
+msgstr ""
+
+#: app/templates/charging/_log.html:38
+msgid "kWh"
+msgstr ""
+
+#: app/templates/charging/_log.html:42 app/templates/charging/form.html:130
+#: app/templates/expenses/form.html:124 app/templates/expenses/index.html:96
+#: app/templates/fuel/index.html:105 app/templates/tires/form.html:61
+#: app/templates/tires/index.html:62 app/templates/vehicles/view.html:459
+msgid "Cost"
+msgstr ""
+
+#: app/templates/charging/_log.html:100
+msgid "No charging sessions"
+msgstr ""
+
+#: app/templates/charging/_log.html:100
+msgid "Start tracking your EV charging to monitor energy usage and costs."
+msgstr ""
+
+#: app/templates/charging/_log.html:101 app/templates/fuel/index.html:29
+#: app/templates/partials/mobile_nav.html:58
+#: app/templates/partials/mobile_nav.html:64
+msgid "Add Charging Session"
+msgstr ""
+
 #: app/templates/charging/form.html:2 app/templates/charging/form.html:11
 msgid "Edit Charging Session"
 msgstr ""
@@ -3430,10 +3484,6 @@ msgstr ""
 
 #: app/templates/charging/form.html:62
 msgid "End Time"
-msgstr ""
-
-#: app/templates/charging/form.html:69 app/templates/fuel/index.html:222
-msgid "Location"
 msgstr ""
 
 #: app/templates/charging/form.html:72
@@ -3464,62 +3514,32 @@ msgstr ""
 msgid "End SOC"
 msgstr ""
 
-#: app/templates/charging/form.html:130 app/templates/expenses/form.html:124
-#: app/templates/expenses/index.html:96 app/templates/fuel/index.html:105
-#: app/templates/fuel/index.html:227 app/templates/tires/form.html:61
-#: app/templates/tires/index.html:62 app/templates/vehicles/view.html:459
-msgid "Cost"
-msgstr ""
-
-#: app/templates/charging/form.html:133 app/templates/fuel/index.html:202
-#: app/templates/fuel/index.html:224
-msgid "Cost per kWh"
-msgstr ""
-
-#: app/templates/charging/index.html:2 app/templates/charging/index.html:7
+#: app/templates/charging/index.html:3 app/templates/charging/index.html:13
 #: app/templates/import/csv_upload.html:19 app/templates/search/index.html:152
 msgid "Charging Sessions"
 msgstr ""
 
-#: app/templates/charging/index.html:8
+#: app/templates/charging/index.html:13
 msgid "Track your EV charging sessions"
 msgstr ""
 
-#: app/templates/charging/index.html:16
-msgid "Log Charge"
-msgstr ""
-
-#: app/templates/charging/index.html:24
-msgid "Total Energy"
-msgstr ""
-
-#: app/templates/charging/index.html:40 app/templates/documents/index.html:25
-#: app/templates/expenses/index.html:28 app/templates/fuel/index.html:20
-#: app/templates/maintenance/history.html:16
-#: app/templates/reminders/index.html:29 app/templates/trips/index.html:55
+#: app/templates/charging/index.html:18 app/templates/documents/index.html:16
+#: app/templates/documents/index.html:64 app/templates/expenses/index.html:28
+#: app/templates/fuel/index.html:20 app/templates/maintenance/history.html:16
+#: app/templates/notes/index.html:16 app/templates/reminders/index.html:32
+#: app/templates/trips/index.html:30
 msgid "All Vehicles"
 msgstr ""
 
-#: app/templates/charging/index.html:47 app/templates/expenses/index.html:63
-#: app/templates/fuel/index.html:25 app/templates/maintenance/history.html:35
-#: app/templates/reminders/index.html:50 app/templates/trips/index.html:80
+#: app/templates/charging/index.html:23 app/templates/documents/index.html:21
+#: app/templates/expenses/index.html:63 app/templates/fuel/index.html:25
+#: app/templates/maintenance/history.html:35 app/templates/notes/index.html:21
+#: app/templates/reminders/index.html:47 app/templates/trips/index.html:49
 msgid "Filter"
 msgstr ""
 
-#: app/templates/charging/index.html:51 app/templates/trips/index.html:84
-msgid "Clear"
-msgstr ""
-
-#: app/templates/charging/index.html:145 app/templates/fuel/index.html:285
-msgid "No charging sessions"
-msgstr ""
-
-#: app/templates/charging/index.html:146 app/templates/fuel/index.html:285
-msgid "Start tracking your EV charging to monitor energy usage and costs."
-msgstr ""
-
-#: app/templates/charging/index.html:154
-msgid "Log Your First Charge"
+#: app/templates/charging/index.html:26
+msgid "Log Charge"
 msgstr ""
 
 #: app/templates/components/ui.html:183
@@ -3556,7 +3576,7 @@ msgid "Edit Document"
 msgstr ""
 
 #: app/templates/documents/form.html:2 app/templates/documents/form.html:13
-#: app/templates/documents/index.html:16 app/templates/documents/index.html:111
+#: app/templates/documents/index.html:24 app/templates/documents/index.html:69
 msgid "Upload Document"
 msgstr ""
 
@@ -3619,23 +3639,35 @@ msgstr ""
 msgid "Delete this document?"
 msgstr ""
 
-#: app/templates/documents/index.html:8
+#: app/templates/documents/index.html:11
 msgid "Vehicle documents, insurance, MOT certificates"
 msgstr ""
 
-#: app/templates/documents/index.html:76
+#: app/templates/documents/index.html:46
+msgid "Expired"
+msgstr ""
+
+#: app/templates/documents/index.html:46
+msgid "Expiring soon"
+msgstr ""
+
+#: app/templates/documents/index.html:52
 msgid "Expires"
 msgstr ""
 
-#: app/templates/documents/index.html:84 app/templates/documents/view.html:26
+#: app/templates/documents/index.html:55 app/templates/documents/view.html:26
 msgid "Download"
 msgstr ""
 
-#: app/templates/documents/index.html:102
+#: app/templates/documents/index.html:64 app/templates/documents/index.html:68
 msgid "No documents"
 msgstr ""
 
-#: app/templates/documents/index.html:103
+#: app/templates/documents/index.html:64
+msgid "No documents for this vehicle yet."
+msgstr ""
+
+#: app/templates/documents/index.html:68
 msgid "Store your vehicle documents, insurance policies, and MOT certificates."
 msgstr ""
 
@@ -3749,18 +3781,18 @@ msgstr ""
 msgid "All Categories"
 msgstr ""
 
-#: app/templates/expenses/index.html:40 app/templates/trips/index.html:71
+#: app/templates/expenses/index.html:40 app/templates/trips/index.html:42
 #: app/templates/vehicles/form.html:98
 msgid "Year"
 msgstr ""
 
-#: app/templates/expenses/index.html:42 app/templates/trips/index.html:73
+#: app/templates/expenses/index.html:42 app/templates/trips/index.html:44
 msgid "All Years"
 msgstr ""
 
 #: app/templates/expenses/index.html:50
 #: app/templates/maintenance/history.html:22
-#: app/templates/reminders/index.html:38
+#: app/templates/reminders/index.html:39
 msgid "All Types"
 msgstr ""
 
@@ -3771,7 +3803,8 @@ msgstr ""
 
 #: app/templates/expenses/index.html:65 app/templates/expenses/index.html:190
 #: app/templates/maintenance/history.html:36
-#: app/templates/reminders/index.html:53
+#: app/templates/reminders/index.html:49 app/templates/reminders/index.html:61
+#: app/templates/trips/index.html:51 app/templates/trips/index.html:153
 msgid "Clear filters"
 msgstr ""
 
@@ -3823,7 +3856,7 @@ msgid "Spend by Vendor"
 msgstr ""
 
 #: app/templates/expenses/index.html:229
-#: app/templates/maintenance/index.html:152
+#: app/templates/maintenance/index.html:88
 msgid "Vendor"
 msgstr ""
 
@@ -3854,8 +3887,8 @@ msgid "Select station or enter manually..."
 msgstr ""
 
 #: app/templates/fuel/_quick_form.html:106
-#: app/templates/maintenance/index.html:136
-#: app/templates/maintenance/index.html:155
+#: app/templates/maintenance/index.html:78
+#: app/templates/maintenance/index.html:89
 msgid "Optional"
 msgstr ""
 
@@ -3973,16 +4006,6 @@ msgstr ""
 msgid "Track your fuel fill-ups and consumption"
 msgstr ""
 
-#: app/templates/fuel/index.html:29 app/templates/fuel/index.html:286
-#: app/templates/partials/mobile_nav.html:58
-#: app/templates/partials/mobile_nav.html:64
-msgid "Add Charging Session"
-msgstr ""
-
-#: app/templates/fuel/index.html:38 app/templates/fuel/index.html:216
-msgid "Charging History"
-msgstr ""
-
 #: app/templates/fuel/index.html:57 app/templates/vehicles/view.html:106
 msgid "Avg. Consumption"
 msgstr ""
@@ -4034,14 +4057,6 @@ msgstr ""
 
 #: app/templates/fuel/index.html:182
 msgid "Start tracking your fuel fill-ups."
-msgstr ""
-
-#: app/templates/fuel/index.html:207 app/templates/vehicles/view.html:158
-msgid "Last charge"
-msgstr ""
-
-#: app/templates/fuel/index.html:223
-msgid "kWh"
 msgstr ""
 
 #: app/templates/fuel/quick.html:8
@@ -4379,7 +4394,7 @@ msgstr ""
 
 #: app/templates/maintenance/history.html:3
 #: app/templates/maintenance/history.html:10
-#: app/templates/maintenance/index.html:21 app/templates/vehicles/view.html:239
+#: app/templates/maintenance/index.html:11 app/templates/vehicles/view.html:239
 msgid "Maintenance History"
 msgstr ""
 
@@ -4393,64 +4408,79 @@ msgid ""
 "details. Earlier overwritten details cannot be recovered."
 msgstr ""
 
-#: app/templates/maintenance/index.html:2
-#: app/templates/maintenance/index.html:7
+#: app/templates/maintenance/index.html:4
+#: app/templates/maintenance/index.html:10
+#: app/templates/maintenance/index.html:16
 msgid "Maintenance Schedules"
 msgstr ""
 
-#: app/templates/maintenance/index.html:8
+#: app/templates/maintenance/index.html:10
 msgid "Set up recurring maintenance with automatic reminders"
 msgstr ""
 
-#: app/templates/maintenance/index.html:16
+#: app/templates/maintenance/index.html:12
 msgid "Add Schedule"
 msgstr ""
 
-#: app/templates/maintenance/index.html:36
+#: app/templates/maintenance/index.html:25
+#, python-format
+msgid "Every %(interval)s"
+msgstr ""
+
+#: app/templates/maintenance/index.html:26
+msgid "Every month"
+msgstr ""
+
+#: app/templates/maintenance/index.html:26
+#, python-format
+msgid "Every %(num)d months"
+msgstr ""
+
+#: app/templates/maintenance/index.html:32
 msgid "Due Now"
 msgstr ""
 
-#: app/templates/maintenance/index.html:40
+#: app/templates/maintenance/index.html:32
 msgid "Due Soon"
 msgstr ""
 
-#: app/templates/maintenance/index.html:78
+#: app/templates/maintenance/index.html:46
 msgid "Mark Complete"
 msgstr ""
 
-#: app/templates/maintenance/index.html:103
+#: app/templates/maintenance/index.html:58
 msgid "No maintenance schedules"
 msgstr ""
 
-#: app/templates/maintenance/index.html:104
+#: app/templates/maintenance/index.html:58
 msgid "Set up recurring maintenance reminders for your vehicles."
 msgstr ""
 
-#: app/templates/maintenance/index.html:112
+#: app/templates/maintenance/index.html:59
 msgid "Add Maintenance Schedule"
 msgstr ""
 
-#: app/templates/maintenance/index.html:125
+#: app/templates/maintenance/index.html:71
 msgid "Mark as Completed"
 msgstr ""
 
-#: app/templates/maintenance/index.html:128
+#: app/templates/maintenance/index.html:74
 msgid "Completed on"
 msgstr ""
 
-#: app/templates/maintenance/index.html:133
+#: app/templates/maintenance/index.html:77
 msgid "Current Odometer"
 msgstr ""
 
-#: app/templates/maintenance/index.html:142
+#: app/templates/maintenance/index.html:82
 msgid "Create expense entry"
 msgstr ""
 
-#: app/templates/maintenance/index.html:147
+#: app/templates/maintenance/index.html:85
 msgid "Actual Cost"
 msgstr ""
 
-#: app/templates/maintenance/index.html:167
+#: app/templates/maintenance/index.html:95
 msgid "Complete"
 msgstr ""
 
@@ -4466,7 +4496,7 @@ msgstr ""
 msgid "e.g., DPF regeneration"
 msgstr ""
 
-#: app/templates/notes/form.html:56 app/templates/notes/index.html:30
+#: app/templates/notes/form.html:56 app/templates/notes/index.html:34
 msgid "Note"
 msgstr ""
 
@@ -4474,23 +4504,23 @@ msgstr ""
 msgid "What happened?"
 msgstr ""
 
-#: app/templates/notes/index.html:8
+#: app/templates/notes/index.html:11
 msgid ""
 "Record events and observations that don't fit fuel, expenses or "
 "maintenance"
 msgstr ""
 
-#: app/templates/notes/index.html:59
+#: app/templates/notes/index.html:79
 msgid "Delete this note?"
 msgstr ""
 
-#: app/templates/notes/index.html:84
+#: app/templates/notes/index.html:110
 msgid "Jot down anything worth remembering about your vehicles."
 msgstr ""
 
 #: app/templates/partials/mobile_nav.html:63 app/templates/trips/form.html:2
 #: app/templates/trips/form.html:13 app/templates/trips/form.html:156
-#: app/templates/trips/index.html:31 app/templates/vehicles/view.html:229
+#: app/templates/trips/index.html:23 app/templates/vehicles/view.html:229
 msgid "Log Trip"
 msgstr ""
 
@@ -4540,7 +4570,7 @@ msgid "Edit Recurring Expense"
 msgstr ""
 
 #: app/templates/recurring/form.html:2 app/templates/recurring/form.html:13
-#: app/templates/recurring/index.html:135
+#: app/templates/recurring/index.html:59
 msgid "Add Recurring Expense"
 msgstr ""
 
@@ -4556,19 +4586,19 @@ msgstr ""
 msgid "Frequency"
 msgstr ""
 
-#: app/templates/recurring/form.html:57
+#: app/templates/recurring/form.html:57 app/templates/recurring/index.html:8
 msgid "Monthly"
 msgstr ""
 
-#: app/templates/recurring/form.html:58
+#: app/templates/recurring/form.html:58 app/templates/recurring/index.html:8
 msgid "Quarterly (every 3 months)"
 msgstr ""
 
-#: app/templates/recurring/form.html:59
+#: app/templates/recurring/form.html:59 app/templates/recurring/index.html:8
 msgid "Biannual (every 6 months)"
 msgstr ""
 
-#: app/templates/recurring/form.html:60
+#: app/templates/recurring/form.html:60 app/templates/recurring/index.html:8
 msgid "Yearly"
 msgstr ""
 
@@ -4592,7 +4622,7 @@ msgstr ""
 msgid "Remind days before"
 msgstr ""
 
-#: app/templates/recurring/form.html:147 app/templates/recurring/index.html:16
+#: app/templates/recurring/form.html:147 app/templates/recurring/index.html:12
 msgid "Add Recurring"
 msgstr ""
 
@@ -4600,41 +4630,58 @@ msgstr ""
 msgid "Delete this recurring expense?"
 msgstr ""
 
-#: app/templates/recurring/index.html:8
+#: app/templates/recurring/index.html:11
 msgid "Auto-generate regular expenses"
 msgstr ""
 
-#: app/templates/recurring/index.html:66
+#: app/templates/recurring/index.html:27 app/templates/vehicles/index.html:64
+msgid "Inactive"
+msgstr ""
+
+#: app/templates/recurring/index.html:35
 msgid "Next due"
 msgstr ""
 
-#: app/templates/recurring/index.html:79
+#: app/templates/recurring/index.html:42
 msgid "Generate Expense"
 msgstr ""
 
-#: app/templates/recurring/index.html:92
+#: app/templates/recurring/index.html:47
 msgid "Pause"
 msgstr ""
 
-#: app/templates/recurring/index.html:92
+#: app/templates/recurring/index.html:47
 msgid "Activate"
 msgstr ""
 
-#: app/templates/recurring/index.html:126
+#: app/templates/recurring/index.html:58
 msgid "No recurring expenses"
 msgstr ""
 
-#: app/templates/recurring/index.html:127
+#: app/templates/recurring/index.html:58
 msgid "Set up recurring expenses like insurance, road tax, or parking permits."
 msgstr ""
 
-#: app/templates/reminders/_reminder_row.html:67
-#: app/templates/reminders/index.html:116
+#: app/templates/reminders/_reminder_row.html:11
+msgid "Mark as not completed"
+msgstr ""
+
+#: app/templates/reminders/_reminder_row.html:13
+#: app/templates/vehicles/view.html:322
+msgid "Mark as completed"
+msgstr ""
+
+#: app/templates/reminders/_reminder_row.html:36
+#: app/templates/reminders/index.html:56
 msgid "Completed"
 msgstr ""
 
-#: app/templates/reminders/_reminder_row.html:85
+#: app/templates/reminders/_reminder_row.html:52
 msgid "Log expense"
+msgstr ""
+
+#: app/templates/reminders/_reminder_row.html:57
+msgid "Delete this reminder?"
 msgstr ""
 
 #: app/templates/reminders/form.html:2 app/templates/reminders/form.html:18
@@ -4691,23 +4738,27 @@ msgstr ""
 msgid "Create Reminder"
 msgstr ""
 
-#: app/templates/reminders/index.html:8
+#: app/templates/reminders/index.html:24
 msgid "Keep track of important dates for your vehicles"
 msgstr ""
 
-#: app/templates/reminders/index.html:47
+#: app/templates/reminders/index.html:45
 msgid "Show completed"
 msgstr ""
 
-#: app/templates/reminders/index.html:82
+#: app/templates/reminders/index.html:54
 msgid "Upcoming"
 msgstr ""
 
-#: app/templates/reminders/index.html:99
+#: app/templates/reminders/index.html:55
 msgid "Later"
 msgstr ""
 
-#: app/templates/reminders/index.html:133
+#: app/templates/reminders/index.html:61
+msgid "No reminders match these filters."
+msgstr ""
+
+#: app/templates/reminders/index.html:63
 msgid "Get started by adding a reminder for your vehicle."
 msgstr ""
 
@@ -4736,7 +4787,7 @@ msgstr ""
 msgid "%(count)s results"
 msgstr ""
 
-#: app/templates/search/index.html:138
+#: app/templates/search/index.html:138 app/templates/trips/index.html:79
 msgid "Trip"
 msgstr ""
 
@@ -5059,7 +5110,7 @@ msgstr ""
 msgid "— choose a template —"
 msgstr ""
 
-#: app/templates/trips/form.html:74 app/templates/trips/index.html:62
+#: app/templates/trips/form.html:74 app/templates/trips/index.html:35
 #: app/templates/trips/report.html:100
 #: app/templates/trips/template_form.html:42
 msgid "Purpose"
@@ -5089,7 +5140,7 @@ msgstr ""
 msgid "End Fuel Level"
 msgstr ""
 
-#: app/templates/trips/form.html:114 app/templates/trips/index.html:125
+#: app/templates/trips/form.html:114
 msgid "Fuel used"
 msgstr ""
 
@@ -5113,35 +5164,43 @@ msgstr ""
 msgid "e.g., Client meeting, Site visit"
 msgstr ""
 
-#: app/templates/trips/index.html:8
+#: app/templates/trips/index.html:20
 msgid "Track your trips for mileage and tax deductions"
 msgstr ""
 
-#: app/templates/trips/index.html:16
+#: app/templates/trips/index.html:21
 msgid "Templates"
 msgstr ""
 
-#: app/templates/trips/index.html:23 app/templates/vehicles/view.html:60
+#: app/templates/trips/index.html:22 app/templates/vehicles/view.html:60
 msgid "Report"
 msgstr ""
 
-#: app/templates/trips/index.html:44 app/templates/trips/report.html:39
-msgid "Business Distance"
-msgstr ""
-
-#: app/templates/trips/index.html:64
+#: app/templates/trips/index.html:37
 msgid "All Purposes"
 msgstr ""
 
-#: app/templates/trips/index.html:162
+#: app/templates/trips/index.html:62 app/templates/trips/report.html:39
+msgid "Business Distance"
+msgstr ""
+
+#: app/templates/trips/index.html:133
+msgid "Delete this trip?"
+msgstr ""
+
+#: app/templates/trips/index.html:153 app/templates/trips/index.html:157
 msgid "No trips logged"
 msgstr ""
 
-#: app/templates/trips/index.html:163
+#: app/templates/trips/index.html:153
+msgid "No trips match these filters."
+msgstr ""
+
+#: app/templates/trips/index.html:157
 msgid "Start logging your trips for mileage tracking and tax deductions."
 msgstr ""
 
-#: app/templates/trips/index.html:171
+#: app/templates/trips/index.html:158
 msgid "Log Your First Trip"
 msgstr ""
 
@@ -5478,10 +5537,6 @@ msgstr ""
 msgid "Archived"
 msgstr ""
 
-#: app/templates/vehicles/index.html:64
-msgid "Inactive"
-msgstr ""
-
 #: app/templates/vehicles/index.html:65 app/templates/vehicles/view.html:53
 msgid "Shared"
 msgstr ""
@@ -5790,10 +5845,6 @@ msgstr ""
 #: app/templates/vehicles/view.html:315
 #, python-format
 msgid "In %(days)s days"
-msgstr ""
-
-#: app/templates/vehicles/view.html:322
-msgid "Mark as completed"
 msgstr ""
 
 #: app/templates/vehicles/view.html:343

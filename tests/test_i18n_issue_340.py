@@ -138,12 +138,12 @@ class TestReminderDueDateUsesGettext:
         source = _reminder_row_source()
         assert '_(' in source, "reminders/_reminder_row.html has no gettext calls at all"
         caption = re.search(
-            r'days_until_due\(\) == 1 %\}(.*?)\{% endif %\}',
+            r'days_until_due\(\) == 1 -?%\}(.*?)\{%-? endif -?%\}',
             source, re.DOTALL)
         assert caption is not None, (
             "the reminder due-date caption not found — has it moved?"
         )
-        match = re.search(r'\{% else %\}(.*)', caption.group(1), re.DOTALL)
+        match = re.search(r'\{%-? else -?%\}(.*)', caption.group(1), re.DOTALL)
         assert match is not None
         assert '_(' in match.group(1), (
             "the 'In {{ reminder.days_until_due() }} days' caption is a "

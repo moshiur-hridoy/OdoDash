@@ -1,192 +1,121 @@
 {% extends "base.html" %}
+{% from 'components/ui.html' import page_header, button, badge, field, empty_state %}
+{% from 'components/icons.html' import icon %}
 {% block title %}{{ _('Maintenance Schedules') }}{% endblock %}
 
 {% block content %}
-<div class="mb-6 flex items-center justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ _('Maintenance Schedules') }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Set up recurring maintenance with automatic reminders') }}</p>
-    </div>
-    {% if can_write('maintenance') %}
-    <a href="{{ url_for('maintenance.new') }}"
-       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700">
-        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        {{ _('Add Schedule') }}
-    </a>
-    {% endif %}
-</div>
+{%- set type_labels = dict(maintenance_types) -%}
+<div class="ds log-page">
 
-<p class="mb-4"><a class="text-primary-600 hover:underline" href="{{ url_for('maintenance.history') }}">{{ _('Maintenance History') }}</a></p>
+{% call page_header(_('Maintenance Schedules'), subtitle=_('Set up recurring maintenance with automatic reminders')) %}
+    {{ button(_('Maintenance History'), href=url_for('maintenance.history'), variant='secondary', icon_name='clock') }}
+    {% if can_write('maintenance') %}{{ button(_('Add Schedule'), href=url_for('maintenance.new'), icon_name='plus') }}{% endif %}
+{% endcall %}
+
 {% if schedules %}
-<div class="surface-card bg-white dark:bg-gray-800 overflow-hidden">
-    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+<section class="ds-card ds-card--flush" aria-label="{{ _('Maintenance Schedules') }}">
+    <ul class="ds-list">
         {% for schedule in schedules %}
-        {% set current_odo = vehicle_odometers.get(schedule.vehicle_id, 0) %}
-        {% set is_due = schedule.is_due(current_odo) %}
-        {% set is_due_soon = schedule.is_due_soon(current_odo) %}
-        <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 {% if is_due %}bg-red-50 dark:bg-red-900/20{% elif is_due_soon %}bg-amber-50 dark:bg-amber-900/20{% endif %}">
-            <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ schedule.name }}</h3>
-                        {% if is_due %}
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                            {{ _('Due Now') }}
-                        </span>
-                        {% elif is_due_soon %}
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                            {{ _('Due Soon') }}
-                        </span>
-                        {% endif %}
-                    </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        {{ schedule.vehicle.name }} &middot;
-                        <span class="capitalize">{{ dict(maintenance_types).get(schedule.maintenance_type, schedule.maintenance_type) }}</span>
-                    </p>
-                    <div class="mt-1 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                        {% set interval = schedule.get_interval() %}
-                        {% if interval %}
-                        <span>Every {{ "{:,}".format(interval[0]) }} {{ interval[1] }}</span>
-                        {% endif %}
-                        {% if schedule.interval_months %}
-                        <span>Every {{ schedule.interval_months }} month{% if schedule.interval_months > 1 %}s{% endif %}</span>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="ml-4 flex-shrink-0 text-right">
-                    {% if schedule.next_due_date %}
-                    <p class="text-sm {% if is_due %}text-red-600 dark:text-red-400{% elif is_due_soon %}text-amber-600 dark:text-amber-400{% else %}text-gray-900 dark:text-white{% endif %}">
-                        {{ schedule.next_due_date|format_date }}
-                    </p>
-                    {% endif %}
-                    {% if schedule.next_due_odometer %}
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                        @ {{ "{:,.0f}".format(schedule.next_due_odometer) }} {{ schedule.vehicle.get_reading_unit() }}
-                    </p>
-                    {% endif %}
-                    {% if schedule.estimated_cost %}
-                    <p class="text-xs text-gray-400 dark:text-gray-500 dark:text-gray-400">
-                        ~{{ schedule.estimated_cost|money }} {{ current_user.currency }}
-                    </p>
-                    {% endif %}
-                </div>
-                <div class="ml-4 flex items-center gap-2">
-                    <button onclick="showCompleteModal({{ schedule.id }}, '{{ schedule.name }}', {{ schedule.estimated_cost or 0 }})"
-                            class="p-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
-                            title="{{ _('Mark Complete') }}">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </button>
-                    {% if can_write('maintenance') %}
-                    <a href="{{ url_for('maintenance.edit', schedule_id=schedule.id) }}"
-                       class="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
-                       title="{{ _('Edit') }}">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </a>
-                    {% endif %}
-                </div>
+        {%- set current_odo = vehicle_odometers.get(schedule.vehicle_id, 0) -%}
+        {%- set is_due = schedule.is_due(current_odo) -%}
+        {%- set is_due_soon = not is_due and schedule.is_due_soon(current_odo) -%}
+        {%- set tone = 'danger' if is_due else ('warning' if is_due_soon else None) -%}
+        {%- set interval = schedule.get_interval() -%}
+        {%- set every = [] -%}
+        {%- if interval %}{% set _x = every.append(_('Every %(interval)s', interval=interval[0]|groupnum ~ ' ' ~ interval[1])) %}{% endif -%}
+        {%- if schedule.interval_months %}{% set _x = every.append(_('Every month') if schedule.interval_months == 1 else _('Every %(num)d months', num=schedule.interval_months)) %}{% endif -%}
+        <li class="ds-list__item">
+            <span class="ds-list__lead{% if tone %} ds-list__lead--{{ tone }}{% endif %}" aria-hidden="true">{{ icon('wrench', 16) }}</span>
+            <div class="ds-list__main">
+                <h3 class="ds-list__title">
+                    <span>{{ schedule.name }}</span>
+                    {% if is_due %}{{ badge(_('Due Now'), 'danger') }}{% elif is_due_soon %}{{ badge(_('Due Soon'), 'warning') }}{% endif %}
+                </h3>
+                <span class="ds-list__sub">
+                    {{- [schedule.vehicle.name, type_labels.get(schedule.maintenance_type, schedule.maintenance_type)]|join(' · ') -}}
+                    {%- if every %} · {{ every|join(' · ') }}{% endif -%}
+                </span>
+            </div>
+            <div class="ds-list__meta{% if tone %} ds-list__meta--{{ tone }}{% endif %}">
+                {% if schedule.next_due_date %}<strong>{{ schedule.next_due_date|format_date }}</strong>{% endif %}
+                {% if schedule.next_due_odometer %}<small>@ {{ schedule.next_due_odometer|groupnum }} {{ schedule.vehicle.get_reading_unit() }}</small>{% endif %}
+                {% if schedule.estimated_cost %}<small>~{{ schedule.estimated_cost|money }} {{ current_user.currency }}</small>{% endif %}
+            </div>
+            <div class="ds-list__actions">
+                {% if can_write('maintenance') %}
+                {{ button(_('Mark Complete'), variant='secondary' if is_due else 'ghost', size='sm', icon_name='check', icon_only=true,
+                          attrs={'data-complete': url_for('maintenance.complete', schedule_id=schedule.id),
+                                 'data-name': schedule.name, 'data-cost': schedule.estimated_cost or ''}) }}
+                {{ button(_('Edit'), href=url_for('maintenance.edit', schedule_id=schedule.id), variant='ghost', size='sm', icon_name='edit', icon_only=true) }}
+                {% endif %}
             </div>
         </li>
         {% endfor %}
     </ul>
-</div>
+</section>
 {% else %}
-<div class="surface-card text-center py-12 bg-white dark:bg-gray-800">
-    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-    </svg>
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ _('No maintenance schedules') }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ _('Set up recurring maintenance reminders for your vehicles.') }}</p>
-    <div class="mt-6">
-        {% if can_write('maintenance') %}
-        <a href="{{ url_for('maintenance.new') }}"
-           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            {{ _('Add Maintenance Schedule') }}
-        </a>
-        {% endif %}
-    </div>
+<div class="ds-card">
+    {{ empty_state(_('No maintenance schedules'), _('Set up recurring maintenance reminders for your vehicles.'), 'wrench',
+                   _('Add Maintenance Schedule') if can_write('maintenance') else None, url_for('maintenance.new')) }}
 </div>
 {% endif %}
 
-<!-- Complete Modal -->
-<div id="complete-modal" class="hidden fixed inset-0 bg-gray-50 dark:bg-gray-7000 bg-opacity-75 flex items-center justify-center z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
-        <form id="complete-form" method="POST">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div class="p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white" id="modal-title">{{ _('Mark as Completed') }}</h3>
-                <div class="mt-4 space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Completed on') }}</label>
-                        <input type="date" name="performed_date" id="performed-date"
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Current Odometer') }}</label>
-                        <input type="number" name="odometer" step="0.1"
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                               placeholder="{{ _('Optional') }}">
-                    </div>
-                    <div class="flex items-center">
-                        <input type="checkbox" name="create_expense" id="create_expense" checked
-                               class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded">
-                        <label for="create_expense" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                            {{ _('Create expense entry') }}
-                        </label>
-                    </div>
-                    <div id="expense-fields">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Actual Cost') }}</label>
-                            <input type="number" name="actual_cost" id="actual-cost" step="0.01"
-                                   class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
-                        </div>
-                        <div class="mt-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ _('Vendor') }}</label>
-                            <input type="text" name="vendor"
-                                   class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                                   placeholder="{{ _('Optional') }}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex justify-end gap-3 rounded-b-lg">
-                <button type="button" onclick="hideCompleteModal()"
-                        class="px-4 py-2 border border-gray-300 dark:border-gray-500 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    {{ _('Cancel') }}
-                </button>
-                <button type="submit"
-                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
-                    {{ _('Complete') }}
-                </button>
-            </div>
-        </form>
-    </div>
 </div>
 
+{% if schedules and can_write('maintenance') %}
+<dialog id="complete-dialog" class="ds ds-dialog" aria-labelledby="complete-title">
+    <form id="complete-form" method="POST" data-busy-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="ds-dialog__body">
+            <div>
+                <h2 class="ds-dialog__title" id="complete-title">{{ _('Mark as Completed') }}</h2>
+                <p class="ds-muted" id="complete-name"></p>
+            </div>
+            {% call field(_('Completed on'), 'performed-date') %}
+            <input type="date" name="performed_date" id="performed-date" class="ds-control">
+            {% endcall %}
+            {% call field(_('Current Odometer'), 'complete-odometer') %}
+            <input type="number" name="odometer" id="complete-odometer" step="0.1" inputmode="decimal" class="ds-control" placeholder="{{ _('Optional') }}">
+            {% endcall %}
+            <label class="ds-switch">
+                <input type="checkbox" name="create_expense" id="create_expense" checked>
+                {{ _('Create expense entry') }}
+            </label>
+            <div id="expense-fields" class="ds-dialog__group">
+                {% call field(_('Actual Cost'), 'actual-cost') %}
+                <input type="number" name="actual_cost" id="actual-cost" step="0.01" inputmode="decimal" class="ds-control">
+                {% endcall %}
+                {% call field(_('Vendor'), 'complete-vendor') %}
+                <input type="text" name="vendor" id="complete-vendor" class="ds-control" placeholder="{{ _('Optional') }}">
+                {% endcall %}
+            </div>
+        </div>
+        <div class="ds-dialog__actions">
+            {{ button(_('Cancel'), variant='ghost', attrs={'data-close': ''}) }}
+            {{ button(_('Complete'), type='submit', icon_name='check') }}
+        </div>
+    </form>
+</dialog>
+
 <script>
-function showCompleteModal(scheduleId, name, estimatedCost) {
-    document.getElementById('complete-form').action = '/maintenance/' + scheduleId + '/complete';
-    document.getElementById('modal-title').textContent = 'Complete: ' + name;
-    document.getElementById('actual-cost').value = estimatedCost || '';
-    // Default to today in the user's local timezone (en-CA gives YYYY-MM-DD).
-    document.getElementById('performed-date').value = new Date().toLocaleDateString('en-CA');
-    document.getElementById('complete-modal').classList.remove('hidden');
-}
-
-function hideCompleteModal() {
-    document.getElementById('complete-modal').classList.add('hidden');
-}
-
-document.getElementById('create_expense').addEventListener('change', function() {
-    document.getElementById('expense-fields').style.display = this.checked ? 'block' : 'none';
-});
+(function () {
+    var dialog = document.getElementById('complete-dialog');
+    var form = document.getElementById('complete-form');
+    document.querySelectorAll('[data-complete]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            form.action = btn.dataset.complete;
+            document.getElementById('complete-name').textContent = btn.dataset.name;
+            document.getElementById('actual-cost').value = btn.dataset.cost;
+            // Default to today in the user's local timezone (en-CA gives YYYY-MM-DD).
+            document.getElementById('performed-date').value = new Date().toLocaleDateString('en-CA');
+            dialog.showModal();
+        });
+    });
+    dialog.querySelector('[data-close]').addEventListener('click', function () { dialog.close(); });
+    document.getElementById('create_expense').addEventListener('change', function () {
+        document.getElementById('expense-fields').hidden = !this.checked;
+    });
+})();
 </script>
+{% endif %}
 {% endblock %}

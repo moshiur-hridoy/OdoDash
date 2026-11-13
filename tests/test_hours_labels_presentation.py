@@ -16,6 +16,7 @@ deliberately stopped short of four things, and this module covers them:
 A distance-metered vehicle must come through all of this unchanged.
 """
 import io
+import re
 import zipfile
 from datetime import date
 
@@ -214,8 +215,10 @@ class TestTotalsDoNotMixUnits:
         self._two_trips(test_user, sample_vehicle, tractor)
 
         body = auth_client.get('/trips/').get_data(as_text=True)
-        assert '50.0 km' in body
-        assert '8.0 h' in body
+        # The unit sits in its own muted span; read the row as text.
+        text = re.sub(r'<[^>]+>', '', body)
+        assert '50.0 km' in text
+        assert '8.0 h' in text
 
     def test_trip_totals_for_one_metering_are_unchanged(
             self, auth_client, sample_vehicle, test_user):
