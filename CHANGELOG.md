@@ -10,10 +10,11 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
-## [0.49.0] - 2026-11-13
+## [0.50.0] - 2026-11-13
 
 ### Changed
 
+- Charging is always green in the Expenses by Category chart, every category label is shown, and the app version sits beside the app name in the sidebar.
 - A new look across the whole app. Every page now uses one design system:
   a calm light theme with a sidebar, a dark theme that follows your device,
   Inter type, odometer-style readings and an accent colour taken from

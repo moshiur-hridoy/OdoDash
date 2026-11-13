@@ -50,7 +50,7 @@ issues, of which #421 and #422 are new.
 | #395 document links | Done | v0.45.2 |
 | #381 large numbers | Partly done; locale/mobile/PDF check open | v0.45.2 |
 | #2 (this repo) total cost limit | Done, closed | v0.45.2 |
-| #384, #412 | Done: distance reads every odometer source; purchase odometer field not added | v0.49.0 (planned) |
+| #384, #412 | Done: distance reads every odometer source; purchase odometer field not added | v0.50.0 |
 | #371 | Partial: a failed feed no longer blocks the rest; matching and Fuel Finder open | |
 | #380, #382, #385/#406 | Not started | |
 | #387, #413, #411, #360, #398, #386, #373, #268/#392 | Not started | |
