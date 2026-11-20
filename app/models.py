@@ -132,6 +132,8 @@ class User(UserMixin, db.Model):
     telegram_link_code = db.Column(db.String(16), unique=True, index=True)
     telegram_link_expires = db.Column(db.DateTime)
 
+    show_net_cost_per_distance = db.Column(db.Boolean, default=False, server_default=db.false(), nullable=False)
+
     # Menu preferences
     start_page = db.Column(db.String(50), default='dashboard')  # dashboard, vehicles, fuel, expenses, etc.
     # users and vehicles reference each other on purpose: a vehicle has an
@@ -924,6 +926,13 @@ class Vehicle(db.Model):
         total_distance = self.get_total_distance()
         if total_distance > 0:
             return total_cost / total_distance
+        return None
+
+    def get_net_cost_per_distance(self):
+        """Cost after mileage reimbursements per km, mile, or engine hour."""
+        total_distance = self.get_total_distance()
+        if total_distance > 0:
+            return self.get_net_cost() / total_distance
         return None
 
     def is_electric(self):
