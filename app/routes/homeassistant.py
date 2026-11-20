@@ -84,8 +84,9 @@ def token_required(f):
         except ValueError:
             return jsonify({'error': 'Invalid authorization header'}), 401
 
-        # Find user by API token
-        user = User.query.filter_by(api_key=token).first()
+        # The scoped Home Assistant key, or the account API key so
+        # existing YAML setups keep working.
+        user = User.get_by_ha_token(token) or User.get_by_api_key(token)
         if not user:
             return jsonify({'error': 'Invalid API token'}), 401
 

@@ -480,3 +480,78 @@ class TestHaOverview:
         assert alerts[0]['type'] == 'reminder'
         assert alerts[0]['vehicle_id'] == ha_vehicle.id
 
+
+class TestHaToken:
+    """The scoped Home Assistant key (odoha_) works on /api/ha/* only."""
+
+    @pytest.fixture
+    def ha_token_headers(self, ha_user):
+        token = ha_user.generate_ha_token()
+        _db_ext.session.commit()
+        return make_ha_headers(token)
+
+    def test_generated_token_shape(self, ha_user):
+        token = ha_user.generate_ha_token()
+        assert token.startswith('odoha_')
+        assert len(token) <= User.__table__.c.ha_token.type.length
+        assert ha_user.ha_token_created_at is not None
+
+    def test_works_on_ha_api(self, client, ha_user, ha_token_headers):
+        resp = client.get('/api/ha/status', headers=ha_token_headers)
+        assert resp.status_code == 200
+        assert resp.get_json()['user'] == ha_user.username
+        assert client.get('/api/ha/overview', headers=ha_token_headers).status_code == 200
+
+    def test_old_api_key_still_works(self, client, ha_headers):
+        assert client.get('/api/ha/status', headers=ha_headers).status_code == 200
+
+    def test_rejected_by_v1_api(self, client, ha_token_headers):
+        assert client.get('/api/v1/vehicles', headers=ha_token_headers).status_code == 401
+        token = ha_token_headers['Authorization'].split(' ', 1)[1]
+        assert client.get('/api/v1/vehicles', headers={'X-API-Key': token}).status_code == 401
+
+    def test_rejected_by_calendar(self, client, ha_user):
+        token = ha_user.generate_ha_token()
+        _db_ext.session.commit()
+        assert client.get(f'/api/calendar/feed.ics?token={token}').status_code == 401
+
+    def test_revoked_token_rejected(self, client, ha_user, ha_token_headers):
+        ha_user.revoke_ha_token()
+        _db_ext.session.commit()
+        assert client.get('/api/ha/status', headers=ha_token_headers).status_code == 401
+
+    def test_can_add_fuel(self, client, ha_token_headers, ha_vehicle):
+        resp = client.post('/api/ha/fuel/add', headers=ha_token_headers, json={
+            'vehicle_id': ha_vehicle.id, 'date': '2024-05-01', 'odometer': 6000,
+            'volume': 30, 'price_per_unit': 1.5, 'total_cost': 45,
+        })
+        assert resp.status_code == 201
+
+    def test_viewer_cannot_add_fuel(self, client, ha_user, ha_token_headers, ha_vehicle):
+        ha_user.role = 'viewer'
+        _db_ext.session.commit()
+        resp = client.post('/api/ha/fuel/add', headers=ha_token_headers, json={
+            'vehicle_id': ha_vehicle.id, 'date': '2024-05-01', 'odometer': 6000,
+            'volume': 30, 'price_per_unit': 1.5, 'total_cost': 45,
+        })
+        assert resp.status_code == 403
+        assert FuelLog.query.filter_by(odometer=6000.0).count() == 0
+
+    def test_generate_and_revoke_routes(self, auth_client, test_user):
+        resp = auth_client.post('/api/key/ha/generate')
+        assert resp.status_code == 200
+        token = resp.get_json()['ha_token']
+        assert token.startswith('odoha_')
+        assert test_user.ha_token == token
+        # the account API key is untouched
+        assert test_user.api_key is None
+        assert auth_client.post('/api/key/ha/revoke').status_code == 200
+        assert test_user.ha_token is None
+
+    def test_viewer_can_manage_own_ha_token(self, auth_client, test_user):
+        test_user.role = 'viewer'
+        _db_ext.session.commit()
+        assert auth_client.post('/api/key/ha/generate').status_code == 200
+
+    def test_generate_requires_login(self, client):
+        assert client.post('/api/key/ha/generate').status_code in (302, 401)

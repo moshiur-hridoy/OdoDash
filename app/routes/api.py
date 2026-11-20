@@ -117,6 +117,27 @@ def revoke_api_key():
     return jsonify({'success': True})
 
 
+@bp.route('/key/ha/generate', methods=['POST'])
+@login_required
+def generate_ha_token():
+    """Generate a new Home Assistant key for the current user."""
+    ha_token = current_user.generate_ha_token()
+    db.session.commit()
+    return jsonify({
+        'ha_token': ha_token,
+        'created_at': current_user.ha_token_created_at.isoformat()
+    })
+
+
+@bp.route('/key/ha/revoke', methods=['POST'])
+@login_required
+def revoke_ha_token():
+    """Revoke the current user's Home Assistant key."""
+    current_user.revoke_ha_token()
+    db.session.commit()
+    return jsonify({'success': True})
+
+
 # =============================================================================
 # Notification Testing
 # =============================================================================
