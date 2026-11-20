@@ -581,6 +581,10 @@ msgstr "Le mot de passe doit contenir au moins un chiffre"
 msgid "Please add a vehicle first"
 msgstr "Veuillez d'abord ajouter un véhicule"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Le relevé initial du compteur doit être un nombre positif ou nul."
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1610,6 +1614,18 @@ msgstr "Indemnité kilométrique"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Pneus"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Relevé initial du compteur"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Relevé facultatif au début du suivi des coûts, dans l’unité du compteur "
+"du véhicule ou en heures moteur."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

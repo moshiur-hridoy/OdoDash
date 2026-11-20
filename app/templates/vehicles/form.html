@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from 'components/ui.html' import page_header, back_link, button, badge, file_drop %}
+{% from 'components/ui.html' import page_header, back_link, button, badge, file_drop, field %}
 {% from 'components/forms.html' import form_actions, req %}
 {% from 'components/icons.html' import icon %}
 {% block title %}{% if vehicle %}{{ _('Edit Vehicle') }}{% else %}{{ _('Add Vehicle') }}{% endif %}{% endblock %}
@@ -129,6 +129,11 @@
                 </select>
                 <p class="form-hint">{{ _('Override the odometer unit for this vehicle. Useful when you have vehicles with different odometer units.') }}</p>
             </div>
+            {% call field(_('Starting odometer'), 'starting_odometer', help=_('Optional reading when cost tracking began, in the vehicle’s odometer unit or engine hours.')) %}
+            <input id="starting_odometer" name="starting_odometer" type="number" class="ds-control"
+                   min="0" step="any" aria-describedby="starting_odometer-help"
+                   value="{{ vehicle.starting_odometer if vehicle and vehicle.starting_odometer is not none else '' }}">
+            {% endcall %}
         </div>
     </section>
 

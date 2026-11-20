@@ -580,6 +580,10 @@ msgstr "Salasanassa on oltava vähintään yksi numero"
 msgid "Please add a vehicle first"
 msgstr "Lisää ensin ajoneuvo"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Mittarin alkulukeman on oltava vähintään nolla."
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1598,6 +1602,18 @@ msgstr "Kilometrikorvaus"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Renkaat"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Mittarin alkulukema"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Valinnainen lukema kustannusseurannan alkaessa ajoneuvon matkamittarin "
+"yksikössä tai moottorin käyttötunteina."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

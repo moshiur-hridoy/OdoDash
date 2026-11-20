@@ -579,6 +579,10 @@ msgstr "パスワードには数字を1文字以上含めてください"
 msgid "Please add a vehicle first"
 msgstr "まず車両を追加してください"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "メーターの開始値には 0 以上の数値を指定してください。"
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1561,6 +1565,16 @@ msgstr "マイレージ手当"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "タイヤ"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "メーターの開始値"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr "費用の記録を開始した時点の値（任意）。車両の走行距離計の単位またはエンジン稼働時間で入力します。"
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
