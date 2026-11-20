@@ -1297,6 +1297,12 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .integration-steps p + ol, .integration-steps p + ul { margin-top: 6px; }
 .integration-steps ol { list-style: decimal; }
 .integration-steps ul { list-style: disc; }
+.ha-step__num { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 22px; height: 22px;
+  border-radius: 50%; background: var(--ds-accent-soft); color: var(--ds-accent-ink); font-size: var(--ds-text-xs); font-weight: 700; }
+@media (max-width: 640px) {
+  .ha-step .form-template__row { flex-wrap: wrap; }
+  .ha-step .form-template__row .ds-control, .ha-step .form-template__row .ds-password { flex: 1 1 100%; }
+}
 .integration-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; text-align: center; }
 .integration-endpoints { display: flex; flex-direction: column; margin: 0; border: 1px solid var(--ds-border-soft); border-radius: var(--ds-radius-md); }
 .integration-endpoints > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 8px 12px; font-size: var(--ds-text-sm); }
