@@ -126,6 +126,18 @@ python run.py
 
 More options (plain `docker run`, first-login details) are in the [installation guide](docs/installation.md).
 
+## Home Assistant
+
+[![Open your Home Assistant instance and open the OdoDash integration in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=moshiur-hridoy&repository=ododash-homeassistant&category=integration)
+
+Every vehicle becomes a Home Assistant device with odometer, consumption, cost and last-fill sensors, plus alerts for due maintenance, expiring documents and reminders. No YAML:
+
+1. **Create key:** in OdoDash, Settings → Integrations → Home Assistant → Create Home Assistant key. It can only read your vehicles and log fuel.
+2. **Install:** click the badge above (needs [HACS](https://hacs.xyz)) and download OdoDash, then restart Home Assistant.
+3. **Connect:** add the OdoDash integration and paste the server address and key shown in step 3 of the same Settings panel.
+
+Details, the REST endpoints and the YAML alternative are in [Integrations](docs/integrations.md#home-assistant). The integration lives in [ododash-homeassistant](https://github.com/moshiur-hridoy/ododash-homeassistant).
+
 ## Documentation
 
 | Guide | Contents |

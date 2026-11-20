@@ -35,7 +35,60 @@ per line, either `Retailer name|https://...` or a bare URL. A feed that is
 unreachable is reported and the rest still apply.
 
 ## Home Assistant
-Create vehicle sensors in Home Assistant:
+
+The [ododash-homeassistant](https://github.com/moshiur-hridoy/ododash-homeassistant)
+integration, installed through HACS, turns each vehicle into a Home Assistant
+device with sensors and alerts, set up from the Home Assistant UI with no YAML.
+
+[![Open your Home Assistant instance and open the OdoDash integration in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=moshiur-hridoy&repository=ododash-homeassistant&category=integration)
+
+Settings → Integrations → Home Assistant walks through three steps:
+
+1. **Create key.** Create a Home Assistant key (it starts with `odoha_`). It
+   works only on `/api/ha/*`: it can read your vehicles and log fuel, and
+   `/api/v1` and the calendar feed refuse it. Regenerate or revoke it from the
+   same panel; Home Assistant then asks for the new key.
+2. **Install.** "Add to Home Assistant" opens your Home Assistant at the HACS
+   page for the integration. Download it and restart Home Assistant. HACS is
+   required; see [hacs.xyz](https://hacs.xyz).
+3. **Connect.** Add the OdoDash integration in Home Assistant and paste the
+   server address and key shown in this step. Behind a reverse proxy, use the
+   address Home Assistant can reach rather than the one OdoDash shows.
+
+The account's main API key (`odo_`) still works on `/api/ha/*`, so existing
+YAML setups keep working, but it can do everything the API can. Prefer the
+Home Assistant key.
+
+### REST API
+
+Every `/api/ha/*` endpoint takes an `Authorization: Bearer <key>` header and
+covers the vehicles you can see in OdoDash: your own, ones shared with you and
+instance-shared ones.
+
+| Endpoint | Returns |
+|---|---|
+| `GET /api/ha/status` | `status`, `user`, `version` |
+| `GET /api/ha/overview` | everything below in one request (used by the integration) |
+| `GET /api/ha/vehicles`, `/api/ha/vehicles/<id>` | vehicle details |
+| `GET /api/ha/vehicles/<id>/stats[?days=N]` | totals, average consumption, last fill |
+| `GET /api/ha/alerts` | due maintenance, recurring expenses, expiring documents, reminders |
+| `GET /api/ha/summary` | account-wide totals and alert count |
+| `POST /api/ha/fuel/add` | logs a fill-up |
+
+`/api/ha/overview` returns `version`, `user`, `currency`, `alerts_count` and a
+`vehicles` list. Each vehicle carries its details, `is_electric`,
+`current_odometer`, `distance_unit`, `volume_unit`, `currency_symbol`,
+`avg_consumption` and `consumption_unit` (both `null` for a vehicle metered in
+engine hours), `total_cost`, `total_fuel_cost`, `total_expenses`,
+`cost_last_30_days`, `last_fill_date`, `last_fill_volume`, `last_fill_cost`,
+`last_charge` (`date`, `kwh_added`, `start_soc`, `end_soc`, `total_cost` for an
+electric vehicle with a charging session, otherwise `null`) and its own
+`alerts`.
+
+### YAML sensors
+
+Without the integration you can still create sensors with the REST platform
+(Settings → Integrations → Home Assistant → Advanced: YAML sensors):
 
 ```yaml
 sensor:
@@ -43,14 +96,12 @@ sensor:
     name: "OdoDash Vehicle Stats"
     resource: http://your-ododash-instance/api/ha/summary
     headers:
-      Authorization: ******
+      Authorization: Bearer YOUR_HOME_ASSISTANT_KEY
     value_template: "{{ value_json.alerts_count }}"
     json_attributes:
       - total_vehicles
       - total_cost
 ```
-
-Available endpoints: `/api/ha/status`, `/api/ha/vehicles`, `/api/ha/alerts`, `/api/ha/summary`
 
 ## Calendar Subscription
 Subscribe to reminders in your calendar app:
