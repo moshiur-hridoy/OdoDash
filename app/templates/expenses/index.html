@@ -205,7 +205,7 @@
         <h2 class="ds-card__title" id="by-category-title">{{ _('By Category') }}</h2>
         <ul class="exp-bars">
             {% for row in by_category %}
-            {% set cat_args = dict(filter_args, category=row.key) %}
+            {% set cat_args = dict(filter_args, category='loan_payment' if row.key in ('loan_principal', 'loan_interest') else row.key) %}
             {% if row.key != 'maintenance' %}{% set _g = cat_args.pop('maintenance_group', None) %}{% set _p = cat_args.pop('maintenance_part', None) %}{% endif %}
             <li>
                 <a class="exp-bar" href="{{ url_for('expenses.index', **cat_args) }}">

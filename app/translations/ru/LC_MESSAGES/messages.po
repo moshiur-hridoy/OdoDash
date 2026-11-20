@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr "Платёж по кредиту"
+
 #: app/models.py:52
 msgid "Editor"
 msgstr "Редактор"
@@ -55,6 +59,11 @@ msgstr "Администратор"
 msgid "Engine hours"
 msgstr "Моточасы"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "Чистые затраты на %(unit)s"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -72,6 +81,15 @@ msgstr "Пробег"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Часы"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "Показывать чистые затраты на %(unit)s"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "Вычитает записанные компенсации за пробег."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -580,6 +598,10 @@ msgstr "Пароль должен содержать хотя бы одну ци
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Сначала добавьте автомобиль"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Начальное показание счётчика должно быть неотрицательным числом."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1595,6 +1617,18 @@ msgstr "Компенсация за пробег"
 msgid "Tires"
 msgstr "Шины"
 
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Начальное показание счётчика"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Необязательное показание на момент начала учёта затрат в единицах "
+"одометра автомобиля или в моточасах."
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -1997,6 +2031,10 @@ msgstr "Добавить компенсацию"
 #: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "Назад к компенсации за пробег"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "Каждые две недели"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
@@ -6418,3 +6456,106 @@ msgstr ""
 #: app/templates/vehicles/view.html:948
 msgid "No fuel prices recorded yet."
 msgstr "Цены на топливо пока не записаны."
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr "Учитывать проценты"
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr "Условия кредита"
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr "Годовая процентная ставка"
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr "Срок кредита"
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr "Единица срока"
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr "Месяцы"
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr "Платежи"
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr "Дата первого платежа"
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr "Еженедельно"
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr "Расчётные проценты в этом платеже"
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr "Расчётная сумма кредита"
+
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr "Расчётные проценты за весь срок"
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr "Расчётные проценты в учтённых платежах"
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
+msgstr "Проверьте условия кредита, сумму и дату платежа."
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr ""
+"Расчёт для равных платежей по основному долгу и процентам. Не включайте "
+"комиссии и увеличенный последний платёж."
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr "Погашение основного долга"
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr "Расчётные проценты по кредиту"
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr "Проверить прошлые платежи"
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr "Прошедшие платежи по графику"
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr "Сначала проверьте учтённые расходы и выберите платежи для добавления."
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr "Уже учтённые кредитные платежи по этому автомобилю"
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr "Добавить выбранные платежи"
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr "Продолжить без прошлых платежей"
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr "Расч. проценты"

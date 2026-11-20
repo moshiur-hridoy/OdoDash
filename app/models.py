@@ -132,6 +132,8 @@ class User(UserMixin, db.Model):
     telegram_link_code = db.Column(db.String(16), unique=True, index=True)
     telegram_link_expires = db.Column(db.DateTime)
 
+    show_net_cost_per_distance = db.Column(db.Boolean, default=False, server_default=db.false(), nullable=False)
+
     # Menu preferences
     start_page = db.Column(db.String(50), default='dashboard')  # dashboard, vehicles, fuel, expenses, etc.
     # users and vehicles reference each other on purpose: a vehicle has an
@@ -293,6 +295,7 @@ class Vehicle(db.Model):
     tracking_unit = db.Column(db.String(20), default='mileage')  # mileage, hours
 
     # Per-vehicle odometer unit override (if None, falls back to user's distance_unit)
+    starting_odometer = db.Column(db.Float, nullable=True)
     odometer_unit = db.Column(db.String(10), default=None)  # km, mi, or None (use user preference)
 
     # Fuel info
@@ -519,6 +522,13 @@ class Vehicle(db.Model):
         span is returned as logged and ``distance_unit`` is ignored — there
         is no km/mi conversion to apply to an hour (#323).
         """
+        if self.starting_odometer is not None:
+            if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer is not None:
+                endpoint = _distance_in(self.tessie_last_odometer, 'km', self.get_effective_odometer_unit())
+            else:
+                endpoint = max((value for _, value in self.get_odometer_readings()), default=0)
+            return self._reading_in(max(0, endpoint - self.starting_odometer), distance_unit)
+
         if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer:
             # Tessie reports km.
             odometer = self.tessie_last_odometer
@@ -918,6 +928,13 @@ class Vehicle(db.Model):
             return total_cost / total_distance
         return None
 
+    def get_net_cost_per_distance(self):
+        """Cost after mileage reimbursements per km, mile, or engine hour."""
+        total_distance = self.get_total_distance()
+        if total_distance > 0:
+            return self.get_net_cost() / total_distance
+        return None
+
     def is_electric(self):
         """Check if vehicle uses any electric propulsion"""
         return self.fuel_type in ('electric', 'plugin_hybrid', 'hybrid')
@@ -1019,6 +1036,7 @@ class Vehicle(db.Model):
             'make': self.make,
             'model': self.model,
             'year': self.year,
+            'starting_odometer': self.starting_odometer,
             'purchase_date': self.purchase_date.isoformat() if self.purchase_date else None,
             'registration': self.registration,
             'vin': self.vin,
@@ -1303,6 +1321,8 @@ class Expense(db.Model):
     cost = db.Column(db.Float, nullable=False)
     odometer = db.Column(db.Float)  # optional
 
+    loan_terms = db.Column(db.JSON(none_as_null=True))
+
     vendor = db.Column(db.String(100))
     notes = db.Column(db.Text)
 
@@ -1311,6 +1331,11 @@ class Expense(db.Model):
     # Relationships
     attachments = db.relationship('Attachment', backref='expense', lazy='dynamic',
                                   cascade='all, delete-orphan')
+
+    @property
+    def loan_estimate(self):
+        from app.services.loan_interest import estimate
+        return estimate(self.loan_terms, self.cost, self.date) if self.category == 'loan_payment' else None
 
     def to_dict(self):
         """Serialize expense to dictionary for API"""
@@ -1323,6 +1348,7 @@ class Expense(db.Model):
             'maintenance_part': self.maintenance_part,
             'description': self.description,
             'cost': self.cost,
+            'loan_terms': self.loan_terms,
             'odometer': self.odometer,
             'vendor': self.vendor,
             'notes': self.notes,
@@ -1503,6 +1529,7 @@ EXPENSE_CATEGORIES = [
     ('repairs', _l('Repairs')),
     ('inspection', _l('Inspection')),
     ('insurance', _l('Insurance')),
+    ('loan_payment', _l('Loan Payment')),
     ('tax', _l('Road Tax')),
     ('registration', _l('Registration')),
     ('parking', _l('Parking')),
@@ -1952,8 +1979,12 @@ class RecurringExpense(db.Model):
     amount = db.Column(db.Float, nullable=True)
     vendor = db.Column(db.String(100))
 
+    loan_terms = db.Column(db.JSON(none_as_null=True))
+
+    history_reviewed_on = db.Column(db.Date)
+
     # Recurrence settings
-    frequency = db.Column(db.String(20), nullable=False)  # weekly, monthly, quarterly, yearly
+    frequency = db.Column(db.String(20), nullable=False)  # weekly, biweekly, monthly, quarterly, biannual, yearly
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date)  # optional end date
 
@@ -1972,6 +2003,11 @@ class RecurringExpense(db.Model):
     vehicle = db.relationship('Vehicle', backref=db.backref('recurring_expenses', lazy='dynamic', cascade='all, delete-orphan'))
     user = db.relationship('User', backref=db.backref('recurring_expenses', lazy='dynamic'))
 
+    @property
+    def loan_estimate(self):
+        from app.services.loan_interest import estimate
+        return estimate(self.loan_terms, self.amount, self.next_due or self.last_generated)
+
     def calculate_next_due(self):
         """Calculate next due date based on frequency"""
         from datetime import date
@@ -1979,8 +2015,18 @@ class RecurringExpense(db.Model):
 
         base_date = self.last_generated or self.start_date
 
-        if self.frequency == 'weekly':
+        if self.loan_terms:
+            from app.services.loan_interest import payment_count, payment_date, payment_number
+            following = payment_number(self.loan_terms, base_date) + 1
+            if following > payment_count(self.loan_terms):
+                self.is_active = False
+                self.next_due = None
+                return
+            self.next_due = payment_date(self.loan_terms, following)
+        elif self.frequency == 'weekly':
             self.next_due = base_date + relativedelta(weeks=1)
+        elif self.frequency == 'biweekly':
+            self.next_due = base_date + relativedelta(weeks=2)
         elif self.frequency == 'monthly':
             self.next_due = base_date + relativedelta(months=1)
         elif self.frequency == 'quarterly':

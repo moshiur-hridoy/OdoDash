@@ -143,6 +143,13 @@
                     note=driven_rate or all_time_rate, note_tone='accent' if driven_rate else None,
                     extra_note=all_time_short if driven_rate else None) }}
         {% endcall %}
+        {% if current_user.show_net_cost_per_distance %}
+        {% call card(class='ds-grow-even') %}
+            {{ stat(_('Net cost per %(unit)s', unit=total_distance_unit or _('mixed units')),
+                    net_cost_per_distance|money if net_cost_per_distance is not none else '—',
+                    unit=currency if net_cost_per_distance is not none else None, note=_('All time')) }}
+        {% endcall %}
+        {% endif %}
         {% call card(class='ds-grow-even') %}
             {% if period == 'year' %}
                 {{ stat(_('Average per month'), month_average|money, unit=currency) }}

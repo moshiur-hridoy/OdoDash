@@ -17,6 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr ""
+
 #: app/models.py:52
 msgid "Editor"
 msgstr ""
@@ -52,6 +56,15 @@ msgstr ""
 msgid "Engine hours"
 msgstr ""
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr ""
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr ""
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -68,6 +81,15 @@ msgstr ""
 
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
+msgstr ""
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr ""
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
 msgstr ""
 
 #: app/models.py:417 app/templates/allowance/form.html:36
@@ -576,6 +598,15 @@ msgstr ""
 #: app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
+msgstr ""
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr ""
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
 msgstr ""
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
@@ -1544,6 +1575,16 @@ msgstr ""
 msgid "Tires"
 msgstr ""
 
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr ""
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -1963,6 +2004,10 @@ msgstr ""
 
 #: app/templates/allowance/form.html:60
 msgid "Optional. If set with distance, the amount is calculated for you."
+msgstr ""
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
 msgstr ""
 
 #: app/templates/allowance/form.html:63 app/templates/auth/edit_user.html:55
@@ -6200,3 +6245,94 @@ msgstr ""
 msgid "No fuel prices recorded yet."
 msgstr ""
 
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr ""
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr ""
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr ""
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr ""
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr ""
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr ""
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr ""
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr ""
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr ""
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr ""
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr ""
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr ""

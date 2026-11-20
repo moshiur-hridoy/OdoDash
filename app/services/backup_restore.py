@@ -113,6 +113,16 @@ def _parse_float(value):
         return None
 
 
+def _parse_starting_odometer(value):
+    """Reject invalid backup baselines instead of restoring misleading distances."""
+    from app.utils import parse_starting_odometer
+    try:
+        return parse_starting_odometer(value)
+    except ValueError as exc:
+        raise BackupError('Starting odometer must be a nonnegative finite number.') from exc
+
+
+
 def _parse_int(value):
     if value in (None, ''):
         return None
@@ -129,12 +139,22 @@ def _parse_str(value):
     return text or None
 
 
+def _parse_loan_terms(value):
+    from app.services.loan_interest import validate_terms
+    try:
+        return validate_terms(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise BackupError('Invalid loan terms') from exc
+
+
 PARSERS = {
+    'loan_terms': _parse_loan_terms,
     'date': _parse_date,
     'datetime': _parse_datetime,
     'time': _parse_time,
     'bool': _parse_bool,
     'float': _parse_float,
+    'starting_odometer': _parse_starting_odometer,
     'int': _parse_int,
     'str': _parse_str,
 }
@@ -188,6 +208,7 @@ VEHICLE_SECTION = Section(
         'year': 'int', 'purchase_date': 'date', 'registration': 'str', 'vin': 'str',
         'tracking_unit': 'str', 'odometer_unit': 'str', 'fuel_type': 'str',
         'secondary_fuel_type': 'str', 'tank_capacity': 'float',
+        'starting_odometer': 'starting_odometer',
         'battery_capacity': 'float', 'is_active': 'bool', 'notes': 'str',
         'image_filename': 'str', 'mot_status': 'str', 'mot_expiry': 'date',
         'tax_status': 'str', 'tax_due': 'date', 'created_at': 'datetime',
@@ -212,7 +233,7 @@ VEHICLE_SECTIONS = [
     Section('expenses', Expense,
             {'date': 'date', 'category': 'str', 'description': 'str',
              'maintenance_group': 'str', 'maintenance_part': 'str',
-             'cost': 'float', 'odometer': 'float', 'vendor': 'str',
+             'cost': 'float', 'loan_terms': 'loan_terms', 'odometer': 'float', 'vendor': 'str',
              'notes': 'str', 'created_at': 'datetime'},
             key_fields=('date', 'category', 'description', 'cost')),
     Section('trips', Trip,
@@ -257,10 +278,10 @@ VEHICLE_SECTIONS = [
             key_fields=('name', 'tire_type', 'size')),
     Section('recurring_expenses', RecurringExpense,
             {'name': 'str', 'category': 'str', 'description': 'str',
-             'amount': 'float', 'vendor': 'str', 'frequency': 'str',
+             'amount': 'float', 'loan_terms': 'loan_terms', 'vendor': 'str', 'frequency': 'str',
              'start_date': 'date', 'end_date': 'date', 'last_generated': 'date',
              'next_due': 'date', 'auto_create': 'bool',
-             'notify_before_days': 'int', 'is_active': 'bool',
+             'notify_before_days': 'int', 'history_reviewed_on': 'date', 'is_active': 'bool',
              'created_at': 'datetime'},
             key_fields=('name', 'category', 'start_date')),
     Section('documents', Document,

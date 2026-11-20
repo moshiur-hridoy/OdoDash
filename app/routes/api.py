@@ -14,6 +14,7 @@ from functools import wraps
 from datetime import datetime
 from flask import Blueprint, jsonify, request, send_from_directory, current_app, url_for, render_template, Response, flash, redirect, session
 from flask_login import login_required, current_user
+from app.services.expense_breakdown import category_breakdown
 from app import db
 from app.models import (
     User, Vehicle, VehicleSpec, FuelLog, Expense, EXPENSE_CATEGORIES,
@@ -21,11 +22,12 @@ from app.models import (
     Document, Trip, ChargingSession, VehiclePart, FuelPriceHistory, Attachment,
     TRIP_PURPOSES, CHARGER_TYPES, fuel_type_label
 )
+from app.services.loan_interest import terms_for_payment
 from app.services.tessie import TessieService
 from app.services.backup_restore import (
     BackupError, SECTION_LABELS, describe_backup, read_backup, restore_backup
 )
-from app.utils import parse_decimal, parse_fuel_level, utcnow
+from app.utils import parse_starting_odometer, parse_decimal, parse_fuel_level, utcnow
 from flask_babel import gettext as _
 from config import APP_VERSION
 
@@ -295,13 +297,7 @@ def vehicle_stats(vehicle_id):
                 'fuel_type_label': str(fuel_type_label(log.effective_fuel_type)),
             })
 
-    expenses = vehicle.expenses.all()
-    category_totals = {}
-    for exp in expenses:
-        if exp.category in category_totals:
-            category_totals[exp.category] += exp.cost
-        else:
-            category_totals[exp.category] = exp.cost
+    category_totals = {row['key']: row['total'] for row in category_breakdown(vehicle.expenses)}
 
     # Price paid per unit over time, from every log that recorded one (#249)
     price_logs = vehicle.fuel_logs.filter(
@@ -401,7 +397,13 @@ def api_create_vehicle():
     except (TypeError, ValueError):
         return jsonify({'error': 'Invalid purchase_date format. Use YYYY-MM-DD', 'code': 'validation_error'}), 400
 
+    try:
+        starting_odometer = parse_starting_odometer(data.get('starting_odometer'))
+    except ValueError:
+        return jsonify({'error': 'Invalid starting_odometer', 'code': 'validation_error'}), 400
+
     vehicle = Vehicle(
+        starting_odometer=starting_odometer,
         owner_id=user.id,
         name=data['name'],
         vehicle_type=data['vehicle_type'],
@@ -438,6 +440,12 @@ def api_update_vehicle(vehicle_id):
     data = request.get_json()
     if not data:
         return jsonify({'error': 'JSON body required', 'code': 'invalid_request'}), 400
+
+    if 'starting_odometer' in data:
+        try:
+            vehicle.starting_odometer = parse_starting_odometer(data['starting_odometer'])
+        except ValueError:
+            return jsonify({'error': 'Invalid starting_odometer', 'code': 'validation_error'}), 400
 
     if 'name' in data:
         vehicle.name = data['name']
@@ -772,6 +780,11 @@ def api_create_expense(vehicle_id):
         maintenance_part=(data.get('maintenance_part') if data['category'] == 'maintenance' else None)
     )
 
+    try:
+        if expense.category == 'loan_payment':
+            expense.loan_terms = terms_for_payment(data.get('loan_terms'), expense.cost, expense.date)
+    except (TypeError, ValueError, OverflowError):
+        return jsonify({'error': 'Invalid loan terms', 'code': 'validation_error'}), 400
     db.session.add(expense)
     db.session.commit()
 
@@ -835,6 +848,12 @@ def api_update_expense(expense_id):
     if 'maintenance_part' in data:
         expense.maintenance_part = data['maintenance_part'] if expense.category == 'maintenance' else None
 
+    try:
+        expense.loan_terms = (terms_for_payment(data.get('loan_terms', expense.loan_terms), expense.cost, expense.date)
+                              if expense.category == 'loan_payment' else None)
+    except (TypeError, ValueError, OverflowError):
+        db.session.rollback()
+        return jsonify({'error': 'Invalid loan terms', 'code': 'validation_error'}), 400
     db.session.commit()
     return jsonify(expense.to_dict())
 
@@ -1690,18 +1709,20 @@ def export_csv():
         writer.writerow([
             'id', 'vehicle_id', 'vehicle_name', 'date', 'category',
             'maintenance_group', 'maintenance_part', 'description', 'cost', 'odometer',
-            'odometer_unit', 'vendor', 'notes', 'created_at'
+            'odometer_unit', 'vendor', 'notes', 'created_at', 'estimated_interest', 'estimated_principal'
         ])
         for vehicle in current_user.get_all_vehicles():
             odometer_unit = vehicle.get_reading_unit()
             for expense in vehicle.expenses.order_by(Expense.date.desc()).all():
+                split = expense.loan_estimate
                 writer.writerow([
                     expense.id, vehicle.id, vehicle.name, expense.date.isoformat(),
                     expense.category, expense.maintenance_group, expense.maintenance_part,
                     expense.description, expense.cost,
                     expense.odometer, odometer_unit if expense.odometer is not None else '',
                     expense.vendor, expense.notes,
-                    expense.created_at.isoformat() if expense.created_at else ''
+                    expense.created_at.isoformat() if expense.created_at else '',
+                    split['interest'] if split else '', split['principal'] if split else ''
                 ])
         zip_file.writestr('expenses.csv', expenses_csv.getvalue())
 
@@ -1948,6 +1969,9 @@ def export_json():
             'vin': vehicle.vin,
             'fuel_type': vehicle.fuel_type,
             'tank_capacity': vehicle.tank_capacity,
+            'starting_odometer': vehicle.starting_odometer,
+            'odometer_unit': vehicle.odometer_unit,
+            'tracking_unit': vehicle.tracking_unit,
             'battery_capacity': vehicle.battery_capacity,
             'is_active': vehicle.is_active,
             'notes': vehicle.notes,
@@ -2009,6 +2033,7 @@ def export_json():
                 'category': expense.category,
                 'description': expense.description,
                 'cost': expense.cost,
+                'loan_terms': expense.loan_terms,
                 'odometer': expense.odometer,
                 'vendor': expense.vendor,
                 'notes': expense.notes,
@@ -2062,6 +2087,7 @@ def export_json():
                 'category': recurring.category,
                 'description': recurring.description,
                 'amount': recurring.amount,
+                'loan_terms': recurring.loan_terms,
                 'vendor': recurring.vendor,
                 'frequency': recurring.frequency,
                 'start_date': recurring.start_date.isoformat() if recurring.start_date else None,
@@ -2070,6 +2096,7 @@ def export_json():
                 'next_due': recurring.next_due.isoformat() if recurring.next_due else None,
                 'auto_create': recurring.auto_create,
                 'notify_before_days': recurring.notify_before_days,
+                'history_reviewed_on': recurring.history_reviewed_on.isoformat() if recurring.history_reviewed_on else None,
                 'is_active': recurring.is_active,
                 'created_at': recurring.created_at.isoformat() if recurring.created_at else None
             })
@@ -2237,6 +2264,9 @@ def export_full_backup():
             'vin': vehicle.vin,
             'fuel_type': vehicle.fuel_type,
             'tank_capacity': vehicle.tank_capacity,
+            'starting_odometer': vehicle.starting_odometer,
+            'odometer_unit': vehicle.odometer_unit,
+            'tracking_unit': vehicle.tracking_unit,
             'battery_capacity': vehicle.battery_capacity,
             'is_active': vehicle.is_active,
             'notes': vehicle.notes,
@@ -2329,6 +2359,7 @@ def export_full_backup():
                 'category': expense.category,
                 'description': expense.description,
                 'cost': expense.cost,
+                'loan_terms': expense.loan_terms,
                 'odometer': expense.odometer,
                 'vendor': expense.vendor,
                 'notes': expense.notes,
@@ -2395,6 +2426,7 @@ def export_full_backup():
                 'category': recurring.category,
                 'description': recurring.description,
                 'amount': recurring.amount,
+                'loan_terms': recurring.loan_terms,
                 'vendor': recurring.vendor,
                 'frequency': recurring.frequency,
                 'start_date': recurring.start_date.isoformat() if recurring.start_date else None,
@@ -2403,6 +2435,7 @@ def export_full_backup():
                 'next_due': recurring.next_due.isoformat() if recurring.next_due else None,
                 'auto_create': recurring.auto_create,
                 'notify_before_days': recurring.notify_before_days,
+                'history_reviewed_on': recurring.history_reviewed_on.isoformat() if recurring.history_reviewed_on else None,
                 'is_active': recurring.is_active,
                 'created_at': recurring.created_at.isoformat() if recurring.created_at else None
             })

@@ -5,7 +5,7 @@
 
 {% block content %}
 {%- set category_labels = dict(categories) -%}
-{%- set frequency_labels = {'monthly': _('Monthly'), 'quarterly': _('Quarterly (every 3 months)'), 'biannual': _('Biannual (every 6 months)'), 'yearly': _('Yearly')} -%}
+{%- set frequency_labels = {'biweekly': _('Biweekly (every 2 weeks)'), 'monthly': _('Monthly'), 'quarterly': _('Quarterly (every 3 months)'), 'biannual': _('Biannual (every 6 months)'), 'yearly': _('Yearly')} -%}
 <div class="ds log-page">
 
 {% call page_header(_('Recurring Expenses'), subtitle=_('Auto-generate regular expenses')) %}
@@ -32,10 +32,16 @@
             </div>
             <div class="ds-list__meta{% if tone %} ds-list__meta--{{ tone }}{% endif %}">
                 {% if item.amount %}<strong>{{ item.vehicle.currency_symbol }}{{ item.amount|money }}</strong>{% endif %}
+                {% if item.loan_estimate %}
+                <small>{{ _('Estimated interest in this payment') }}: {{ item.loan_estimate.interest|money }} {{ current_user.currency }}</small>
+                {% endif %}
                 {% if item.next_due %}<small>{{ _('Next due') }}: {{ item.next_due|format_date }}</small>{% endif %}
             </div>
             <div class="ds-list__actions">
                 {% if can_write('recurring') %}
+                {% if item.category == 'loan_payment' and item.start_date < today and not item.history_reviewed_on %}
+                {{ button(_('Review past payments'), href=url_for('recurring.history', recurring_id=item.id), variant='secondary', size='sm') }}
+                {% endif %}
                 {% if due or soon %}
                 <form method="POST" action="{{ url_for('recurring.generate', recurring_id=item.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

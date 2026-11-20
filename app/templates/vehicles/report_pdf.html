@@ -396,8 +396,11 @@
         {% for expense in expenses %}
         <tr>
             <td>{{ expense.date|format_date }}</td>
-            <td style="text-transform: capitalize;">{{ expense.category }}</td>
-            <td>{{ expense.description }}</td>
+            <td>{{ expense.category|category_label }}</td>
+            <td>{{ expense.description }}
+                {% set split = expense.loan_estimate %}
+                {% if split %}<br><small>{{ _('Estimated interest in this payment') }}: {{ split.interest|money }} {{ user.currency }}</small>{% endif %}
+            </td>
             <td class="text-right">{{ expense.cost|money }} {{ user.currency }}</td>
             <td>{{ expense.vendor or '-' }}</td>
         </tr>

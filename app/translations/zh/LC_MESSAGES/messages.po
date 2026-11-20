@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr "贷款还款"
+
 #: app/models.py:52
 msgid "Editor"
 msgstr "编辑者"
@@ -53,6 +57,11 @@ msgstr "管理员"
 msgid "Engine hours"
 msgstr "发动机小时"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "每%(unit)s净成本"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -70,6 +79,15 @@ msgstr "里程表"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "小时"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "显示每%(unit)s净成本"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "扣除已记录的里程报销。"
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -578,6 +596,10 @@ msgstr "密码必须至少包含一个数字"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "请先添加车辆"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "起始读数必须是非负数。"
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1557,6 +1579,16 @@ msgstr "里程补贴"
 msgid "Tires"
 msgstr "轮胎"
 
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "起始读数"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr "开始记录费用时的读数（选填），以车辆里程表的单位或发动机运行小时数计。"
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -1957,6 +1989,10 @@ msgstr "添加补贴"
 #: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "返回里程补贴"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "每两周"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
@@ -6223,3 +6259,104 @@ msgstr "数据不足，无法显示消耗趋势。请添加更多满箱加油记
 #: app/templates/vehicles/view.html:948
 msgid "No fuel prices recorded yet."
 msgstr "尚未记录任何燃油价格。"
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr "跟踪利息"
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr "贷款条件"
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr "年利率"
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr "贷款期限"
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr "期限单位"
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr "月"
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr "付款期数"
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr "首次付款日期"
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr "每周"
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr "本期预计利息"
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr "预计贷款本金"
+
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr "预计贷款总利息"
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr "已记录付款中的预计利息"
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
+msgstr "请检查贷款条件、付款金额和付款日期。"
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr "按固定等额本息还款估算。不含手续费和大额尾款。"
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr "偿还贷款本金"
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr "预计贷款利息"
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr "核对过往付款"
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr "已到期的计划付款"
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr "请先检查现有支出，再选择要添加的付款。"
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr "此车辆已记录的贷款付款"
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr "添加所选付款"
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr "不添加过往付款并继续"
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr "预计利息"

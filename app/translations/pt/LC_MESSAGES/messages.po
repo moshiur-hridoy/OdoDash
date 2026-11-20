@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr "Pagamento do empréstimo"
+
 #: app/models.py:52
 msgid "Editor"
 msgstr "Editor"
@@ -55,6 +59,11 @@ msgstr "Administrador"
 msgid "Engine hours"
 msgstr "Horas de motor"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "Custo líquido por %(unit)s"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -72,6 +81,15 @@ msgstr "Hodômetro"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Horas"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "Mostrar custo líquido por %(unit)s"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "Deduz os reembolsos de quilometragem registados."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -580,6 +598,10 @@ msgstr "A palavra-passe deve conter pelo menos um algarismo"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Adicione um veículo primeiro"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "A leitura inicial do contador deve ser um número não negativo."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1607,6 +1629,18 @@ msgstr "Ajuda de Custo por Quilometragem"
 msgid "Tires"
 msgstr "Pneus"
 
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Leitura inicial do contador"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Leitura opcional no início do registo de custos, na unidade do conta-"
+"quilómetros do veículo ou em horas de motor."
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -2009,6 +2043,10 @@ msgstr "Adicionar Ajuda de Custo"
 #: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "Voltar à ajuda de custo por quilometragem"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "A cada duas semanas"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
@@ -6432,3 +6470,108 @@ msgstr ""
 #: app/templates/vehicles/view.html:948
 msgid "No fuel prices recorded yet."
 msgstr "Ainda não há preços de combustível registrados."
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr "Registar juros"
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr "Condições do empréstimo"
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr "Taxa de juro anual"
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr "Prazo do empréstimo"
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr "Unidade do prazo"
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr "Meses"
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr "Prestações"
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr "Data da primeira prestação"
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr "Semanal"
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr "Juros estimados nesta prestação"
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr "Montante financiado estimado"
+
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr "Total estimado de juros do empréstimo"
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr "Juros estimados nas prestações registadas"
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
+msgstr "Verifique as condições do empréstimo, o montante e a data da prestação."
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr ""
+"Estimativa para prestações constantes de capital e juros. Exclua "
+"comissões e prestações finais de valor elevado."
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr "Capital amortizado"
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr "Juros estimados do empréstimo"
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr "Rever prestações anteriores"
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr "Prestações anteriores previstas"
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr ""
+"Verifique primeiro as despesas existentes e selecione as prestações a "
+"adicionar."
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr "Prestações já registadas para este veículo"
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr "Adicionar prestações selecionadas"
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr "Continuar sem as prestações anteriores"
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr "Juros estimados"

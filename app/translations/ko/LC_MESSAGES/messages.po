@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr "대출 상환"
+
 #: app/models.py:52
 msgid "Editor"
 msgstr "편집자"
@@ -53,6 +57,11 @@ msgstr "관리자"
 msgid "Engine hours"
 msgstr "엔진 가동 시간"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "%(unit)s당 순비용"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -70,6 +79,15 @@ msgstr "주행거리계"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "시간"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "%(unit)s당 순비용 표시"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "기록된 주행 거리 환급액을 차감합니다."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -578,6 +596,10 @@ msgstr "비밀번호에 숫자가 하나 이상 포함되어야 합니다"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "먼저 차량을 추가하십시오"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "시작 계기판 수치는 0 이상의 숫자여야 합니다."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1562,6 +1584,16 @@ msgstr "주행 수당"
 msgid "Tires"
 msgstr "타이어"
 
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "시작 계기판 수치"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr "비용 기록을 시작할 때의 수치입니다(선택 사항). 차량 주행 거리계 단위 또는 엔진 가동 시간으로 입력합니다."
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -1962,6 +1994,10 @@ msgstr "수당 추가"
 #: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "주행 수당으로 돌아가기"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "격주 (2주마다)"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
@@ -6245,3 +6281,104 @@ msgstr "소비 추이를 표시할 데이터가 충분하지 않습니다. 완�
 #: app/templates/vehicles/view.html:948
 msgid "No fuel prices recorded yet."
 msgstr "아직 기록된 연료 가격이 없습니다."
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr "이자 추적"
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr "대출 조건"
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr "연 이자율"
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr "대출 기간"
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr "기간 단위"
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr "개월"
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr "납부 횟수"
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr "첫 납부일"
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr "매주"
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr "이번 납부액의 예상 이자"
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr "예상 대출 원금"
+
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr "예상 총 대출 이자"
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr "기록된 납부액의 예상 이자"
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
+msgstr "대출 조건과 납부액, 납부일을 확인하세요."
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr "원금과 이자를 균등하게 상환하는 경우의 추정치입니다. 수수료와 만기 일시 상환액은 제외하세요."
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr "대출 원금 상환"
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr "예상 대출 이자"
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr "이전 납부 확인"
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr "이전 납부 일정"
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr "기존 지출을 먼저 확인한 후 추가할 납부 내역을 선택하세요."
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr "이 차량에 이미 기록된 대출 납부 내역"
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr "선택한 납부 추가"
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr "이전 납부를 추가하지 않고 계속"
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr "예상 이자"

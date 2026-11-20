@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr "ローン返済"
+
 #: app/models.py:52
 msgid "Editor"
 msgstr "編集者"
@@ -53,6 +57,11 @@ msgstr "管理者"
 msgid "Engine hours"
 msgstr "エンジンアワー"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "%(unit)sあたりの純費用"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -70,6 +79,15 @@ msgstr "走行距離計"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "時間"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "%(unit)sあたりの純費用を表示"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "記録された走行距離精算額を差し引きます。"
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -578,6 +596,10 @@ msgstr "パスワードには数字を1文字以上含めてください"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "まず車両を追加してください"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "メーターの開始値には 0 以上の数値を指定してください。"
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1562,6 +1584,16 @@ msgstr "マイレージ手当"
 msgid "Tires"
 msgstr "タイヤ"
 
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "メーターの開始値"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr "費用の記録を開始した時点の値（任意）。車両の走行距離計の単位またはエンジン稼働時間で入力します。"
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -1962,6 +1994,10 @@ msgstr "手当を追加"
 #: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "マイレージ手当に戻る"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "隔週（2週間ごと）"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
@@ -6236,3 +6272,104 @@ msgstr "消費トレンドを表示するデータが不足しています。満
 #: app/templates/vehicles/view.html:948
 msgid "No fuel prices recorded yet."
 msgstr "まだ燃料価格が記録されていません。"
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr "利息を記録"
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr "ローン条件"
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr "年利"
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr "返済期間"
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr "期間の単位"
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr "か月"
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr "支払回数"
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr "初回支払日"
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr "毎週"
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr "今回の支払額に含まれる推定利息"
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr "推定借入額"
+
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr "推定利息総額"
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr "記録済みの支払いに含まれる推定利息"
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
+msgstr "ローン条件、支払額、支払日を確認してください。"
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr "元金と利息を含む元利均等払いの概算です。手数料や最終回の増額分は除いてください。"
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr "ローン元金の返済"
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr "ローンの推定利息"
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr "過去の支払いを確認"
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr "過去の支払予定"
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr "登録済みの支出を確認してから、追加する支払いを選択してください。"
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr "この車両で記録済みのローン支払い"
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr "選択した支払いを追加"
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr "過去の支払いを追加せずに続行"
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr "推定利息"

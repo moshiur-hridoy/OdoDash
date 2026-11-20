@@ -18,6 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app/models.py:1506
+msgid "Loan Payment"
+msgstr "Kredi Ödemesi"
+
 #: app/models.py:52
 msgid "Editor"
 msgstr "Düzenleyici"
@@ -55,6 +59,11 @@ msgstr "Yönetici"
 msgid "Engine hours"
 msgstr "Motor saati"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "%(unit)s başına net maliyet"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -72,6 +81,15 @@ msgstr "Kilometre Sayacı"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Saat"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "%(unit)s başına net maliyeti göster"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "Kaydedilen kilometre geri ödemelerini düşer."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -580,6 +598,10 @@ msgstr "Şifre en az bir rakam içermelidir"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Lütfen önce bir araç ekleyin"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Başlangıç sayaç değeri negatif olmayan bir sayı olmalıdır."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1602,6 +1624,18 @@ msgstr "Kilometre Ücreti"
 msgid "Tires"
 msgstr "Lastikler"
 
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Başlangıç sayaç değeri"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Maliyet takibi başladığındaki isteğe bağlı değer; aracın mesafe sayacı "
+"birimi veya motor saati cinsinden girilir."
+
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
 #: app/templates/charging/form.html:125 app/templates/dashboard.html:249
@@ -2004,6 +2038,10 @@ msgstr "Ücret Ekle"
 #: app/templates/allowance/form.html:12
 msgid "Back to mileage allowance"
 msgstr "Kilometre ücretine dön"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "İki haftada bir"
 
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
@@ -6419,3 +6457,106 @@ msgstr ""
 #: app/templates/vehicles/view.html:948
 msgid "No fuel prices recorded yet."
 msgstr "Henüz kaydedilmiş yakıt fiyatı yok."
+
+#: app/templates/components/loan_interest.html:7
+msgid "Track interest"
+msgstr "Faizi takip et"
+
+#: app/templates/components/loan_interest.html:10
+msgid "Loan terms"
+msgstr "Kredi koşulları"
+
+#: app/templates/components/loan_interest.html:13
+msgid "Annual interest rate"
+msgstr "Yıllık faiz oranı"
+
+#: app/templates/components/loan_interest.html:17
+msgid "Loan term"
+msgstr "Kredi vadesi"
+
+#: app/templates/components/loan_interest.html:21
+msgid "Term unit"
+msgstr "Vade birimi"
+
+#: app/templates/components/loan_interest.html:23
+msgid "Months"
+msgstr "Ay"
+
+#: app/templates/components/loan_interest.html:24
+msgid "Payments"
+msgstr "Taksit"
+
+#: app/templates/components/loan_interest.html:27
+msgid "First payment date"
+msgstr "İlk ödeme tarihi"
+
+#: app/templates/components/loan_interest.html:34
+msgid "Weekly"
+msgstr "Haftalık"
+
+#: app/templates/components/loan_interest.html:44
+#: app/templates/recurring/index.html:36
+msgid "Estimated interest in this payment"
+msgstr "Bu ödemedeki tahmini faiz"
+
+#: app/templates/components/loan_interest.html:45
+msgid "Estimated amount financed"
+msgstr "Tahmini kredi tutarı"
+
+#: app/templates/components/loan_interest.html:46
+msgid "Estimated total loan interest"
+msgstr "Tahmini toplam kredi faizi"
+
+#: app/templates/vehicles/view.html:210
+msgid "Estimated interest in recorded payments"
+msgstr "Kaydedilen ödemelerdeki tahmini faiz"
+
+#: app/routes/expenses.py:291 app/routes/expenses.py:382
+#: app/routes/recurring.py:76 app/routes/recurring.py:116
+msgid "Check the loan terms, payment amount and payment date."
+msgstr "Kredi koşullarını, ödeme tutarını ve ödeme tarihini kontrol edin."
+
+#: app/templates/components/loan_interest.html:11
+msgid ""
+"Estimate for fixed, equal payments covering principal and interest. "
+"Exclude fees and balloon payments."
+msgstr ""
+"Anapara ve faizi kapsayan eşit ve sabit ödemeler için tahmindir. "
+"Ücretleri ve yüksek tutarlı son ödemeyi hariç tutun."
+
+#: app/services/expense_breakdown.py:29
+msgid "Loan principal"
+msgstr "Kredi anapara ödemesi"
+
+#: app/services/expense_breakdown.py:29
+msgid "Estimated loan interest"
+msgstr "Tahmini kredi faizi"
+
+#: app/templates/recurring/history.html:3
+#: app/templates/recurring/history.html:7 app/templates/recurring/index.html:43
+msgid "Review past payments"
+msgstr "Geçmiş ödemeleri incele"
+
+#: app/templates/recurring/history.html:11
+msgid "Past scheduled payments"
+msgstr "Geçmiş planlı ödemeler"
+
+#: app/templates/recurring/history.html:12
+msgid "Select the payments to add. Check existing expenses first."
+msgstr "Önce mevcut giderleri kontrol edin ve eklenecek ödemeleri seçin."
+
+#: app/templates/recurring/history.html:19
+msgid "Loan payments already recorded for this vehicle"
+msgstr "Bu araç için kaydedilmiş kredi ödemeleri"
+
+#: app/templates/recurring/history.html:24
+msgid "Add selected payments"
+msgstr "Seçili ödemeleri ekle"
+
+#: app/templates/recurring/history.html:25
+msgid "Continue without past payments"
+msgstr "Geçmiş ödemeleri eklemeden devam et"
+
+#: app/templates/vehicles/view.html:210
+msgid "Est. interest"
+msgstr "Tahmini faiz"

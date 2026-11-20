@@ -8,8 +8,9 @@ from flask_login import login_required, current_user
 from flask_babel import gettext as _
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
+from app.services.expense_breakdown import category_breakdown
 from app import db
-from app.utils import parse_decimal, utcnow
+from app.utils import parse_starting_odometer, parse_decimal, utcnow
 from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
 from app.services.tessie import TessieService
 
@@ -87,13 +88,21 @@ def index():
 @bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    """Create a vehicle with an optional validated cost-tracking baseline."""
     if request.method == 'POST':
+        try:
+            starting_odometer = parse_starting_odometer(request.form.get('starting_odometer'))
+        except ValueError:
+            flash(_('Starting odometer must be a nonnegative number.'), 'error')
+            return redirect(url_for('vehicles.new'))
+
         vehicle = Vehicle(
             owner_id=current_user.id,
             name=request.form.get('name'),
             vehicle_type=request.form.get('vehicle_type'),
             tracking_unit=request.form.get('tracking_unit', 'mileage'),
             odometer_unit=request.form.get('odometer_unit') or None,
+            starting_odometer=starting_odometer,
             make=request.form.get('make'),
             model=request.form.get('model'),
             year=int(request.form.get('year')) if request.form.get('year') else None,
@@ -222,6 +231,7 @@ def view(vehicle_id):
         'consumption_by_fuel': vehicle.get_average_consumption_by_fuel(
             current_user.consumption_unit, current_user.volume_unit),
         'cost_per_distance': vehicle.get_cost_per_distance(),
+        'net_cost_per_distance': vehicle.get_net_cost_per_distance() if current_user.show_net_cost_per_distance else None,
         'total_fuel_volume': vehicle.get_total_fuel_volume(),
         'total_co2_kg': vehicle.get_total_co2_kg(current_user.volume_unit),
         'fuel_logs_count': vehicle.fuel_logs.count(),
@@ -229,17 +239,15 @@ def view(vehicle_id):
         'charging_sessions_count': vehicle.charging_sessions.count(),
     }
 
+    tracked_loans = vehicle.expenses.filter(Expense.category == 'loan_payment', Expense.loan_terms.isnot(None))
+    splits = [entry.loan_estimate for entry in tracked_loans]
+    interest = [split['interest'] for split in splits if split is not None]
+    stats['loan_interest'] = sum(interest) if interest else None
+
     # Expenses grouped by category for this vehicle only (#287),
     # with labels translated server-side like the dashboard chart
-    category_rows = db.session.query(
-        Expense.category, func.sum(Expense.cost)
-    ).filter(
-        Expense.vehicle_id == vehicle.id
-    ).group_by(Expense.category).all()
-    expenses_by_category = {
-        str(dict(EXPENSE_CATEGORIES).get(cat, (cat or '').capitalize())): round(total, 2)
-        for cat, total in category_rows if total
-    }
+    breakdown = category_breakdown(vehicle.expenses)
+    expenses_by_category = {row['label']: row['total'] for row in breakdown if row['total']}
 
     if stats['total_fuel_cost']:
         label = str(_('Fuel'))
@@ -302,14 +310,24 @@ def _as_date(value):
 @bp.route('/<int:vehicle_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(vehicle_id):
+    """Let owners update a vehicle and set or clear its starting odometer."""
     vehicle = db.get_or_404(Vehicle, vehicle_id)
 
     # Check ownership
-    if vehicle.owner_id != current_user.id and not current_user.is_admin:
+    if (vehicle not in current_user.get_all_vehicles()
+            or (vehicle.owner_id != current_user.id and not current_user.is_admin)):
         flash(_('Access denied'), 'error')
         return redirect(url_for('vehicles.index'))
 
     if request.method == 'POST':
+        try:
+            starting_odometer = (parse_starting_odometer(request.form.get('starting_odometer'))
+                                 if 'starting_odometer' in request.form else vehicle.starting_odometer)
+        except ValueError:
+            flash(_('Starting odometer must be a nonnegative number.'), 'error')
+            return redirect(url_for('vehicles.edit', vehicle_id=vehicle.id))
+        vehicle.starting_odometer = starting_odometer
+
         vehicle.name = request.form.get('name')
         vehicle.vehicle_type = request.form.get('vehicle_type')
         # Changing the tracking unit would reinterpret every reading already
