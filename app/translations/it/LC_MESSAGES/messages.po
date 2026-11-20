@@ -55,6 +55,11 @@ msgstr "Amministratore"
 msgid "Engine hours"
 msgstr "Ore motore"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "Costo netto per %(unit)s"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -72,6 +77,15 @@ msgstr "Contachilometri"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Ore"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "Mostra costo netto per %(unit)s"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "Sottrae i rimborsi chilometrici registrati."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -580,6 +594,10 @@ msgstr "La password deve contenere almeno una cifra"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Aggiungi prima un veicolo"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "La lettura iniziale del contatore deve essere un numero non negativo."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1609,6 +1627,18 @@ msgstr "Indennità Chilometrica"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Gomme"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Lettura iniziale del contatore"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Lettura facoltativa all’inizio del monitoraggio dei costi, nell’unità del"
+" contachilometri del veicolo o in ore motore."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

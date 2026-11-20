@@ -55,6 +55,11 @@ msgstr "Yönetici"
 msgid "Engine hours"
 msgstr "Motor saati"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "%(unit)s başına net maliyet"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -72,6 +77,15 @@ msgstr "Kilometre Sayacı"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Saat"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "%(unit)s başına net maliyeti göster"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "Kaydedilen kilometre geri ödemelerini düşer."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -580,6 +594,10 @@ msgstr "Şifre en az bir rakam içermelidir"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Lütfen önce bir araç ekleyin"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Başlangıç sayaç değeri negatif olmayan bir sayı olmalıdır."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1601,6 +1619,18 @@ msgstr "Kilometre Ücreti"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Lastikler"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Başlangıç sayaç değeri"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Maliyet takibi başladığındaki isteğe bağlı değer; aracın mesafe sayacı "
+"birimi veya motor saati cinsinden girilir."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

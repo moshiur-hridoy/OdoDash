@@ -54,6 +54,11 @@ msgstr "Administrator"
 msgid "Engine hours"
 msgstr "Motortimer"
 
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#, python-format
+msgid "Net cost per %(unit)s"
+msgstr "Nettoomkostning pr. %(unit)s"
+
 #: app/models.py:411 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
@@ -71,6 +76,15 @@ msgstr "Kilometertæller"
 #: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Timer"
+
+#: app/templates/auth/settings/_units.html:81
+#, python-format
+msgid "Show net cost per %(unit)s"
+msgstr "Vis nettoomkostning pr. %(unit)s"
+
+#: app/templates/auth/settings/_units.html:82
+msgid "Deducts recorded mileage reimbursements."
+msgstr "Fratrækker registreret kørselsgodtgørelse."
 
 #: app/models.py:417 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
@@ -579,6 +593,10 @@ msgstr "Adgangskoden skal indeholde mindst ét ciffer"
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Tilføj venligst et køretøj først"
+
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Startaflæsningen skal være et ikke-negativt tal."
 
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
@@ -1594,6 +1612,18 @@ msgstr "Kørselsgodtgørelse"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Dæk"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Startaflæsning"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Valgfri aflæsning ved starten af omkostningsregistreringen, i køretøjets "
+"afstandsenhed eller i motortimer."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
