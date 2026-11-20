@@ -206,6 +206,9 @@
     {% if vehicle.uses_charging() %}
     <div><dt class="vp-label">{{ _('Total Charging Cost') }}</dt><dd>{{ stats.total_charging_cost|money }}<span>{{ currency }}</span></dd></div>
     {% endif %}
+    {% if stats.loan_interest is not none %}
+    <div><dt class="vp-label" title="{{ _('Estimated interest in recorded payments') }}"><span aria-hidden="true">{{ _('Est. interest') }}</span><span class="ds-sr-only">{{ _('Estimated interest in recorded payments') }}</span></dt><dd>{{ stats.loan_interest|money }}<span>{{ currency }}</span></dd></div>
+    {% endif %}
     <div><dt class="vp-label">{{ _('Other Expenses') }}</dt><dd>{{ stats.total_expense_cost|money }}<span>{{ currency }}</span></dd></div>
     {% if stats.total_allowance and stats.total_allowance > 0 %}
     <div><dt class="vp-label">{{ _('Mileage Allowance') }}</dt><dd class="vp-totals__credit">-{{ stats.total_allowance|money }}<span>{{ currency }}</span></dd></div>

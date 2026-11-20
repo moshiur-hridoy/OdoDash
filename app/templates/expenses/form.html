@@ -141,6 +141,9 @@
             </div>
         </div>
 
+        {% with payment=expense, scheduled=false %}
+            {% include 'components/loan_interest.html' %}
+        {% endwith %}
         {% if not expense and maintenance_schedules %}
         <div class="ds-field" id="schedule-field">
             <label class="ds-field__label" for="maintenance_schedule_id">{{ _('Mark Maintenance as Performed') }}</label>

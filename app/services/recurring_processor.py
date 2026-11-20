@@ -13,6 +13,23 @@ logger = logging.getLogger(__name__)
 MAX_CATCHUP_PERIODS = 60
 
 
+def expense_for_period(recurring, period_date):
+    """Post one dated payment without moving the schedule."""
+    expense = Expense(
+        loan_terms=recurring.loan_terms,
+        vehicle_id=recurring.vehicle_id,
+        user_id=recurring.user_id,
+        date=period_date,
+        category=recurring.category,
+        description=f"{recurring.name} (auto-generated)",
+        cost=recurring.amount or 0,
+        vendor=recurring.vendor,
+        notes=recurring.description,
+    )
+    db.session.add(expense)
+    return expense
+
+
 def generate_expense_for_period(recurring, on_date=None):
     """Create one Expense from a recurring expense and advance its schedule.
 
@@ -32,17 +49,9 @@ def generate_expense_for_period(recurring, on_date=None):
     """
     period_date = on_date or recurring.next_due or date.today()
 
-    expense = Expense(
-        vehicle_id=recurring.vehicle_id,
-        user_id=recurring.user_id,
-        date=period_date,
-        category=recurring.category,
-        description=f"{recurring.name} (auto-generated)",
-        cost=recurring.amount or 0,
-        vendor=recurring.vendor,
-        notes=recurring.description,
-    )
-    db.session.add(expense)
+    if recurring.loan_terms and (not recurring.is_active or recurring.next_due is None):
+        return None
+    expense = expense_for_period(recurring, period_date)
 
     # Advance the schedule from the period we just generated so the same period
     # is never generated twice (idempotency) and catch-up loops make progress.

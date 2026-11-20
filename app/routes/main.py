@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from flask_babel import gettext
 from datetime import date, datetime, timedelta
 from sqlalchemy import func
+from app.services.expense_breakdown import category_breakdown
 from app import db
 from app.models import Vehicle, FuelLog, Expense, ChargingSession, FuelPriceHistory, FuelStation, MileageAllowance, Attachment, Reminder, Note, EXPENSE_CATEGORIES
 from app.utils import shared_reading_unit
@@ -132,15 +133,8 @@ def dashboard():
     # with labels translated server-side
     expenses_by_category = {}
     if vehicle_ids:
-        category_rows = db.session.query(
-            Expense.category, func.sum(Expense.cost)
-        ).filter(
-            Expense.vehicle_id.in_(vehicle_ids)
-        ).group_by(Expense.category).all()
-        expenses_by_category = {
-            str(dict(EXPENSE_CATEGORIES).get(cat, (cat or '').capitalize())): round(total, 2)
-            for cat, total in category_rows if total
-        }
+        breakdown = category_breakdown(Expense.query.filter(Expense.vehicle_id.in_(vehicle_ids)))
+        expenses_by_category = {row['label']: row['total'] for row in breakdown if row['total']}
 
         if total_fuel_cost:
             label = str(gettext('Fuel'))

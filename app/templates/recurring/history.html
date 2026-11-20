@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from 'components/ui.html' import back_link, page_header, button %}
+{% block title %}{{ _('Review past payments') }}{% endblock %}
+{% block content %}
+<div class="ds form-page">
+{{ back_link(_('Back to Recurring Expenses'), url_for('recurring.index')) }}
+{{ page_header(_('Review past payments'), subtitle=schedule.name) }}
+<form method="post" class="ds-card form-section">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="version" value="{{ version }}">
+    <h2 class="form-section__title">{{ _('Past scheduled payments') }} ({{ candidates|length }})</h2>
+    <p>{{ _('Select the payments to add. Check existing expenses first.') }}</p>
+    {% for due, possible in candidates %}
+    <label class="ds-switch"><input type="checkbox" name="payment_date" value="{{ due.isoformat() }}" {% if not possible %}checked{% endif %}>
+        {{ due|format_date }} · {{ schedule.amount|money }} {{ current_user.currency }}
+    </label>
+    {% endfor %}
+    {% if entries %}
+    <h2 class="form-section__title">{{ _('Loan payments already recorded for this vehicle') }}</h2>
+    <ul>{% for entry in entries %}<li>{{ entry.date|format_date }} · {{ entry.description }} · {{ entry.cost|money }} {{ current_user.currency }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if next_due %}<p>{{ _('Next due') }}: {{ next_due|format_date }}</p>{% endif %}
+    <div class="form-inline">
+        {% if candidates and schedule.amount %}{{ button(_('Add selected payments'), type='submit', attrs={'name':'action','value':'add'}) }}{% endif %}
+        {{ button(_('Continue without past payments'), type='submit', variant='secondary', attrs={'name':'action','value':'skip'}) }}
+    </div>
+</form>
+</div>
+{% endblock %}

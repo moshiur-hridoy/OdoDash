@@ -8,6 +8,7 @@ from flask_login import login_required, current_user
 from flask_babel import gettext as _
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
+from app.services.expense_breakdown import category_breakdown
 from app import db
 from app.utils import parse_starting_odometer, parse_decimal, utcnow
 from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
@@ -238,17 +239,15 @@ def view(vehicle_id):
         'charging_sessions_count': vehicle.charging_sessions.count(),
     }
 
+    tracked_loans = vehicle.expenses.filter(Expense.category == 'loan_payment', Expense.loan_terms.isnot(None))
+    splits = [entry.loan_estimate for entry in tracked_loans]
+    interest = [split['interest'] for split in splits if split is not None]
+    stats['loan_interest'] = sum(interest) if interest else None
+
     # Expenses grouped by category for this vehicle only (#287),
     # with labels translated server-side like the dashboard chart
-    category_rows = db.session.query(
-        Expense.category, func.sum(Expense.cost)
-    ).filter(
-        Expense.vehicle_id == vehicle.id
-    ).group_by(Expense.category).all()
-    expenses_by_category = {
-        str(dict(EXPENSE_CATEGORIES).get(cat, (cat or '').capitalize())): round(total, 2)
-        for cat, total in category_rows if total
-    }
+    breakdown = category_breakdown(vehicle.expenses)
+    expenses_by_category = {row['label']: row['total'] for row in breakdown if row['total']}
 
     if stats['total_fuel_cost']:
         label = str(_('Fuel'))

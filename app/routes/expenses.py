@@ -1,12 +1,14 @@
 import os
 import uuid
 from datetime import date, datetime
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from flask_babel import gettext as _
 from sqlalchemy import func
+from app.services.expense_breakdown import category_breakdown
 from app import db
+from app.services.loan_interest import estimate, next_payment_on_or_after, submitted_terms, terms_for_payment
 from app.utils import parse_decimal
 from app.models import (Vehicle, Expense, Attachment, MaintenanceSchedule, Reminder,
                         EXPENSE_CATEGORIES, MAINTENANCE_GROUPS, MAINTENANCE_PART_TYPES)
@@ -16,6 +18,35 @@ from app.security import get_safe_redirect_url
 bp = Blueprint('expenses', __name__, url_prefix='/expenses')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'}
+
+
+@bp.post('/loan-estimate')
+@login_required
+def loan_preview():
+    """Preview form inputs using the same amortization and currency formatting as saved entries."""
+    data = request.form
+    origin = data.get('first_payment')
+    try:
+        # Lifetime totals need no dates. Use a neutral first period until the user enters one.
+        first = date.fromisoformat(origin) if origin else date(2000, 1, 1)
+        amount = parse_decimal(data.get('amount'))
+        terms = terms_for_payment({
+            'first_payment': first.isoformat(), 'frequency': data.get('frequency'),
+            'annual_rate': data.get('annual_rate'), 'term': data.get('loan_term'),
+            'term_unit': data.get('term_unit'),
+        }, amount, first)
+        amounts = estimate(terms, amount, first)
+        day = date.fromisoformat(data['payment_date']) if data.get('payment_date') else None
+        if origin and data.get('upcoming') == '1':
+            day = next_payment_on_or_after(terms, date.today())
+        period = estimate(terms, amount, day) if origin and day else None
+    except (ValueError, TypeError, ArithmeticError):
+        return jsonify({})
+    money = current_app.jinja_env.filters['money']
+    values = {key: money(amounts[key]) for key in ('financed', 'total_interest')}
+    if period:
+        values['interest'] = money(period['interest'])
+    return jsonify(values)
 
 
 def allowed_file(filename):
@@ -201,12 +232,7 @@ def index():
             groups.append({'month': month, 'total': month_totals.get(month), 'rows': []})
         groups[-1]['rows'].append(expense)
 
-    by_category = [
-        {'key': key, 'label': category_labels.get(key, key), 'total': round(total or 0, 2), 'count': count}
-        for key, total, count in expense_query.with_entities(
-            Expense.category, func.sum(Expense.cost), func.count(Expense.id)
-        ).group_by(Expense.category).order_by(func.sum(Expense.cost).desc()).all()
-    ]
+    by_category = category_breakdown(expense_query)
 
     # Spend per vendor (#213)
     vendor_rows = expense_query.filter(
@@ -284,6 +310,11 @@ def new():
                               if request.form.get('category') == 'maintenance' else None)
         )
 
+        try:
+            expense.loan_terms = submitted_terms(request.form, expense.cost, date)
+        except (TypeError, ValueError, OverflowError):
+            flash(_('Check the loan terms, payment amount and payment date.'), 'error')
+            return redirect(url_for('expenses.new'))
         db.session.add(expense)
 
         # Optionally mark a maintenance schedule as performed by this
@@ -362,6 +393,7 @@ def edit(expense_id):
             expense.category = request.form.get('category')
             expense.description = request.form.get('description')
             expense.cost = parse_decimal(request.form.get('cost'))
+            expense.loan_terms = submitted_terms(request.form, expense.cost, expense.date)
             expense.odometer = parse_optional_float(request.form.get('odometer'))
             expense.vendor = request.form.get('vendor')
             expense.notes = request.form.get('notes')
@@ -369,7 +401,11 @@ def edit(expense_id):
                                          if expense.category == 'maintenance' else None)
             expense.maintenance_part = (request.form.get('maintenance_part')
                                         if expense.category == 'maintenance' else None)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, OverflowError):
+            db.session.rollback()
+            if request.form.get('track_interest') == 'on':
+                flash(_('Check the loan terms, payment amount and payment date.'), 'error')
+                return redirect(url_for('expenses.edit', expense_id=expense.id))
             flash(_('Invalid data submitted. Please check the date and cost fields.'), 'error')
             return render_template('expenses/form.html',
                                    expense=expense,

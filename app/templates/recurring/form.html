@@ -73,11 +73,14 @@
                 {% endif %}
             </div>
         </div>
+        {% with payment=recurring, scheduled=true %}
+            {% include 'components/loan_interest.html' %}
+        {% endwith %}
         <div class="form-grid">
             <div class="ds-field">
                 <label class="ds-field__label" for="start_date">{{ _('Start Date') }}</label>
                 <input type="text" name="start_date" id="start_date" class="ds-control" data-datepicker
-                       value="{{ recurring.start_date.strftime('%Y-%m-%d') if recurring and recurring.start_date else '' }}">
+                       value="{{ recurring.loan_terms.first_payment if recurring and recurring.loan_terms else (recurring.start_date.isoformat() if recurring and recurring.start_date else '') }}">
             </div>
             {% if recurring %}
             <div class="ds-field">

@@ -1321,6 +1321,8 @@ class Expense(db.Model):
     cost = db.Column(db.Float, nullable=False)
     odometer = db.Column(db.Float)  # optional
 
+    loan_terms = db.Column(db.JSON(none_as_null=True))
+
     vendor = db.Column(db.String(100))
     notes = db.Column(db.Text)
 
@@ -1329,6 +1331,11 @@ class Expense(db.Model):
     # Relationships
     attachments = db.relationship('Attachment', backref='expense', lazy='dynamic',
                                   cascade='all, delete-orphan')
+
+    @property
+    def loan_estimate(self):
+        from app.services.loan_interest import estimate
+        return estimate(self.loan_terms, self.cost, self.date) if self.category == 'loan_payment' else None
 
     def to_dict(self):
         """Serialize expense to dictionary for API"""
@@ -1341,6 +1348,7 @@ class Expense(db.Model):
             'maintenance_part': self.maintenance_part,
             'description': self.description,
             'cost': self.cost,
+            'loan_terms': self.loan_terms,
             'odometer': self.odometer,
             'vendor': self.vendor,
             'notes': self.notes,
@@ -1971,6 +1979,10 @@ class RecurringExpense(db.Model):
     amount = db.Column(db.Float, nullable=True)
     vendor = db.Column(db.String(100))
 
+    loan_terms = db.Column(db.JSON(none_as_null=True))
+
+    history_reviewed_on = db.Column(db.Date)
+
     # Recurrence settings
     frequency = db.Column(db.String(20), nullable=False)  # weekly, biweekly, monthly, quarterly, biannual, yearly
     start_date = db.Column(db.Date, nullable=False)
@@ -1991,6 +2003,11 @@ class RecurringExpense(db.Model):
     vehicle = db.relationship('Vehicle', backref=db.backref('recurring_expenses', lazy='dynamic', cascade='all, delete-orphan'))
     user = db.relationship('User', backref=db.backref('recurring_expenses', lazy='dynamic'))
 
+    @property
+    def loan_estimate(self):
+        from app.services.loan_interest import estimate
+        return estimate(self.loan_terms, self.amount, self.next_due or self.last_generated)
+
     def calculate_next_due(self):
         """Calculate next due date based on frequency"""
         from datetime import date
@@ -1998,7 +2015,15 @@ class RecurringExpense(db.Model):
 
         base_date = self.last_generated or self.start_date
 
-        if self.frequency == 'weekly':
+        if self.loan_terms:
+            from app.services.loan_interest import payment_count, payment_date, payment_number
+            following = payment_number(self.loan_terms, base_date) + 1
+            if following > payment_count(self.loan_terms):
+                self.is_active = False
+                self.next_due = None
+                return
+            self.next_due = payment_date(self.loan_terms, following)
+        elif self.frequency == 'weekly':
             self.next_due = base_date + relativedelta(weeks=1)
         elif self.frequency == 'biweekly':
             self.next_due = base_date + relativedelta(weeks=2)

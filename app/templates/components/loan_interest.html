@@ -1,0 +1,110 @@
+{% from 'components/ui.html' import field %}
+{% set terms = payment.loan_terms if payment and payment.loan_terms else {} %}
+<div data-loan-section {% if chosen_category != 'loan_payment' %}hidden{% endif %}>
+    <label class="ds-switch">
+        <input type="checkbox" id="track_interest" name="track_interest" aria-controls="loan-details"
+               {% if terms %}checked{% endif %}>
+        {{ _('Track interest') }}
+    </label>
+    <fieldset id="loan-details" class="ds-field" {% if not terms %}hidden disabled{% endif %}>
+        <legend class="ds-field__label">{{ _('Loan terms') }}</legend>
+        <p class="form-hint">{{ _('Estimate for fixed, equal payments covering principal and interest. Exclude fees and balloon payments.') }}</p>
+        <div class="form-grid">
+            {% call field(_('Annual interest rate') ~ ' (%)', 'annual_rate') %}
+            <input class="ds-control" type="number" id="annual_rate" name="annual_rate" min="0" max="100" step="any"
+                   value="{{ terms.get('annual_rate', '') }}" required>
+            {% endcall %}
+            {% call field(_('Loan term'), 'loan_term') %}
+            <div class="form-inline">
+                <input class="ds-control form-inline__num" type="number" id="loan_term" name="loan_term" min="1" step="1"
+                       value="{{ terms.get('term', '') }}" required>
+                <select class="ds-control" id="term_unit" name="term_unit" aria-label="{{ _('Term unit') }}">
+                    <option value="months">{{ _('Months') }}</option>
+                    <option value="payments" {% if terms.get('term_unit') == 'payments' %}selected{% endif %}>{{ _('Payments') }}</option>
+                </select>
+            </div>
+            {% endcall %}
+            {% if not scheduled %}
+            {% call field(_('First payment date'), 'first_payment') %}
+            <input class="ds-control" type="date" id="first_payment" name="first_payment"
+                   value="{{ terms.get('first_payment', '') }}" required>
+            {% endcall %}
+            {% call field(_('Frequency'), 'loan_frequency') %}
+            <select class="ds-control" id="loan_frequency" name="loan_frequency">
+                {% for value, label in [('monthly', _('Monthly')), ('biweekly', _('Biweekly (every 2 weeks)')), ('weekly', _('Weekly')), ('quarterly', _('Quarterly (every 3 months)')), ('biannual', _('Biannual (every 6 months)')), ('yearly', _('Yearly'))] %}
+                <option value="{{ value }}" {% if terms.get('frequency') == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% endcall %}
+            {% endif %}
+        </div>
+        {% set estimate = payment.loan_estimate if payment and terms else none %}
+        <dl class="ds-facts" aria-live="polite" aria-atomic="true" data-loan-estimates>
+            {% for key, label in [('interest', _('Estimated interest in this payment')), ('financed', _('Estimated amount financed')), ('total_interest', _('Estimated total loan interest'))] %}
+            <div><dt>{{ label }}</dt><dd data-result="{{ key }}">{{ (estimate[key]|money ~ ' ' ~ current_user.currency) if estimate else '—' }}</dd></div>
+            {% endfor %}
+        </dl>
+    </fieldset>
+</div>
+<script>
+(() => {
+    const section = document.querySelector('[data-loan-section]');
+    const form = section.closest('form');
+    const toggle = section.querySelector('#track_interest');
+    const details = section.querySelector('#loan-details');
+    const scheduled = {{ scheduled|tojson }};
+    const endpoint = {{ url_for('recurring.loan_preview' if scheduled else 'expenses.loan_preview')|tojson }};
+    const currency = {{ current_user.currency|tojson }};
+    const lastGenerated = {{ (payment.last_generated.isoformat() if scheduled and payment and payment.last_generated else '')|tojson }};
+    const results = section.querySelectorAll('[data-result]');
+    let previous;
+    let timer;
+    function show(values) {
+        results.forEach(cell => {
+            const value = values[cell.dataset.result];
+            cell.textContent = value == null ? '—' : value + ' ' + currency;
+        });
+    }
+    function update() {
+        const fields = form.elements;
+        const isLoan = fields.category.value === 'loan_payment';
+        section.hidden = !isLoan;
+        toggle.disabled = !isLoan;
+        details.disabled = details.hidden = !isLoan || !toggle.checked;
+        toggle.setAttribute('aria-expanded', String(!details.hidden));
+        const params = new URLSearchParams({
+            csrf_token: fields.csrf_token.value,
+            amount: (scheduled ? fields.amount : fields.cost).value,
+            frequency: (scheduled ? fields.frequency : fields.loan_frequency).value,
+            annual_rate: fields.annual_rate.value,
+            loan_term: fields.loan_term.value,
+            term_unit: fields.term_unit.value,
+            first_payment: (scheduled ? fields.start_date : fields.first_payment).value,
+            payment_date: scheduled ? (fields.next_due?.value || lastGenerated) : fields.date.value,
+            upcoming: scheduled && !fields.next_due ? '1' : '0'
+        });
+        const key = details.hidden ? '' : params.toString();
+        if (key === previous) return;
+        previous = key;
+        clearTimeout(timer);
+        if (!key || !params.get('amount') || !params.get('loan_term') || !params.get('annual_rate')) {
+            show({});
+            return;
+        }
+        timer = setTimeout(async () => {
+            try {
+                const response = await fetch(endpoint, {method: 'POST', body: params});
+                const values = response.ok ? await response.json() : {};
+                if (previous === key) show(values);
+            } catch {
+                if (previous === key) show({});
+            }
+        }, 120);
+    }
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    // Date and frequency controls can follow this component in the form.
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', update);
+    else update();
+})();
+</script>

@@ -1600,7 +1600,8 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .vp-totals {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin: 0; overflow: hidden;
 }
-.vp-totals > div { padding: 18px 22px; border-inline-start: 1px solid var(--ds-border); margin-inline-start: -1px; border-top: 1px solid var(--ds-border); margin-top: -1px; }
+.vp-totals > div { display: flex; flex-direction: column; padding: 18px 22px; border-inline-start: 1px solid var(--ds-border); margin-inline-start: -1px; border-top: 1px solid var(--ds-border); margin-top: -1px; }
+.vp-totals dt { flex: 1; }
 .vp-totals dd { margin: 8px 0 0; font-family: var(--ds-font-mono); font-size: 20px; font-weight: 600; overflow-wrap: anywhere; }
 .vp-totals dd span { white-space: nowrap; }
 .vp-totals__credit { color: var(--ds-success); }
