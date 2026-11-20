@@ -17,7 +17,7 @@ rest:
 sensor:
   - platform: rest
     name: "Car Fuel Economy"
-    resource: http://your-may-server:5000/api/ha/vehicles/1/stats
+    resource: http://your-ododash-server:5050/api/ha/vehicles/1/stats
     headers:
       Authorization: Bearer YOUR_API_TOKEN
     value_template: "{{ value_json.avg_consumption }}"
@@ -41,6 +41,32 @@ from sqlalchemy import func
 from config import APP_VERSION
 
 bp = Blueprint('homeassistant', __name__, url_prefix='/api/ha')
+
+
+def _accessible_vehicles(user):
+    """Vehicles the token's user can see: owned, shared with them, and
+    instance-shared — the same set the web UI and /api/v1 use."""
+    return user.get_all_vehicles()
+
+
+def _find_vehicle(user, vehicle_id):
+    """One accessible vehicle by id, or None."""
+    for v in _accessible_vehicles(user):
+        if v.id == vehicle_id:
+            return v
+    return None
+
+
+def _consumption_unit(vehicle):
+    """Consumption unit matching how this vehicle's readings are stored.
+
+    Odometer values are stored in the vehicle's effective odometer unit, so
+    the consumption unit has to follow that rather than the account's
+    preference. An hours-metered vehicle has no distance-based figure.
+    """
+    if vehicle.tracks_hours():
+        return None
+    return 'mpg' if vehicle.get_effective_odometer_unit() == 'mi' else 'L/100km'
 
 
 def token_required(f):
@@ -84,7 +110,7 @@ def status(user):
 @token_required
 def vehicles(user):
     """List all vehicles with basic stats."""
-    vehicles = Vehicle.query.filter_by(owner_id=user.id).all()
+    vehicles = _accessible_vehicles(user)
 
     result = {
         'count': len(vehicles),
@@ -122,7 +148,7 @@ def vehicles(user):
 @token_required
 def vehicle_detail(vehicle_id, user):
     """Get detailed vehicle information."""
-    vehicle = Vehicle.query.filter_by(id=vehicle_id, owner_id=user.id).first()
+    vehicle = _find_vehicle(user, vehicle_id)
     if not vehicle:
         return jsonify({'error': 'Vehicle not found'}), 404
 
@@ -150,7 +176,7 @@ def vehicle_detail(vehicle_id, user):
 @token_required
 def vehicle_stats(vehicle_id, user):
     """Get vehicle statistics for Home Assistant sensors."""
-    vehicle = Vehicle.query.filter_by(id=vehicle_id, owner_id=user.id).first()
+    vehicle = _find_vehicle(user, vehicle_id)
     if not vehicle:
         return jsonify({'error': 'Vehicle not found'}), 404
 
@@ -184,9 +210,12 @@ def vehicle_stats(vehicle_id, user):
 
     # Calculate average consumption
     # Skip first fill for consumption calculation (don't know previous fill level)
-    if len(fuel_logs) >= 2 and total_distance > 0:
+    consumption_unit = _consumption_unit(vehicle)
+    if consumption_unit is None:
+        avg_consumption = None
+    elif len(fuel_logs) >= 2 and total_distance > 0:
         consumption_fuel = sum(log.volume for log in fuel_logs[1:])
-        if user.distance_unit == 'mi':
+        if consumption_unit == 'mpg':
             # MPG (higher is better)
             avg_consumption = total_distance / consumption_fuel if consumption_fuel > 0 else 0
         else:
@@ -217,8 +246,8 @@ def vehicle_stats(vehicle_id, user):
         'total_fuel_cost': round(total_fuel_cost, 2),
         'total_expenses': round(float(total_expenses), 2),
         'total_cost': round(total_fuel_cost + float(total_expenses), 2),
-        'avg_consumption': round(avg_consumption, 2),
-        'consumption_unit': 'mpg' if user.distance_unit == 'mi' else 'L/100km',
+        'avg_consumption': round(avg_consumption, 2) if avg_consumption is not None else None,
+        'consumption_unit': consumption_unit,
         'fill_count': len(fuel_logs),
         'last_fill_date': last_fill.date.isoformat() if last_fill else None,
         'last_fill_volume': last_fill.volume if last_fill else None,
@@ -236,10 +265,11 @@ def vehicle_stats(vehicle_id, user):
 def alerts(user):
     """Get all active alerts for Home Assistant binary sensors."""
     alerts = []
+    vehicle_ids = [v.id for v in _accessible_vehicles(user)]
 
     # Check maintenance schedules
     schedules = MaintenanceSchedule.query.join(Vehicle).filter(
-        Vehicle.owner_id == user.id,
+        Vehicle.id.in_(vehicle_ids),
         MaintenanceSchedule.is_active == True
     ).all()
 
@@ -257,6 +287,7 @@ def alerts(user):
             alerts.append({
                 'type': 'maintenance',
                 'vehicle': schedule.vehicle.name,
+                'vehicle_id': schedule.vehicle_id,
                 'title': schedule.name,
                 'status': 'overdue' if (date_overdue or odometer_overdue) else 'due',
                 'due_odometer': schedule.next_due_odometer,
@@ -265,7 +296,7 @@ def alerts(user):
 
     # Check recurring expenses
     recurring = RecurringExpense.query.join(Vehicle).filter(
-        Vehicle.owner_id == user.id,
+        Vehicle.id.in_(vehicle_ids),
         RecurringExpense.is_active == True
     ).all()
 
@@ -274,6 +305,7 @@ def alerts(user):
             alerts.append({
                 'type': 'recurring_expense',
                 'vehicle': item.vehicle.name,
+                'vehicle_id': item.vehicle_id,
                 'title': item.name,
                 'status': 'due',
                 'due_date': item.next_due.isoformat() if item.next_due else None,
@@ -282,7 +314,7 @@ def alerts(user):
 
     # Check expiring documents
     documents = Document.query.join(Vehicle).filter(
-        Vehicle.owner_id == user.id
+        Vehicle.id.in_(vehicle_ids)
     ).all()
 
     for doc in documents:
@@ -290,6 +322,7 @@ def alerts(user):
             alerts.append({
                 'type': 'document',
                 'vehicle': doc.vehicle.name,
+                'vehicle_id': doc.vehicle_id,
                 'title': doc.title,
                 'status': 'expired',
                 'expiry_date': doc.expiry_date.isoformat() if doc.expiry_date else None
@@ -298,6 +331,7 @@ def alerts(user):
             alerts.append({
                 'type': 'document',
                 'vehicle': doc.vehicle.name,
+                'vehicle_id': doc.vehicle_id,
                 'title': doc.title,
                 'status': 'expiring_soon',
                 'expiry_date': doc.expiry_date.isoformat() if doc.expiry_date else None
@@ -305,7 +339,7 @@ def alerts(user):
 
     # Check reminders
     reminders = Reminder.query.join(Vehicle).filter(
-        Vehicle.owner_id == user.id,
+        Vehicle.id.in_(vehicle_ids),
         Reminder.is_completed == False
     ).all()
 
@@ -314,6 +348,7 @@ def alerts(user):
             alerts.append({
                 'type': 'reminder',
                 'vehicle': reminder.vehicle.name,
+                'vehicle_id': reminder.vehicle_id,
                 'title': reminder.title,
                 'status': 'overdue',
                 'due_date': reminder.due_date.isoformat() if reminder.due_date else None
@@ -322,6 +357,7 @@ def alerts(user):
             alerts.append({
                 'type': 'reminder',
                 'vehicle': reminder.vehicle.name,
+                'vehicle_id': reminder.vehicle_id,
                 'title': reminder.title,
                 'status': 'upcoming',
                 'due_date': reminder.due_date.isoformat() if reminder.due_date else None
@@ -338,7 +374,7 @@ def alerts(user):
 @token_required
 def summary(user):
     """Get overall summary for Home Assistant dashboard."""
-    vehicles = Vehicle.query.filter_by(owner_id=user.id).all()
+    vehicles = _accessible_vehicles(user)
 
     # Calculate totals
     total_vehicles = len(vehicles)
@@ -395,13 +431,16 @@ def add_fuel(user):
             return jsonify({'error': f'Missing required field: {field}'}), 400
 
     # Verify vehicle belongs to user
-    vehicle = Vehicle.query.filter_by(id=data['vehicle_id'], owner_id=user.id).first()
+    try:
+        vehicle = _find_vehicle(user, int(data['vehicle_id']))
+    except (TypeError, ValueError):
+        vehicle = None
     if not vehicle:
         return jsonify({'error': 'Vehicle not found'}), 404
 
     try:
         fuel_log = FuelLog(
-            vehicle_id=data['vehicle_id'],
+            vehicle_id=vehicle.id,
             user_id=user.id,
             date=date.fromisoformat(data['date']),
             odometer=float(data['odometer']),

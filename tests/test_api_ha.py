@@ -331,3 +331,60 @@ class TestHaAddFuel:
             content_type='application/json'
         )
         assert resp.status_code == 401
+
+
+class TestHaSharingAndUnits:
+    """Shared vehicles, alert vehicle ids and per-vehicle consumption units."""
+
+    def _other_vehicle(self, **kwargs):
+        owner = User(username='haowner', email='haowner@example.com')
+        owner.set_password('OwnerPass123!')
+        _db_ext.session.add(owner)
+        _db_ext.session.commit()
+        vehicle = Vehicle(owner_id=owner.id, name='Family Car', vehicle_type='car',
+                          make='Toyota', model='Corolla', year=2020,
+                          fuel_type='petrol', **kwargs)
+        _db_ext.session.add(vehicle)
+        _db_ext.session.commit()
+        return vehicle
+
+    def test_shared_vehicle_is_listed_and_readable(self, client, ha_user, ha_headers):
+        vehicle = self._other_vehicle()
+        ha_user.shared_vehicles.append(vehicle)
+        _db_ext.session.commit()
+
+        ids = [v['id'] for v in client.get('/api/ha/vehicles', headers=ha_headers).get_json()['vehicles']]
+        assert vehicle.id in ids
+        assert client.get(f'/api/ha/vehicles/{vehicle.id}/stats', headers=ha_headers).status_code == 200
+
+    def test_unshared_vehicle_stays_hidden(self, client, ha_headers):
+        vehicle = self._other_vehicle()
+        ids = [v['id'] for v in client.get('/api/ha/vehicles', headers=ha_headers).get_json()['vehicles']]
+        assert vehicle.id not in ids
+        assert client.get(f'/api/ha/vehicles/{vehicle.id}', headers=ha_headers).status_code == 404
+
+    def test_alerts_carry_vehicle_id(self, client, ha_user, ha_headers, ha_vehicle):
+        _db_ext.session.add(Reminder(
+            vehicle_id=ha_vehicle.id, user_id=ha_user.id, title='Insurance', reminder_type='insurance',
+            due_date=date.today() - timedelta(days=1),
+        ))
+        _db_ext.session.commit()
+        alerts = client.get('/api/ha/alerts', headers=ha_headers).get_json()['alerts']
+        assert alerts
+        assert all(a['vehicle_id'] == ha_vehicle.id for a in alerts)
+
+    def test_consumption_unit_follows_vehicle_odometer_unit(self, client, ha_user, ha_headers, ha_vehicle, ha_fuel_log):
+        ha_user.distance_unit = 'km'
+        ha_vehicle.odometer_unit = 'mi'
+        _db_ext.session.commit()
+        data = client.get(f'/api/ha/vehicles/{ha_vehicle.id}/stats', headers=ha_headers).get_json()
+        assert data['consumption_unit'] == 'mpg'
+        assert data['distance_unit'] == 'mi'
+
+    def test_hours_vehicle_has_no_consumption(self, client, ha_headers, ha_vehicle, ha_fuel_log):
+        ha_vehicle.tracking_unit = 'hours'
+        _db_ext.session.commit()
+        data = client.get(f'/api/ha/vehicles/{ha_vehicle.id}/stats', headers=ha_headers).get_json()
+        assert data['avg_consumption'] is None
+        assert data['consumption_unit'] is None
+        assert data['distance_unit'] == 'h'
