@@ -132,6 +132,8 @@ class User(UserMixin, db.Model):
     telegram_link_code = db.Column(db.String(16), unique=True, index=True)
     telegram_link_expires = db.Column(db.DateTime)
 
+    show_net_cost_per_distance = db.Column(db.Boolean, default=False, server_default=db.false(), nullable=False)
+
     # Menu preferences
     start_page = db.Column(db.String(50), default='dashboard')  # dashboard, vehicles, fuel, expenses, etc.
     # users and vehicles reference each other on purpose: a vehicle has an
@@ -293,6 +295,7 @@ class Vehicle(db.Model):
     tracking_unit = db.Column(db.String(20), default='mileage')  # mileage, hours
 
     # Per-vehicle odometer unit override (if None, falls back to user's distance_unit)
+    starting_odometer = db.Column(db.Float, nullable=True)
     odometer_unit = db.Column(db.String(10), default=None)  # km, mi, or None (use user preference)
 
     # Fuel info
@@ -519,6 +522,13 @@ class Vehicle(db.Model):
         span is returned as logged and ``distance_unit`` is ignored — there
         is no km/mi conversion to apply to an hour (#323).
         """
+        if self.starting_odometer is not None:
+            if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer is not None:
+                endpoint = _distance_in(self.tessie_last_odometer, 'km', self.get_effective_odometer_unit())
+            else:
+                endpoint = max((value for _, value in self.get_odometer_readings()), default=0)
+            return self._reading_in(max(0, endpoint - self.starting_odometer), distance_unit)
+
         if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer:
             # Tessie reports km.
             odometer = self.tessie_last_odometer
@@ -918,6 +928,13 @@ class Vehicle(db.Model):
             return total_cost / total_distance
         return None
 
+    def get_net_cost_per_distance(self):
+        """Cost after mileage reimbursements per km, mile, or engine hour."""
+        total_distance = self.get_total_distance()
+        if total_distance > 0:
+            return self.get_net_cost() / total_distance
+        return None
+
     def is_electric(self):
         """Check if vehicle uses any electric propulsion"""
         return self.fuel_type in ('electric', 'plugin_hybrid', 'hybrid')
@@ -1019,6 +1036,7 @@ class Vehicle(db.Model):
             'make': self.make,
             'model': self.model,
             'year': self.year,
+            'starting_odometer': self.starting_odometer,
             'purchase_date': self.purchase_date.isoformat() if self.purchase_date else None,
             'registration': self.registration,
             'vin': self.vin,
