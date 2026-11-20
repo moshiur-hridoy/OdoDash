@@ -34,7 +34,7 @@ from functools import wraps
 from app import db
 from app.models import (
     User, Vehicle, FuelLog, Expense, MaintenanceSchedule,
-    RecurringExpense, Document, Reminder
+    RecurringExpense, Document, Reminder, ChargingSession
 )
 from datetime import date, timedelta
 from sqlalchemy import func
@@ -172,16 +172,13 @@ def vehicle_detail(vehicle_id, user):
     })
 
 
-@bp.route('/vehicles/<int:vehicle_id>/stats')
-@token_required
-def vehicle_stats(vehicle_id, user):
-    """Get vehicle statistics for Home Assistant sensors."""
-    vehicle = _find_vehicle(user, vehicle_id)
-    if not vehicle:
-        return jsonify({'error': 'Vehicle not found'}), 404
+def _vehicle_stats(vehicle, user, days=None):
+    """Fuel, expense and consumption figures for one vehicle.
 
-    # Time period for stats (default: all time, or specify ?days=30)
-    days = request.args.get('days', type=int)
+    ``days`` limits the fuel and expense totals to that many days back;
+    ``None`` means all time. Shared by ``/vehicles/<id>/stats`` and
+    ``/overview`` so the two never disagree.
+    """
     if days:
         since_date = date.today() - timedelta(days=days)
         fuel_query = FuelLog.query.filter(
@@ -237,7 +234,7 @@ def vehicle_stats(vehicle_id, user):
         FuelLog.odometer.desc()
     ).first()
 
-    return jsonify({
+    return {
         'vehicle_id': vehicle.id,
         'vehicle_name': vehicle.name,
         'period_days': days if days else 'all',
@@ -257,15 +254,28 @@ def vehicle_stats(vehicle_id, user):
         'volume_unit': user.volume_unit,
         'currency': user.currency,
         'currency_symbol': vehicle.currency_symbol
-    })
+    }
 
 
-@bp.route('/alerts')
+@bp.route('/vehicles/<int:vehicle_id>/stats')
 @token_required
-def alerts(user):
-    """Get all active alerts for Home Assistant binary sensors."""
+def vehicle_stats(vehicle_id, user):
+    """Get vehicle statistics for Home Assistant sensors."""
+    vehicle = _find_vehicle(user, vehicle_id)
+    if not vehicle:
+        return jsonify({'error': 'Vehicle not found'}), 404
+
+    # Time period for stats (default: all time, or specify ?days=30)
+    days = request.args.get('days', type=int)
+    return jsonify(_vehicle_stats(vehicle, user, days))
+
+
+def _collect_alerts(vehicles):
+    """Active maintenance, recurring-expense, document and reminder alerts
+    for the given vehicles. Shared by ``/alerts``, ``/summary`` and
+    ``/overview``."""
     alerts = []
-    vehicle_ids = [v.id for v in _accessible_vehicles(user)]
+    vehicle_ids = [v.id for v in vehicles]
 
     # Check maintenance schedules
     schedules = MaintenanceSchedule.query.join(Vehicle).filter(
@@ -363,6 +373,14 @@ def alerts(user):
                 'due_date': reminder.due_date.isoformat() if reminder.due_date else None
             })
 
+    return alerts
+
+
+@bp.route('/alerts')
+@token_required
+def alerts(user):
+    """Get all active alerts for Home Assistant binary sensors."""
+    alerts = _collect_alerts(_accessible_vehicles(user))
     return jsonify({
         'count': len(alerts),
         'has_alerts': len(alerts) > 0,
@@ -401,9 +419,7 @@ def summary(user):
         total_expenses += float(expenses)
 
     # Count alerts
-    alerts_response = alerts(user=user)
-    alerts_data = alerts_response.get_json()
-    alerts_count = alerts_data.get('count', 0)
+    alerts_count = len(_collect_alerts(vehicles))
 
     return jsonify({
         'total_vehicles': total_vehicles,
@@ -413,6 +429,75 @@ def summary(user):
         'total_cost': round(total_fuel_cost + total_expenses, 2),
         'alerts_count': alerts_count,
         'has_alerts': alerts_count > 0
+    })
+
+
+def _last_charge(vehicle):
+    """The latest charging session of an electric vehicle, or None."""
+    if not vehicle.is_electric():
+        return None
+    session = ChargingSession.query.filter_by(vehicle_id=vehicle.id).order_by(
+        ChargingSession.date.desc(), ChargingSession.id.desc()
+    ).first()
+    if not session:
+        return None
+    return {
+        'date': session.date.isoformat() if session.date else None,
+        'kwh_added': session.kwh_added,
+        'start_soc': session.start_soc,
+        'end_soc': session.end_soc,
+        'total_cost': session.total_cost,
+    }
+
+
+@bp.route('/overview')
+@token_required
+def overview(user):
+    """Everything the Home Assistant integration needs, in one request.
+
+    One entry per accessible vehicle with its all-time stats, the cost of the
+    last 30 days, the latest charge for an electric vehicle and that
+    vehicle's alerts. Saves the integration 1 + N requests per poll.
+    """
+    vehicles = _accessible_vehicles(user)
+    all_alerts = _collect_alerts(vehicles)
+
+    result = []
+    for v in vehicles:
+        stats = _vehicle_stats(v, user)
+        recent = _vehicle_stats(v, user, days=30)
+        result.append({
+            'id': v.id,
+            'name': v.name,
+            'make': v.make,
+            'model': v.model,
+            'year': v.year,
+            'registration': v.registration,
+            'fuel_type': v.fuel_type,
+            'is_electric': v.is_electric(),
+            'current_odometer': stats['current_odometer'],
+            'distance_unit': stats['distance_unit'],
+            'volume_unit': stats['volume_unit'],
+            'currency_symbol': stats['currency_symbol'],
+            'avg_consumption': stats['avg_consumption'],
+            'consumption_unit': stats['consumption_unit'],
+            'total_cost': stats['total_cost'],
+            'total_fuel_cost': stats['total_fuel_cost'],
+            'total_expenses': stats['total_expenses'],
+            'cost_last_30_days': recent['total_cost'],
+            'last_fill_date': stats['last_fill_date'],
+            'last_fill_volume': stats['last_fill_volume'],
+            'last_fill_cost': stats['last_fill_cost'],
+            'last_charge': _last_charge(v),
+            'alerts': [a for a in all_alerts if a['vehicle_id'] == v.id],
+        })
+
+    return jsonify({
+        'version': APP_VERSION,
+        'user': user.username,
+        'currency': user.currency,
+        'vehicles': result,
+        'alerts_count': len(all_alerts),
     })
 
 

@@ -2,7 +2,7 @@
 import pytest
 from datetime import date, timedelta
 from app import db as _db_ext
-from app.models import User, Vehicle, FuelLog, MaintenanceSchedule, Reminder
+from app.models import User, Vehicle, FuelLog, MaintenanceSchedule, Reminder, ChargingSession
 
 
 def make_ha_headers(api_key):
@@ -388,3 +388,95 @@ class TestHaSharingAndUnits:
         assert data['avg_consumption'] is None
         assert data['consumption_unit'] is None
         assert data['distance_unit'] == 'h'
+
+
+class TestHaOverview:
+    """GET /api/ha/overview: one request with everything the integration needs."""
+
+    def test_requires_token(self, client):
+        assert client.get('/api/ha/overview').status_code == 401
+
+    def test_empty_account(self, client, ha_headers, ha_user):
+        data = client.get('/api/ha/overview', headers=ha_headers).get_json()
+        assert data['user'] == ha_user.username
+        assert data['vehicles'] == []
+        assert data['alerts_count'] == 0
+        assert 'version' in data and 'currency' in data
+
+    def test_other_users_vehicles_hidden(self, client, ha_headers, sample_vehicle):
+        data = client.get('/api/ha/overview', headers=ha_headers).get_json()
+        assert sample_vehicle.id not in [v['id'] for v in data['vehicles']]
+
+    def test_three_fills(self, client, ha_user, ha_headers, ha_vehicle):
+        today = date.today()
+        for i, (odo, vol, cost) in enumerate([(1000, 40.0, 60.0), (1500, 30.0, 48.0), (2000, 35.0, 56.0)]):
+            _db_ext.session.add(FuelLog(
+                vehicle_id=ha_vehicle.id, user_id=ha_user.id,
+                date=today - timedelta(days=60 - i * 25),
+                odometer=float(odo), volume=vol, price_per_unit=1.5,
+                total_cost=cost, is_full_tank=True,
+            ))
+        _db_ext.session.commit()
+
+        data = client.get('/api/ha/overview', headers=ha_headers).get_json()
+        assert len(data['vehicles']) == 1
+        v = data['vehicles'][0]
+        assert v['id'] == ha_vehicle.id
+        assert v['is_electric'] is False
+        assert v['current_odometer'] == 2000.0
+        # (30 + 35) litres over 1000 km, first fill skipped
+        assert v['avg_consumption'] == 6.5
+        assert v['consumption_unit'] == 'L/100km'
+        assert v['total_fuel_cost'] == 164.0
+        assert v['total_expenses'] == 0
+        assert v['total_cost'] == 164.0
+        # fills 60, 35 and 10 days ago: only the last two are inside 30 days
+        assert v['cost_last_30_days'] == 56.0
+        assert v['last_fill_date'] == (today - timedelta(days=10)).isoformat()
+        assert v['last_fill_volume'] == 35.0
+        assert v['last_fill_cost'] == 56.0
+        assert v['last_charge'] is None
+        # the same numbers as the per-vehicle stats endpoint
+        stats = client.get(f'/api/ha/vehicles/{ha_vehicle.id}/stats', headers=ha_headers).get_json()
+        assert v['avg_consumption'] == stats['avg_consumption']
+        assert v['total_cost'] == stats['total_cost']
+
+    def test_ev_last_charge(self, client, ha_user, ha_headers):
+        ev = Vehicle(owner_id=ha_user.id, name='EV', vehicle_type='car',
+                     make='Tesla', model='Model 3', year=2023, fuel_type='electric')
+        _db_ext.session.add(ev)
+        _db_ext.session.commit()
+        for d, kwh, soc in [(date(2024, 3, 1), 20.0, 70), (date(2024, 3, 5), 30.0, 80)]:
+            _db_ext.session.add(ChargingSession(
+                vehicle_id=ev.id, user_id=ha_user.id, date=d,
+                kwh_added=kwh, start_soc=20, end_soc=soc,
+            ))
+        _db_ext.session.commit()
+
+        v = client.get('/api/ha/overview', headers=ha_headers).get_json()['vehicles'][0]
+        assert v['is_electric'] is True
+        assert v['last_charge']['date'] == '2024-03-05'
+        assert v['last_charge']['kwh_added'] == 30.0
+        assert v['last_charge']['end_soc'] == 80
+
+    def test_hours_vehicle_has_null_consumption(self, client, ha_headers, ha_vehicle, ha_fuel_log):
+        ha_vehicle.tracking_unit = 'hours'
+        _db_ext.session.commit()
+        v = client.get('/api/ha/overview', headers=ha_headers).get_json()['vehicles'][0]
+        assert v['avg_consumption'] is None
+        assert v['consumption_unit'] is None
+        assert v['distance_unit'] == 'h'
+
+    def test_alerts_grouped_per_vehicle(self, client, ha_user, ha_headers, ha_vehicle):
+        _db_ext.session.add(Reminder(
+            vehicle_id=ha_vehicle.id, user_id=ha_user.id, title='MOT', reminder_type='mot',
+            due_date=date.today() - timedelta(days=1),
+        ))
+        _db_ext.session.commit()
+        data = client.get('/api/ha/overview', headers=ha_headers).get_json()
+        assert data['alerts_count'] == 1
+        alerts = data['vehicles'][0]['alerts']
+        assert len(alerts) == 1
+        assert alerts[0]['type'] == 'reminder'
+        assert alerts[0]['vehicle_id'] == ha_vehicle.id
+
