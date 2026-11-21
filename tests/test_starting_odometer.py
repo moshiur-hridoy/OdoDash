@@ -25,8 +25,8 @@ def test_baseline_and_fallback(app, sample_vehicle, test_user):
     sample_vehicle.starting_odometer = 0
     assert sample_vehicle.get_total_distance() == 2935
     sample_vehicle.starting_odometer = 3000
-    assert sample_vehicle.get_total_distance() == 0
-    assert sample_vehicle.get_cost_per_distance() is None
+    assert sample_vehicle.get_total_distance() == 2288
+    assert sample_vehicle.get_cost_per_distance() == pytest.approx(220 / 2288)
     sample_vehicle.starting_odometer = None
     assert sample_vehicle.get_total_distance() == 2288
     sample_vehicle.tracking_unit = 'hours'
@@ -162,18 +162,28 @@ def test_localised_baseline(auth_client, sample_vehicle, value, expected):
     assert sample_vehicle.starting_odometer == expected
 
 
-def test_admin_edit_requires_vehicle_access(admin_client, sample_vehicle):
-    """Deny an unshared vehicle but allow an administrator once it is shared."""
+def test_admin_can_edit_unshared_vehicle(admin_client, sample_vehicle):
+    """Adding a baseline preserves the existing admin edit permission."""
     url = f'/vehicles/{sample_vehicle.id}/edit'
-    data = {'name': sample_vehicle.name, 'vehicle_type': 'car', 'starting_odometer': '100'}
-    response = admin_client.post(url, data=data)
+    assert admin_client.get(url).status_code == 200
+    response = admin_client.post(url, data={
+        'name': sample_vehicle.name, 'vehicle_type': 'car', 'starting_odometer': '100',
+    })
     assert response.status_code == 302
-    assert sample_vehicle.starting_odometer is None
-    sample_vehicle.is_shared = True
-    db.session.commit()
-    admin_client.post(url, data=data)
     db.session.refresh(sample_vehicle)
     assert sample_vehicle.starting_odometer == 100
+
+
+def test_starting_reading_above_lowest_log_preserves_distance(sample_vehicle, test_user):
+    """A starting reading inside the logged range must not erase earlier distance."""
+    for reading in (10500, 12000):
+        db.session.add(Expense(vehicle_id=sample_vehicle.id, user_id=test_user.id,
+                               date=date(2026, 10, 1), odometer=reading,
+                               category='maintenance', description='Service', cost=300))
+    sample_vehicle.starting_odometer = 11000
+    db.session.commit()
+    assert sample_vehicle.get_total_distance() == 1500
+    assert sample_vehicle.get_cost_per_distance() == pytest.approx(0.40)
 
 
 @pytest.mark.parametrize('endpoint', ['/api/export/json', '/api/export/backup'])

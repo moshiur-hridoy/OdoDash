@@ -521,11 +521,13 @@ class Vehicle(db.Model):
         is no km/mi conversion to apply to an hour (#323).
         """
         if self.starting_odometer is not None:
+            readings = [value for _, value in self.get_odometer_readings()]
+            baseline = min([self.starting_odometer, *readings])
             if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer is not None:
                 endpoint = _distance_in(self.tessie_last_odometer, 'km', self.get_effective_odometer_unit())
             else:
-                endpoint = max((value for _, value in self.get_odometer_readings()), default=0)
-            return self._reading_in(max(0, endpoint - self.starting_odometer), distance_unit)
+                endpoint = max(readings, default=baseline)
+            return self._reading_in(max(0, endpoint - baseline), distance_unit)
 
         if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer:
             # Tessie reports km.

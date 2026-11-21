@@ -310,12 +310,11 @@ def _as_date(value):
 @bp.route('/<int:vehicle_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(vehicle_id):
-    """Let owners update a vehicle and set or clear its starting odometer."""
+    """Let owners and administrators update a vehicle and set or clear its starting odometer."""
     vehicle = db.get_or_404(Vehicle, vehicle_id)
 
     # Check ownership
-    if (vehicle not in current_user.get_all_vehicles()
-            or (vehicle.owner_id != current_user.id and not current_user.is_admin)):
+    if vehicle.owner_id != current_user.id and not current_user.is_admin:
         flash(_('Access denied'), 'error')
         return redirect(url_for('vehicles.index'))
 
