@@ -25,7 +25,7 @@ from app.services.tessie import TessieService
 from app.services.backup_restore import (
     BackupError, SECTION_LABELS, describe_backup, read_backup, restore_backup
 )
-from app.utils import parse_decimal, parse_fuel_level, utcnow
+from app.utils import parse_starting_odometer, parse_decimal, parse_fuel_level, utcnow
 from flask_babel import gettext as _
 from config import APP_VERSION
 
@@ -422,7 +422,13 @@ def api_create_vehicle():
     except (TypeError, ValueError):
         return jsonify({'error': 'Invalid purchase_date format. Use YYYY-MM-DD', 'code': 'validation_error'}), 400
 
+    try:
+        starting_odometer = parse_starting_odometer(data.get('starting_odometer'))
+    except ValueError:
+        return jsonify({'error': 'Invalid starting_odometer', 'code': 'validation_error'}), 400
+
     vehicle = Vehicle(
+        starting_odometer=starting_odometer,
         owner_id=user.id,
         name=data['name'],
         vehicle_type=data['vehicle_type'],
@@ -459,6 +465,12 @@ def api_update_vehicle(vehicle_id):
     data = request.get_json()
     if not data:
         return jsonify({'error': 'JSON body required', 'code': 'invalid_request'}), 400
+
+    if 'starting_odometer' in data:
+        try:
+            vehicle.starting_odometer = parse_starting_odometer(data['starting_odometer'])
+        except ValueError:
+            return jsonify({'error': 'Invalid starting_odometer', 'code': 'validation_error'}), 400
 
     if 'name' in data:
         vehicle.name = data['name']
@@ -1969,6 +1981,9 @@ def export_json():
             'vin': vehicle.vin,
             'fuel_type': vehicle.fuel_type,
             'tank_capacity': vehicle.tank_capacity,
+            'starting_odometer': vehicle.starting_odometer,
+            'odometer_unit': vehicle.odometer_unit,
+            'tracking_unit': vehicle.tracking_unit,
             'battery_capacity': vehicle.battery_capacity,
             'is_active': vehicle.is_active,
             'notes': vehicle.notes,
@@ -2258,6 +2273,9 @@ def export_full_backup():
             'vin': vehicle.vin,
             'fuel_type': vehicle.fuel_type,
             'tank_capacity': vehicle.tank_capacity,
+            'starting_odometer': vehicle.starting_odometer,
+            'odometer_unit': vehicle.odometer_unit,
+            'tracking_unit': vehicle.tracking_unit,
             'battery_capacity': vehicle.battery_capacity,
             'is_active': vehicle.is_active,
             'notes': vehicle.notes,

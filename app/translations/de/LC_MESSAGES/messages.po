@@ -581,6 +581,10 @@ msgstr "Das Passwort muss mindestens eine Ziffer enthalten"
 msgid "Please add a vehicle first"
 msgstr "Bitte fügen Sie zuerst ein Fahrzeug hinzu"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Der Anfangszählerstand muss eine nichtnegative Zahl sein."
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1616,6 +1620,18 @@ msgstr "Kilometergeld"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Reifen"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Anfangszählerstand"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Optionaler Zählerstand zu Beginn der Kostenerfassung, in der "
+"Entfernungseinheit des Fahrzeugs oder in Betriebsstunden."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

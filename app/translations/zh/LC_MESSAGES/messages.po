@@ -579,6 +579,10 @@ msgstr "密码必须至少包含一个数字"
 msgid "Please add a vehicle first"
 msgstr "请先添加车辆"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "起始读数必须是非负数。"
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1549,6 +1553,16 @@ msgstr "里程补贴"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "轮胎"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "起始读数"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr "开始记录费用时的读数（选填），以车辆里程表的单位或发动机运行小时数计。"
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

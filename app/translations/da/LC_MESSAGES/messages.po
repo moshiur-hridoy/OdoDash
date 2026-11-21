@@ -579,6 +579,10 @@ msgstr "Adgangskoden skal indeholde mindst ét ciffer"
 msgid "Please add a vehicle first"
 msgstr "Tilføj venligst et køretøj først"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "Startaflæsningen skal være et ikke-negativt tal."
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1584,6 +1588,18 @@ msgstr "Kørselsgodtgørelse"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Dæk"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Startaflæsning"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Valgfri aflæsning ved starten af omkostningsregistreringen, i køretøjets "
+"afstandsenhed eller i motortimer."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

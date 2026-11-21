@@ -579,6 +579,10 @@ msgstr "비밀번호에 숫자가 하나 이상 포함되어야 합니다"
 msgid "Please add a vehicle first"
 msgstr "먼저 차량을 추가하십시오"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "시작 계기판 수치는 0 이상의 숫자여야 합니다."
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1553,6 +1557,16 @@ msgstr "주행 수당"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "타이어"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "시작 계기판 수치"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr "비용 기록을 시작할 때의 수치입니다(선택 사항). 차량 주행 거리계 단위 또는 엔진 가동 시간으로 입력합니다."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

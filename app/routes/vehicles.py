@@ -9,7 +9,7 @@ from flask_babel import gettext as _
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
 from app import db
-from app.utils import parse_decimal, utcnow
+from app.utils import parse_starting_odometer, parse_decimal, utcnow
 from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
 from app.services.tessie import TessieService
 
@@ -87,13 +87,21 @@ def index():
 @bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    """Create a vehicle with an optional validated cost-tracking baseline."""
     if request.method == 'POST':
+        try:
+            starting_odometer = parse_starting_odometer(request.form.get('starting_odometer'))
+        except ValueError:
+            flash(_('Starting odometer must be a nonnegative number.'), 'error')
+            return redirect(url_for('vehicles.new'))
+
         vehicle = Vehicle(
             owner_id=current_user.id,
             name=request.form.get('name'),
             vehicle_type=request.form.get('vehicle_type'),
             tracking_unit=request.form.get('tracking_unit', 'mileage'),
             odometer_unit=request.form.get('odometer_unit') or None,
+            starting_odometer=starting_odometer,
             make=request.form.get('make'),
             model=request.form.get('model'),
             year=int(request.form.get('year')) if request.form.get('year') else None,
@@ -302,6 +310,7 @@ def _as_date(value):
 @bp.route('/<int:vehicle_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(vehicle_id):
+    """Let owners and administrators update a vehicle and set or clear its starting odometer."""
     vehicle = db.get_or_404(Vehicle, vehicle_id)
 
     # Check ownership
@@ -310,6 +319,14 @@ def edit(vehicle_id):
         return redirect(url_for('vehicles.index'))
 
     if request.method == 'POST':
+        try:
+            starting_odometer = (parse_starting_odometer(request.form.get('starting_odometer'))
+                                 if 'starting_odometer' in request.form else vehicle.starting_odometer)
+        except ValueError:
+            flash(_('Starting odometer must be a nonnegative number.'), 'error')
+            return redirect(url_for('vehicles.edit', vehicle_id=vehicle.id))
+        vehicle.starting_odometer = starting_odometer
+
         vehicle.name = request.form.get('name')
         vehicle.vehicle_type = request.form.get('vehicle_type')
         # Changing the tracking unit would reinterpret every reading already
