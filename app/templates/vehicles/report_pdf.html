@@ -396,7 +396,7 @@
         {% for expense in expenses %}
         <tr>
             <td>{{ expense.date|format_date }}</td>
-            <td style="text-transform: capitalize;">{{ expense.category }}</td>
+            <td>{{ expense.category|category_label }}</td>
             <td>{{ expense.description }}</td>
             <td class="text-right">{{ expense.cost|money }} {{ user.currency }}</td>
             <td>{{ expense.vendor or '-' }}</td>

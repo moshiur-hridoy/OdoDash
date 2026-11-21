@@ -10,7 +10,7 @@
 {%- set form_vehicle = recurring.vehicle if recurring else (chosen[0] if chosen else (vehicles[0] if vehicles else None)) -%}
 {%- set chosen_category = recurring.category if recurring else categories[0][0] -%}
 {%- set chosen_frequency = recurring.frequency if recurring else 'monthly' -%}
-{%- set frequencies = [('monthly', _('Monthly')), ('quarterly', _('Quarterly (every 3 months)')), ('biannual', _('Biannual (every 6 months)')), ('yearly', _('Yearly'))] -%}
+{%- set frequencies = [('biweekly', _('Biweekly (every 2 weeks)')), ('monthly', _('Monthly')), ('quarterly', _('Quarterly (every 3 months)')), ('biannual', _('Biannual (every 6 months)')), ('yearly', _('Yearly'))] -%}
 <div class="ds form-page">
 {{ back_link(_('Back to Recurring Expenses'), url_for('recurring.index')) }}
 {{ page_header(_('Edit Recurring Expense') if recurring else _('Add Recurring Expense'), subtitle=recurring.vehicle.name if recurring else None) }}
