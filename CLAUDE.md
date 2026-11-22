@@ -191,6 +191,12 @@ The project uses GitHub Actions (`.github/workflows/docker.yml`) to automaticall
    git reset --hard origin/ododash-release
    git push origin dev --force
    ```
+9. Fast-forward `main` to `ododash-release`. `main` is a leftover from the May
+   fork, but old links (`/tree/main`, `raw.githubusercontent.com/.../main/...`)
+   still reach it, so it must not go stale:
+   ```bash
+   git push origin origin/ododash-release:refs/heads/main
+   ```
 
 ### Docker Deployment
 
