@@ -108,8 +108,9 @@ Looking at other self-hosted options? [LubeLogger](https://github.com/hargata/lu
 ## Quick Start
 
 ```bash
-git clone https://github.com/moshiur-hridoy/OdoDash.git
-cd OdoDash
+mkdir ododash && cd ododash
+curl -O https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/docker-compose.yml
+echo "SECRET_KEY=$(openssl rand -hex 32)" > .env
 docker compose up -d
 ```
 

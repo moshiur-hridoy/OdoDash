@@ -4,25 +4,26 @@
 
 ## Quick Start with Docker
 
-```bash
-# Clone your OdoDash fork
-git clone https://github.com/moshiur-hridoy/OdoDash.git
-cd OdoDash
-
-# Run via Docker Compose
-docker compose up -d
-```
-
-Or download the compose file directly:
+The compose file pulls the published image, so you only need that one file:
 
 ```bash
 # Create a directory for OdoDash
 mkdir ododash && cd ododash
 
 # Download docker-compose.yml
-curl -O https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/docker-compose.yml
 
-# Start the container
+# Set a long random key, then start the container
+echo "SECRET_KEY=$(openssl rand -hex 32)" > .env
+docker compose up -d
+```
+
+Or clone the repository (for example to build the image yourself):
+
+```bash
+git clone https://github.com/moshiur-hridoy/OdoDash.git
+cd OdoDash
+
 docker compose up -d
 ```
 
