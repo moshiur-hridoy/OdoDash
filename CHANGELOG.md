@@ -15,6 +15,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 - A separate Home Assistant key (`odoha_`) in Settings → Integrations → Home Assistant. It works only on the Home Assistant API, so Home Assistant no longer needs the account API key, which can also change and delete data; `/api/v1` and the calendar feed refuse it. A viewer's key still cannot log fuel. Existing setups with the account API key keep working.
 - The Home Assistant panel in Settings is now three steps: create the key, install the [ododash-homeassistant](https://github.com/moshiur-hridoy/ododash-homeassistant) integration through HACS, and paste the server address and key. The YAML example moved under "Advanced: YAML sensors" and uses the Home Assistant key.
 - `GET /api/ha/overview` returns every vehicle with its stats, last-30-days cost, latest EV charge and alerts in one request, so Home Assistant no longer needs one request per vehicle.
+- Telegram as a reminder notification method. Once your chat is linked under Services, pick Telegram in Settings > Notifications and due reminders (and the test notification) arrive in that chat.
 - Your name in Settings > Account. The dashboard greeting, the sidebar and the phone menu use it instead of the login username, which still signs you in.
 - Average monthly cost. The vehicle page shows it above Monthly Spending, over the last twelve complete months (or fewer for a newer vehicle). The dashboard's This month view adds the year's monthly average beside the yearly projection.
 
