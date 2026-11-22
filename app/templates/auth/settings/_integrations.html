@@ -1,7 +1,7 @@
 {#- Integrations (section id "services"): a grid of services, each opening its
     own detail panel (#services-<name>). -#}
 {% from 'auth/settings/_ui.html' import card, status %}
-{% from 'components/ui.html' import button, badge %}
+{% from 'components/ui.html' import button, badge, steps %}
 {% from 'components/icons.html' import icon %}
 
 {%- macro tile(name, title, text, icon_name, state, tone, admin=False) -%}
@@ -69,7 +69,7 @@
             {{ tile('calendar', _('Calendar'), _('Subscribe to reminders in your calendar app'), 'calendar',
                     _('Ready') if current_user.api_key else _('Requires API key'), 'success' if current_user.api_key else 'neutral') }}
             {{ tile('homeassistant', _('Home Assistant'), _('Create sensors and automations for your vehicles'), 'home',
-                    _('Ready') if current_user.api_key else _('Requires API key'), 'success' if current_user.api_key else 'neutral') }}
+                    _('Ready') if current_user.ha_token else _('Not set up'), 'success' if current_user.ha_token else 'neutral') }}
             {% if current_user.is_admin or telegram.enabled %}
             {{ tile('telegram', _('Telegram'), _('Log fill-ups by messaging a bot'), 'send',
                     _('Connected') if telegram.linked else (_('Not connected') if telegram.enabled else _('Not configured')),
@@ -114,31 +114,98 @@
         </div></div>
     </div>
 
-    {# ---- Home Assistant ---- #}
+    {# ---- Home Assistant: three steps, key -> install -> connect ---- #}
+    {%- set ha_url = request.url_root.rstrip('/') -%}
+    {%- set ha_key = current_user.ha_token -%}
     <div id="integration-homeassistant" class="integration-detail settings-stack" hidden>
-        {{ detail_head(_('Home Assistant'), _('Create sensors and automations for your vehicles'), 'home') }}
-        <div class="ds-card settings-card"><div class="settings-card__body">
-        {% if current_user.api_key %}
-            <p class="settings-row__hint">{{ _('Add the following configuration to your Home Assistant configuration.yaml to create vehicle sensors.') }}</p>
-            <div class="ds-field">
-                <span class="ds-field__label">{{ _('REST Sensor Configuration') }}</span>
-                <pre class="settings-code settings-code--block"><code>sensor:
+        {{ detail_head(_('Home Assistant'), _('Each vehicle becomes a Home Assistant device with sensors and alerts. No YAML needed.'), 'home') }}
+        {{ steps([_('Create key'), _('Install'), _('Connect')], 2 if ha_key else 1) }}
+
+        <section class="ds-card settings-card ha-step">
+            <header class="settings-card__head">
+                <h3 class="settings-card__title"><span class="ha-step__num" aria-hidden="true">1</span> {{ _('Create a Home Assistant key') }}</h3>
+                <p class="settings-card__hint">{{ _('This key can only read your vehicles and log fuel. It cannot change or delete anything else.') }}</p>
+            </header>
+            <div class="settings-card__body">
+            {% if ha_key %}
+                <div class="ds-field">
+                    <label class="ds-field__label" for="ha-key">{{ _('Home Assistant key') }}</label>
+                    <div class="form-template__row">
+                        <div class="ds-password">
+                            <input type="password" id="ha-key" class="ds-control ds-mono" readonly value="{{ ha_key }}">
+                            <button type="button" class="ds-password__toggle" data-password-toggle="ha-key" aria-pressed="false"
+                                    aria-label="{{ _('Show password') }}" data-label-show="{{ _('Show password') }}" data-label-hide="{{ _('Hide password') }}">
+                                <span data-eye="show">{{ icon('eye', 18) }}</span><span data-eye="hide" hidden>{{ icon('eye-off', 18) }}</span>
+                            </button>
+                        </div>
+                        {{ button(_('Copy'), variant='secondary', icon_name='copy', attrs={'data-copy': 'ha-key'}) }}
+                    </div>
+                    <p class="form-hint">{{ _('Created') }}: {{ current_user.ha_token_created_at|format_date('long_datetime') }}</p>
+                </div>
+                <div class="settings-actions settings-actions--inline settings-actions--start">
+                    {{ button(_('Regenerate'), variant='secondary', icon_name='repeat', attrs={'onclick': 'regenerateHaToken()'}) }}
+                    {{ button(_('Revoke'), variant='danger', icon_name='x', attrs={'onclick': 'revokeHaToken()'}) }}
+                </div>
+            {% else %}
+                <div class="settings-actions settings-actions--inline settings-actions--start">
+                    {{ button(_('Create Home Assistant key'), icon_name='plus', attrs={'onclick': 'generateHaToken()'}) }}
+                </div>
+            {% endif %}
+            </div>
+        </section>
+
+        <section class="ds-card settings-card ha-step">
+            <header class="settings-card__head">
+                <h3 class="settings-card__title"><span class="ha-step__num" aria-hidden="true">2</span> {{ _('Install the integration') }}</h3>
+                <p class="settings-card__hint">{{ _('Opens your Home Assistant and adds the OdoDash integration through HACS.') }}</p>
+            </header>
+            <div class="settings-card__body">
+                <div class="settings-actions settings-actions--inline settings-actions--start">
+                    {{ button(_('Add to Home Assistant'), href='https://my.home-assistant.io/redirect/hacs_repository/?owner=moshiur-hridoy&repository=ododash-homeassistant&category=integration', icon_name='external', attrs={'target': '_blank', 'rel': 'noopener'}) }}
+                </div>
+                <p class="form-hint">{{ _('Needs HACS. Don\'t have it? See %(link)s.', link='<a class="api-link" href="https://hacs.xyz" target="_blank" rel="noopener">hacs.xyz</a>'|safe) }}</p>
+            </div>
+        </section>
+
+        <section class="ds-card settings-card ha-step">
+            <header class="settings-card__head">
+                <h3 class="settings-card__title"><span class="ha-step__num" aria-hidden="true">3</span> {{ _('Connect') }}</h3>
+                <p class="settings-card__hint">{{ _('Paste these when Home Assistant asks.') }}</p>
+            </header>
+            <div class="settings-card__body">
+                {{ copy_field('ha-server-url', _('Server address'), _('Behind a reverse proxy? Use the address Home Assistant can reach.'), ha_url) }}
+                {% if ha_key %}
+                <div class="ds-field">
+                    <label class="ds-field__label" for="ha-key-connect">{{ _('Home Assistant key') }}</label>
+                    <div class="form-template__row">
+                        <input type="password" readonly id="ha-key-connect" class="ds-control ds-mono" value="{{ ha_key }}">
+                        {{ button(_('Copy'), variant='secondary', icon_name='copy', attrs={'data-copy': 'ha-key-connect'}) }}
+                    </div>
+                </div>
+                {% else %}
+                <p class="settings-row__hint">{{ _('Create the key in step 1 first.') }}</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <details class="ds-card form-more">
+            <summary><span>{{ _('Advanced: YAML sensors') }} <span class="form-more__hint">{{ _('for setups without the integration') }}</span></span>{{ icon('chevron-down', 16) }}</summary>
+            <div class="form-more__body">
+                <p class="settings-row__hint">{{ _('Add this to configuration.yaml to create a sensor with the REST platform instead.') }}</p>
+                <pre class="settings-code settings-code--block" id="ha-yaml"><code>sensor:
   - platform: rest
     name: "OdoDash Vehicle Stats"
-    resource: {{ request.url_root.rstrip('/') }}/api/ha/summary
+    resource: {{ ha_url }}/api/ha/summary
     headers:
-      Authorization: Bearer {{ current_user.api_key }}
+      Authorization: Bearer {{ ha_key or 'YOUR_HOME_ASSISTANT_KEY' }}
     value_template: "{{ '{{' }} value_json.alerts_count {{ '}}' }}"
     json_attributes:
       - total_vehicles
       - total_cost
-      - total_fuel_cost
-      - vehicles</code></pre>
+      - total_fuel_cost</code></pre>
                 <div>{{ button(_('Copy configuration'), variant='secondary', size='sm', icon_name='copy', attrs={'onclick': 'copyHAConfig()'}) }}</div>
-            </div>
-            <div class="ds-field">
-                <span class="ds-field__label">{{ _('Available API Endpoints') }}</span>
                 <dl class="integration-endpoints">
+                    <div><dt><code>/api/ha/overview</code></dt><dd>{{ _('Every vehicle with stats and alerts') }}</dd></div>
                     <div><dt><code>/api/ha/status</code></dt><dd>{{ _('API health check') }}</dd></div>
                     <div><dt><code>/api/ha/vehicles</code></dt><dd>{{ _('List all vehicles') }}</dd></div>
                     <div><dt><code>/api/ha/vehicles/{id}/stats</code></dt><dd>{{ _('Vehicle statistics') }}</dd></div>
@@ -146,10 +213,7 @@
                     <div><dt><code>/api/ha/summary</code></dt><dd>{{ _('Combined summary') }}</dd></div>
                 </dl>
             </div>
-        {% else %}
-            {{ needs_key(_('Generate an API key in the API section to enable Home Assistant integration.')) }}
-        {% endif %}
-        </div></div>
+        </details>
     </div>
 
     {# ---- Telegram ---- #}

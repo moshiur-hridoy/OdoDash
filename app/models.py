@@ -125,6 +125,10 @@ class User(UserMixin, db.Model):
     # API access
     api_key = db.Column(db.String(64), unique=True, index=True)
     api_key_created_at = db.Column(db.DateTime)
+    # Home Assistant key: accepted only by /api/ha/*, so the integration never
+    # holds a credential that can reach the full /api/v1 surface.
+    ha_token = db.Column(db.String(64), unique=True, index=True)
+    ha_token_created_at = db.Column(db.DateTime)
 
     # Telegram bot: the private chat linked to this account, and the one-time
     # code the user sends the bot to link it.
@@ -269,6 +273,25 @@ class User(UserMixin, db.Model):
         if not api_key:
             return None
         return User.query.filter_by(api_key=api_key).first()
+
+    def generate_ha_token(self):
+        """Generate a new Home Assistant key, replacing any existing one."""
+        # 6 + 58 = 64 characters, the width of the column.
+        self.ha_token = f"odoha_{secrets.token_hex(29)}"
+        self.ha_token_created_at = utcnow()
+        return self.ha_token
+
+    def revoke_ha_token(self):
+        """Revoke the current Home Assistant key."""
+        self.ha_token = None
+        self.ha_token_created_at = None
+
+    @staticmethod
+    def get_by_ha_token(ha_token):
+        """Find user by Home Assistant key."""
+        if not ha_token:
+            return None
+        return User.query.filter_by(ha_token=ha_token).first()
 
 
 class Vehicle(db.Model):
@@ -1514,6 +1537,7 @@ EXPENSE_CATEGORIES = [
     ('repairs', _l('Repairs')),
     ('inspection', _l('Inspection')),
     ('insurance', _l('Insurance')),
+    ('loan_payment', _l('Loan Payment')),
     ('tax', _l('Road Tax')),
     ('registration', _l('Registration')),
     ('parking', _l('Parking')),
@@ -1964,7 +1988,7 @@ class RecurringExpense(db.Model):
     vendor = db.Column(db.String(100))
 
     # Recurrence settings
-    frequency = db.Column(db.String(20), nullable=False)  # weekly, monthly, quarterly, yearly
+    frequency = db.Column(db.String(20), nullable=False)  # weekly, biweekly, monthly, quarterly, biannual, yearly
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date)  # optional end date
 
@@ -1992,6 +2016,8 @@ class RecurringExpense(db.Model):
 
         if self.frequency == 'weekly':
             self.next_due = base_date + relativedelta(weeks=1)
+        elif self.frequency == 'biweekly':
+            self.next_due = base_date + relativedelta(weeks=2)
         elif self.frequency == 'monthly':
             self.next_due = base_date + relativedelta(months=1)
         elif self.frequency == 'quarterly':

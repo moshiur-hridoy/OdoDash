@@ -10,13 +10,22 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+## [0.51.0] - 2026-11-22
+
 ### Added
 
+- A separate Home Assistant key (`odoha_`) in Settings → Integrations → Home Assistant. It works only on the Home Assistant API, so Home Assistant no longer needs the account API key, which can also change and delete data; `/api/v1` and the calendar feed refuse it. A viewer's key still cannot log fuel. Existing setups with the account API key keep working.
+- The Home Assistant panel in Settings is now three steps: create the key, install the [ododash-homeassistant](https://github.com/moshiur-hridoy/ododash-homeassistant) integration through HACS, and paste the server address and key. The YAML example moved under "Advanced: YAML sensors" and uses the Home Assistant key.
+- `GET /api/ha/overview` returns every vehicle with its stats, last-30-days cost, latest EV charge and alerts in one request, so Home Assistant no longer needs one request per vehicle.
+- Telegram as a reminder notification method. Once your chat is linked under Services, pick Telegram in Settings > Notifications and due reminders (and the test notification) arrive in that chat.
+- A Loan payment expense category, and a biweekly option for recurring expenses. Contributed by [@emerrick](https://github.com/emerrick) in #15.
 - Your name in Settings > Account. The dashboard greeting, the sidebar and the phone menu use it instead of the login username, which still signs you in.
 - Average monthly cost. The vehicle page shows it above Monthly Spending, over the last twelve complete months (or fewer for a newer vehicle). The dashboard's This month view adds the year's monthly average beside the yearly projection.
 
 ### Fixed
 
+- Home Assistant now sees vehicles shared with you and instance-shared vehicles, not only your own. Every alert carries its `vehicle_id`, and each vehicle's consumption unit follows its own odometer unit (an hours-metered vehicle reports none).
+- An empty Needs attention card centres its "All good" message in the card instead of sitting near the top.
 - On a phone, the consumption gauge on the vehicle page sits in the middle of its card instead of hugging the left edge.
 - The Add Fuel form's "Last odometer" and distance-since-last figures group digits by your thousands-separator setting, matching the vehicle cards above them.
 

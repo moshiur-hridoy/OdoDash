@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-13 19:26+0600\n"
+"POT-Creation-Date: 2026-11-22 09:43+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh <LL@li.org>\n"
@@ -44,16 +44,16 @@ msgstr "可以记录加油和充电。其他内容均为只读。"
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "只读。可以查看数据，但不能进行任何修改。"
 
-#: app/models.py:199 app/templates/auth/_user_list.html:15
+#: app/models.py:203 app/templates/auth/_user_list.html:15
 #: app/templates/auth/create_user.html:47 app/templates/auth/edit_user.html:31
 msgid "Administrator"
 msgstr "管理员"
 
-#: app/models.py:410 app/templates/maintenance/form.html:113
+#: app/models.py:433 app/templates/maintenance/form.html:113
 msgid "Engine hours"
 msgstr "发动机小时"
 
-#: app/models.py:411 app/templates/charging/_log.html:41
+#: app/models.py:434 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:180
 #: app/templates/dashboard.html:206 app/templates/expenses/form.html:71
 #: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
@@ -67,11 +67,11 @@ msgstr "发动机小时"
 msgid "Odometer"
 msgstr "里程表"
 
-#: app/models.py:416 app/models.py:1535 app/templates/trips/form.html:151
+#: app/models.py:439 app/models.py:1559 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "小时"
 
-#: app/models.py:417 app/templates/allowance/form.html:36
+#: app/models.py:440 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
 #: app/templates/auth/settings/_units.html:33 app/templates/trips/form.html:85
 #: app/templates/trips/form.html:151 app/templates/trips/index.html:82
@@ -79,476 +79,480 @@ msgstr "小时"
 msgid "Distance"
 msgstr "距离"
 
-#: app/models.py:1482
+#: app/models.py:1505
 msgid "Front Tire Size"
 msgstr "前轮胎尺寸"
 
-#: app/models.py:1483
+#: app/models.py:1506
 msgid "Rear Tire Size"
 msgstr "后轮胎尺寸"
 
-#: app/models.py:1484
+#: app/models.py:1507
 msgid "Wheel Size"
 msgstr "轮毂尺寸"
 
-#: app/models.py:1485
+#: app/models.py:1508
 msgid "Engine Oil Type"
 msgstr "机油类型"
 
-#: app/models.py:1486
+#: app/models.py:1509
 msgid "Oil Capacity"
 msgstr "机油容量"
 
-#: app/models.py:1487
+#: app/models.py:1510
 msgid "Coolant Type"
 msgstr "冷却液类型"
 
-#: app/models.py:1488
+#: app/models.py:1511
 msgid "Front Wiper Size"
 msgstr "前雨刷尺寸"
 
-#: app/models.py:1489
+#: app/models.py:1512
 msgid "Rear Wiper Size"
 msgstr "后雨刷尺寸"
 
-#: app/models.py:1490
+#: app/models.py:1513
 msgid "Battery Type"
 msgstr "电池类型"
 
-#: app/models.py:1491
+#: app/models.py:1514
 msgid "Spark Plug Type"
 msgstr "火花塞类型"
 
-#: app/models.py:1492
+#: app/models.py:1515
 msgid "Air Filter Part #"
 msgstr "空气滤清器编号"
 
-#: app/models.py:1493
+#: app/models.py:1516
 msgid "Cabin Filter Part #"
 msgstr "空调滤芯编号"
 
-#: app/models.py:1494
+#: app/models.py:1517
 msgid "Front Brake Pads"
 msgstr "前刹车片"
 
-#: app/models.py:1495
+#: app/models.py:1518
 msgid "Rear Brake Pads"
 msgstr "后刹车片"
 
-#: app/models.py:1496 app/models.py:2339
+#: app/models.py:1519 app/models.py:2365
 msgid "Transmission Fluid"
 msgstr "变速箱油"
 
-#: app/models.py:1497 app/models.py:1636 app/models.py:1701
+#: app/models.py:1520 app/models.py:1660 app/models.py:1725
 #: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "自定义"
 
-#: app/models.py:1502 app/routes/maintenance.py:99
+#: app/models.py:1525 app/routes/maintenance.py:99
 #: app/templates/auth/settings/_menu.html:6
 #: app/templates/auth/settings/_menu.html:10 app/templates/base.html:537
 #: app/templates/partials/mobile_nav.html:28
 msgid "Maintenance"
 msgstr "保养"
 
-#: app/models.py:1503
+#: app/models.py:1526
 msgid "Repairs"
 msgstr "维修"
 
-#: app/models.py:1504
+#: app/models.py:1527
 msgid "Inspection"
 msgstr "检验"
 
-#: app/models.py:1505
+#: app/models.py:1528
 msgid "Insurance"
 msgstr "保险"
 
-#: app/models.py:1506 app/models.py:1631
+#: app/models.py:1529
+msgid "Loan Payment"
+msgstr "贷款还款"
+
+#: app/models.py:1530 app/models.py:1655
 msgid "Road Tax"
 msgstr "车船税"
 
-#: app/models.py:1507 app/templates/auth/settings/_users.html:8
+#: app/models.py:1531 app/templates/auth/settings/_users.html:8
 msgid "Registration"
 msgstr "登记"
 
-#: app/models.py:1508
+#: app/models.py:1532
 msgid "Parking"
 msgstr "停车"
 
-#: app/models.py:1509
+#: app/models.py:1533
 msgid "Tolls"
 msgstr "过路费"
 
-#: app/models.py:1510
+#: app/models.py:1534
 msgid "Cleaning"
 msgstr "清洁"
 
-#: app/models.py:1511
+#: app/models.py:1535
 msgid "Accessories"
 msgstr "配件"
 
-#: app/models.py:1512 app/models.py:1529 app/models.py:1562 app/models.py:1669
-#: app/models.py:1679 app/models.py:1737 app/models.py:1745 app/models.py:2345
+#: app/models.py:1536 app/models.py:1553 app/models.py:1586 app/models.py:1693
+#: app/models.py:1703 app/models.py:1761 app/models.py:1769 app/models.py:2371
 msgid "Other"
 msgstr "其他"
 
-#: app/models.py:1517
+#: app/models.py:1541
 msgid "Car"
 msgstr "汽车"
 
-#: app/models.py:1518
+#: app/models.py:1542
 msgid "Van"
 msgstr "面包车"
 
-#: app/models.py:1519
+#: app/models.py:1543
 msgid "Motorbike"
 msgstr "摩托车"
 
-#: app/models.py:1520
+#: app/models.py:1544
 msgid "Scooter"
 msgstr "踏板车"
 
-#: app/models.py:1521
+#: app/models.py:1545
 msgid "Truck"
 msgstr "卡车"
 
-#: app/models.py:1522
+#: app/models.py:1546
 msgid "SUV"
 msgstr "SUV"
 
-#: app/models.py:1523
+#: app/models.py:1547
 msgid "Hatchback"
 msgstr "掀背车"
 
-#: app/models.py:1524
+#: app/models.py:1548
 msgid "Station Wagon / Estate"
 msgstr "旅行车"
 
-#: app/models.py:1525
+#: app/models.py:1549
 msgid "Pickup / Ute"
 msgstr "皮卡"
 
-#: app/models.py:1526
+#: app/models.py:1550
 msgid "Tractor"
 msgstr "拖拉机"
 
-#: app/models.py:1527
+#: app/models.py:1551
 msgid "ATV/UTV"
 msgstr "全地形车/UTV"
 
-#: app/models.py:1528
+#: app/models.py:1552
 msgid "Boat"
 msgstr "船"
 
-#: app/models.py:1534
+#: app/models.py:1558
 msgid "Mileage (km/mi)"
 msgstr "里程 (公里/英里)"
 
-#: app/models.py:1540 app/templates/auth/settings/_units.html:35
+#: app/models.py:1564 app/templates/auth/settings/_units.html:35
 msgid "Kilometres (km)"
 msgstr "公里 (km)"
 
-#: app/models.py:1541 app/templates/auth/settings/_units.html:36
+#: app/models.py:1565 app/templates/auth/settings/_units.html:36
 msgid "Miles (mi)"
 msgstr "英里 (mi)"
 
-#: app/models.py:1546
+#: app/models.py:1570
 msgid "Petrol/Gasoline"
 msgstr "汽油"
 
-#: app/models.py:1550
+#: app/models.py:1574
 msgid "Premium petrol (Octane)"
 msgstr "高标号汽油(辛烷)"
 
-#: app/models.py:1551
+#: app/models.py:1575
 msgid "Diesel"
 msgstr "柴油"
 
-#: app/models.py:1552
+#: app/models.py:1576
 msgid "Electric"
 msgstr "电动"
 
-#: app/models.py:1553
+#: app/models.py:1577
 msgid "Hybrid"
 msgstr "混合动力"
 
-#: app/models.py:1554
+#: app/models.py:1578
 msgid "Plug-in Hybrid"
 msgstr "插电式混合动力"
 
-#: app/models.py:1555
+#: app/models.py:1579
 msgid "LPG"
 msgstr "液化石油气 (LPG)"
 
-#: app/models.py:1556
+#: app/models.py:1580
 msgid "CNG"
 msgstr "压缩天然气 (CNG)"
 
-#: app/models.py:1557
+#: app/models.py:1581
 msgid "Hydrogen"
 msgstr "氢燃料"
 
-#: app/models.py:1558
+#: app/models.py:1582
 msgid "E85/Flex Fuel"
 msgstr "E85/灵活燃料"
 
-#: app/models.py:1561
+#: app/models.py:1585
 msgid "AdBlue/DEF"
 msgstr "AdBlue/DEF"
 
-#: app/models.py:1628
+#: app/models.py:1652
 msgid "MOT/Inspection"
 msgstr "年检/验车"
 
-#: app/models.py:1629
+#: app/models.py:1653
 msgid "Service Due"
 msgstr "保养到期"
 
-#: app/models.py:1630
+#: app/models.py:1654
 msgid "Insurance Renewal"
 msgstr "保险续保"
 
-#: app/models.py:1632
+#: app/models.py:1656
 msgid "Registration Renewal"
 msgstr "登记续期"
 
-#: app/models.py:1633
+#: app/models.py:1657
 msgid "Warranty Expiry"
 msgstr "保修到期"
 
-#: app/models.py:1634
+#: app/models.py:1658
 msgid "Tire Change"
 msgstr "更换轮胎"
 
-#: app/models.py:1635 app/models.py:1684
+#: app/models.py:1659 app/models.py:1708
 msgid "Oil Change"
 msgstr "更换机油"
 
-#: app/models.py:1655
+#: app/models.py:1679
 msgid "No Repeat"
 msgstr "不重复"
 
-#: app/models.py:1656
+#: app/models.py:1680
 msgid "Day(s)"
 msgstr "天"
 
-#: app/models.py:1657
+#: app/models.py:1681
 msgid "Week(s)"
 msgstr "周"
 
-#: app/models.py:1658
+#: app/models.py:1682
 msgid "Month(s)"
 msgstr "月"
 
-#: app/models.py:1659
+#: app/models.py:1683
 msgid "Year(s)"
 msgstr "年"
 
-#: app/models.py:1664
+#: app/models.py:1688
 msgid "Business"
 msgstr "商务"
 
-#: app/models.py:1665
+#: app/models.py:1689
 msgid "Personal"
 msgstr "私人"
 
-#: app/models.py:1666
+#: app/models.py:1690
 msgid "Commute"
 msgstr "通勤"
 
-#: app/models.py:1667
+#: app/models.py:1691
 msgid "Medical"
 msgstr "就医"
 
-#: app/models.py:1668
+#: app/models.py:1692
 msgid "Charity"
 msgstr "公益"
 
-#: app/models.py:1674
+#: app/models.py:1698
 msgid "Home Charging"
 msgstr "家庭充电"
 
-#: app/models.py:1675
+#: app/models.py:1699
 msgid "Level 1"
 msgstr "一级充电"
 
-#: app/models.py:1676
+#: app/models.py:1700
 msgid "Level 2"
 msgstr "二级充电"
 
-#: app/models.py:1677
+#: app/models.py:1701
 msgid "DC Fast Charge"
 msgstr "直流快充"
 
-#: app/models.py:1678
+#: app/models.py:1702
 msgid "Tesla Supercharger"
 msgstr "特斯拉超级充电桩"
 
-#: app/models.py:1685 app/models.py:2331
+#: app/models.py:1709 app/models.py:2357
 msgid "Oil Filter"
 msgstr "机油滤清器"
 
-#: app/models.py:1686 app/models.py:2332
+#: app/models.py:1710 app/models.py:2358
 msgid "Air Filter"
 msgstr "空气滤清器"
 
-#: app/models.py:1687
+#: app/models.py:1711
 msgid "Cabin/Pollen Filter"
 msgstr "空调滤芯"
 
-#: app/models.py:1688 app/models.py:2333
+#: app/models.py:1712 app/models.py:2359
 msgid "Fuel Filter"
 msgstr "燃油滤清器"
 
-#: app/models.py:1689
+#: app/models.py:1713
 msgid "Spark Plugs"
 msgstr "火花塞"
 
-#: app/models.py:1690
+#: app/models.py:1714
 msgid "Brake Pads"
 msgstr "刹车片"
 
-#: app/models.py:1691 app/models.py:2337
+#: app/models.py:1715 app/models.py:2363
 msgid "Brake Fluid"
 msgstr "刹车油"
 
-#: app/models.py:1692
+#: app/models.py:1716
 msgid "Coolant Flush"
 msgstr "冷却液更换"
 
-#: app/models.py:1693
+#: app/models.py:1717
 msgid "Transmission Service"
 msgstr "变速箱保养"
 
-#: app/models.py:1694
+#: app/models.py:1718
 msgid "Timing Belt"
 msgstr "正时皮带"
 
-#: app/models.py:1695
+#: app/models.py:1719
 msgid "Serpentine Belt"
 msgstr "传动皮带"
 
-#: app/models.py:1696
+#: app/models.py:1720
 msgid "Tire Rotation"
 msgstr "轮胎换位"
 
-#: app/models.py:1697
+#: app/models.py:1721
 msgid "Wheel Alignment"
 msgstr "四轮定位"
 
-#: app/models.py:1698
+#: app/models.py:1722
 msgid "Battery Check/Replace"
 msgstr "电池检查/更换"
 
-#: app/models.py:1699
+#: app/models.py:1723
 msgid "Wiper Blades"
 msgstr "雨刷片"
 
-#: app/models.py:1700
+#: app/models.py:1724
 msgid "Full Service"
 msgstr "全面保养"
 
-#: app/models.py:1705 app/models.py:2330
+#: app/models.py:1729 app/models.py:2356
 msgid "Engine Oil"
 msgstr "机油"
 
-#: app/models.py:1706
+#: app/models.py:1730
 msgid "Servicing"
 msgstr "常规保养"
 
-#: app/models.py:1707 app/templates/vehicles/view.html:240
+#: app/models.py:1731 app/templates/vehicles/view.html:240
 msgid "Parts"
 msgstr "配件"
 
-#: app/models.py:1730
+#: app/models.py:1754
 msgid "Insurance Policy"
 msgstr "保险单"
 
-#: app/models.py:1731
+#: app/models.py:1755
 msgid "Registration/V5C"
 msgstr "登记证/V5C"
 
-#: app/models.py:1732
+#: app/models.py:1756
 msgid "MOT Certificate"
 msgstr "年检证明"
 
-#: app/models.py:1733
+#: app/models.py:1757
 msgid "Service Record"
 msgstr "保养记录"
 
-#: app/models.py:1734
+#: app/models.py:1758
 msgid "Purchase Invoice"
 msgstr "购车发票"
 
-#: app/models.py:1735
+#: app/models.py:1759
 msgid "Warranty Document"
 msgstr "保修文件"
 
-#: app/models.py:1736
+#: app/models.py:1760
 msgid "Owner's Manual"
 msgstr "车主手册"
 
-#: app/models.py:1742
+#: app/models.py:1766
 msgid "Summer"
 msgstr "夏季"
 
-#: app/models.py:1743
+#: app/models.py:1767
 msgid "Winter"
 msgstr "冬季"
 
-#: app/models.py:1744
+#: app/models.py:1768
 msgid "All Season"
 msgstr "四季"
 
-#: app/models.py:2334
+#: app/models.py:2360
 msgid "Cabin Filter"
 msgstr "空调滤芯"
 
-#: app/models.py:2335
+#: app/models.py:2361
 msgid "Spark Plug"
 msgstr "火花塞"
 
-#: app/models.py:2336
+#: app/models.py:2362
 msgid "Brake Pad"
 msgstr "刹车片"
 
-#: app/models.py:2338
+#: app/models.py:2364
 msgid "Coolant"
 msgstr "冷却液"
 
-#: app/models.py:2340
+#: app/models.py:2366
 msgid "Battery"
 msgstr "电池"
 
-#: app/models.py:2341
+#: app/models.py:2367
 msgid "Tire"
 msgstr "轮胎"
 
-#: app/models.py:2342
+#: app/models.py:2368
 msgid "Belt"
 msgstr "皮带"
 
-#: app/models.py:2343
+#: app/models.py:2369
 msgid "Wiper Blade"
 msgstr "雨刷片"
 
-#: app/models.py:2344
+#: app/models.py:2370
 msgid "Light Bulb"
 msgstr "灯泡"
 
-#: app/models.py:2614 app/templates/tires/index.html:68
+#: app/models.py:2640 app/templates/tires/index.html:68
 msgid "All axles"
 msgstr "所有车轴"
 
-#: app/models.py:2614 app/templates/tires/index.html:69
+#: app/models.py:2640 app/templates/tires/index.html:69
 msgid "Front axle"
 msgstr "前轴"
 
-#: app/models.py:2614 app/templates/tires/index.html:70
+#: app/models.py:2640 app/templates/tires/index.html:70
 msgid "Rear axle"
 msgstr "后轴"
 
-#: app/permissions.py:130
+#: app/permissions.py:138
 msgid "Your account does not have permission to change this data."
 msgstr "您的账号没有修改这些数据的权限。"
 
@@ -629,128 +633,128 @@ msgstr "里程补贴已成功更新"
 msgid "Mileage allowance deleted successfully"
 msgstr "里程补贴已成功删除"
 
-#: app/routes/api.py:2698 app/routes/api.py:2912 app/routes/api.py:3088
+#: app/routes/api.py:2722 app/routes/api.py:2936 app/routes/api.py:3112
 msgid "No file uploaded"
 msgstr "未上传文件"
 
-#: app/routes/api.py:2703 app/routes/api.py:2917 app/routes/api.py:3093
+#: app/routes/api.py:2727 app/routes/api.py:2941 app/routes/api.py:3117
 #: app/routes/documents.py:69 app/routes/documents.py:74
 msgid "No file selected"
 msgstr "未选择文件"
 
-#: app/routes/api.py:2725
+#: app/routes/api.py:2749
 msgid "The uploaded file is not a valid SQLite database."
 msgstr "上传的文件不是有效的SQLite数据库。"
 
-#: app/routes/api.py:2730
+#: app/routes/api.py:2754
 msgid ""
 "This does not appear to be a Hammond database — no vehicles, fillups, or "
 "expenses tables found."
 msgstr "这似乎不是Hammond数据库 — 未找到车辆、加油或费用表。"
 
-#: app/routes/api.py:2880
+#: app/routes/api.py:2904
 #, python-format
 msgid ""
 "Hammond import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs, "
 "%(expenses)s expenses imported."
 msgstr "Hammond导入完成：已导入%(vehicles)s辆车辆、%(fuel_logs)s条加油记录、%(expenses)s条费用记录。"
 
-#: app/routes/api.py:2882
+#: app/routes/api.py:2906
 #, python-format
 msgid ""
 "(%(total_skipped)s records skipped due to errors — check server logs for "
 "details.)"
 msgstr "（因错误跳过了%(total_skipped)s条记录 — 请查看服务器日志了解详情。）"
 
-#: app/routes/api.py:2889
+#: app/routes/api.py:2913
 #, python-format
 msgid ""
 "Import failed due to a database error. Check that the file is a valid "
 "Hammond database. Error: %(error)s"
 msgstr "由于数据库错误导入失败。请检查文件是否为有效的Hammond数据库。错误：%(error)s"
 
-#: app/routes/api.py:2894 app/routes/api.py:3039 app/routes/api.py:3212
-#: app/routes/api.py:3784
+#: app/routes/api.py:2918 app/routes/api.py:3063 app/routes/api.py:3236
+#: app/routes/api.py:3808
 #, python-format
 msgid "Import failed: %(error)s"
 msgstr "导入失败：%(error)s"
 
-#: app/routes/api.py:3035
+#: app/routes/api.py:3059
 #, python-format
 msgid ""
 "Clarkson import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs"
 msgstr "Clarkson导入完成：%(vehicles)s辆车辆、%(fuel_logs)s条加油记录"
 
-#: app/routes/api.py:3208
+#: app/routes/api.py:3232
 #, python-format
 msgid ""
 "Fuelly import complete: %(vehicles)s new vehicles, %(fuel_logs)s fuel logs"
 msgstr "Fuelly导入完成：%(vehicles)s辆新车辆、%(fuel_logs)s条加油记录"
 
-#: app/routes/api.py:3620
+#: app/routes/api.py:3644
 msgid "Please add a vehicle before importing data."
 msgstr "请先添加车辆再导入数据。"
 
-#: app/routes/api.py:3633
+#: app/routes/api.py:3657
 msgid "Invalid data type selected."
 msgstr "选择的数据类型无效。"
 
-#: app/routes/api.py:3638 app/routes/api.py:3723
+#: app/routes/api.py:3662 app/routes/api.py:3747
 msgid "Vehicle not found."
 msgstr "未找到车辆。"
 
-#: app/routes/api.py:3642
+#: app/routes/api.py:3666
 msgid "No CSV file uploaded."
 msgstr "未上传CSV文件。"
 
-#: app/routes/api.py:3661
+#: app/routes/api.py:3685
 msgid "CSV file has no column headers."
 msgstr "CSV文件没有列标题。"
 
-#: app/routes/api.py:3703
+#: app/routes/api.py:3727
 #, python-format
 msgid "Failed to parse CSV file: %(error)s"
 msgstr "解析CSV文件失败：%(error)s"
 
-#: app/routes/api.py:3718
+#: app/routes/api.py:3742
 msgid "Invalid data type."
 msgstr "无效的数据类型。"
 
-#: app/routes/api.py:3727
+#: app/routes/api.py:3751
 msgid "CSV file expired. Please upload again."
 msgstr "CSV文件已过期。请重新上传。"
 
-#: app/routes/api.py:3769
+#: app/routes/api.py:3793
 #, python-format
 msgid "CSV import complete: %(count)s %(label)s imported."
 msgstr "CSV导入完成：已导入%(count)s条%(label)s。"
 
-#: app/routes/api.py:3772
+#: app/routes/api.py:3796
 #, python-format
 msgid "%(count)s duplicate(s) skipped."
 msgstr "已跳过 %(count)s 条重复记录。"
 
-#: app/routes/api.py:3819
+#: app/routes/api.py:3843
 msgid "No backup file uploaded."
 msgstr "未上传备份文件。"
 
-#: app/routes/api.py:3842
+#: app/routes/api.py:3866
 #, python-format
 msgid "Could not read that backup: %(error)s"
 msgstr "无法读取该备份：%(error)s"
 
-#: app/routes/api.py:3861
+#: app/routes/api.py:3885
 msgid "The uploaded backup has expired. Please upload it again."
 msgstr "上传的备份已过期，请重新上传。"
 
-#: app/routes/api.py:3874
+#: app/routes/api.py:3898
 #, python-format
 msgid ""
 "Backup restored: %(added)s records added, %(skipped)s already present and "
 "left alone."
 msgstr "备份已恢复：新增 %(added)s 条记录，%(skipped)s 条已存在并保持不变。"
 
-#: app/routes/api.py:3882
+#: app/routes/api.py:3906
 #, python-format
 msgid "Restore failed: %(error)s"
 msgstr "恢复失败：%(error)s"
@@ -2157,7 +2161,7 @@ msgstr "用户名"
 #: app/templates/auth/forgot_password.html:11
 #: app/templates/auth/register.html:17
 #: app/templates/auth/settings/_account.html:31
-#: app/templates/auth/settings/_notifications.html:8
+#: app/templates/auth/settings/_notifications.html:9
 msgid "Email"
 msgstr "邮箱"
 
@@ -2280,7 +2284,7 @@ msgid "Menu & Navigation"
 msgstr "菜单和导航"
 
 #: app/templates/auth/settings.html:32
-#: app/templates/auth/settings/_notifications.html:14
+#: app/templates/auth/settings/_notifications.html:16
 msgid "Notifications"
 msgstr "通知"
 
@@ -2372,23 +2376,35 @@ msgstr "测试邮件已发送！"
 msgid "API key is valid!"
 msgstr "API 密钥有效！"
 
-#: app/templates/auth/settings.html:272
+#: app/templates/auth/settings.html:89
+msgid ""
+"Regenerate the Home Assistant key? Home Assistant will ask for the new key "
+"before it updates again."
+msgstr "重新生成 Home Assistant 密钥？Home Assistant 会在下次更新前要求输入新密钥。"
+
+#: app/templates/auth/settings.html:90
+msgid ""
+"Revoke the Home Assistant key? Home Assistant will stop updating until you "
+"create a new one."
+msgstr "撤销 Home Assistant 密钥？在你创建新密钥之前，Home Assistant 将停止更新。"
+
+#: app/templates/auth/settings.html:289
 msgid "Checking..."
 msgstr "检查中..."
 
-#: app/templates/auth/settings.html:288
+#: app/templates/auth/settings.html:305
 msgid "A newer version is available"
 msgstr "有新版本可用"
 
-#: app/templates/auth/settings.html:293
+#: app/templates/auth/settings.html:310
 msgid "Last checked just now"
 msgstr "刚刚检查过"
 
-#: app/templates/auth/settings.html:297
+#: app/templates/auth/settings.html:314
 msgid "Could not check for updates"
 msgstr "无法检查更新"
 
-#: app/templates/auth/settings.html:302
+#: app/templates/auth/settings.html:319
 msgid "Error checking for updates"
 msgstr "检查更新时出错"
 
@@ -2565,11 +2581,13 @@ msgid "Your API Key"
 msgstr "您的API密钥"
 
 #: app/templates/auth/settings/_api.html:17
+#: app/templates/auth/settings/_integrations.html:137
 #: app/templates/components/ui.html:225 app/templates/components/ui.html:226
 msgid "Show password"
 msgstr "显示密码"
 
 #: app/templates/auth/settings/_api.html:17
+#: app/templates/auth/settings/_integrations.html:137
 #: app/templates/components/ui.html:226
 msgid "Hide password"
 msgstr "隐藏密码"
@@ -2577,10 +2595,13 @@ msgstr "隐藏密码"
 #: app/templates/auth/settings/_api.html:21
 #: app/templates/auth/settings/_api.html:45
 #: app/templates/auth/settings/_integrations.html:57
+#: app/templates/auth/settings/_integrations.html:141
+#: app/templates/auth/settings/_integrations.html:182
 msgid "Copy"
 msgstr "复制"
 
 #: app/templates/auth/settings/_api.html:23
+#: app/templates/auth/settings/_integrations.html:143
 msgid "Created"
 msgstr "创建时间"
 
@@ -2810,22 +2831,25 @@ msgid "Ready"
 msgstr "就绪"
 
 #: app/templates/auth/settings/_integrations.html:70
-#: app/templates/auth/settings/_integrations.html:72
 msgid "Requires API key"
 msgstr "需要API密钥"
 
 #: app/templates/auth/settings/_integrations.html:71
-#: app/templates/auth/settings/_integrations.html:119
+#: app/templates/auth/settings/_integrations.html:121
 msgid "Home Assistant"
 msgstr "Home Assistant"
 
 #: app/templates/auth/settings/_integrations.html:71
-#: app/templates/auth/settings/_integrations.html:119
 msgid "Create sensors and automations for your vehicles"
 msgstr "为您的车辆创建传感器和自动化"
 
+#: app/templates/auth/settings/_integrations.html:72
+msgid "Not set up"
+msgstr "未设置"
+
 #: app/templates/auth/settings/_integrations.html:74
-#: app/templates/auth/settings/_integrations.html:158
+#: app/templates/auth/settings/_integrations.html:222
+#: app/templates/auth/settings/_notifications.html:12
 msgid "Telegram"
 msgstr "Telegram"
 
@@ -2834,7 +2858,7 @@ msgid "Log fill-ups by messaging a bot"
 msgstr "通过给机器人发消息记录加油"
 
 #: app/templates/auth/settings/_integrations.html:75
-#: app/templates/auth/settings/_integrations.html:164
+#: app/templates/auth/settings/_integrations.html:228
 msgid "Connected"
 msgstr "已连接"
 
@@ -2853,7 +2877,7 @@ msgid "DVLA"
 msgstr "DVLA"
 
 #: app/templates/auth/settings/_integrations.html:79
-#: app/templates/auth/settings/_integrations.html:204
+#: app/templates/auth/settings/_integrations.html:268
 msgid "Look up UK vehicle MOT and tax status"
 msgstr "查询英国车辆MOT和税务状态"
 
@@ -2871,12 +2895,12 @@ msgid "Sync Tesla vehicle odometer and battery"
 msgstr "同步Tesla车辆里程表和电池"
 
 #: app/templates/auth/settings/_integrations.html:83
-#: app/templates/auth/settings/_integrations.html:269
+#: app/templates/auth/settings/_integrations.html:333
 msgid "UK Fuel Prices"
 msgstr "英国燃油价格"
 
 #: app/templates/auth/settings/_integrations.html:83
-#: app/templates/auth/settings/_integrations.html:269
+#: app/templates/auth/settings/_integrations.html:333
 msgid "Pull live forecourt prices for saved stations"
 msgstr "为已保存的加油站获取实时价格"
 
@@ -2942,213 +2966,292 @@ msgstr "自定义提醒"
 msgid "Generate an API key in the API section to enable calendar integration."
 msgstr "请在API部分生成API密钥以启用日历集成。"
 
-#: app/templates/auth/settings/_integrations.html:122
+#: app/templates/auth/settings/_integrations.html:121
 msgid ""
-"Add the following configuration to your Home Assistant configuration.yaml to"
-" create vehicle sensors."
-msgstr "将以下配置添加到您的Home Assistant configuration.yaml以创建车辆传感器。"
+"Each vehicle becomes a Home Assistant device with sensors and alerts. No "
+"YAML needed."
+msgstr "每辆车都会成为带有传感器和提醒的 Home Assistant 设备。无需 YAML。"
 
-#: app/templates/auth/settings/_integrations.html:124
-msgid "REST Sensor Configuration"
-msgstr "REST传感器配置"
+#: app/templates/auth/settings/_integrations.html:122
+msgid "Create key"
+msgstr "创建密钥"
 
-#: app/templates/auth/settings/_integrations.html:137
+#: app/templates/auth/settings/_integrations.html:122
+msgid "Install"
+msgstr "安装"
+
+#: app/templates/auth/settings/_integrations.html:122
+#: app/templates/auth/settings/_integrations.html:172
+msgid "Connect"
+msgstr "连接"
+
+#: app/templates/auth/settings/_integrations.html:126
+msgid "Create a Home Assistant key"
+msgstr "创建 Home Assistant 密钥"
+
+#: app/templates/auth/settings/_integrations.html:127
+msgid ""
+"This key can only read your vehicles and log fuel. It cannot change or "
+"delete anything else."
+msgstr "此密钥只能读取你的车辆并记录加油，不能更改或删除其他任何内容。"
+
+#: app/templates/auth/settings/_integrations.html:132
+#: app/templates/auth/settings/_integrations.html:179
+msgid "Home Assistant key"
+msgstr "Home Assistant 密钥"
+
+#: app/templates/auth/settings/_integrations.html:146
+msgid "Regenerate"
+msgstr "重新生成"
+
+#: app/templates/auth/settings/_integrations.html:147
+msgid "Revoke"
+msgstr "撤销"
+
+#: app/templates/auth/settings/_integrations.html:151
+msgid "Create Home Assistant key"
+msgstr "创建 Home Assistant 密钥"
+
+#: app/templates/auth/settings/_integrations.html:159
+msgid "Install the integration"
+msgstr "安装集成"
+
+#: app/templates/auth/settings/_integrations.html:160
+msgid ""
+"Opens your Home Assistant and adds the OdoDash integration through HACS."
+msgstr "打开你的 Home Assistant，并通过 HACS 添加 OdoDash 集成。"
+
+#: app/templates/auth/settings/_integrations.html:164
+msgid "Add to Home Assistant"
+msgstr "添加到 Home Assistant"
+
+#: app/templates/auth/settings/_integrations.html:166
+#, python-format
+msgid "Needs HACS. Don't have it? See %(link)s."
+msgstr "需要 HACS。还没有？请参阅 %(link)s。"
+
+#: app/templates/auth/settings/_integrations.html:173
+msgid "Paste these when Home Assistant asks."
+msgstr "Home Assistant 询问时粘贴这些内容。"
+
+#: app/templates/auth/settings/_integrations.html:176
+msgid "Server address"
+msgstr "服务器地址"
+
+#: app/templates/auth/settings/_integrations.html:176
+msgid "Behind a reverse proxy? Use the address Home Assistant can reach."
+msgstr "在反向代理后面？请使用 Home Assistant 能访问到的地址。"
+
+#: app/templates/auth/settings/_integrations.html:186
+msgid "Create the key in step 1 first."
+msgstr "请先在第 1 步创建密钥。"
+
+#: app/templates/auth/settings/_integrations.html:192
+msgid "Advanced: YAML sensors"
+msgstr "高级：YAML 传感器"
+
+#: app/templates/auth/settings/_integrations.html:192
+msgid "for setups without the integration"
+msgstr "适用于不使用集成的设置"
+
+#: app/templates/auth/settings/_integrations.html:194
+msgid ""
+"Add this to configuration.yaml to create a sensor with the REST platform "
+"instead."
+msgstr "将此添加到 configuration.yaml，改用 REST 平台创建传感器。"
+
+#: app/templates/auth/settings/_integrations.html:206
 msgid "Copy configuration"
 msgstr "复制配置"
 
-#: app/templates/auth/settings/_integrations.html:140
-msgid "Available API Endpoints"
-msgstr "可用API端点"
+#: app/templates/auth/settings/_integrations.html:208
+msgid "Every vehicle with stats and alerts"
+msgstr "每辆车及其统计和提醒"
 
-#: app/templates/auth/settings/_integrations.html:142
+#: app/templates/auth/settings/_integrations.html:209
 msgid "API health check"
 msgstr "API健康检查"
 
-#: app/templates/auth/settings/_integrations.html:143
+#: app/templates/auth/settings/_integrations.html:210
 msgid "List all vehicles"
 msgstr "列出所有车辆"
 
-#: app/templates/auth/settings/_integrations.html:144
+#: app/templates/auth/settings/_integrations.html:211
 msgid "Vehicle statistics"
 msgstr "车辆统计"
 
-#: app/templates/auth/settings/_integrations.html:145
+#: app/templates/auth/settings/_integrations.html:212
 msgid "Upcoming reminders"
 msgstr "即将到来的提醒"
 
-#: app/templates/auth/settings/_integrations.html:146
+#: app/templates/auth/settings/_integrations.html:213
 msgid "Combined summary"
 msgstr "综合摘要"
 
-#: app/templates/auth/settings/_integrations.html:150
-msgid ""
-"Generate an API key in the API section to enable Home Assistant integration."
-msgstr "请在API部分生成API密钥以启用Home Assistant集成。"
-
-#: app/templates/auth/settings/_integrations.html:158
+#: app/templates/auth/settings/_integrations.html:222
 msgid ""
 "Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
 "it is saved as a fuel log."
 msgstr "用一行向机器人发送加油记录，例如 40L 4800tk 45230km，即可保存为加油记录。"
 
-#: app/templates/auth/settings/_integrations.html:164
+#: app/templates/auth/settings/_integrations.html:228
 msgid "Your account is connected to Telegram."
 msgstr "您的账户已连接到 Telegram。"
 
-#: app/templates/auth/settings/_integrations.html:169
+#: app/templates/auth/settings/_integrations.html:233
 msgid "Disconnect Telegram"
 msgstr "断开 Telegram"
 
-#: app/templates/auth/settings/_integrations.html:173
+#: app/templates/auth/settings/_integrations.html:237
 msgid "Send this to the bot within 15 minutes:"
 msgstr "请在 15 分钟内将此内容发送给机器人："
 
-#: app/templates/auth/settings/_integrations.html:175
+#: app/templates/auth/settings/_integrations.html:239
 msgid "Open in Telegram"
 msgstr "在 Telegram 中打开"
 
-#: app/templates/auth/settings/_integrations.html:179
+#: app/templates/auth/settings/_integrations.html:243
 msgid "Connect Telegram"
 msgstr "连接 Telegram"
 
-#: app/templates/auth/settings/_integrations.html:185
+#: app/templates/auth/settings/_integrations.html:249
 msgid "Set up the bot (admin)"
 msgstr "设置机器人（管理员）"
 
-#: app/templates/auth/settings/_integrations.html:186
+#: app/templates/auth/settings/_integrations.html:250
 msgid "In Telegram, message @BotFather and send /newbot"
 msgstr "在 Telegram 中向 @BotFather 发消息并发送 /newbot"
 
-#: app/templates/auth/settings/_integrations.html:186
+#: app/templates/auth/settings/_integrations.html:250
 msgid "Copy the token it gives you and paste it below"
 msgstr "复制它提供的令牌并粘贴到下方"
 
-#: app/templates/auth/settings/_integrations.html:186
+#: app/templates/auth/settings/_integrations.html:250
 msgid "Each user then connects their own chat from this page"
 msgstr "之后每位用户在此页面连接自己的聊天"
 
-#: app/templates/auth/settings/_integrations.html:190
+#: app/templates/auth/settings/_integrations.html:254
 msgid "Bot token"
 msgstr "机器人令牌"
 
-#: app/templates/auth/settings/_integrations.html:192
+#: app/templates/auth/settings/_integrations.html:256
 msgid "Leave empty and save to disconnect the bot."
 msgstr "留空并保存即可断开机器人。"
 
-#: app/templates/auth/settings/_integrations.html:194
+#: app/templates/auth/settings/_integrations.html:258
 msgid "Save Telegram Settings"
 msgstr "保存 Telegram 设置"
 
-#: app/templates/auth/settings/_integrations.html:204
+#: app/templates/auth/settings/_integrations.html:268
 msgid "DVLA Vehicle Lookup"
 msgstr "DVLA车辆查询"
 
-#: app/templates/auth/settings/_integrations.html:206
+#: app/templates/auth/settings/_integrations.html:270
 msgid ""
 "The DVLA Vehicle Enquiry Service allows you to look up MOT status, tax "
 "status, and vehicle details for UK registered vehicles. This enables "
 "automatic population of vehicle information when adding new vehicles."
 msgstr "DVLA车辆查询服务允许您查询英国注册车辆的MOT状态、税务状态和车辆详情。添加新车辆时可自动填充车辆信息。"
 
-#: app/templates/auth/settings/_integrations.html:210
+#: app/templates/auth/settings/_integrations.html:274
 msgid "How to get an API key"
 msgstr "如何获取API密钥"
 
-#: app/templates/auth/settings/_integrations.html:212
+#: app/templates/auth/settings/_integrations.html:276
 msgid "Visit the"
 msgstr "访问"
 
-#: app/templates/auth/settings/_integrations.html:212
+#: app/templates/auth/settings/_integrations.html:276
 msgid "DVLA Developer Portal"
 msgstr "DVLA开发者门户"
 
-#: app/templates/auth/settings/_integrations.html:213
+#: app/templates/auth/settings/_integrations.html:277
 msgid "Register for a free account"
 msgstr "注册免费账户"
 
-#: app/templates/auth/settings/_integrations.html:214
+#: app/templates/auth/settings/_integrations.html:278
 msgid "Subscribe to the Vehicle Enquiry Service API"
 msgstr "订阅Vehicle Enquiry Service API"
 
-#: app/templates/auth/settings/_integrations.html:215
+#: app/templates/auth/settings/_integrations.html:279
 msgid "Copy your API key and paste it below"
 msgstr "复制您的API密钥并粘贴到下方"
 
-#: app/templates/auth/settings/_integrations.html:222
+#: app/templates/auth/settings/_integrations.html:286
 msgid "DVLA API Key"
 msgstr "DVLA API密钥"
 
-#: app/templates/auth/settings/_integrations.html:225
-#: app/templates/auth/settings/_integrations.html:258
-#: app/templates/auth/settings/_notifications.html:143
+#: app/templates/auth/settings/_integrations.html:289
+#: app/templates/auth/settings/_integrations.html:322
+#: app/templates/auth/settings/_notifications.html:157
 msgid "Test"
 msgstr "测试"
 
-#: app/templates/auth/settings/_integrations.html:229
+#: app/templates/auth/settings/_integrations.html:293
 msgid "Save DVLA Settings"
 msgstr "保存DVLA设置"
 
-#: app/templates/auth/settings/_integrations.html:236
+#: app/templates/auth/settings/_integrations.html:300
 #: app/templates/vehicles/form.html:162
 msgid "Tessie Integration"
 msgstr "Tessie集成"
 
-#: app/templates/auth/settings/_integrations.html:236
+#: app/templates/auth/settings/_integrations.html:300
 msgid "Sync Tesla vehicle data via Tessie"
 msgstr "通过Tessie同步Tesla车辆数据"
 
-#: app/templates/auth/settings/_integrations.html:238
+#: app/templates/auth/settings/_integrations.html:302
 msgid ""
 "Tessie allows you to automatically sync odometer readings, battery level, "
 "and range from your Tesla vehicles. When enabled for a vehicle, odometer "
 "tracking becomes automatic."
 msgstr "Tessie允许您自动同步Tesla车辆的里程表读数、电池电量和续航里程。为车辆启用后，里程表追踪将变为自动。"
 
-#: app/templates/auth/settings/_integrations.html:239
+#: app/templates/auth/settings/_integrations.html:303
 msgid "Important"
 msgstr "重要"
 
-#: app/templates/auth/settings/_integrations.html:239
+#: app/templates/auth/settings/_integrations.html:303
 msgid "Tessie subscription required ($6.99/month per vehicle)"
 msgstr "需要Tessie订阅（每辆车$6.99/月）"
 
-#: app/templates/auth/settings/_integrations.html:239
+#: app/templates/auth/settings/_integrations.html:303
 msgid "Your Tesla must be connected to Tessie"
 msgstr "您的Tesla必须已连接到Tessie"
 
-#: app/templates/auth/settings/_integrations.html:239
+#: app/templates/auth/settings/_integrations.html:303
 msgid "When enabled, manual odometer entry is disabled"
 msgstr "启用后，将禁止手动输入里程表"
 
-#: app/templates/auth/settings/_integrations.html:243
+#: app/templates/auth/settings/_integrations.html:307
 msgid "How to get an API token"
 msgstr "如何获取API令牌"
 
-#: app/templates/auth/settings/_integrations.html:245
+#: app/templates/auth/settings/_integrations.html:309
 msgid "Sign up at"
 msgstr "注册地址："
 
-#: app/templates/auth/settings/_integrations.html:246
+#: app/templates/auth/settings/_integrations.html:310
 msgid "Connect your Tesla account"
 msgstr "连接您的Tesla账户"
 
-#: app/templates/auth/settings/_integrations.html:247
+#: app/templates/auth/settings/_integrations.html:311
 msgid "Go to Settings and create an API token"
 msgstr "前往设置并创建API令牌"
 
-#: app/templates/auth/settings/_integrations.html:248
+#: app/templates/auth/settings/_integrations.html:312
 msgid "Paste the token below"
 msgstr "将令牌粘贴到下方"
 
-#: app/templates/auth/settings/_integrations.html:255
+#: app/templates/auth/settings/_integrations.html:319
 msgid "Tessie API Token"
 msgstr "Tessie API令牌"
 
-#: app/templates/auth/settings/_integrations.html:262
+#: app/templates/auth/settings/_integrations.html:326
 msgid "Save Tessie Settings"
 msgstr "保存Tessie设置"
 
-#: app/templates/auth/settings/_integrations.html:271
+#: app/templates/auth/settings/_integrations.html:335
 msgid ""
 "UK retailers publish forecourt prices under the government fuel price "
 "transparency scheme. May matches your saved stations to those forecourts by "
@@ -3158,52 +3261,52 @@ msgstr ""
 "英国零售商依据政府燃油价格透明计划公布加油站价格。May "
 "通过邮政编码将您保存的加油站与这些加油站匹配并记录价格，因此价格历史和最便宜燃油无需手动录入即可保持最新。"
 
-#: app/templates/auth/settings/_integrations.html:275
+#: app/templates/auth/settings/_integrations.html:339
 msgid "Before you start"
 msgstr "开始之前"
 
-#: app/templates/auth/settings/_integrations.html:277
+#: app/templates/auth/settings/_integrations.html:341
 msgid "No API key is needed; the feeds are open data"
 msgstr "无需 API 密钥；这些数据源为开放数据"
 
-#: app/templates/auth/settings/_integrations.html:278
+#: app/templates/auth/settings/_integrations.html:342
 msgid "Give each station a postcode so it can be matched to a forecourt"
 msgstr "为每个加油站填写邮政编码，才能与实际加油站匹配"
 
-#: app/templates/auth/settings/_integrations.html:279
+#: app/templates/auth/settings/_integrations.html:343
 msgid ""
 "Prices refresh automatically every few hours, or on demand from the Fuel "
 "Stations page"
 msgstr "价格每隔几小时自动刷新，也可在加油站页面手动更新"
 
-#: app/templates/auth/settings/_integrations.html:280
+#: app/templates/auth/settings/_integrations.html:344
 msgid "See the"
 msgstr "参见"
 
-#: app/templates/auth/settings/_integrations.html:280
+#: app/templates/auth/settings/_integrations.html:344
 msgid "gov.uk guidance"
 msgstr "gov.uk 指南"
 
-#: app/templates/auth/settings/_integrations.html:280
+#: app/templates/auth/settings/_integrations.html:344
 msgid "for the current retailer list"
 msgstr "查看当前零售商名单"
 
-#: app/templates/auth/settings/_integrations.html:288
+#: app/templates/auth/settings/_integrations.html:352
 msgid "Enable UK fuel price updates"
 msgstr "启用英国燃油价格更新"
 
-#: app/templates/auth/settings/_integrations.html:291
+#: app/templates/auth/settings/_integrations.html:355
 msgid "Retailer feeds (optional)"
 msgstr "零售商数据源（可选）"
 
-#: app/templates/auth/settings/_integrations.html:294
+#: app/templates/auth/settings/_integrations.html:358
 #, python-format
 msgid ""
 "One feed per line. Leave blank to use the built-in list (%(count)s "
 "retailers)."
 msgstr "每行一个数据源。留空则使用内置名单（%(count)s 家零售商）。"
 
-#: app/templates/auth/settings/_integrations.html:296
+#: app/templates/auth/settings/_integrations.html:360
 msgid "Save UK Fuel Price Settings"
 msgstr "保存英国燃油价格设置"
 
@@ -3259,247 +3362,255 @@ msgid "Choose which items appear in the navigation menu"
 msgstr "选择在导航菜单中显示的项目"
 
 #: app/templates/auth/settings/_menu.html:55
-#: app/templates/auth/settings/_notifications.html:102
+#: app/templates/auth/settings/_notifications.html:116
 msgid "Save Preferences"
 msgstr "保存偏好设置"
 
-#: app/templates/auth/settings/_notifications.html:9
+#: app/templates/auth/settings/_notifications.html:10
 msgid "ntfy (Push Notifications)"
 msgstr "ntfy（推送通知）"
 
-#: app/templates/auth/settings/_notifications.html:10
-#: app/templates/auth/settings/_notifications.html:148
-#: app/templates/auth/settings/_notifications.html:149
+#: app/templates/auth/settings/_notifications.html:11
+#: app/templates/auth/settings/_notifications.html:162
+#: app/templates/auth/settings/_notifications.html:163
 msgid "Pushover"
 msgstr "Pushover"
 
-#: app/templates/auth/settings/_notifications.html:11
+#: app/templates/auth/settings/_notifications.html:13
 msgid "Webhook (HTTP POST)"
 msgstr "Webhook (HTTP POST)"
 
-#: app/templates/auth/settings/_notifications.html:18
+#: app/templates/auth/settings/_notifications.html:20
 msgid "Notification Preferences"
 msgstr "通知偏好"
 
-#: app/templates/auth/settings/_notifications.html:18
+#: app/templates/auth/settings/_notifications.html:20
 msgid "Configure how you receive reminders about your vehicles"
 msgstr "配置您接收车辆提醒的方式"
 
-#: app/templates/auth/settings/_notifications.html:19
-#: app/templates/auth/settings/_notifications.html:20
+#: app/templates/auth/settings/_notifications.html:21
+#: app/templates/auth/settings/_notifications.html:22
 msgid "Enable Reminders"
 msgstr "启用提醒"
 
-#: app/templates/auth/settings/_notifications.html:19
+#: app/templates/auth/settings/_notifications.html:21
 msgid "Receive notifications for upcoming reminders"
 msgstr "接收即将到来的提醒通知"
 
-#: app/templates/auth/settings/_notifications.html:23
+#: app/templates/auth/settings/_notifications.html:25
 msgid "Default Reminder Lead Time"
 msgstr "默认提醒提前时间"
 
-#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/auth/settings/_notifications.html:27
 #: app/templates/reminders/form.html:12
 msgid "On the due date"
 msgstr "到期当天"
 
-#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/auth/settings/_notifications.html:27
 #: app/templates/reminders/form.html:12
 msgid "1 day before"
 msgstr "1天前"
 
-#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/auth/settings/_notifications.html:27
 #: app/templates/reminders/form.html:12
 msgid "3 days before"
 msgstr "3天前"
 
-#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/auth/settings/_notifications.html:27
 #: app/templates/reminders/form.html:12
 msgid "1 week before"
 msgstr "1周前"
 
-#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/auth/settings/_notifications.html:27
 #: app/templates/reminders/form.html:12
 msgid "2 weeks before"
 msgstr "2周前"
 
-#: app/templates/auth/settings/_notifications.html:25
+#: app/templates/auth/settings/_notifications.html:27
 #: app/templates/reminders/form.html:12
 msgid "1 month before"
 msgstr "1个月前"
 
-#: app/templates/auth/settings/_notifications.html:29
+#: app/templates/auth/settings/_notifications.html:31
 msgid "How many days before the due date should you be notified?"
 msgstr "您希望在到期前多少天收到通知？"
 
-#: app/templates/auth/settings/_notifications.html:33
+#: app/templates/auth/settings/_notifications.html:35
 msgid "Notification Method"
 msgstr "通知方式"
 
-#: app/templates/auth/settings/_notifications.html:34
+#: app/templates/auth/settings/_notifications.html:36
 msgid "Choose how you want to receive notifications"
 msgstr "选择您希望接收通知的方式"
 
-#: app/templates/auth/settings/_notifications.html:41
+#: app/templates/auth/settings/_notifications.html:43
 msgid "not configured"
 msgstr "未配置"
 
-#: app/templates/auth/settings/_notifications.html:53
+#: app/templates/auth/settings/_notifications.html:55
 msgid "Notifications will be sent to"
 msgstr "通知将发送至"
 
-#: app/templates/auth/settings/_notifications.html:54
+#: app/templates/auth/settings/_notifications.html:56
 msgid "Email not configured. Ask an administrator to configure SMTP settings."
 msgstr "邮件未配置。请联系管理员配置SMTP设置。"
 
-#: app/templates/auth/settings/_notifications.html:59
+#: app/templates/auth/settings/_notifications.html:61
 msgid "is a simple pub-sub notification service. Enter your topic below."
 msgstr "是一个简单的发布-订阅通知服务。请在下方输入您的主题。"
 
-#: app/templates/auth/settings/_notifications.html:61
+#: app/templates/auth/settings/_notifications.html:63
 msgid "ntfy Topic or Server URL"
 msgstr "ntfy主题或服务器URL"
 
-#: app/templates/auth/settings/_notifications.html:64
+#: app/templates/auth/settings/_notifications.html:66
 msgid ""
 "For ntfy.sh, just enter your topic name. For self-hosted, enter the full "
 "URL."
 msgstr "使用ntfy.sh时只需输入主题名称。自建服务器请输入完整URL。"
 
-#: app/templates/auth/settings/_notifications.html:67
+#: app/templates/auth/settings/_notifications.html:69
 msgid "ntfy Access Token"
 msgstr "ntfy 访问令牌"
 
-#: app/templates/auth/settings/_notifications.html:69
+#: app/templates/auth/settings/_notifications.html:71
 msgid "Token saved — enter a new one to replace it"
 msgstr "令牌已保存——输入新令牌以替换"
 
-#: app/templates/auth/settings/_notifications.html:70
+#: app/templates/auth/settings/_notifications.html:72
 msgid ""
 "Optional — only needed for self-hosted ntfy servers with authentication "
 "enabled. Leave blank to keep the saved token."
 msgstr "可选——仅在自建的ntfy服务器启用了身份验证时需要。留空以保留已保存的令牌。"
 
-#: app/templates/auth/settings/_notifications.html:72
+#: app/templates/auth/settings/_notifications.html:74
 msgid "Remove the saved token"
 msgstr "移除已保存的令牌"
 
-#: app/templates/auth/settings/_notifications.html:77
+#: app/templates/auth/settings/_notifications.html:79
 msgid "sends notifications to your devices. Enter your User Key below."
 msgstr "向您的设备发送通知。请在下方输入您的User Key。"
 
-#: app/templates/auth/settings/_notifications.html:79
+#: app/templates/auth/settings/_notifications.html:81
 msgid "Pushover User Key"
 msgstr "Pushover User Key"
 
-#: app/templates/auth/settings/_notifications.html:82
+#: app/templates/auth/settings/_notifications.html:84
 msgid "Find your User Key on your Pushover dashboard."
 msgstr "在您的Pushover仪表盘上查找User Key。"
 
-#: app/templates/auth/settings/_notifications.html:86
+#: app/templates/auth/settings/_notifications.html:92
+msgid "Reminders will be sent to your linked Telegram chat."
+msgstr "提醒将发送到你已关联的 Telegram 聊天。"
+
+#: app/templates/auth/settings/_notifications.html:94
+msgid "Link your Telegram chat under Services to receive reminders there."
+msgstr "请在“服务”中关联你的 Telegram 聊天，以便在那里接收提醒。"
+
+#: app/templates/auth/settings/_notifications.html:100
 msgid "Notifications will be sent as JSON POST requests to your webhook URL."
 msgstr "通知将以JSON POST请求的形式发送到您的Webhook URL。"
 
-#: app/templates/auth/settings/_notifications.html:88
+#: app/templates/auth/settings/_notifications.html:102
 msgid "Webhook URL"
 msgstr "Webhook URL"
 
-#: app/templates/auth/settings/_notifications.html:91
+#: app/templates/auth/settings/_notifications.html:105
 #, python-brace-format
 msgid "JSON payload: {title, message, reminder_id, vehicle_name, due_date}"
 msgstr "JSON负载：{title, message, reminder_id, vehicle_name, due_date}"
 
-#: app/templates/auth/settings/_notifications.html:96
+#: app/templates/auth/settings/_notifications.html:110
 msgid "Send Test Notification"
 msgstr "发送测试通知"
 
-#: app/templates/auth/settings/_notifications.html:101
+#: app/templates/auth/settings/_notifications.html:115
 msgid "View all reminders"
 msgstr "查看所有提醒"
 
-#: app/templates/auth/settings/_notifications.html:109
+#: app/templates/auth/settings/_notifications.html:123
 msgid "Notification Services"
 msgstr "通知服务"
 
-#: app/templates/auth/settings/_notifications.html:109
+#: app/templates/auth/settings/_notifications.html:123
 msgid "Configure notification services available to all users"
 msgstr "配置所有用户可用的通知服务"
 
-#: app/templates/auth/settings/_notifications.html:110
-#: app/templates/auth/settings/_notifications.html:111
+#: app/templates/auth/settings/_notifications.html:124
+#: app/templates/auth/settings/_notifications.html:125
 msgid "Email (SMTP)"
 msgstr "邮件 (SMTP)"
 
-#: app/templates/auth/settings/_notifications.html:115
+#: app/templates/auth/settings/_notifications.html:129
 msgid "SMTP Host"
 msgstr "SMTP主机"
 
-#: app/templates/auth/settings/_notifications.html:119
+#: app/templates/auth/settings/_notifications.html:133
 msgid "SMTP Port"
 msgstr "SMTP端口"
 
-#: app/templates/auth/settings/_notifications.html:123
+#: app/templates/auth/settings/_notifications.html:137
 msgid "SMTP Username"
 msgstr "SMTP用户名"
 
-#: app/templates/auth/settings/_notifications.html:127
+#: app/templates/auth/settings/_notifications.html:141
 msgid "SMTP Password"
 msgstr "SMTP密码"
 
-#: app/templates/auth/settings/_notifications.html:132
+#: app/templates/auth/settings/_notifications.html:146
 msgid "Sender Email"
 msgstr "发件人邮箱"
 
-#: app/templates/auth/settings/_notifications.html:136
+#: app/templates/auth/settings/_notifications.html:150
 msgid "Sender Name"
 msgstr "发件人名称"
 
-#: app/templates/auth/settings/_notifications.html:141
+#: app/templates/auth/settings/_notifications.html:155
 msgid "Use TLS"
 msgstr "使用TLS"
 
-#: app/templates/auth/settings/_notifications.html:142
+#: app/templates/auth/settings/_notifications.html:156
 msgid "Use SSL"
 msgstr "使用SSL"
 
-#: app/templates/auth/settings/_notifications.html:151
+#: app/templates/auth/settings/_notifications.html:165
 msgid "sends push notifications to iOS and Android devices."
 msgstr "向iOS和Android设备发送推送通知。"
 
-#: app/templates/auth/settings/_notifications.html:153
+#: app/templates/auth/settings/_notifications.html:167
 msgid "Application Token"
 msgstr "应用令牌"
 
-#: app/templates/auth/settings/_notifications.html:155
+#: app/templates/auth/settings/_notifications.html:169
 msgid "Create an application at pushover.net to get your token"
 msgstr "在pushover.net创建应用以获取令牌"
 
-#: app/templates/auth/settings/_notifications.html:161
+#: app/templates/auth/settings/_notifications.html:175
 msgid "ntfy"
 msgstr "ntfy"
 
-#: app/templates/auth/settings/_notifications.html:161
-#: app/templates/auth/settings/_notifications.html:167
+#: app/templates/auth/settings/_notifications.html:175
+#: app/templates/auth/settings/_notifications.html:181
 msgid "Always available"
 msgstr "始终可用"
 
-#: app/templates/auth/settings/_notifications.html:162
+#: app/templates/auth/settings/_notifications.html:176
 msgid ""
 "is a free, open-source notification service that requires no admin "
 "configuration. Users can set their own topic."
 msgstr "是一个免费的开源通知服务，无需管理员配置。用户可以设置自己的主题。"
 
-#: app/templates/auth/settings/_notifications.html:167
+#: app/templates/auth/settings/_notifications.html:181
 msgid "Webhook"
 msgstr "Webhook"
 
-#: app/templates/auth/settings/_notifications.html:168
+#: app/templates/auth/settings/_notifications.html:182
 msgid ""
 "Webhooks allow users to integrate with any service that accepts HTTP POST "
 "requests (Home Assistant, Discord, Slack, etc.)"
 msgstr "Webhook允许用户与任何接受HTTP POST请求的服务集成（Home Assistant、Discord、Slack等）"
 
-#: app/templates/auth/settings/_notifications.html:172
+#: app/templates/auth/settings/_notifications.html:186
 msgid "Save Notification Settings"
 msgstr "保存通知设置"
 
@@ -4758,6 +4869,10 @@ msgstr "编辑定期费用"
 #: app/templates/recurring/index.html:59
 msgid "Add Recurring Expense"
 msgstr "添加定期费用"
+
+#: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
+msgid "Biweekly (every 2 weeks)"
+msgstr "每两周"
 
 #: app/templates/recurring/form.html:13 app/templates/recurring/index.html:8
 msgid "Monthly"

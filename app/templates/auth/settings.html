@@ -85,7 +85,9 @@
         revoke: {{ _('Are you sure you want to revoke your API key? This action cannot be undone.')|tojson }},
         needToken: {{ _('Please enter an API token')|tojson }},
         testSent: {{ _('Test notification sent!')|tojson }}, emailSent: {{ _('Test email sent!')|tojson }},
-        keyValid: {{ _('API key is valid!')|tojson }}
+        keyValid: {{ _('API key is valid!')|tojson }},
+        haRegenerate: {{ _('Regenerate the Home Assistant key? Home Assistant will ask for the new key before it updates again.')|tojson }},
+        haRevoke: {{ _('Revoke the Home Assistant key? Home Assistant will stop updating until you create a new one.')|tojson }}
     };
 
     function sections() { return document.querySelectorAll('.settings-section'); }
@@ -152,7 +154,7 @@
         var el = document.getElementById(btn.dataset.copy);
         if (el) copyText(el.value !== undefined && el.tagName !== 'CODE' ? el.value : el.textContent);
     });
-    window.copyHAConfig = function () { copyText(document.querySelector('#integration-homeassistant pre code').textContent); };
+    window.copyHAConfig = function () { copyText(document.querySelector('#ha-yaml code').textContent); };
 
     // ---- Units: custom currency ----
     var currency = document.getElementById('currency');
@@ -179,6 +181,21 @@
     window.revokeApiKey = function () {
         if (!confirm(T.revoke)) return;
         post('/api/key/revoke').then(function (r) { return r.json(); }).then(function (data) {
+            if (data.success) location.reload();
+        }).catch(function () { toast(T.failed, 'error'); });
+    };
+
+    // ---- Home Assistant key: the page reloads onto the Home Assistant panel ----
+    window.generateHaToken = function () {
+        post('/api/key/ha/generate').then(function (r) {
+            if (!r.ok) throw new Error();
+            location.reload();
+        }).catch(function () { toast(T.failed, 'error'); });
+    };
+    window.regenerateHaToken = function () { if (confirm(T.haRegenerate)) window.generateHaToken(); };
+    window.revokeHaToken = function () {
+        if (!confirm(T.haRevoke)) return;
+        post('/api/key/ha/revoke').then(function (r) { return r.json(); }).then(function (data) {
             if (data.success) location.reload();
         }).catch(function () { toast(T.failed, 'error'); });
     };
