@@ -210,8 +210,29 @@ class NotificationService:
         elif method == 'pushover':
             return NotificationService.send_pushover(user.pushover_user_key, title, message)
 
+        elif method == 'telegram':
+            return NotificationService.send_telegram(user.telegram_chat_id, title, message)
+
         else:
             return False, f"Unknown notification method: {method}"
+
+    @staticmethod
+    def send_telegram(chat_id, title, message):
+        """Send a notification to a linked Telegram chat via the bot."""
+        from app.services import telegram_bot
+
+        token = telegram_bot.get_token()
+        if not token:
+            return False, "Telegram bot not configured by administrator"
+        if not chat_id:
+            return False, "Telegram chat not linked"
+
+        try:
+            telegram_bot.api_call(token, 'sendMessage', chat_id=chat_id,
+                                  text=f"{title}\n\n{message}")
+            return True, None
+        except telegram_bot.TelegramError as e:
+            return False, str(e)
 
     @staticmethod
     def send_test_notification(user):

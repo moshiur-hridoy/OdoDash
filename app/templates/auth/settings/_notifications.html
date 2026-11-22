@@ -4,10 +4,12 @@
 {% from 'components/ui.html' import button, badge %}
 {% from 'components/icons.html' import icon %}
 {%- set method = current_user.notification_method or 'email' -%}
+{%- set telegram_available = telegram.enabled and telegram.linked -%}
 {%- set methods = [
     ('email', _('Email'), 'document', smtp_configured),
     ('ntfy', _('ntfy (Push Notifications)'), 'bell', true),
     ('pushover', _('Pushover'), 'send', pushover_configured),
+    ('telegram', _('Telegram'), 'send', telegram_available),
     ('webhook', _('Webhook (HTTP POST)'), 'link', true),
 ] -%}
 <section id="section-notifications" class="settings-section" data-section="notifications" aria-labelledby="notifications-title" hidden>
@@ -80,6 +82,18 @@
                 <input type="text" name="pushover_user_key" id="pushover_user_key" class="ds-control ds-mono" value="{{ current_user.pushover_user_key or '' }}"
                        placeholder="uQiRzpo4DXghDmr9QzzfQu27cmVRsG">
                 <p class="form-hint">{{ _('Find your User Key on your Pushover dashboard.') }}</p>
+            </div>
+        </div>
+        <div id="notification-telegram" class="notification-field" hidden>
+            <div class="import-note">
+                {{ icon('send', 18) }}
+                <div>
+                    {% if telegram_available %}
+                    <p>{{ _('Reminders will be sent to your linked Telegram chat.') }}</p>
+                    {% else %}
+                    <p>{{ _('Link your Telegram chat under Services to receive reminders there.') }}</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div id="notification-webhook" class="notification-field settings-stack" hidden>

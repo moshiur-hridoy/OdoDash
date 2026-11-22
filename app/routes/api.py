@@ -171,6 +171,9 @@ def test_notification():
         if not user_key:
             return jsonify({'success': False, 'error': 'Please enter your Pushover user key'})
         success, error = NotificationService.send_pushover(user_key, title, message)
+    elif method == 'telegram':
+        success, error = NotificationService.send_telegram(
+            current_user.telegram_chat_id, title, message)
     elif method == 'webhook':
         webhook_url = request.form.get('webhook_url')
         if not webhook_url:
