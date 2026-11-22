@@ -159,18 +159,6 @@ Python / Flask, SQLite or PostgreSQL, Tailwind CSS, HTMX, Chart.js, Gunicorn, We
 
 Contributions are welcome. OdoDash is a designer-led project, so UI/UX ideas, animations, logo design and feedback are as valuable as code. Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md) first. Report bugs and ideas in [GitHub Issues](https://github.com/moshiur-hridoy/OdoDash/issues).
 
-Thanks to everyone who has contributed:
-
-<a href="https://github.com/moshiur-hridoy/OdoDash/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=moshiur-hridoy/OdoDash" alt="OdoDash contributors" />
-</a>
-
-## Star History
-
-<a href="https://star-history.com/#moshiur-hridoy/OdoDash&Date">
-  <img src="https://api.star-history.com/svg?repos=moshiur-hridoy/OdoDash&type=Date" alt="Star history chart for OdoDash" width="600" />
-</a>
-
 ## License and Acknowledgments
 
 MIT License, see [LICENSE](LICENSE). The original May project is Copyright (c) 2026 Danny McClelland.
