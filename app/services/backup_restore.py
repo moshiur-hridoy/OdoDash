@@ -113,6 +113,16 @@ def _parse_float(value):
         return None
 
 
+def _parse_starting_odometer(value):
+    """Reject invalid backup baselines instead of restoring misleading distances."""
+    from app.utils import parse_starting_odometer
+    try:
+        return parse_starting_odometer(value)
+    except ValueError as exc:
+        raise BackupError('Starting odometer must be a nonnegative finite number.') from exc
+
+
+
 def _parse_int(value):
     if value in (None, ''):
         return None
@@ -135,6 +145,7 @@ PARSERS = {
     'time': _parse_time,
     'bool': _parse_bool,
     'float': _parse_float,
+    'starting_odometer': _parse_starting_odometer,
     'int': _parse_int,
     'str': _parse_str,
 }
@@ -188,6 +199,7 @@ VEHICLE_SECTION = Section(
         'year': 'int', 'purchase_date': 'date', 'registration': 'str', 'vin': 'str',
         'tracking_unit': 'str', 'odometer_unit': 'str', 'fuel_type': 'str',
         'secondary_fuel_type': 'str', 'tank_capacity': 'float',
+        'starting_odometer': 'starting_odometer',
         'battery_capacity': 'float', 'is_active': 'bool', 'notes': 'str',
         'image_filename': 'str', 'mot_status': 'str', 'mot_expiry': 'date',
         'tax_status': 'str', 'tax_due': 'date', 'created_at': 'datetime',

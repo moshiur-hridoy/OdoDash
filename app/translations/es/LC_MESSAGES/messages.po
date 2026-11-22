@@ -585,6 +585,10 @@ msgstr "La contraseña debe contener al menos un número"
 msgid "Please add a vehicle first"
 msgstr "Agregue un vehículo primero"
 
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+msgid "Starting odometer must be a nonnegative number."
+msgstr "La lectura inicial del contador debe ser un número no negativo."
+
 #: app/routes/allowance.py:71 app/routes/allowance.py:109
 #: app/routes/allowance.py:141 app/routes/charging.py:121
 #: app/routes/charging.py:188 app/routes/charging.py:245
@@ -1617,6 +1621,18 @@ msgstr "Compensación por kilometraje"
 #: app/templates/tires/index.html:10
 msgid "Tires"
 msgstr "Neumáticos"
+
+#: app/templates/vehicles/form.html:132
+msgid "Starting odometer"
+msgstr "Lectura inicial del contador"
+
+#: app/templates/vehicles/form.html:132
+msgid ""
+"Optional reading when cost tracking began, in the vehicle’s odometer unit"
+" or engine hours."
+msgstr ""
+"Lectura opcional al empezar a registrar los costes, en la unidad del "
+"cuentakilómetros del vehículo o en horas de motor."
 
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543

@@ -1,7 +1,21 @@
 """Shared utility helpers for OdoDash."""
 
+import math
 import re
 from datetime import datetime, timezone
+
+
+def parse_starting_odometer(value):
+    """A blank baseline is optional; zero is a valid reading."""
+    if value is None or isinstance(value, str) and not value.strip():
+        return None
+    try:
+        number = parse_decimal(value)
+    except OverflowError as exc:
+        raise ValueError('Starting odometer is too large') from exc
+    if number is None or not math.isfinite(number) or number < 0:
+        raise ValueError('Starting odometer must be a nonnegative finite number.')
+    return number
 
 
 def parse_decimal(value, default=None):
