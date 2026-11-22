@@ -146,7 +146,23 @@
         el.className = 'settings-status' + (state ? ' is-' + state : '');
     }
     function copyText(text) {
-        navigator.clipboard.writeText(text).then(function () { toast(T.copied); });
+        // navigator.clipboard only exists over HTTPS or localhost, and many
+        // self-hosted instances are reached over plain HTTP on the LAN.
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function () { toast(T.copied); }, function () { toast(T.failed, 'error'); });
+            return;
+        }
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(area);
+        if (ok) toast(T.copied); else toast(T.failed, 'error');
     }
     document.addEventListener('click', function (event) {
         var btn = event.target.closest('[data-copy]');
