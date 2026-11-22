@@ -24,6 +24,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ### Fixed
 
+- Saving a recurring expense with the Start Date left blank no longer fails with an Internal Server Error. The field is now marked required, and the server asks for a start date instead of crashing.
 - Home Assistant now sees vehicles shared with you and instance-shared vehicles, not only your own. Every alert carries its `vehicle_id`, and each vehicle's consumption unit follows its own odometer unit (an hours-metered vehicle reports none).
 - An empty Needs attention card centres its "All good" message in the card instead of sitting near the top.
 - On a phone, the consumption gauge on the vehicle page sits in the middle of its card instead of hugging the left edge.

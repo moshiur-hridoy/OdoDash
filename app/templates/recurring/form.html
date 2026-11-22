@@ -75,8 +75,8 @@
         </div>
         <div class="form-grid">
             <div class="ds-field">
-                <label class="ds-field__label" for="start_date">{{ _('Start Date') }}</label>
-                <input type="text" name="start_date" id="start_date" class="ds-control" data-datepicker
+                <label class="ds-field__label" for="start_date">{{ _('Start Date') }}{{ req() }}</label>
+                <input type="text" name="start_date" id="start_date" class="ds-control" data-datepicker required
                        value="{{ recurring.start_date.strftime('%Y-%m-%d') if recurring and recurring.start_date else '' }}">
             </div>
             {% if recurring %}
