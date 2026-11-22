@@ -655,7 +655,7 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 
 /* ---- Empty state ---------------------------------------------------- */
 .ds-empty {
-  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 40px 24px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 40px 24px; text-align: center;
 }
 .ds-empty__icon {
   display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-bottom: 6px;
@@ -1297,6 +1297,12 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .integration-steps p + ol, .integration-steps p + ul { margin-top: 6px; }
 .integration-steps ol { list-style: decimal; }
 .integration-steps ul { list-style: disc; }
+.ha-step__num { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 22px; height: 22px;
+  border-radius: 50%; background: var(--ds-accent-soft); color: var(--ds-accent-ink); font-size: var(--ds-text-xs); font-weight: 700; }
+@media (max-width: 640px) {
+  .ha-step .form-template__row { flex-wrap: wrap; }
+  .ha-step .form-template__row .ds-control, .ha-step .form-template__row .ds-password { flex: 1 1 100%; }
+}
 .integration-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; text-align: center; }
 .integration-endpoints { display: flex; flex-direction: column; margin: 0; border: 1px solid var(--ds-border-soft); border-radius: var(--ds-radius-md); }
 .integration-endpoints > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 8px 12px; font-size: var(--ds-text-sm); }
@@ -1569,6 +1575,7 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .vp-menu__panel a:hover { background: var(--ds-surface-sunken); }
 
 .vp-cockpit { padding: 28px 32px 22px; }
+.vp-month-average { margin-bottom: 16px; }
 .vp-cockpit__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px 32px; }
 .vp-cockpit__odo .ds-odometer { margin-top: 12px; }
 .vp-cockpit__empty { margin: 12px 0 0; font-family: var(--ds-font-mono); font-size: 28px; color: var(--ds-text-subtle); }
@@ -1718,6 +1725,7 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
   .vp-cockpit .ds-odometer--lg { gap: 4px; }
   .vp-cockpit .ds-odometer--lg .ds-odometer__digit { width: 38px; height: 50px; font-size: 26px; }
   .vp-gauges, .vp-readouts { flex: 1 1 140px; }
+  .vp-gauges { justify-content: center; }
   .vp-gauge { min-width: 0; }
   .vp-gauge svg { width: 140px; height: 82px; }
   .vp-gauge__value { margin-top: -38px; font-size: 22px; }

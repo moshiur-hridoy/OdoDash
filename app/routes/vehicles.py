@@ -185,6 +185,22 @@ def view(vehicle_id):
     month_totals = [(month, sum(_spending_between([vehicle.id], month, _add_months(month, 1)).values()))
                     for month in (_add_months(this_month, -i) for i in range(5, -1, -1))]
 
+    # Average monthly running cost over the last twelve complete months. The
+    # current month is left out because it is not over yet, and leading months
+    # with nothing logged are dropped, so a newer vehicle is averaged over the
+    # months it has actually been driven rather than diluted by empty ones.
+    full_months = [(month, sum(_spending_between([vehicle.id], month, _add_months(month, 1)).values()))
+                   for month in (_add_months(this_month, -i) for i in range(12, 0, -1))]
+    while full_months and not full_months[0][1]:
+        full_months.pop(0)
+    month_average = None
+    if full_months:
+        month_average = {
+            'value': sum(total for _, total in full_months) / len(full_months),
+            'first': full_months[0][0],
+            'last': full_months[-1][0],
+        }
+
     # Get specifications
     specs = vehicle.specs.all()
 
@@ -261,6 +277,7 @@ def view(vehicle_id):
                            last_charge=recent_charges[0] if recent_charges else None,
                            activity=activity,
                            month_totals=month_totals,
+                           month_average=month_average,
                            specs=specs,
                            stats=stats,
                            expenses_by_category=expenses_by_category,

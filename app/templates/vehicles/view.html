@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from 'components/ui.html' import back_link, button, card, badge, attention, month_bars, odometer, empty_state %}
+{% from 'components/ui.html' import back_link, button, card, badge, attention, month_bars, odometer, empty_state, stat %}
 {% from 'components/icons.html' import icon %}
 {% block title %}{{ vehicle.name }}{% endblock %}
 
@@ -248,6 +248,12 @@
 <div class="ds-row">
     {% if has_spending %}
     {% call card(_('Monthly Spending'), class='ds-grow-2') %}
+        {% if month_average %}
+        <div class="vp-month-average">
+            {{ stat(_('Average per month'), month_average.value|money, unit=currency,
+                    note=_('From %(start)s to %(end)s', start=month_average.first|dateformat('LLL yyyy'), end=month_average.last|dateformat('LLL yyyy'))) }}
+        </div>
+        {% endif %}
         {% set bars = [] %}
         {% for month, total in month_totals %}
             {% set _appended = bars.append({'label': month|dateformat('LLL'), 'value': total,

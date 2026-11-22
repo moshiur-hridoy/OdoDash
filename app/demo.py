@@ -43,6 +43,8 @@ BLOCKED_ENDPOINTS = {
     'auth.registration_settings',
     'api.generate_api_key',
     'api.revoke_api_key',
+    'api.generate_ha_token',
+    'api.revoke_ha_token',
     'api.backup_restore_execute',
     # App-wide settings and outbound integrations.
     'auth.notifications',

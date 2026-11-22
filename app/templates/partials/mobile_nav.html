@@ -121,7 +121,7 @@
             {% for key, endpoint, label, active in more_links %}{{ sheet_link(url_for(endpoint), label, nav_icons[key], active) }}{% endfor %}
         </div>
         <div class="sheet__footer">
-            <span class="sheet__user">{{ current_user.username }}</span>
+            <span class="sheet__user">{{ current_user.shown_name }}</span>
             <div class="sheet__actions">
                 <button type="button" class="sheet__action" data-theme-toggle aria-label="{{ _('Toggle dark mode') }}">
                     {{ icon('sun', 22, 'hidden dark:block') }}{{ icon('moon', 22, 'dark:hidden') }}

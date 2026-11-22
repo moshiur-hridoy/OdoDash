@@ -65,3 +65,14 @@ def test_no_separator_preference_keeps_plain_digits(auth_client, long_history, t
     html = _page(auth_client, f'/vehicles/{long_history.id}')
     assert '12345' in html
     assert '12,345' not in html
+
+
+def test_fuel_form_script_follows_separator_preference(auth_client, long_history, test_user):
+    """The Add Fuel form's last-odometer line is written by script; it must
+    group digits like the server-rendered vehicle cards, not by browser locale."""
+    test_user.thousand_separator = 'space'
+    db.session.commit()
+    html = _page(auth_client, '/fuel/new')
+    assert 'const THOUSAND_SEP = "space";' in html
+    assert 'groupNum(parseFloat(lastOdometer))' in html
+    assert 'toLocaleString(undefined' not in html

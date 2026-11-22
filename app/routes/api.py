@@ -117,6 +117,27 @@ def revoke_api_key():
     return jsonify({'success': True})
 
 
+@bp.route('/key/ha/generate', methods=['POST'])
+@login_required
+def generate_ha_token():
+    """Generate a new Home Assistant key for the current user."""
+    ha_token = current_user.generate_ha_token()
+    db.session.commit()
+    return jsonify({
+        'ha_token': ha_token,
+        'created_at': current_user.ha_token_created_at.isoformat()
+    })
+
+
+@bp.route('/key/ha/revoke', methods=['POST'])
+@login_required
+def revoke_ha_token():
+    """Revoke the current user's Home Assistant key."""
+    current_user.revoke_ha_token()
+    db.session.commit()
+    return jsonify({'success': True})
+
+
 # =============================================================================
 # Notification Testing
 # =============================================================================
@@ -150,6 +171,9 @@ def test_notification():
         if not user_key:
             return jsonify({'success': False, 'error': 'Please enter your Pushover user key'})
         success, error = NotificationService.send_pushover(user_key, title, message)
+    elif method == 'telegram':
+        success, error = NotificationService.send_telegram(
+            current_user.telegram_chat_id, title, message)
     elif method == 'webhook':
         webhook_url = request.form.get('webhook_url')
         if not webhook_url:

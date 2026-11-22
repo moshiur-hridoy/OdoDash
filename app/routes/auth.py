@@ -254,6 +254,10 @@ def settings():
         current_user.currency = currency[:10]
         current_user.date_format = request.form.get('date_format', 'DD/MM/YYYY')
 
+        # The display name is optional; an empty one falls back to the username.
+        if 'display_name' in request.form:
+            current_user.display_name = request.form.get('display_name', '').strip()[:64] or None
+
         # Update email if provided
         new_email = request.form.get('email', '').strip()
         if new_email and new_email != current_user.email:

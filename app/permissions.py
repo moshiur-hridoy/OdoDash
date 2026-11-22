@@ -87,6 +87,8 @@ ACCOUNT_ENDPOINTS = {
     'api.toggle_dark_mode',
     'api.generate_api_key',
     'api.revoke_api_key',
+    'api.generate_ha_token',
+    'api.revoke_ha_token',
     'api.test_notification',
 }
 
@@ -114,7 +116,13 @@ def _acting_user():
         api_key = auth_header[7:]
     if not api_key:
         api_key = request.headers.get('X-API-Key')
-    return User.get_by_api_key(api_key) if api_key else None
+    if not api_key:
+        return None
+    user = User.get_by_api_key(api_key)
+    if user is None and request.blueprint == 'homeassistant':
+        # The Home Assistant key is valid only on /api/ha/*.
+        user = User.get_by_ha_token(api_key)
+    return user
 
 
 def _wants_json():

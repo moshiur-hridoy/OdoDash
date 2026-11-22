@@ -42,7 +42,7 @@ Both themes share one design system, so nothing looks bolted on.
 
 ### Make it yours
 
-Choose an accent colour once and the whole interface follows: buttons, charts, highlights and the ambient glow. Admins can also set the app name, tagline and logo.
+Choose an accent colour once and the whole interface follows: buttons, charts and highlights. Admins can also set the app name, tagline and logo.
 
 <table>
   <tr>
@@ -58,6 +58,18 @@ Choose an accent colour once and the whole interface follows: buttons, charts, h
 </p>
 
 Costs, distance, consumption and CO&#8322; sit in one place, with quick actions to log fuel, trips, expenses and reminders, and shortcuts to maintenance history, parts and the timeline.
+
+### Made for the phone in your pocket
+
+A bottom tab bar, a big add button and forms that fit one thumb, so logging a fill-up at the pump takes seconds. Nothing scrolls sideways.
+
+<table>
+  <tr>
+    <td width="33%"><img src="screenshots/mobile-dashboard.png" alt="Dashboard on a phone"><br><sub><b>Dashboard.</b> This month at a glance.</sub></td>
+    <td width="33%"><img src="screenshots/mobile-vehicle.png" alt="Vehicle page on a phone in dark mode"><br><sub><b>Vehicle.</b> Odometer, consumption and cost per km.</sub></td>
+    <td width="33%"><img src="screenshots/mobile-add-fuel.png" alt="Add Fuel Log form on a phone"><br><sub><b>Add fuel.</b> Pick a car, type the reading, save.</sub></td>
+  </tr>
+</table>
 
 ### Settings that stay out of the way
 
@@ -113,6 +125,18 @@ python run.py
 ```
 
 More options (plain `docker run`, first-login details) are in the [installation guide](docs/installation.md).
+
+## Home Assistant
+
+[![Open your Home Assistant instance and open the OdoDash integration in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=moshiur-hridoy&repository=ododash-homeassistant&category=integration)
+
+Every vehicle becomes a Home Assistant device with odometer, consumption, cost and last-fill sensors, plus alerts for due maintenance, expiring documents and reminders. No YAML:
+
+1. **Create key:** in OdoDash, Settings → Integrations → Home Assistant → Create Home Assistant key. It can only read your vehicles and log fuel.
+2. **Install:** click the badge above (needs [HACS](https://hacs.xyz)) and download OdoDash, then restart Home Assistant.
+3. **Connect:** add the OdoDash integration and paste the server address and key shown in step 3 of the same Settings panel.
+
+Details, the REST endpoints and the YAML alternative are in [Integrations](docs/integrations.md#home-assistant). The integration lives in [ododash-homeassistant](https://github.com/moshiur-hridoy/ododash-homeassistant).
 
 ## Documentation
 

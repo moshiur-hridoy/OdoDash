@@ -47,12 +47,12 @@ def new():
             flash(_('Invalid vehicle.'), 'error')
             return redirect(url_for('recurring.new'))
 
-        # Parse dates
-        start_date = None
-        next_due = None
-        if request.form.get('start_date'):
-            start_date = date.fromisoformat(request.form['start_date'])
-            next_due = start_date
+        # The column is NOT NULL, so a blank start date has to stop here.
+        if not request.form.get('start_date'):
+            flash(_('Please choose a start date.'), 'error')
+            return redirect(url_for('recurring.new'))
+        start_date = date.fromisoformat(request.form['start_date'])
+        next_due = start_date
 
         recurring = RecurringExpense(
             vehicle_id=vehicle_id,
@@ -94,10 +94,10 @@ def edit(recurring_id):
     ).first_or_404()
 
     if request.method == 'POST':
-        # Parse dates
-        start_date = None
-        if request.form.get('start_date'):
-            start_date = date.fromisoformat(request.form['start_date'])
+        if not request.form.get('start_date'):
+            flash(_('Please choose a start date.'), 'error')
+            return redirect(url_for('recurring.edit', recurring_id=recurring.id))
+        start_date = date.fromisoformat(request.form['start_date'])
 
         next_due = None
         if request.form.get('next_due'):

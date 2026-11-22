@@ -88,6 +88,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
+    # What the app calls the person: the greeting, sidebar and profile. The
+    # username stays the login handle; an empty name falls back to it.
+    display_name = db.Column(db.String(64))
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(20), default=ROLE_EDITOR)  # editor, contributor, viewer (#285)
@@ -122,6 +125,10 @@ class User(UserMixin, db.Model):
     # API access
     api_key = db.Column(db.String(64), unique=True, index=True)
     api_key_created_at = db.Column(db.DateTime)
+    # Home Assistant key: accepted only by /api/ha/*, so the integration never
+    # holds a credential that can reach the full /api/v1 surface.
+    ha_token = db.Column(db.String(64), unique=True, index=True)
+    ha_token_created_at = db.Column(db.DateTime)
 
     # Telegram bot: the private chat linked to this account, and the one-time
     # code the user sends the bot to link it.
@@ -171,6 +178,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @property
+    def shown_name(self):
+        """The name to address the person by: their display name, else the username."""
+        return (self.display_name or '').strip() or self.username
 
     @property
     def effective_role(self):
@@ -261,6 +273,25 @@ class User(UserMixin, db.Model):
         if not api_key:
             return None
         return User.query.filter_by(api_key=api_key).first()
+
+    def generate_ha_token(self):
+        """Generate a new Home Assistant key, replacing any existing one."""
+        # 6 + 58 = 64 characters, the width of the column.
+        self.ha_token = f"odoha_{secrets.token_hex(29)}"
+        self.ha_token_created_at = utcnow()
+        return self.ha_token
+
+    def revoke_ha_token(self):
+        """Revoke the current Home Assistant key."""
+        self.ha_token = None
+        self.ha_token_created_at = None
+
+    @staticmethod
+    def get_by_ha_token(ha_token):
+        """Find user by Home Assistant key."""
+        if not ha_token:
+            return None
+        return User.query.filter_by(ha_token=ha_token).first()
 
 
 class Vehicle(db.Model):
@@ -1495,6 +1526,7 @@ EXPENSE_CATEGORIES = [
     ('repairs', _l('Repairs')),
     ('inspection', _l('Inspection')),
     ('insurance', _l('Insurance')),
+    ('loan_payment', _l('Loan Payment')),
     ('tax', _l('Road Tax')),
     ('registration', _l('Registration')),
     ('parking', _l('Parking')),
@@ -1945,7 +1977,7 @@ class RecurringExpense(db.Model):
     vendor = db.Column(db.String(100))
 
     # Recurrence settings
-    frequency = db.Column(db.String(20), nullable=False)  # weekly, monthly, quarterly, yearly
+    frequency = db.Column(db.String(20), nullable=False)  # weekly, biweekly, monthly, quarterly, biannual, yearly
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date)  # optional end date
 
@@ -1973,6 +2005,8 @@ class RecurringExpense(db.Model):
 
         if self.frequency == 'weekly':
             self.next_due = base_date + relativedelta(weeks=1)
+        elif self.frequency == 'biweekly':
+            self.next_due = base_date + relativedelta(weeks=2)
         elif self.frequency == 'monthly':
             self.next_due = base_date + relativedelta(months=1)
         elif self.frequency == 'quarterly':

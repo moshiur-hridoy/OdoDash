@@ -7,9 +7,10 @@
 
     {% call card(_('Account Information'), _('Your account details')) %}
     <div class="settings-profile">
-        <span class="settings-profile__avatar" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>
+        <span class="settings-profile__avatar" aria-hidden="true">{{ current_user.shown_name[:1]|upper }}</span>
         <div>
-            <p class="settings-profile__name">{{ current_user.username }} {{ badge(current_user.role_label, 'success' if current_user.is_admin else 'neutral') }}</p>
+            <p class="settings-profile__name">{{ current_user.shown_name }} {{ badge(current_user.role_label, 'success' if current_user.is_admin else 'neutral') }}</p>
+            {% if current_user.display_name %}<p class="settings-row__hint">{{ _('Username') }}: {{ current_user.username }}</p>{% endif %}
             <p class="settings-row__hint">{{ _('Member Since') }} {{ current_user.created_at|format_date('long') }}</p>
         </div>
     </div>
@@ -18,6 +19,14 @@
         <p>{% if current_user.is_read_only %}{{ _('Your account can see the data but cannot change it. Ask an administrator if you need more access.') }}{% else %}{{ _('Your account can record fuel fill-ups and charging sessions. Ask an administrator if you need more access.') }}{% endif %}</p>
     </div>
     {% endif %}
+    <div class="ds-field">
+        <label class="ds-field__label" for="display_name">{{ _('Your name') }}</label>
+        <div class="form-template__row">
+            <input type="text" name="display_name" id="display_name" class="ds-control" maxlength="64" autocomplete="name" value="{{ current_user.display_name or '' }}" placeholder="{{ current_user.username }}">
+            {{ button(_('Save Name'), type='submit', variant='secondary') }}
+        </div>
+        <p class="ds-field__help">{{ _('Shown in the greeting and the sidebar. You still sign in with your username.') }}</p>
+    </div>
     <div class="ds-field">
         <label class="ds-field__label" for="email">{{ _('Email') }}</label>
         <div class="form-template__row">

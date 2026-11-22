@@ -43,3 +43,32 @@ class TestSendNtfy:
         assert success is True
         req = mock_open.call_args[0][0]
         assert req.full_url == 'https://ntfy.sh/my-topic'
+
+
+class TestSendTelegram:
+    def test_needs_bot_token(self, app):
+        success, error = NotificationService.send_telegram('123', 'Title', 'Message')
+        assert success is False
+        assert 'not configured' in error
+
+    def test_needs_linked_chat(self, app):
+        with patch('app.services.telegram_bot.get_token', return_value='tok'):
+            success, error = NotificationService.send_telegram(None, 'Title', 'Message')
+        assert success is False
+        assert 'not linked' in error
+
+    def test_sends_message_to_chat(self, app):
+        with patch('app.services.telegram_bot.get_token', return_value='tok'), \
+                patch('app.services.telegram_bot.api_call') as api_call:
+            success, error = NotificationService.send_telegram('123', 'Title', 'Message')
+        assert success is True
+        api_call.assert_called_once_with('tok', 'sendMessage', chat_id='123',
+                                         text='Title\n\nMessage')
+
+    def test_telegram_error_is_reported(self, app):
+        from app.services.telegram_bot import TelegramError
+        with patch('app.services.telegram_bot.get_token', return_value='tok'), \
+                patch('app.services.telegram_bot.api_call', side_effect=TelegramError('blocked')):
+            success, error = NotificationService.send_telegram('123', 'Title', 'Message')
+        assert success is False
+        assert error == 'blocked'

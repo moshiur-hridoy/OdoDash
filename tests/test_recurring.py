@@ -63,6 +63,33 @@ class TestRecurringNew:
         assert recurring.user_id == test_user.id
         assert recurring.frequency == 'yearly'
 
+    def test_create_biweekly_recurring(self, auth_client, sample_vehicle):
+        auth_client.post('/recurring/new', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'name': 'Loan',
+            'category': 'loan_payment',
+            'frequency': 'biweekly',
+            'amount': '1200',
+            'start_date': '2024-01-01',
+        }, follow_redirects=True)
+        recurring = RecurringExpense.query.filter_by(name='Loan').first()
+        assert recurring.frequency == 'biweekly'
+        assert recurring.category == 'loan_payment'
+
+    def test_blank_start_date_is_refused_not_a_server_error(self, auth_client, sample_vehicle):
+        """The start date column is NOT NULL, so leaving it blank used to be a 500."""
+        resp = auth_client.post('/recurring/new', data={
+            'vehicle_id': str(sample_vehicle.id),
+            'name': 'No date',
+            'category': 'insurance',
+            'frequency': 'monthly',
+            'amount': '10',
+            'start_date': '',
+        }, follow_redirects=True)
+        assert resp.status_code == 200
+        assert b'Please choose a start date.' in resp.data
+        assert RecurringExpense.query.filter_by(name='No date').first() is None
+
     def test_create_recurring_saves_vendor(self, auth_client, sample_vehicle, test_user):
         """#349: the recurring expense form should capture a vendor so that
         auto-generated expenses are allocated to it, the same way the
@@ -156,6 +183,19 @@ class TestRecurringEdit:
         resp = auth_client.get(f'/recurring/{sample_recurring.id}/edit')
         assert resp.status_code == 200
         assert b'Acme Insurance Co' in resp.data
+
+
+    def test_edit_blank_start_date_is_refused(self, auth_client, sample_recurring):
+        resp = auth_client.post(f'/recurring/{sample_recurring.id}/edit', data={
+            'name': 'Changed',
+            'category': 'insurance',
+            'frequency': 'monthly',
+            'start_date': '',
+        }, follow_redirects=True)
+        assert resp.status_code == 200
+        assert b'Please choose a start date.' in resp.data
+        db.session.refresh(sample_recurring)
+        assert sample_recurring.name == 'Monthly Insurance'
 
 
 class TestRecurringDelete:
