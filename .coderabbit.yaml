@@ -9,10 +9,10 @@ reviews:
   review_status: true
   auto_review:
     enabled: true
-    # Review PRs into both branches: feature work lands on dev, releases go dev -> main
+    # Review PRs into both branches: feature work lands on dev, releases go dev -> ododash-release
     base_branches:
       - dev
-      - main
+      - ododash-release
   path_filters:
     - "!app/translations/**"
     - "!app/static/vendor/**"
