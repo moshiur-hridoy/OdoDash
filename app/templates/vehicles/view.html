@@ -144,8 +144,14 @@
         <dl class="vp-readouts">
             <div>
                 <dt class="vp-label">{{ _('Cost per') }} {{ unit }}</dt>
-                <dd class="vp-readouts__big">{% if stats.cost_per_distance %}{{ stats.cost_per_distance|money }}{% else %}&mdash;{% endif %}<span>{{ currency }}</span></dd>
+                <dd class="vp-readouts__big">{% if stats.cost_per_distance is not none %}{{ stats.cost_per_distance|money }}{% else %}&mdash;{% endif %}<span>{{ currency }}</span></dd>
             </div>
+            {% if current_user.show_net_cost_per_distance %}
+            <div>
+                <dt class="vp-label">{{ _('Net cost per %(unit)s', unit=unit) }}</dt>
+                <dd class="vp-readouts__big">{% if stats.net_cost_per_distance is not none %}{{ stats.net_cost_per_distance|money }}<span>{{ currency }}</span>{% else %}&mdash;{% endif %}</dd>
+            </div>
+            {% endif %}
             {% if vehicle.uses_fuel() and recent_logs %}
             {% set last = recent_logs[0] %}
             <div>

@@ -78,6 +78,10 @@
             </select>
         </div>
     </div>
+    {% set net_label = _('Show net cost per %(unit)s', unit=current_user.distance_unit) %}
+    {% call row(net_label, _('Deducts recorded mileage reimbursements.'), for_id='show_net_cost_per_distance') %}
+        {{ switch('show_net_cost_per_distance', current_user.show_net_cost_per_distance, net_label, id='show_net_cost_per_distance') }}
+    {% endcall %}
     {% call row(_('Round costs to whole numbers'), for_id='round_costs') %}{{ switch('round_costs', current_user.round_costs, _('Round costs to whole numbers'), id='round_costs') }}{% endcall %}
     {% endcall %}
 
