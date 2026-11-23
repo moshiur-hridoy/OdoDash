@@ -102,7 +102,7 @@
             {% if group.month %}
             <tr class="ds-log__month">
                 <th scope="colgroup" colspan="2">{{ group.month|dateformat('LLLL yyyy') }}</th>
-                <td class="ds-num">{% if group.total is not none %}{{ group.total|money }} <span>{{ currency }}</span>{% endif %}</td>
+                <td class="ds-num">{% if group.total is not none %}<span class="ds-log__total-label">{{ _('Total') }}</span>{{ group.total|money }} <span>{{ currency }}</span>{% endif %}</td>
                 <td></td>
             </tr>
             {% endif %}

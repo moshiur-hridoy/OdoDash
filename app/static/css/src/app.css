@@ -905,14 +905,16 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 /* The log table: month header rows, a date block, and figures in mono. */
 .ds-log .ds-table td { font-size: var(--ds-text-sm); }
 .ds-log .ds-table td.ds-num { font-family: var(--ds-font-mono); white-space: nowrap; }
+.ds-log__month { background: var(--ds-surface-sunken); }
 .ds-log__month th, .ds-log__month td {
-  padding-top: 18px; padding-bottom: 8px; border-bottom: 1px solid var(--ds-border);
+  padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--ds-border);
   font-size: var(--ds-text-xs); font-weight: 600; color: var(--ds-text); text-transform: none;
 }
 .ds-log__month th { font-family: var(--ds-font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ds-text-muted); }
 .ds-log__month td { font-family: var(--ds-font-mono); }
 .ds-log__month td span { font-weight: 400; color: var(--ds-text-muted); }
-.ds-log tbody tr.ds-log__month:hover { background: transparent; }
+.ds-log tbody tr.ds-log__month:hover { background: var(--ds-surface-sunken); }
+.ds-log__total-label { margin-inline-end: 8px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
 .ds-log__date { width: 44px; }
 .ds-log__day { display: block; font-family: var(--ds-font-mono); font-size: var(--ds-text-base); font-weight: 600; line-height: 1.1; }
 .ds-log__dow { display: block; font-size: 11px; color: var(--ds-text-muted); }
