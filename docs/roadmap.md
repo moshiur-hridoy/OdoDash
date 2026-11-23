@@ -89,8 +89,9 @@ still a wide table on phones (fuel, expenses, tires, notes, allowance, users).
 - [ ] **#385 / #406** Expense categories (Car Payment, MOT/Service). Upstream
       PR #407 is a candidate to adapt.
 
-After Block D, return to the feature plan (Bangla translation, receipt scan,
-insights).
+After Block D, return to the feature plan (receipt scan, insights). Bangla
+translation is low priority: most vehicle owners in Bangladesh already use
+English-language apps, so Bangla waits until someone asks for it.
 
 ## Block E: gaps found against similar projects (target 0.5x)
 
@@ -126,6 +127,12 @@ the effort. Agree the scope of each item before building it.
 - [ ] **Tyre tread depth** measurements, if not already on the tire form.
 - [ ] **Kiosk / wall display** view with live refresh (LubeLogger).
 - [ ] **OpenAPI spec** for the REST API.
+- [ ] **Bangladesh paperwork types.** Add Tax Token, Fitness Certificate and
+      Route Permit as reminder and document types (English names; the road tax
+      and registration types are UK-flavoured today).
+- [ ] **Starter reminders for a new vehicle.** When a vehicle is added, offer
+      to create its main paperwork reminders in one step (registration, tax,
+      insurance, fitness) with their due dates.
 
 Not planned for now: OBD2/Torque/WiCAN telemetry (MyGarage) and AI helpers,
 which are far from the current scope.
