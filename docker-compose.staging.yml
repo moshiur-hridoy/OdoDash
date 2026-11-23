@@ -8,7 +8,7 @@ services:
     volumes:
       - may_staging_data:/app/data
     environment:
-      - SECRET_KEY=${SECRET_KEY:-change-me-in-staging}
+      - SECRET_KEY=${SECRET_KEY:-}
       - DATABASE_URL=sqlite:////app/data/may.db
       - UPLOAD_FOLDER=/app/data/uploads
       # Optional runtime UID/GID for bind-mounted data (default 1000:1000)

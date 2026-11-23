@@ -10,6 +10,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Security
+
+- OdoDash no longer signs sessions with an example `SECRET_KEY`. The supplied `docker-compose.yml` used to pass `change-me-in-production` when you hadn't set a key, and anyone who knows that string can forge a login cookie. Compose now passes an empty value, and OdoDash ignores `change-me-in-production`, `change-me-in-staging`, `your-secret-key`, `your-secret-key-here` and `your-secure-random-string` with a warning in the logs, generating and saving its own key instead. If you were running on one of those values you are signed out once after updating; set your own key with `openssl rand -hex 32` to manage it yourself.
+
 ### Added
 
 - An optional starting odometer on a vehicle. If tracking began before the first logged reading, enter the meter reading at the start and distance and running costs count from there. Leave it blank to keep the existing calculation; zero is a valid starting point. Distance uses the lower of the starting reading and the lowest logged one. The vehicle form, the API and backup/restore support the field. Contributed by [@emerrick](https://github.com/emerrick) in #16.
