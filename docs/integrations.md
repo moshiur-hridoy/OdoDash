@@ -103,6 +103,83 @@ sensor:
       - total_cost
 ```
 
+## Telegram
+
+Log a fill-up by messaging a Telegram bot, for example when you park at home.
+Send one line and it is saved as a fuel log:
+
+```
+40L 4800tk 45230km
+```
+
+The bot uses long polling, so it works on a home server with no public URL and
+no port forwarding. The server only needs to reach `api.telegram.org`. Messages
+to a bot pass through Telegram's servers.
+
+### Set up (admin)
+
+1. In Telegram, message [@BotFather](https://t.me/BotFather), create a bot with
+   `/newbot` and copy the token it gives you.
+2. In OdoDash, open Settings → Integrations → Telegram, paste the token and
+   save. OdoDash checks it with Telegram and shows the bot's username.
+
+To switch the bot off, clear the token and save.
+
+### Connect your account (each user)
+
+1. In Settings → Integrations → Telegram, choose **Connect Telegram**. OdoDash
+   shows a one-time code that is valid for 15 minutes.
+2. Choose **Open in Telegram**, or send `/start CODE` to the bot yourself.
+3. The bot replies "Linked to your-username" with a short help text.
+
+Link the bot from a private chat; messages in groups are ignored. A Telegram
+chat belongs to one account: linking it to another account moves it. Use
+**Disconnect Telegram** in Settings, or send `/unlink` to the bot, to undo it.
+
+### What you can send
+
+| Part | Examples |
+|---|---|
+| Litres | `40L`, `40 l`, `40 litres`, `৪০ লিটার` |
+| Total cost | `4800tk`, `৳4800`, `4800 taka`, `€65.90`, `65.90 EUR` |
+| Price per litre | `@120`, `120/L`, `120 per L` |
+| Odometer | `45230km`, `45230 mi`, `odo 45230` |
+| Partial fill | `partial`, `half`, `top up` |
+
+Bengali digits work, and `45,230` is read as forty-five thousand. A message
+needs at least a volume or a cost. The parser follows fixed rules, not a model,
+so it runs offline. The bot saves the log with the same checks as the fuel
+form and replies with what it saved.
+
+- **Which vehicle:** a word of a vehicle's name (three letters or more) or its
+  registration in the message wins, for example `40L 4800tk 45230km blade`.
+  Otherwise the bot uses your default vehicle, or your only active one. If it
+  still cannot tell, it lists your vehicles and asks you to send the message
+  again.
+- **No odometer:** the fill-up is saved but does not count towards consumption.
+- **Odometer lower than the last reading:** the bot saves it and warns you, so
+  you can check the number or `/undo`.
+- **Photos** are not read yet. Send the fill-up as text.
+
+### Commands
+
+| Command | What it does |
+|---|---|
+| `/help` | Shows the format. |
+| `/undo` | Removes the last fill-up the bot saved for you, if it was saved in the last 30 minutes. Entries made on the web are never touched. |
+| `/unlink` | Disconnects this chat from your account. |
+
+### Who can use it
+
+The bot follows the usual role rules: a viewer cannot log fuel through it.
+It is switched off in demo mode. Replies use your OdoDash language.
+
+### Reminders
+
+A linked chat can also receive reminders. In Settings → Notifications, choose
+Telegram as the notification method; due reminders and the test notification
+arrive in the same chat.
+
 ## Calendar Subscription
 Subscribe to reminders in your calendar app:
 

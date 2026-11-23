@@ -103,7 +103,7 @@ Looking at other self-hosted options? [LubeLogger](https://github.com/hargata/lu
 - 📁 **Documents and receipts:** attach files to vehicles, fuel logs and expenses
 - 📊 **Analytics and PDF reports:** spending trends, consumption charts, printable vehicle reports
 - 🎨 **Customisable:** dark mode, branding, units, many currencies and 20 languages
-- 🔌 **Integrations:** REST API, Home Assistant, calendar subscription, UK fuel prices, DVLA lookup
+- 🔌 **Integrations:** REST API, Home Assistant, Telegram fuel logging, calendar subscription, UK fuel prices, DVLA lookup
 - 📥 **Import and export:** May backups, Fuelly CSV, JSON and CSV export
 - 🐳 **Self-hosted:** Docker and PWA ready
 
@@ -149,7 +149,7 @@ Details, the REST endpoints and the YAML alternative are in [Integrations](docs/
 | [Configuration](docs/configuration.md) | `.env`, environment variables, PUID/PGID |
 | [Usage](docs/usage.md) | Every feature, from fuel logs to import and restore |
 | [Administration](docs/administration.md) | Admin settings, user roles, REST API |
-| [Integrations](docs/integrations.md) | UK fuel prices, Home Assistant, calendar |
+| [Integrations](docs/integrations.md) | UK fuel prices, Home Assistant, Telegram, calendar |
 | [Languages](docs/translations.md) | Supported languages, improving and adding translations |
 | [Troubleshooting](docs/troubleshooting.md) | Common problems and fixes |
 | [Changelog](CHANGELOG.md) | What changed in each release |
