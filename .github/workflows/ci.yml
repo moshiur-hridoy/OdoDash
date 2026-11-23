@@ -1,0 +1,39 @@
+name: CI
+
+# Runs the test suite on every pull request into dev or ododash-release, so a
+# contributor's change and the dev -> release PR are both tested before merge.
+# docker.yml runs the same tests again on a push to dev or a version tag,
+# because it must not build an image from untested code.
+on:
+  pull_request:
+    branches:
+      - dev
+      - ododash-release
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m pytest tests/ -v --tb=short
