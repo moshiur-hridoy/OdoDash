@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest an addition or a change
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please look at the [roadmap](https://github.com/moshiur-hridoy/OdoDash/blob/dev/docs/roadmap.md) and the open issues first. A feature that was not discussed here may be declined even when the code is good, so open an issue before you start a large change.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the situation, not only the solution. For example "I track a tractor in hours and ..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to see?
+      description: A sketch or screenshot helps for interface changes.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Another app that does it well, a workaround, or a different design.
+  - type: dropdown
+    id: help
+    attributes:
+      label: Can you help build it?
+      options:
+        - I can open a pull request
+        - I can test it
+        - I can only suggest it
