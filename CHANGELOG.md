@@ -13,6 +13,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 ### Added
 
 - An optional starting odometer on a vehicle. If tracking began before the first logged reading, enter the meter reading at the start and distance and running costs count from there. Leave it blank to keep the existing calculation; zero is a valid starting point. Distance uses the lower of the starting reading and the lowest logged one. The vehicle form, the API and backup/restore support the field. Contributed by [@emerrick](https://github.com/emerrick) in #16.
+- An optional net cost per distance on the vehicle page and the dashboard, switched on in Settings → Units & Values. It deducts recorded mileage reimbursements from spending before dividing by tracked distance. Off by default. Contributed by [@emerrick](https://github.com/emerrick) in #17.
 
 ## [0.51.0] - 2026-11-22
 
