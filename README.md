@@ -17,8 +17,10 @@ OdoDash tracks fuel, expenses, reminders and maintenance across your whole fleet
 - **Active maintenance:** upstream bugs and useful PRs are merged here quickly.
 
 <p align="center">
-  <a href="https://ododashdemo.moshiur.space/"><b>Try the live demo</b></a> (login <code>demo</code> / <code>demo</code>, resets nightly) · <a href="https://moshiur-hridoy.github.io/OdoDash/">Website</a>
+  <a href="https://ododashdemo.moshiur.space/"><b>Try the live demo</b></a> (login <code>demo</code> / <code>demo</code>, resets nightly) · <a href="https://moshiur-hridoy.github.io/OdoDash/">Website</a> · <a href="https://www.moshiurhridoy.com/ododash">Case study</a>
 </p>
+
+<p align="center"><sub>Designed and maintained by <a href="https://www.moshiurhridoy.com">Moshiur Hridoy</a></sub></p>
 
 <p align="center">
   <picture>
@@ -169,4 +171,4 @@ MIT License, see [LICENSE](LICENSE). The original May project is Copyright (c) 2
 
 ---
 
-**OdoDash is a fork of [May](https://github.com/dannymcc/may), created by [Danny McClelland](https://github.com/dannymcc). Redesigned and maintained by [moshiur-hridoy](https://github.com/moshiur-hridoy).**
+**OdoDash is a fork of [May](https://github.com/dannymcc/may), created by [Danny McClelland](https://github.com/dannymcc). Redesigned and maintained by [Moshiur Hridoy](https://www.moshiurhridoy.com), a product designer in Dhaka, Bangladesh ([GitHub](https://github.com/moshiur-hridoy) · [LinkedIn](https://www.linkedin.com/in/moshiurhridoy/)).** Read how the redesign came together in the [OdoDash case study](https://www.moshiurhridoy.com/ododash).
