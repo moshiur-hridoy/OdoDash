@@ -23,6 +23,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 - A month's total in the lists and the timeline now sits in a tinted band and reads "Total" before the amount, so it can no longer be mistaken for the cost of the entry below it.
 
+### Fixed
+
+- On a vehicle page, the Monthly Spending chart no longer leaves a block of empty space under it when the Upcoming Maintenance and Reminders lists beside it grow. The chart now takes the free height of its card, up to a limit, and keeps its fixed height on the dashboard and on a phone.
+
 ## [0.51.0] - 2026-11-22
 
 ### Added

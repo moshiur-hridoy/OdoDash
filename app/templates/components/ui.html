@@ -107,9 +107,9 @@
     label: what the chart shows, for screen readers.
     Each column is focusable, so a tap on a phone shows its amount the way a
     hover does on a desktop; the current period is drawn in the accent. -#}
-{%- macro month_bars(bars, label) -%}
+{%- macro month_bars(bars, label, fill=False) -%}
 {%- set top = (bars | map(attribute='value') | max) or 1 -%}
-<div class="ds-bars" role="group" aria-label="{{ label }}">
+<div class="ds-bars{% if fill %} ds-bars--fill{% endif %}" role="group" aria-label="{{ label }}">
     {%- for b in bars %}
     <div class="ds-bars__col{% if b.current %} ds-bars__col--current{% endif %}" tabindex="0" aria-label="{{ b.label }}: {{ b.display }}">
         <span class="ds-bars__value" aria-hidden="true">{{ b.display }}</span>

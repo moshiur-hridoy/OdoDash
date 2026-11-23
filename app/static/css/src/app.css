@@ -686,6 +686,11 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
    it is hovered or focused (tapped, on a phone). Past periods are a tint of
    the accent and the current one the accent itself. */
 .ds-bars { display: flex; align-items: stretch; gap: 8px; height: 140px; margin-top: 20px; }
+/* Where the card is stretched by a taller neighbour, the bars take the free
+   height instead of leaving it empty. */
+.vp-spend { display: flex; flex-direction: column; }
+.vp-spend > .ds-card__body { flex: 1; display: flex; flex-direction: column; }
+.ds-bars--fill { flex: 1 1 140px; height: auto; min-height: 140px; max-height: 440px; }
 .ds-bars__col {
   flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center;
   border-radius: var(--ds-radius-sm); outline: none; cursor: default;

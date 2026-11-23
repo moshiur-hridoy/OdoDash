@@ -263,7 +263,7 @@
 {% if has_spending or maintenance_schedules or reminders %}
 <div class="ds-row">
     {% if has_spending %}
-    {% call card(_('Monthly Spending'), class='ds-grow-2') %}
+    {% call card(_('Monthly Spending'), class='ds-grow-2 vp-spend') %}
         {% if month_average %}
         <div class="vp-month-average">
             {{ stat(_('Average per month'), month_average.value|money, unit=currency,
@@ -275,7 +275,7 @@
             {% set _appended = bars.append({'label': month|dateformat('LLL'), 'value': total,
                                             'display': (total|money) ~ ' ' ~ currency, 'current': loop.last}) %}
         {% endfor %}
-        {{ month_bars(bars, _('Monthly Spending')) }}
+        {{ month_bars(bars, _('Monthly Spending'), fill=True) }}
     {% endcall %}
     {% endif %}
 
