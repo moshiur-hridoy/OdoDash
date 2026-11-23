@@ -174,3 +174,28 @@ def shared_reading_unit(vehicles, distance_unit):
     if len(metering) != 1:
         return None
     return 'h' if metering.pop() else distance_unit
+
+
+# How far a figure has to sit from the average before it is called better or
+# worse, so ordinary noise stays unmarked. Shared by the fuel list (one fill
+# against its vehicle's average) and the vehicle page's gauges (the last few
+# fill-ups or charges against the lifetime figure).
+CONSUMPTION_TREND_MARGIN = 0.05
+
+# Consumption units where a smaller figure is the better one; the rest
+# (mpg, km/L) read the other way round.
+LOWER_IS_BETTER_UNITS = {'L/100km', 'L / h'}
+
+
+def consumption_trend(value, average, lower_is_better):
+    """'better', 'worse' or None for ``value`` against ``average``.
+
+    ``lower_is_better`` is True for L/100km, L/h and kWh/100 km, False for
+    mpg and km/L. Missing or zero figures give None rather than a guess.
+    """
+    if not value or not average:
+        return None
+    ratio = value / average - 1
+    if abs(ratio) < CONSUMPTION_TREND_MARGIN:
+        return None
+    return 'better' if (ratio < 0) == lower_is_better else 'worse'

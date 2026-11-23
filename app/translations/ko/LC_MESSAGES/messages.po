@@ -7,53 +7,53 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-22 15:03-0400\n"
+"POT-Creation-Date: 2026-11-23 18:49+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: ko\n"
 "Language-Team: ko <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.11.0\n"
 
-#: app/models.py:52
+#: app/models.py:56
 msgid "Editor"
 msgstr "편집자"
 
-#: app/models.py:53
+#: app/models.py:57
 msgid "Contributor"
 msgstr "기여자"
 
-#: app/models.py:54
+#: app/models.py:58
 msgid "Viewer"
 msgstr "조회자"
 
-#: app/models.py:58
+#: app/models.py:62
 msgid "Full access to the vehicles and data this account can see."
 msgstr "이 계정이 볼 수 있는 차량과 데이터에 대한 전체 접근 권한입니다."
 
-#: app/models.py:59
+#: app/models.py:63
 msgid ""
 "Can record fuel fill-ups and charging sessions. Everything else is read-"
 "only."
 msgstr "주유와 충전을 기록할 수 있습니다. 그 외에는 읽기 전용입니다."
 
-#: app/models.py:60
+#: app/models.py:64
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "읽기 전용. 데이터를 볼 수 있지만 변경할 수 없습니다."
 
-#: app/models.py:205 app/templates/auth/_user_list.html:15
+#: app/models.py:209 app/templates/auth/_user_list.html:15
 #: app/templates/auth/create_user.html:47 app/templates/auth/edit_user.html:31
 msgid "Administrator"
 msgstr "관리자"
 
-#: app/models.py:436 app/templates/maintenance/form.html:113
+#: app/models.py:440 app/templates/maintenance/form.html:113
 msgid "Engine hours"
 msgstr "엔진 가동 시간"
 
-#: app/models.py:437 app/templates/charging/_log.html:41
+#: app/models.py:441 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:187
 #: app/templates/dashboard.html:213 app/templates/expenses/form.html:71
 #: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
@@ -61,17 +61,17 @@ msgstr "엔진 가동 시간"
 #: app/templates/notes/form.html:25 app/templates/notes/index.html:35
 #: app/templates/tires/index.html:58 app/templates/tires/index.html:76
 #: app/templates/trips/index.html:80 app/templates/vehicles/index.html:71
-#: app/templates/vehicles/view.html:87 app/templates/vehicles/view.html:393
-#: app/templates/vehicles/view.html:470 app/templates/vehicles/view.html:491
-#: app/templates/vehicles/view.html:513 app/templates/vehicles/view.html:532
+#: app/templates/vehicles/view.html:87 app/templates/vehicles/view.html:403
+#: app/templates/vehicles/view.html:480 app/templates/vehicles/view.html:501
+#: app/templates/vehicles/view.html:523 app/templates/vehicles/view.html:542
 msgid "Odometer"
 msgstr "주행거리계"
 
-#: app/models.py:442 app/models.py:1579 app/templates/trips/form.html:151
+#: app/models.py:446 app/models.py:1647 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "시간"
 
-#: app/models.py:443 app/templates/allowance/form.html:36
+#: app/models.py:447 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
 #: app/templates/auth/settings/_units.html:33 app/templates/trips/form.html:85
 #: app/templates/trips/form.html:151 app/templates/trips/index.html:82
@@ -79,476 +79,476 @@ msgstr "시간"
 msgid "Distance"
 msgstr "거리"
 
-#: app/models.py:1525
+#: app/models.py:1593
 msgid "Front Tire Size"
 msgstr "앞 타이어 크기"
 
-#: app/models.py:1526
+#: app/models.py:1594
 msgid "Rear Tire Size"
 msgstr "뒤 타이어 크기"
 
-#: app/models.py:1527
+#: app/models.py:1595
 msgid "Wheel Size"
 msgstr "휠 크기"
 
-#: app/models.py:1528
+#: app/models.py:1596
 msgid "Engine Oil Type"
 msgstr "엔진 오일 유형"
 
-#: app/models.py:1529
+#: app/models.py:1597
 msgid "Oil Capacity"
 msgstr "오일 용량"
 
-#: app/models.py:1530
+#: app/models.py:1598
 msgid "Coolant Type"
 msgstr "냉각수 유형"
 
-#: app/models.py:1531
+#: app/models.py:1599
 msgid "Front Wiper Size"
 msgstr "앞 와이퍼 크기"
 
-#: app/models.py:1532
+#: app/models.py:1600
 msgid "Rear Wiper Size"
 msgstr "뒤 와이퍼 크기"
 
-#: app/models.py:1533
+#: app/models.py:1601
 msgid "Battery Type"
 msgstr "배터리 유형"
 
-#: app/models.py:1534
+#: app/models.py:1602
 msgid "Spark Plug Type"
 msgstr "점화 플러그 유형"
 
-#: app/models.py:1535
+#: app/models.py:1603
 msgid "Air Filter Part #"
 msgstr "에어 필터 부품 번호"
 
-#: app/models.py:1536
+#: app/models.py:1604
 msgid "Cabin Filter Part #"
 msgstr "캐빈 필터 부품 번호"
 
-#: app/models.py:1537
+#: app/models.py:1605
 msgid "Front Brake Pads"
 msgstr "앞 브레이크 패드"
 
-#: app/models.py:1538
+#: app/models.py:1606
 msgid "Rear Brake Pads"
 msgstr "뒤 브레이크 패드"
 
-#: app/models.py:1539 app/models.py:2385
+#: app/models.py:1607 app/models.py:2453
 msgid "Transmission Fluid"
 msgstr "변속기 오일"
 
-#: app/models.py:1540 app/models.py:1680 app/models.py:1745
+#: app/models.py:1608 app/models.py:1748 app/models.py:1813
 #: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "사용자 지정"
 
-#: app/models.py:1545 app/routes/maintenance.py:99
+#: app/models.py:1613 app/routes/maintenance.py:99
 #: app/templates/auth/settings/_menu.html:6
 #: app/templates/auth/settings/_menu.html:10 app/templates/base.html:537
 #: app/templates/partials/mobile_nav.html:28
 msgid "Maintenance"
 msgstr "정비"
 
-#: app/models.py:1546
+#: app/models.py:1614
 msgid "Repairs"
 msgstr "수리"
 
-#: app/models.py:1547
+#: app/models.py:1615
 msgid "Inspection"
 msgstr "검사"
 
-#: app/models.py:1548
+#: app/models.py:1616
 msgid "Insurance"
 msgstr "보험"
 
-#: app/models.py:1549
+#: app/models.py:1617
 msgid "Loan Payment"
 msgstr "대출 상환"
 
-#: app/models.py:1550 app/models.py:1675
+#: app/models.py:1618 app/models.py:1743
 msgid "Road Tax"
 msgstr "자동차세"
 
-#: app/models.py:1551 app/templates/auth/settings/_users.html:8
+#: app/models.py:1619 app/templates/auth/settings/_users.html:8
 msgid "Registration"
 msgstr "등록"
 
-#: app/models.py:1552
+#: app/models.py:1620
 msgid "Parking"
 msgstr "주차"
 
-#: app/models.py:1553
+#: app/models.py:1621
 msgid "Tolls"
 msgstr "통행료"
 
-#: app/models.py:1554
+#: app/models.py:1622
 msgid "Cleaning"
 msgstr "청소"
 
-#: app/models.py:1555
+#: app/models.py:1623
 msgid "Accessories"
 msgstr "액세서리"
 
-#: app/models.py:1556 app/models.py:1573 app/models.py:1606 app/models.py:1713
-#: app/models.py:1723 app/models.py:1781 app/models.py:1789 app/models.py:2391
+#: app/models.py:1624 app/models.py:1641 app/models.py:1674 app/models.py:1781
+#: app/models.py:1791 app/models.py:1849 app/models.py:1857 app/models.py:2459
 msgid "Other"
 msgstr "기타"
 
-#: app/models.py:1561
+#: app/models.py:1629
 msgid "Car"
 msgstr "승용차"
 
-#: app/models.py:1562
+#: app/models.py:1630
 msgid "Van"
 msgstr "밴"
 
-#: app/models.py:1563
+#: app/models.py:1631
 msgid "Motorbike"
 msgstr "오토바이"
 
-#: app/models.py:1564
+#: app/models.py:1632
 msgid "Scooter"
 msgstr "스쿠터"
 
-#: app/models.py:1565
+#: app/models.py:1633
 msgid "Truck"
 msgstr "트럭"
 
-#: app/models.py:1566
+#: app/models.py:1634
 msgid "SUV"
 msgstr "SUV"
 
-#: app/models.py:1567
+#: app/models.py:1635
 msgid "Hatchback"
 msgstr "해치백"
 
-#: app/models.py:1568
+#: app/models.py:1636
 msgid "Station Wagon / Estate"
 msgstr "왜건"
 
-#: app/models.py:1569
+#: app/models.py:1637
 msgid "Pickup / Ute"
 msgstr "픽업트럭"
 
-#: app/models.py:1570
+#: app/models.py:1638
 msgid "Tractor"
 msgstr "트랙터"
 
-#: app/models.py:1571
+#: app/models.py:1639
 msgid "ATV/UTV"
 msgstr "ATV/UTV"
 
-#: app/models.py:1572
+#: app/models.py:1640
 msgid "Boat"
 msgstr "보트"
 
-#: app/models.py:1578
+#: app/models.py:1646
 msgid "Mileage (km/mi)"
 msgstr "주행거리 (km/mi)"
 
-#: app/models.py:1584 app/templates/auth/settings/_units.html:35
+#: app/models.py:1652 app/templates/auth/settings/_units.html:35
 msgid "Kilometres (km)"
 msgstr "킬로미터 (km)"
 
-#: app/models.py:1585 app/templates/auth/settings/_units.html:36
+#: app/models.py:1653 app/templates/auth/settings/_units.html:36
 msgid "Miles (mi)"
 msgstr "마일 (mi)"
 
-#: app/models.py:1590
+#: app/models.py:1658
 msgid "Petrol/Gasoline"
 msgstr "휘발유"
 
-#: app/models.py:1594
+#: app/models.py:1662
 msgid "Premium petrol (Octane)"
 msgstr "프리미엄 휘발유 (옥탄)"
 
-#: app/models.py:1595
+#: app/models.py:1663
 msgid "Diesel"
 msgstr "경유"
 
-#: app/models.py:1596
+#: app/models.py:1664
 msgid "Electric"
 msgstr "전기"
 
-#: app/models.py:1597
+#: app/models.py:1665
 msgid "Hybrid"
 msgstr "하이브리드"
 
-#: app/models.py:1598
+#: app/models.py:1666
 msgid "Plug-in Hybrid"
 msgstr "플러그인 하이브리드"
 
-#: app/models.py:1599
+#: app/models.py:1667
 msgid "LPG"
 msgstr "LPG"
 
-#: app/models.py:1600
+#: app/models.py:1668
 msgid "CNG"
 msgstr "CNG"
 
-#: app/models.py:1601
+#: app/models.py:1669
 msgid "Hydrogen"
 msgstr "수소"
 
-#: app/models.py:1602
+#: app/models.py:1670
 msgid "E85/Flex Fuel"
 msgstr "E85/플렉스 연료"
 
-#: app/models.py:1605
+#: app/models.py:1673
 msgid "AdBlue/DEF"
 msgstr "AdBlue/DEF"
 
-#: app/models.py:1672
+#: app/models.py:1740
 msgid "MOT/Inspection"
 msgstr "MOT/검사"
 
-#: app/models.py:1673
+#: app/models.py:1741
 msgid "Service Due"
 msgstr "정비 예정"
 
-#: app/models.py:1674
+#: app/models.py:1742
 msgid "Insurance Renewal"
 msgstr "보험 갱신"
 
-#: app/models.py:1676
+#: app/models.py:1744
 msgid "Registration Renewal"
 msgstr "등록 갱신"
 
-#: app/models.py:1677
+#: app/models.py:1745
 msgid "Warranty Expiry"
 msgstr "보증 만료"
 
-#: app/models.py:1678
+#: app/models.py:1746
 msgid "Tire Change"
 msgstr "타이어 교체"
 
-#: app/models.py:1679 app/models.py:1728
+#: app/models.py:1747 app/models.py:1796
 msgid "Oil Change"
 msgstr "오일 교환"
 
-#: app/models.py:1699
+#: app/models.py:1767
 msgid "No Repeat"
 msgstr "반복 안 함"
 
-#: app/models.py:1700
+#: app/models.py:1768
 msgid "Day(s)"
 msgstr "일"
 
-#: app/models.py:1701
+#: app/models.py:1769
 msgid "Week(s)"
 msgstr "주"
 
-#: app/models.py:1702
+#: app/models.py:1770
 msgid "Month(s)"
 msgstr "개월"
 
-#: app/models.py:1703
+#: app/models.py:1771
 msgid "Year(s)"
 msgstr "년"
 
-#: app/models.py:1708
+#: app/models.py:1776
 msgid "Business"
 msgstr "업무"
 
-#: app/models.py:1709
+#: app/models.py:1777
 msgid "Personal"
 msgstr "개인"
 
-#: app/models.py:1710
+#: app/models.py:1778
 msgid "Commute"
 msgstr "출퇴근"
 
-#: app/models.py:1711
+#: app/models.py:1779
 msgid "Medical"
 msgstr "의료"
 
-#: app/models.py:1712
+#: app/models.py:1780
 msgid "Charity"
 msgstr "자선"
 
-#: app/models.py:1718
+#: app/models.py:1786
 msgid "Home Charging"
 msgstr "자택 충전"
 
-#: app/models.py:1719
+#: app/models.py:1787
 msgid "Level 1"
 msgstr "레벨 1"
 
-#: app/models.py:1720
+#: app/models.py:1788
 msgid "Level 2"
 msgstr "레벨 2"
 
-#: app/models.py:1721
+#: app/models.py:1789
 msgid "DC Fast Charge"
 msgstr "DC 고속 충전"
 
-#: app/models.py:1722
+#: app/models.py:1790
 msgid "Tesla Supercharger"
 msgstr "Tesla 슈퍼차저"
 
-#: app/models.py:1729 app/models.py:2377
+#: app/models.py:1797 app/models.py:2445
 msgid "Oil Filter"
 msgstr "오일 필터"
 
-#: app/models.py:1730 app/models.py:2378
+#: app/models.py:1798 app/models.py:2446
 msgid "Air Filter"
 msgstr "에어 필터"
 
-#: app/models.py:1731
+#: app/models.py:1799
 msgid "Cabin/Pollen Filter"
 msgstr "캐빈/폴렌 필터"
 
-#: app/models.py:1732 app/models.py:2379
+#: app/models.py:1800 app/models.py:2447
 msgid "Fuel Filter"
 msgstr "연료 필터"
 
-#: app/models.py:1733
+#: app/models.py:1801
 msgid "Spark Plugs"
 msgstr "점화 플러그"
 
-#: app/models.py:1734
+#: app/models.py:1802
 msgid "Brake Pads"
 msgstr "브레이크 패드"
 
-#: app/models.py:1735 app/models.py:2383
+#: app/models.py:1803 app/models.py:2451
 msgid "Brake Fluid"
 msgstr "브레이크 오일"
 
-#: app/models.py:1736
+#: app/models.py:1804
 msgid "Coolant Flush"
 msgstr "냉각수 교환"
 
-#: app/models.py:1737
+#: app/models.py:1805
 msgid "Transmission Service"
 msgstr "변속기 정비"
 
-#: app/models.py:1738
+#: app/models.py:1806
 msgid "Timing Belt"
 msgstr "타이밍 벨트"
 
-#: app/models.py:1739
+#: app/models.py:1807
 msgid "Serpentine Belt"
 msgstr "보조 구동 벨트"
 
-#: app/models.py:1740
+#: app/models.py:1808
 msgid "Tire Rotation"
 msgstr "타이어 로테이션"
 
-#: app/models.py:1741
+#: app/models.py:1809
 msgid "Wheel Alignment"
 msgstr "휠 얼라인먼트"
 
-#: app/models.py:1742
+#: app/models.py:1810
 msgid "Battery Check/Replace"
 msgstr "배터리 점검/교체"
 
-#: app/models.py:1743
+#: app/models.py:1811
 msgid "Wiper Blades"
 msgstr "와이퍼 블레이드"
 
-#: app/models.py:1744
+#: app/models.py:1812
 msgid "Full Service"
 msgstr "종합 정비"
 
-#: app/models.py:1749 app/models.py:2376
+#: app/models.py:1817 app/models.py:2444
 msgid "Engine Oil"
 msgstr "엔진 오일"
 
-#: app/models.py:1750
+#: app/models.py:1818
 msgid "Servicing"
 msgstr "정기 점검"
 
-#: app/models.py:1751 app/templates/vehicles/view.html:246
+#: app/models.py:1819 app/templates/vehicles/view.html:256
 msgid "Parts"
 msgstr "부품"
 
-#: app/models.py:1774
+#: app/models.py:1842
 msgid "Insurance Policy"
 msgstr "보험 증권"
 
-#: app/models.py:1775
+#: app/models.py:1843
 msgid "Registration/V5C"
 msgstr "등록증/V5C"
 
-#: app/models.py:1776
+#: app/models.py:1844
 msgid "MOT Certificate"
 msgstr "MOT 인증서"
 
-#: app/models.py:1777
+#: app/models.py:1845
 msgid "Service Record"
 msgstr "정비 기록"
 
-#: app/models.py:1778
+#: app/models.py:1846
 msgid "Purchase Invoice"
 msgstr "구매 영수증"
 
-#: app/models.py:1779
+#: app/models.py:1847
 msgid "Warranty Document"
 msgstr "보증서"
 
-#: app/models.py:1780
+#: app/models.py:1848
 msgid "Owner's Manual"
 msgstr "사용자 설명서"
 
-#: app/models.py:1786
+#: app/models.py:1854
 msgid "Summer"
 msgstr "여름용"
 
-#: app/models.py:1787
+#: app/models.py:1855
 msgid "Winter"
 msgstr "겨울용"
 
-#: app/models.py:1788
+#: app/models.py:1856
 msgid "All Season"
 msgstr "사계절용"
 
-#: app/models.py:2380
+#: app/models.py:2448
 msgid "Cabin Filter"
 msgstr "캐빈 필터"
 
-#: app/models.py:2381
+#: app/models.py:2449
 msgid "Spark Plug"
 msgstr "점화 플러그"
 
-#: app/models.py:2382
+#: app/models.py:2450
 msgid "Brake Pad"
 msgstr "브레이크 패드"
 
-#: app/models.py:2384
+#: app/models.py:2452
 msgid "Coolant"
 msgstr "냉각수"
 
-#: app/models.py:2386
+#: app/models.py:2454
 msgid "Battery"
 msgstr "배터리"
 
-#: app/models.py:2387
+#: app/models.py:2455
 msgid "Tire"
 msgstr "타이어"
 
-#: app/models.py:2388
+#: app/models.py:2456
 msgid "Belt"
 msgstr "벨트"
 
-#: app/models.py:2389
+#: app/models.py:2457
 msgid "Wiper Blade"
 msgstr "와이퍼 블레이드"
 
-#: app/models.py:2390
+#: app/models.py:2458
 msgid "Light Bulb"
 msgstr "전구"
 
-#: app/models.py:2660 app/templates/tires/index.html:68
+#: app/models.py:2728 app/templates/tires/index.html:68
 msgid "All axles"
 msgstr "모든 차축"
 
-#: app/models.py:2660 app/templates/tires/index.html:69
+#: app/models.py:2728 app/templates/tires/index.html:69
 msgid "Front axle"
 msgstr "앞 차축"
 
-#: app/models.py:2660 app/templates/tires/index.html:70
+#: app/models.py:2728 app/templates/tires/index.html:70
 msgid "Rear axle"
 msgstr "뒤 차축"
 
@@ -576,9 +576,9 @@ msgstr "비밀번호에 소문자가 하나 이상 포함되어야 합니다"
 msgid "Password must contain at least one digit"
 msgstr "비밀번호에 숫자가 하나 이상 포함되어야 합니다"
 
-#: app/routes/allowance.py:62 app/routes/expenses.py:256 app/routes/fuel.py:233
-#: app/routes/fuel.py:649 app/routes/notes.py:44 app/routes/reminders.py:70
-#: app/routes/tires.py:77 app/routes/trips.py:96
+#: app/routes/allowance.py:62 app/routes/expenses.py:256
+#: app/routes/fuel.py:222 app/routes/fuel.py:638 app/routes/notes.py:44
+#: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "먼저 차량을 추가하십시오"
@@ -590,9 +590,9 @@ msgstr "먼저 차량을 추가하십시오"
 #: app/routes/documents.py:167 app/routes/documents.py:207
 #: app/routes/expenses.py:265 app/routes/expenses.py:355
 #: app/routes/expenses.py:410 app/routes/expenses.py:441
-#: app/routes/expenses.py:446 app/routes/fuel.py:242 app/routes/fuel.py:389
-#: app/routes/fuel.py:549 app/routes/fuel.py:604 app/routes/fuel.py:609
-#: app/routes/fuel.py:661 app/routes/fuel.py:662 app/routes/maintenance.py:220
+#: app/routes/expenses.py:446 app/routes/fuel.py:231 app/routes/fuel.py:378
+#: app/routes/fuel.py:538 app/routes/fuel.py:593 app/routes/fuel.py:598
+#: app/routes/fuel.py:650 app/routes/fuel.py:651 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
 #: app/routes/notes.py:53 app/routes/notes.py:100 app/routes/notes.py:141
 #: app/routes/reminders.py:78 app/routes/reminders.py:133
@@ -602,14 +602,14 @@ msgstr "먼저 차량을 추가하십시오"
 #: app/routes/tires.py:274 app/routes/trips.py:104 app/routes/trips.py:177
 #: app/routes/trips.py:221 app/routes/trips.py:254 app/routes/trips.py:286
 #: app/routes/trips.py:297 app/routes/trips.py:326 app/routes/vehicles.py:173
-#: app/routes/vehicles.py:319 app/routes/vehicles.py:421
-#: app/routes/vehicles.py:447 app/routes/vehicles.py:498
-#: app/routes/vehicles.py:503 app/routes/vehicles.py:535
-#: app/routes/vehicles.py:540 app/routes/vehicles.py:568
-#: app/routes/vehicles.py:599 app/routes/vehicles.py:618
-#: app/routes/vehicles.py:634 app/routes/vehicles.py:725
-#: app/routes/vehicles.py:805 app/routes/vehicles.py:834
-#: app/routes/vehicles.py:872 app/routes/vehicles.py:910
+#: app/routes/vehicles.py:338 app/routes/vehicles.py:440
+#: app/routes/vehicles.py:466 app/routes/vehicles.py:517
+#: app/routes/vehicles.py:522 app/routes/vehicles.py:554
+#: app/routes/vehicles.py:559 app/routes/vehicles.py:587
+#: app/routes/vehicles.py:618 app/routes/vehicles.py:637
+#: app/routes/vehicles.py:653 app/routes/vehicles.py:744
+#: app/routes/vehicles.py:824 app/routes/vehicles.py:853
+#: app/routes/vehicles.py:891 app/routes/vehicles.py:929
 msgid "Access denied"
 msgstr "접근이 거부되었습니다"
 
@@ -654,8 +654,8 @@ msgid ""
 "Hammond import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs, "
 "%(expenses)s expenses imported."
 msgstr ""
-"Hammond 가져오기 완료: 차량 %(vehicles)s대, 주유 기록 %(fuel_logs)s건, 비용 "
-"%(expenses)s건을 가져왔습니다."
+"Hammond 가져오기 완료: 차량 %(vehicles)s대, 주유 기록 %(fuel_logs)s건, 비용 %(expenses)s건을 "
+"가져왔습니다."
 
 #: app/routes/api.py:2924
 #, python-format
@@ -669,7 +669,8 @@ msgstr "(오류로 인해 %(total_skipped)s건의 기록을 건너뛰었습니�
 msgid ""
 "Import failed due to a database error. Check that the file is a valid "
 "Hammond database. Error: %(error)s"
-msgstr "데이터베이스 오류로 인해 가져오기에 실패했습니다. 파일이 유효한 Hammond 데이터베이스인지 확인하십시오. 오류: %(error)s"
+msgstr ""
+"데이터베이스 오류로 인해 가져오기에 실패했습니다. 파일이 유효한 Hammond 데이터베이스인지 확인하십시오. 오류: %(error)s"
 
 #: app/routes/api.py:2936 app/routes/api.py:3081 app/routes/api.py:3254
 #: app/routes/api.py:3826
@@ -679,12 +680,14 @@ msgstr "가져오기 실패: %(error)s"
 
 #: app/routes/api.py:3077
 #, python-format
-msgid "Clarkson import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs"
+msgid ""
+"Clarkson import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs"
 msgstr "Clarkson 가져오기 완료: 차량 %(vehicles)s대, 주유 기록 %(fuel_logs)s건"
 
 #: app/routes/api.py:3250
 #, python-format
-msgid "Fuelly import complete: %(vehicles)s new vehicles, %(fuel_logs)s fuel logs"
+msgid ""
+"Fuelly import complete: %(vehicles)s new vehicles, %(fuel_logs)s fuel logs"
 msgstr "Fuelly 가져오기 완료: 새 차량 %(vehicles)s대, 주유 기록 %(fuel_logs)s건"
 
 #: app/routes/api.py:3662
@@ -746,8 +749,8 @@ msgstr "업로드한 백업이 만료되었습니다. 다시 업로드해 주세
 #: app/routes/api.py:3916
 #, python-format
 msgid ""
-"Backup restored: %(added)s records added, %(skipped)s already present and"
-" left alone."
+"Backup restored: %(added)s records added, %(skipped)s already present and "
+"left alone."
 msgstr "백업 복원 완료: %(added)s개 추가, %(skipped)s개는 이미 있어 그대로 두었습니다."
 
 #: app/routes/api.py:3924
@@ -755,7 +758,7 @@ msgstr "백업 복원 완료: %(added)s개 추가, %(skipped)s개는 이미 있�
 msgid "Restore failed: %(error)s"
 msgstr "복원 실패: %(error)s"
 
-#: app/routes/auth.py:36
+#: app/routes/auth.py:37
 #, python-format
 msgid "Too many failed sign-in attempts. Try again in %(minutes)s minutes."
 msgstr "로그인 실패 횟수가 너무 많습니다. %(minutes)s분 후에 다시 시도하세요."
@@ -765,11 +768,13 @@ msgid "Invalid username or password"
 msgstr "잘못된 사용자 이름 또는 비밀번호입니다"
 
 #: app/routes/auth.py:82
-msgid "Password reset by email is not available. Please contact an administrator."
+msgid ""
+"Password reset by email is not available. Please contact an administrator."
 msgstr "이메일을 통한 비밀번호 재설정을 사용할 수 없습니다. 관리자에게 문의하십시오."
 
 #: app/routes/auth.py:111
-msgid "If an account with that email exists, a password reset link has been sent."
+msgid ""
+"If an account with that email exists, a password reset link has been sent."
 msgstr "해당 이메일의 계정이 존재하면 비밀번호 재설정 링크가 전송되었습니다."
 
 #: app/routes/auth.py:124
@@ -952,11 +957,10 @@ msgstr "문서가 업데이트되었습니다"
 msgid "Document \"%(title)s\" deleted"
 msgstr "문서 \"%(title)s\"이(가) 삭제되었습니다"
 
-#: app/routes/expenses.py:62 app/routes/vehicles.py:479
+#: app/routes/expenses.py:62 app/routes/vehicles.py:498
 #, python-format
 msgid ""
-"These files were not saved because the file type is not supported: "
-"%(names)s"
+"These files were not saved because the file type is not supported: %(names)s"
 msgstr "지원하지 않는 파일 형식이라 다음 파일은 저장되지 않았습니다: %(names)s"
 
 #: app/routes/expenses.py:315
@@ -975,42 +979,42 @@ msgstr "비용이 성공적으로 업데이트되었습니다"
 msgid "Expense deleted successfully"
 msgstr "비용이 성공적으로 삭제되었습니다"
 
-#: app/routes/expenses.py:455 app/routes/fuel.py:618
+#: app/routes/expenses.py:455 app/routes/fuel.py:607
 msgid "Attachment deleted"
 msgstr "첨부 파일이 삭제되었습니다"
 
-#: app/routes/fuel.py:359
+#: app/routes/fuel.py:348
 msgid "Fuel log added successfully"
 msgstr "주유 기록이 성공적으로 추가되었습니다"
 
-#: app/routes/fuel.py:522
+#: app/routes/fuel.py:511
 msgid "Fuel log updated successfully"
 msgstr "주유 기록이 성공적으로 업데이트되었습니다"
 
-#: app/routes/fuel.py:583
+#: app/routes/fuel.py:572
 msgid "Fuel log deleted successfully"
 msgstr "주유 기록이 성공적으로 삭제되었습니다"
 
-#: app/routes/fuel.py:720 app/routes/fuel.py:723
+#: app/routes/fuel.py:709 app/routes/fuel.py:712
 msgid "Fuel log added!"
 msgstr "주유 기록이 추가되었습니다!"
 
-#: app/routes/main.py:146 app/routes/vehicles.py:254
+#: app/routes/main.py:146 app/routes/vehicles.py:259
 #: app/templates/base.html:592 app/templates/dashboard.html:74
 #: app/templates/dashboard.html:223 app/templates/partials/mobile_nav.html:23
 #: app/templates/timeline/index.html:15 app/templates/timeline/index.html:100
-#: app/templates/trips/index.html:81 app/templates/vehicles/view.html:455
-#: app/templates/vehicles/view.html:482 app/templates/vehicles/view.html:484
+#: app/templates/trips/index.html:81 app/templates/vehicles/view.html:465
+#: app/templates/vehicles/view.html:492 app/templates/vehicles/view.html:494
 msgid "Fuel"
 msgstr "연료"
 
-#: app/routes/main.py:149 app/routes/vehicles.py:257
+#: app/routes/main.py:149 app/routes/vehicles.py:262
 #: app/templates/charging/_log.html:67 app/templates/dashboard.html:75
 #: app/templates/dashboard.html:224 app/templates/dashboard.html:311
 #: app/templates/timeline/index.html:15 app/templates/timeline/index.html:102
-#: app/templates/vehicles/view.html:456 app/templates/vehicles/view.html:506
-#: app/templates/vehicles/view.html:508 app/templates/vehicles/view.html:556
-#: app/templates/vehicles/view.html:970
+#: app/templates/vehicles/view.html:466 app/templates/vehicles/view.html:516
+#: app/templates/vehicles/view.html:518 app/templates/vehicles/view.html:566
+#: app/templates/vehicles/view.html:980
 msgid "Charging"
 msgstr "충전"
 
@@ -1235,7 +1239,8 @@ msgid "That tire set is not on the vehicle"
 msgstr "해당 타이어 세트는 차량에 장착되어 있지 않습니다"
 
 #: app/routes/tires.py:240
-msgid "The odometer reading cannot be lower than the one the set was fitted at"
+msgid ""
+"The odometer reading cannot be lower than the one the set was fitted at"
 msgstr "주행거리는 세트를 장착한 시점보다 작을 수 없습니다"
 
 #: app/routes/tires.py:264
@@ -1275,7 +1280,7 @@ msgstr "템플릿이 업데이트되었습니다"
 msgid "Template deleted"
 msgstr "템플릿이 삭제되었습니다"
 
-#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:346
 msgid "Starting odometer must be a nonnegative number."
 msgstr "시작 계기판 수치는 0 이상의 숫자여야 합니다."
 
@@ -1284,102 +1289,101 @@ msgstr "시작 계기판 수치는 0 이상의 숫자여야 합니다."
 msgid "Vehicle \"%(name)s\" added successfully"
 msgstr "차량 \"%(name)s\"이(가) 성공적으로 추가되었습니다"
 
-#: app/routes/vehicles.py:339
+#: app/routes/vehicles.py:358
 msgid ""
 "Tracking unit cannot be changed once readings have been logged for this "
 "vehicle. Existing readings were kept as they are."
 msgstr "이 차량에 기록이 입력된 뒤에는 관리 단위를 변경할 수 없습니다. 기존 기록은 그대로 유지되었습니다."
 
-#: app/routes/vehicles.py:397
+#: app/routes/vehicles.py:416
 msgid "Vehicle updated successfully"
 msgstr "차량이 성공적으로 업데이트되었습니다"
 
-#: app/routes/vehicles.py:431
+#: app/routes/vehicles.py:450
 msgid "Vehicle deleted successfully"
 msgstr "차량이 성공적으로 삭제되었습니다"
 
-#: app/routes/vehicles.py:482
+#: app/routes/vehicles.py:501
 msgid "Photo added"
 msgstr "사진을 추가했습니다"
 
-#: app/routes/vehicles.py:484
+#: app/routes/vehicles.py:503
 #, python-format
 msgid "%(count)s photos added"
 msgstr "사진 %(count)s장을 추가했습니다"
 
-#: app/routes/vehicles.py:486
+#: app/routes/vehicles.py:505
 msgid "No photos were selected"
 msgstr "선택된 사진이 없습니다"
 
-#: app/routes/vehicles.py:524
+#: app/routes/vehicles.py:543
 msgid "Main photo updated"
 msgstr "대표 사진을 업데이트했습니다"
 
-#: app/routes/vehicles.py:557
+#: app/routes/vehicles.py:576
 msgid "Photo deleted"
 msgstr "사진을 삭제했습니다"
 
-#: app/routes/vehicles.py:576
+#: app/routes/vehicles.py:595
 msgid "User not found"
 msgstr "사용자를 찾을 수 없습니다"
 
-#: app/routes/vehicles.py:578
+#: app/routes/vehicles.py:597
 msgid "You are already the owner"
 msgstr "이미 소유자입니다"
 
-#: app/routes/vehicles.py:580
+#: app/routes/vehicles.py:599
 msgid "Vehicle already shared with this user"
 msgstr "이미 이 사용자와 차량이 공유되어 있습니다"
 
-#: app/routes/vehicles.py:584
+#: app/routes/vehicles.py:603
 #, python-format
 msgid "Vehicle shared with %(username)s"
 msgstr "%(username)s과(와) 차량이 공유되었습니다"
 
-#: app/routes/vehicles.py:606
+#: app/routes/vehicles.py:625
 #, python-format
 msgid "Sharing removed for %(username)s"
 msgstr "%(username)s에 대한 공유가 제거되었습니다"
 
-#: app/routes/vehicles.py:623
+#: app/routes/vehicles.py:642
 #, python-format
 msgid "Vehicle \"%(name)s\" has been archived"
 msgstr "차량 \"%(name)s\"이(가) 보관 처리되었습니다"
 
-#: app/routes/vehicles.py:639
+#: app/routes/vehicles.py:658
 #, python-format
 msgid "Vehicle \"%(name)s\" has been restored"
 msgstr "차량 \"%(name)s\"이(가) 복원되었습니다"
 
-#: app/routes/vehicles.py:731
+#: app/routes/vehicles.py:750
 msgid "PDF generation is not available. Please install weasyprint."
 msgstr "PDF 생성을 사용할 수 없습니다. weasyprint를 설치하십시오."
 
-#: app/routes/vehicles.py:854
+#: app/routes/vehicles.py:873
 #, python-format
 msgid "Part \"%(name)s\" added successfully"
 msgstr "부품 \"%(name)s\"이(가) 성공적으로 추가되었습니다"
 
-#: app/routes/vehicles.py:877 app/routes/vehicles.py:915
+#: app/routes/vehicles.py:896 app/routes/vehicles.py:934
 msgid "Part not found"
 msgstr "부품을 찾을 수 없습니다"
 
-#: app/routes/vehicles.py:892
+#: app/routes/vehicles.py:911
 msgid "Part updated successfully"
 msgstr "부품이 성공적으로 업데이트되었습니다"
 
-#: app/routes/vehicles.py:921
+#: app/routes/vehicles.py:940
 msgid "Part deleted successfully"
 msgstr "부품이 성공적으로 삭제되었습니다"
 
-#: app/services/telegram_bot.py:127
+#: app/services/telegram_bot.py:126
 msgid ""
 "Send a fill-up as one line, for example:\n"
 "40L 4800tk 45230km\n"
 "35.5 l @120 odo 45230 partial\n"
 "\n"
-"Add a vehicle name if you have more than one. /undo removes the last "
-"entry, /unlink disconnects this chat."
+"Add a vehicle name if you have more than one. /undo removes the last entry, /unlink disconnects this chat."
 msgstr ""
 "주유 내역을 한 줄로 보내십시오. 예:\n"
 "40L 4800tk 45230km\n"
@@ -1395,19 +1399,20 @@ msgstr "가득 주유"
 msgid "partial fill"
 msgstr "부분 주유"
 
-#: app/services/telegram_bot.py:145
+#: app/services/telegram_bot.py:146
 #, python-format
 msgid "Saved for %(vehicle)s: %(details)s"
 msgstr "%(vehicle)s에 저장됨: %(details)s"
 
 #: app/services/telegram_bot.py:148
-msgid "No odometer reading, so this fill-up will not count towards consumption."
+msgid ""
+"No odometer reading, so this fill-up will not count towards consumption."
 msgstr "주행거리 값이 없어 이 주유는 연비 계산에 포함되지 않습니다."
 
 #: app/services/telegram_bot.py:150
 msgid ""
-"The odometer is lower than the last reading for this vehicle. Check it, "
-"or /undo."
+"The odometer is lower than the last reading for this vehicle. Check it, or "
+"/undo."
 msgstr "주행거리가 이 차량의 마지막 기록보다 낮습니다. 확인하거나 /undo를 사용하십시오."
 
 #: app/services/telegram_bot.py:152
@@ -1461,11 +1466,11 @@ msgstr "%(username)s에 연결되었습니다."
 
 #: app/services/telegram_bot.py:219
 msgid ""
-"This chat is not linked to an OdoDash account yet. Open Settings in "
-"OdoDash, choose Connect Telegram, and send the code it shows here."
+"This chat is not linked to an OdoDash account yet. Open Settings in OdoDash,"
+" choose Connect Telegram, and send the code it shows here."
 msgstr ""
-"이 채팅은 아직 OdoDash 계정에 연결되지 않았습니다. OdoDash에서 설정을 열고 텔레그램 연결을 선택한 뒤 표시된 코드를 "
-"여기로 보내십시오."
+"이 채팅은 아직 OdoDash 계정에 연결되지 않았습니다. OdoDash에서 설정을 열고 텔레그램 연결을 선택한 뒤 표시된 코드를 여기로"
+" 보내십시오."
 
 #: app/services/telegram_bot.py:230
 msgid "This chat is no longer linked. You can link it again from Settings."
@@ -1473,8 +1478,8 @@ msgstr "이 채팅은 더 이상 연결되어 있지 않습니다. 설정에서 
 
 #: app/services/telegram_bot.py:232
 msgid ""
-"Photos are not read yet. Send the fill-up as text, for example: 40L "
-"4800tk 45230km"
+"Photos are not read yet. Send the fill-up as text, for example: 40L 4800tk "
+"45230km"
 msgstr "사진은 아직 읽지 못합니다. 주유 내역을 텍스트로 보내십시오. 예: 40L 4800tk 45230km"
 
 #: app/templates/_toasts.html:102
@@ -1493,7 +1498,7 @@ msgstr "차량"
 #: app/templates/auth/settings/_menu.html:9 app/templates/base.html:532
 #: app/templates/fuel/index.html:4 app/templates/fuel/index.html:14
 #: app/templates/fuel/index.html:82 app/templates/import/csv_upload.html:18
-#: app/templates/search/index.html:64 app/templates/vehicles/view.html:555
+#: app/templates/search/index.html:64 app/templates/vehicles/view.html:565
 msgid "Fuel Logs"
 msgstr "주유 기록"
 
@@ -1509,9 +1514,10 @@ msgstr "전기차 충전"
 #: app/templates/expenses/index.html:80 app/templates/expenses/index.html:89
 #: app/templates/expenses/index.html:229
 #: app/templates/import/csv_upload.html:18
-#: app/templates/partials/mobile_nav.html:25 app/templates/search/index.html:55
-#: app/templates/timeline/index.html:15 app/templates/timeline/index.html:101
-#: app/templates/vehicles/view.html:457 app/templates/vehicles/view.html:557
+#: app/templates/partials/mobile_nav.html:25
+#: app/templates/search/index.html:55 app/templates/timeline/index.html:15
+#: app/templates/timeline/index.html:101 app/templates/vehicles/view.html:467
+#: app/templates/vehicles/view.html:567
 msgid "Expenses"
 msgstr "비용"
 
@@ -1525,9 +1531,10 @@ msgstr "알림"
 #: app/templates/auth/settings/_menu.html:7
 #: app/templates/auth/settings/_menu.html:11 app/templates/base.html:536
 #: app/templates/import/csv_upload.html:19
-#: app/templates/partials/mobile_nav.html:27 app/templates/search/index.html:89
-#: app/templates/trips/index.html:4 app/templates/trips/index.html:20
-#: app/templates/trips/index.html:66 app/templates/trips/index.html:73
+#: app/templates/partials/mobile_nav.html:27
+#: app/templates/search/index.html:89 app/templates/trips/index.html:4
+#: app/templates/trips/index.html:20 app/templates/trips/index.html:66
+#: app/templates/trips/index.html:73
 msgid "Trips"
 msgstr "주행"
 
@@ -1539,7 +1546,8 @@ msgstr "반복"
 #: app/templates/auth/settings/_menu.html:7
 #: app/templates/auth/settings/_menu.html:11 app/templates/base.html:539
 #: app/templates/documents/index.html:4 app/templates/documents/index.html:11
-#: app/templates/partials/mobile_nav.html:30 app/templates/search/index.html:73
+#: app/templates/partials/mobile_nav.html:30
+#: app/templates/search/index.html:73
 msgid "Documents"
 msgstr "문서"
 
@@ -1556,7 +1564,7 @@ msgstr "주유소"
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:541
 #: app/templates/dashboard.html:288 app/templates/partials/mobile_nav.html:32
-#: app/templates/vehicles/view.html:211
+#: app/templates/vehicles/view.html:221
 msgid "Mileage Allowance"
 msgstr "주행 수당"
 
@@ -1577,7 +1585,7 @@ msgstr "타이어"
 #: app/templates/trips/template_form.html:58
 #: app/templates/vehicles/form.html:192
 #: app/templates/vehicles/part_form.html:66
-#: app/templates/vehicles/view.html:601
+#: app/templates/vehicles/view.html:611
 msgid "Notes"
 msgstr "메모"
 
@@ -1586,8 +1594,9 @@ msgid "What's new"
 msgstr "새로운 소식"
 
 #: app/templates/base.html:572 app/templates/base.html:658
-#: app/templates/partials/mobile_nav.html:129 app/templates/search/index.html:4
-#: app/templates/search/index.html:36 app/templates/search/index.html:49
+#: app/templates/partials/mobile_nav.html:129
+#: app/templates/search/index.html:4 app/templates/search/index.html:36
+#: app/templates/search/index.html:49
 msgid "Search"
 msgstr "검색"
 
@@ -1683,13 +1692,13 @@ msgstr "%(month)s 지출"
 msgid "%(amount)s by this point last month"
 msgstr "지난달 같은 시점: %(amount)s"
 
-#: app/templates/dashboard.html:65 app/templates/vehicles/view.html:256
-#: app/templates/vehicles/view.html:268
+#: app/templates/dashboard.html:65 app/templates/vehicles/view.html:266
+#: app/templates/vehicles/view.html:278
 msgid "Monthly Spending"
 msgstr "월별 지출"
 
 #: app/templates/dashboard.html:76 app/templates/dashboard.html:285
-#: app/templates/vehicles/view.html:209
+#: app/templates/vehicles/view.html:219
 msgid "Other Expenses"
 msgstr "기타 비용"
 
@@ -1702,9 +1711,9 @@ msgid "Needs attention"
 msgstr "확인 필요"
 
 #: app/templates/dashboard.html:88 app/templates/dashboard.html:168
-#: app/templates/dashboard.html:256 app/templates/vehicles/view.html:279
-#: app/templates/vehicles/view.html:312 app/templates/vehicles/view.html:341
-#: app/templates/vehicles/view.html:568 app/templates/vehicles/view.html:584
+#: app/templates/dashboard.html:256 app/templates/vehicles/view.html:289
+#: app/templates/vehicles/view.html:322 app/templates/vehicles/view.html:351
+#: app/templates/vehicles/view.html:578 app/templates/vehicles/view.html:594
 msgid "View all"
 msgstr "모두 보기"
 
@@ -1716,13 +1725,13 @@ msgstr "%(num)d일 지남"
 
 #: app/templates/dashboard.html:96
 #: app/templates/reminders/_reminder_row.html:40
-#: app/templates/vehicles/view.html:325
+#: app/templates/vehicles/view.html:335
 msgid "Due today"
 msgstr "오늘 만기"
 
 #: app/templates/dashboard.html:97
 #: app/templates/reminders/_reminder_row.html:42
-#: app/templates/vehicles/view.html:326
+#: app/templates/vehicles/view.html:336
 msgid "Due tomorrow"
 msgstr "내일 만기"
 
@@ -1749,7 +1758,7 @@ msgstr "알림 없음"
 
 #: app/templates/dashboard.html:111 app/templates/partials/mobile_nav.html:65
 #: app/templates/reminders/index.html:25 app/templates/reminders/index.html:64
-#: app/templates/vehicles/view.html:241
+#: app/templates/vehicles/view.html:251
 msgid "Add Reminder"
 msgstr "알림 추가"
 
@@ -1784,7 +1793,7 @@ msgstr "전체 기간 %(all_time)s"
 msgid "mixed units"
 msgstr "단위 혼합"
 
-#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:161
 #, python-format
 msgid "Net cost per %(unit)s"
 msgstr "%(unit)s당 순비용"
@@ -1793,7 +1802,7 @@ msgstr "%(unit)s당 순비용"
 msgid "All time"
 msgstr "전체 기간"
 
-#: app/templates/dashboard.html:155 app/templates/vehicles/view.html:259
+#: app/templates/dashboard.html:155 app/templates/vehicles/view.html:269
 msgid "Average per month"
 msgstr "월 평균"
 
@@ -1821,11 +1830,11 @@ msgid "Manage"
 msgstr "관리"
 
 #: app/templates/dashboard.html:191 app/templates/reminders/index.html:53
-#: app/templates/vehicles/view.html:290
+#: app/templates/vehicles/view.html:300
 msgid "Overdue"
 msgstr "기한 초과"
 
-#: app/templates/dashboard.html:192 app/templates/vehicles/view.html:290
+#: app/templates/dashboard.html:192 app/templates/vehicles/view.html:300
 msgid "Due soon"
 msgstr "곧 만기"
 
@@ -1834,7 +1843,7 @@ msgid "Add your first vehicle"
 msgstr "첫 차량 추가하기"
 
 #: app/templates/dashboard.html:203 app/templates/dashboard.html:241
-#: app/templates/vehicles/view.html:451 app/templates/vehicles/view.html:453
+#: app/templates/vehicles/view.html:461 app/templates/vehicles/view.html:463
 msgid "Recent activity"
 msgstr "최근 활동"
 
@@ -1847,7 +1856,7 @@ msgstr "최근 활동"
 #: app/templates/stations/prices.html:36 app/templates/timeline/index.html:32
 #: app/templates/tires/index.html:55 app/templates/tires/index.html:73
 #: app/templates/trips/form.html:45 app/templates/trips/index.html:78
-#: app/templates/trips/report.html:61 app/templates/vehicles/view.html:467
+#: app/templates/trips/report.html:61 app/templates/vehicles/view.html:477
 msgid "Date"
 msgstr "날짜"
 
@@ -1855,7 +1864,7 @@ msgstr "날짜"
 #: app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
 #: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
-#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:468
+#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:478
 msgid "Type"
 msgstr "유형"
 
@@ -1875,7 +1884,7 @@ msgstr "차량"
 
 #: app/templates/dashboard.html:212 app/templates/expenses/index.html:145
 #: app/templates/expenses/index.html:146 app/templates/notes/index.html:72
-#: app/templates/notes/index.html:73 app/templates/vehicles/view.html:469
+#: app/templates/notes/index.html:73 app/templates/vehicles/view.html:479
 msgid "Details"
 msgstr "세부 정보"
 
@@ -1884,11 +1893,11 @@ msgstr "세부 정보"
 msgid "Amount"
 msgstr "금액"
 
-#: app/templates/dashboard.html:241 app/templates/vehicles/view.html:552
+#: app/templates/dashboard.html:241 app/templates/vehicles/view.html:562
 msgid "No fuel logs yet."
 msgstr "아직 주유 기록이 없습니다."
 
-#: app/templates/dashboard.html:247 app/templates/vehicles/view.html:437
+#: app/templates/dashboard.html:247 app/templates/vehicles/view.html:447
 msgid "Expenses by Category"
 msgstr "카테고리별 지출"
 
@@ -1914,16 +1923,16 @@ msgstr "메모 추가"
 msgid "Total Cost"
 msgstr "총 비용"
 
-#: app/templates/dashboard.html:281 app/templates/vehicles/view.html:204
+#: app/templates/dashboard.html:281 app/templates/vehicles/view.html:214
 msgid "Total Fuel Cost"
 msgstr "총 연료비"
 
-#: app/templates/dashboard.html:283 app/templates/vehicles/view.html:207
+#: app/templates/dashboard.html:283 app/templates/vehicles/view.html:217
 msgid "Total Charging Cost"
 msgstr "총 충전 비용"
 
 #: app/templates/dashboard.html:286 app/templates/trips/index.html:58
-#: app/templates/trips/report.html:31 app/templates/vehicles/view.html:214
+#: app/templates/trips/report.html:31 app/templates/vehicles/view.html:224
 msgid "Total Distance"
 msgstr "총 거리"
 
@@ -1932,7 +1941,7 @@ msgstr "총 거리"
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr "이 합계에는 주행거리로 관리하는 차량과 엔진 가동시간으로 관리하는 차량이 함께 포함됩니다."
 
-#: app/templates/dashboard.html:289 app/templates/vehicles/view.html:212
+#: app/templates/dashboard.html:289 app/templates/vehicles/view.html:222
 msgid "Net Cost"
 msgstr "순 비용"
 
@@ -1975,8 +1984,9 @@ msgstr "주행 수당으로 돌아가기"
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
 #: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
-#: app/templates/maintenance/form.html:56 app/templates/recurring/form.html:107
-#: app/templates/trips/form.html:124 app/templates/trips/report.html:62
+#: app/templates/maintenance/form.html:56
+#: app/templates/recurring/form.html:107 app/templates/trips/form.html:124
+#: app/templates/trips/report.html:62
 #: app/templates/trips/template_form.html:53
 msgid "Description"
 msgstr "설명"
@@ -2007,7 +2017,8 @@ msgid "Save Changes"
 msgstr "변경사항 저장"
 
 #: app/templates/allowance/index.html:11
-msgid "Record allowance income for business use; it offsets your running costs"
+msgid ""
+"Record allowance income for business use; it offsets your running costs"
 msgstr "업무용으로 받은 수당 수입을 기록하십시오. 운행 비용을 상쇄하는 데 사용됩니다."
 
 #: app/templates/allowance/index.html:16 app/templates/charging/index.html:18
@@ -2040,8 +2051,8 @@ msgstr "항목"
 #: app/templates/allowance/index.html:54 app/templates/charging/_log.html:43
 #: app/templates/expenses/index.html:97 app/templates/fuel/index.html:94
 #: app/templates/notes/index.html:36 app/templates/stations/prices.html:39
-#: app/templates/trips/index.html:83 app/templates/vehicles/view.html:229
-#: app/templates/vehicles/view.html:472
+#: app/templates/trips/index.html:83 app/templates/vehicles/view.html:239
+#: app/templates/vehicles/view.html:482
 msgid "Actions"
 msgstr "작업"
 
@@ -2055,9 +2066,9 @@ msgstr "작업"
 #: app/templates/trips/index.html:131
 #: app/templates/trips/templates_index.html:40
 #: app/templates/vehicles/parts.html:45 app/templates/vehicles/view.html:68
-#: app/templates/vehicles/view.html:182 app/templates/vehicles/view.html:331
-#: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:518
-#: app/templates/vehicles/view.html:537
+#: app/templates/vehicles/view.html:192 app/templates/vehicles/view.html:341
+#: app/templates/vehicles/view.html:506 app/templates/vehicles/view.html:528
+#: app/templates/vehicles/view.html:547
 msgid "Edit"
 msgstr "편집"
 
@@ -2074,8 +2085,8 @@ msgstr "이 수당 항목을 삭제하시겠습니까?"
 #: app/templates/trips/index.html:136
 #: app/templates/trips/templates_index.html:44
 #: app/templates/vehicles/form.html:17 app/templates/vehicles/parts.html:49
-#: app/templates/vehicles/view.html:500 app/templates/vehicles/view.html:521
-#: app/templates/vehicles/view.html:540 app/templates/vehicles/view.html:655
+#: app/templates/vehicles/view.html:510 app/templates/vehicles/view.html:531
+#: app/templates/vehicles/view.html:550 app/templates/vehicles/view.html:665
 msgid "Delete"
 msgstr "삭제"
 
@@ -2125,7 +2136,8 @@ msgstr "역할"
 msgid "Administrators always have full access, whatever role is set."
 msgstr "관리자는 설정된 역할과 관계없이 항상 전체 권한을 가집니다."
 
-#: app/templates/auth/create_user.html:5 app/templates/auth/create_user.html:11
+#: app/templates/auth/create_user.html:5
+#: app/templates/auth/create_user.html:11
 #: app/templates/auth/create_user.html:51
 #: app/templates/auth/settings/_users.html:6 app/templates/auth/users.html:10
 msgid "Create User"
@@ -2202,7 +2214,8 @@ msgid "Reset your password"
 msgstr "비밀번호 재설정"
 
 #: app/templates/auth/forgot_password.html:6
-msgid "Enter your email address and we'll send you a link to reset your password."
+msgid ""
+"Enter your email address and we'll send you a link to reset your password."
 msgstr "이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다."
 
 #: app/templates/auth/forgot_password.html:15
@@ -2343,14 +2356,13 @@ msgstr "문제가 발생했습니다. 다시 시도하세요."
 
 #: app/templates/auth/settings.html:84
 msgid ""
-"Are you sure you want to regenerate your API key? The current key will "
-"stop working immediately."
+"Are you sure you want to regenerate your API key? The current key will stop "
+"working immediately."
 msgstr "API 키를 다시 생성하시겠습니까? 현재 키는 즉시 사용할 수 없게 됩니다."
 
 #: app/templates/auth/settings.html:85
 msgid ""
-"Are you sure you want to revoke your API key? This action cannot be "
-"undone."
+"Are you sure you want to revoke your API key? This action cannot be undone."
 msgstr "API 키를 폐기하시겠습니까? 이 작업은 되돌릴 수 없습니다."
 
 #: app/templates/auth/settings.html:86
@@ -2371,14 +2383,14 @@ msgstr "API 키가 유효합니다!"
 
 #: app/templates/auth/settings.html:89
 msgid ""
-"Regenerate the Home Assistant key? Home Assistant will ask for the new "
-"key before it updates again."
+"Regenerate the Home Assistant key? Home Assistant will ask for the new key "
+"before it updates again."
 msgstr "Home Assistant 키를 다시 생성할까요? Home Assistant가 다시 업데이트하기 전에 새 키를 요청합니다."
 
 #: app/templates/auth/settings.html:90
 msgid ""
-"Revoke the Home Assistant key? Home Assistant will stop updating until "
-"you create a new one."
+"Revoke the Home Assistant key? Home Assistant will stop updating until you "
+"create a new one."
 msgstr "Home Assistant 키를 취소할까요? 새 키를 만들 때까지 Home Assistant가 업데이트되지 않습니다."
 
 #: app/templates/auth/settings.html:305
@@ -2487,8 +2499,8 @@ msgstr "가입일"
 
 #: app/templates/auth/settings/_account.html:19
 msgid ""
-"Your account can see the data but cannot change it. Ask an administrator "
-"if you need more access."
+"Your account can see the data but cannot change it. Ask an administrator if "
+"you need more access."
 msgstr "이 계정은 데이터를 볼 수 있지만 변경할 수 없습니다. 더 넓은 권한이 필요하면 관리자에게 문의하세요."
 
 #: app/templates/auth/settings/_account.html:19
@@ -2507,8 +2519,7 @@ msgstr "이름 저장"
 
 #: app/templates/auth/settings/_account.html:28
 msgid ""
-"Shown in the greeting and the sidebar. You still sign in with your "
-"username."
+"Shown in the greeting and the sidebar. You still sign in with your username."
 msgstr "인사말과 사이드바에 표시됩니다. 로그인은 계속 사용자 이름으로 합니다."
 
 #: app/templates/auth/settings/_account.html:34
@@ -2545,7 +2556,7 @@ msgid "Update Password"
 msgstr "비밀번호 업데이트"
 
 #: app/templates/auth/settings/_account.html:62
-#: app/templates/vehicles/view.html:670
+#: app/templates/vehicles/view.html:680
 msgid "Danger Zone"
 msgstr "위험 구역"
 
@@ -2612,8 +2623,8 @@ msgid ""
 "Generate an API key to access May programmatically. You can use it to "
 "integrate with other applications or build your own tools."
 msgstr ""
-"May에 프로그래밍 방식으로 접근하기 위한 API 키를 생성하십시오. 다른 애플리케이션과 연동하거나 자체 도구를 구축하는 데 사용할"
-" 수 있습니다."
+"May에 프로그래밍 방식으로 접근하기 위한 API 키를 생성하십시오. 다른 애플리케이션과 연동하거나 자체 도구를 구축하는 데 사용할 수 "
+"있습니다."
 
 #: app/templates/auth/settings/_api.html:31
 msgid "Generate API Key"
@@ -2773,7 +2784,8 @@ msgid "CSV Import"
 msgstr "CSV 가져오기"
 
 #: app/templates/auth/settings/_data.html:52
-msgid "Import fuel logs, expenses, trips, or charging sessions from any CSV file"
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file"
 msgstr "임의의 CSV 파일에서 주유, 지출, 주행, 충전 기록 가져오기"
 
 #: app/templates/auth/settings/_data.html:59
@@ -2917,11 +2929,11 @@ msgstr "모든 캘린더 앱에서 알림을 구독하십시오"
 
 #: app/templates/auth/settings/_integrations.html:94
 msgid ""
-"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any "
-"other calendar app that supports iCal subscriptions."
+"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
+"calendar app that supports iCal subscriptions."
 msgstr ""
-"Apple Calendar, Google Calendar, Outlook 또는 iCal 구독을 지원하는 다른 캘린더 앱에 이 "
-"캘린더를 추가하십시오."
+"Apple Calendar, Google Calendar, Outlook 또는 iCal 구독을 지원하는 다른 캘린더 앱에 이 캘린더를 "
+"추가하십시오."
 
 #: app/templates/auth/settings/_integrations.html:95
 msgid "Webcal URL"
@@ -3014,7 +3026,8 @@ msgid "Install the integration"
 msgstr "통합 구성요소 설치"
 
 #: app/templates/auth/settings/_integrations.html:160
-msgid "Opens your Home Assistant and adds the OdoDash integration through HACS."
+msgid ""
+"Opens your Home Assistant and adds the OdoDash integration through HACS."
 msgstr "Home Assistant를 열고 HACS를 통해 OdoDash 통합 구성요소를 추가합니다."
 
 #: app/templates/auth/settings/_integrations.html:164
@@ -3086,8 +3099,8 @@ msgstr "종합 요약"
 
 #: app/templates/auth/settings/_integrations.html:222
 msgid ""
-"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, "
-"and it is saved as a fuel log."
+"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
+"it is saved as a fuel log."
 msgstr "봇에 주유 내역을 한 줄로 보내면(예: 40L 4800tk 45230km) 주유 기록으로 저장됩니다."
 
 #: app/templates/auth/settings/_integrations.html:228
@@ -3148,8 +3161,8 @@ msgid ""
 "status, and vehicle details for UK registered vehicles. This enables "
 "automatic population of vehicle information when adding new vehicles."
 msgstr ""
-"DVLA 차량 조회 서비스를 통해 영국 등록 차량의 MOT 상태, 세금 상태 및 차량 정보를 조회할 수 있습니다. 이를 통해 새 "
-"차량 추가 시 차량 정보가 자동으로 입력됩니다."
+"DVLA 차량 조회 서비스를 통해 영국 등록 차량의 MOT 상태, 세금 상태 및 차량 정보를 조회할 수 있습니다. 이를 통해 새 차량 "
+"추가 시 차량 정보가 자동으로 입력됩니다."
 
 #: app/templates/auth/settings/_integrations.html:274
 msgid "How to get an API key"
@@ -3200,12 +3213,12 @@ msgstr "Tessie를 통해 Tesla 차량 데이터 동기화"
 
 #: app/templates/auth/settings/_integrations.html:302
 msgid ""
-"Tessie allows you to automatically sync odometer readings, battery level,"
-" and range from your Tesla vehicles. When enabled for a vehicle, odometer"
-" tracking becomes automatic."
+"Tessie allows you to automatically sync odometer readings, battery level, "
+"and range from your Tesla vehicles. When enabled for a vehicle, odometer "
+"tracking becomes automatic."
 msgstr ""
-"Tessie를 사용하면 Tesla 차량의 주행거리계, 배터리 수준 및 주행 가능 거리를 자동으로 동기화할 수 있습니다. 차량에 대해"
-" 활성화하면 주행거리계 추적이 자동으로 이루어집니다."
+"Tessie를 사용하면 Tesla 차량의 주행거리계, 배터리 수준 및 주행 가능 거리를 자동으로 동기화할 수 있습니다. 차량에 대해 "
+"활성화하면 주행거리계 추적이 자동으로 이루어집니다."
 
 #: app/templates/auth/settings/_integrations.html:303
 msgid "Important"
@@ -3254,12 +3267,12 @@ msgstr "Tessie 설정 저장"
 #: app/templates/auth/settings/_integrations.html:335
 msgid ""
 "UK retailers publish forecourt prices under the government fuel price "
-"transparency scheme. May matches your saved stations to those forecourts "
-"by postcode and records the prices, so price history and Cheapest Fuel "
-"stay up to date without manual entry."
+"transparency scheme. May matches your saved stations to those forecourts by "
+"postcode and records the prices, so price history and Cheapest Fuel stay up "
+"to date without manual entry."
 msgstr ""
-"영국 판매사는 정부의 연료 가격 투명화 제도에 따라 주유소 가격을 공개합니다. May는 저장한 주유소를 우편번호로 이 주유소들과 "
-"연결해 가격을 기록하므로, 가격 기록과 최저가 연료가 직접 입력하지 않아도 최신 상태로 유지됩니다."
+"영국 판매사는 정부의 연료 가격 투명화 제도에 따라 주유소 가격을 공개합니다. May는 저장한 주유소를 우편번호로 이 주유소들과 연결해 "
+"가격을 기록하므로, 가격 기록과 최저가 연료가 직접 입력하지 않아도 최신 상태로 유지됩니다."
 
 #: app/templates/auth/settings/_integrations.html:339
 msgid "Before you start"
@@ -3340,8 +3353,8 @@ msgstr "기본값 없음"
 
 #: app/templates/auth/settings/_menu.html:33
 msgid ""
-"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging"
-" sessions"
+"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
+"sessions"
 msgstr "주유 기록, 비용, 주행, 충전 세션 추가 시 미리 선택될 차량"
 
 #: app/templates/auth/settings/_menu.html:36
@@ -3606,11 +3619,11 @@ msgstr "Webhook"
 
 #: app/templates/auth/settings/_notifications.html:182
 msgid ""
-"Webhooks allow users to integrate with any service that accepts HTTP POST"
-" requests (Home Assistant, Discord, Slack, etc.)"
+"Webhooks allow users to integrate with any service that accepts HTTP POST "
+"requests (Home Assistant, Discord, Slack, etc.)"
 msgstr ""
-"Webhook을 사용하면 HTTP POST 요청을 수신하는 모든 서비스(Home Assistant, Discord, Slack "
-"등)와 연동할 수 있습니다."
+"Webhook을 사용하면 HTTP POST 요청을 수신하는 모든 서비스(Home Assistant, Discord, Slack 등)와 "
+"연동할 수 있습니다."
 
 #: app/templates/auth/settings/_notifications.html:186
 msgid "Save Notification Settings"
@@ -3751,7 +3764,7 @@ msgstr "새 사용자의 계정 생성 허용"
 msgid "Cost per kWh"
 msgstr "kWh당 비용"
 
-#: app/templates/charging/_log.html:22 app/templates/vehicles/view.html:164
+#: app/templates/charging/_log.html:22 app/templates/vehicles/view.html:174
 msgid "Last charge"
 msgstr "최근 충전"
 
@@ -3770,7 +3783,7 @@ msgstr "kWh"
 #: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
 #: app/templates/expenses/index.html:96 app/templates/fuel/index.html:93
 #: app/templates/timeline/index.html:35 app/templates/tires/form.html:61
-#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:471
+#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:481
 msgid "Cost"
 msgstr "비용"
 
@@ -3863,7 +3876,8 @@ msgid "Log Charge"
 msgstr "충전 기록"
 
 #: app/templates/components/forms.html:60 app/templates/expenses/form.html:194
-#: app/templates/fuel/form.html:254 app/templates/import/backup_preview.html:75
+#: app/templates/fuel/form.html:254
+#: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/index.html:94
 msgid "Cancel"
@@ -3946,7 +3960,8 @@ msgstr "선택적 메모"
 
 #: app/templates/documents/form.html:82
 #: app/templates/import/csv_mapping.html:15
-#: app/templates/import/csv_upload.html:10 app/templates/vehicles/view.html:615
+#: app/templates/import/csv_upload.html:10
+#: app/templates/vehicles/view.html:625
 msgid "Upload"
 msgstr "업로드"
 
@@ -3983,7 +3998,8 @@ msgid "No documents for this vehicle yet."
 msgstr "이 차량의 문서가 아직 없습니다."
 
 #: app/templates/documents/index.html:68
-msgid "Store your vehicle documents, insurance policies, and MOT certificates."
+msgid ""
+"Store your vehicle documents, insurance policies, and MOT certificates."
 msgstr "차량 문서, 보험 증권 및 MOT 인증서를 보관하십시오."
 
 #: app/templates/documents/view.html:16
@@ -4006,7 +4022,7 @@ msgstr "비용 편집"
 #: app/templates/expenses/form.html:195 app/templates/expenses/index.html:21
 #: app/templates/expenses/index.html:195
 #: app/templates/partials/mobile_nav.html:62
-#: app/templates/vehicles/view.html:238
+#: app/templates/vehicles/view.html:248
 msgid "Add Expense"
 msgstr "비용 추가"
 
@@ -4133,7 +4149,7 @@ msgstr "필터 합계"
 msgid "Receipts:"
 msgstr "영수증:"
 
-#: app/templates/expenses/index.html:152 app/templates/vehicles/view.html:538
+#: app/templates/expenses/index.html:152 app/templates/vehicles/view.html:548
 msgid "Delete this expense?"
 msgstr "이 비용을 삭제하시겠습니까?"
 
@@ -4180,11 +4196,11 @@ msgid "From Tessie"
 msgstr "Tessie에서 가져옴"
 
 #: app/templates/fuel/_quick_form.html:53 app/templates/fuel/form.html:115
-#: app/templates/vehicles/view.html:926
+#: app/templates/vehicles/view.html:936
 msgid "Price per"
 msgstr "단위당 가격"
 
-#: app/templates/fuel/_quick_form.html:71 app/templates/vehicles/view.html:159
+#: app/templates/fuel/_quick_form.html:71 app/templates/vehicles/view.html:169
 msgid "Full tank"
 msgstr "가득 채우기"
 
@@ -4225,7 +4241,7 @@ msgstr "주유 기록 편집"
 #: app/templates/fuel/form.html:4 app/templates/fuel/form.html:38
 #: app/templates/fuel/form.html:255 app/templates/fuel/index.html:28
 #: app/templates/fuel/index.html:171 app/templates/partials/mobile_nav.html:60
-#: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:552
+#: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:562
 msgid "Add Fuel Log"
 msgstr "주유 기록 추가"
 
@@ -4245,8 +4261,8 @@ msgstr "최근 주행거리"
 
 #: app/templates/fuel/form.html:96
 msgid ""
-"Leave blank if the reading was not recorded. Enter 0 to confirm a genuine"
-" zero reading."
+"Leave blank if the reading was not recorded. Enter 0 to confirm a genuine "
+"zero reading."
 msgstr "수치를 기록하지 않았다면 비워 두세요. 실제로 0이었음을 확인하려면 0을 입력하세요."
 
 #: app/templates/fuel/form.html:146
@@ -4272,9 +4288,8 @@ msgstr "이 연료로 주행한 거리"
 
 #: app/templates/fuel/form.html:172
 msgid ""
-"Distance run on this fuel since your last fill-up of it. The odometer "
-"can’t tell the fuels apart, so consumption for a dual-fuel vehicle needs "
-"this."
+"Distance run on this fuel since your last fill-up of it. The odometer can’t "
+"tell the fuels apart, so consumption for a dual-fuel vehicle needs this."
 msgstr ""
 "마지막으로 이 연료를 넣은 이후 주행한 거리입니다. 주행거리계는 연료를 구분하지 못하므로 이중 연료 차량의 연비 계산에는 이 값이 "
 "필요합니다."
@@ -4317,11 +4332,11 @@ msgstr "영수증 / 첨부 파일"
 msgid "Track your fuel fill-ups and consumption"
 msgstr "주유 및 연비를 기록하십시오"
 
-#: app/templates/fuel/index.html:45 app/templates/vehicles/view.html:106
+#: app/templates/fuel/index.html:45 app/templates/vehicles/view.html:107
 msgid "Avg. Consumption"
 msgstr "평균 연비"
 
-#: app/templates/fuel/index.html:51 app/templates/vehicles/view.html:158
+#: app/templates/fuel/index.html:51 app/templates/vehicles/view.html:168
 msgid "Last fill"
 msgstr "최근 주유"
 
@@ -4358,7 +4373,7 @@ msgstr "누락"
 msgid "incl. tax %(amount)s"
 msgstr "세금 포함 %(amount)s"
 
-#: app/templates/fuel/index.html:150 app/templates/vehicles/view.html:497
+#: app/templates/fuel/index.html:150 app/templates/vehicles/view.html:507
 msgid "Delete this fuel log?"
 msgstr "이 주유 기록을 삭제하시겠습니까?"
 
@@ -4393,7 +4408,8 @@ msgid "Restore Preview"
 msgstr "복원 미리보기"
 
 #: app/templates/import/backup_preview.html:9
-msgid "Nothing has been changed yet. This is what will be added to your account."
+msgid ""
+"Nothing has been changed yet. This is what will be added to your account."
 msgstr "아직 변경된 내용은 없습니다. 계정에 추가될 내용은 다음과 같습니다."
 
 #: app/templates/import/backup_preview.html:12
@@ -4463,18 +4479,17 @@ msgstr "May가 만든 JSON 내보내기 또는 전체 백업 ZIP을 복원합니
 
 #: app/templates/import/backup_upload.html:14
 msgid ""
-"The backup is merged into your account. Nothing is deleted or "
-"overwritten, and records that are already here are skipped rather than "
-"duplicated. You will see a summary of what will be added before anything "
-"is written."
+"The backup is merged into your account. Nothing is deleted or overwritten, "
+"and records that are already here are skipped rather than duplicated. You "
+"will see a summary of what will be added before anything is written."
 msgstr ""
-"백업은 계정에 병합됩니다. 아무것도 삭제하거나 덮어쓰지 않으며, 이미 있는 기록은 중복 생성 대신 건너뜁니다. 기록이 저장되기 전에"
-" 추가될 내용의 요약을 볼 수 있습니다."
+"백업은 계정에 병합됩니다. 아무것도 삭제하거나 덮어쓰지 않으며, 이미 있는 기록은 중복 생성 대신 건너뜁니다. 기록이 저장되기 전에 "
+"추가될 내용의 요약을 볼 수 있습니다."
 
 #: app/templates/import/backup_upload.html:15
 msgid ""
-"Documents, attachments and vehicle images can only be restored from a "
-"full backup ZIP, because a JSON export does not contain the files."
+"Documents, attachments and vehicle images can only be restored from a full "
+"backup ZIP, because a JSON export does not contain the files."
 msgstr "JSON 내보내기에는 파일이 포함되지 않으므로 문서, 첨부 파일, 차량 이미지는 전체 백업 ZIP에서만 복원할 수 있습니다."
 
 #: app/templates/import/backup_upload.html:22
@@ -4562,7 +4577,8 @@ msgid "Import from CSV"
 msgstr "CSV에서 가져오기"
 
 #: app/templates/import/csv_upload.html:9
-msgid "Import fuel logs, expenses, trips, or charging sessions from any CSV file."
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file."
 msgstr "어떤 CSV 파일에서든 주유 기록, 지출, 운행 기록, 충전 기록을 가져올 수 있습니다."
 
 #: app/templates/import/csv_upload.html:38
@@ -4573,11 +4589,13 @@ msgstr "CSV 파일"
 msgid "Next: Map Columns"
 msgstr "다음: 열 매핑"
 
-#: app/templates/maintenance/form.html:5 app/templates/maintenance/form.html:17
+#: app/templates/maintenance/form.html:5
+#: app/templates/maintenance/form.html:17
 msgid "Edit Maintenance Schedule"
 msgstr "정비 일정 편집"
 
-#: app/templates/maintenance/form.html:5 app/templates/maintenance/form.html:17
+#: app/templates/maintenance/form.html:5
+#: app/templates/maintenance/form.html:17
 msgid "New Maintenance Schedule"
 msgstr "새 정비 일정"
 
@@ -4588,7 +4606,8 @@ msgstr "정비로 돌아가기"
 
 #: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
 #: app/templates/stations/form.html:16 app/templates/tires/form.html:22
-#: app/templates/vehicles/form.html:38 app/templates/vehicles/part_form.html:24
+#: app/templates/vehicles/form.html:38
+#: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "이름"
 
@@ -4619,8 +4638,8 @@ msgstr "서비스 주기"
 
 #: app/templates/maintenance/form.html:64
 msgid ""
-"Set how often this maintenance should be performed. You can set distance,"
-" time, or both."
+"Set how often this maintenance should be performed. You can set distance, "
+"time, or both."
 msgstr "이 정비를 얼마나 자주 수행해야 하는지 설정하십시오. 거리, 기간 또는 둘 다 설정할 수 있습니다."
 
 #: app/templates/maintenance/form.html:68
@@ -4657,8 +4676,8 @@ msgstr "예: 12"
 
 #: app/templates/maintenance/form.html:97
 msgid ""
-"This vehicle is metered in engine hours, so its service interval is "
-"counted in hours."
+"This vehicle is metered in engine hours, so its service interval is counted "
+"in hours."
 msgstr "이 차량은 엔진 가동 시간으로 계측하므로 정비 주기를 시간 단위로 계산합니다."
 
 #: app/templates/maintenance/form.html:102
@@ -4699,7 +4718,8 @@ msgstr "이 정비 일정을 삭제하시겠습니까?"
 
 #: app/templates/maintenance/history.html:3
 #: app/templates/maintenance/history.html:10
-#: app/templates/maintenance/index.html:11 app/templates/vehicles/view.html:245
+#: app/templates/maintenance/index.html:11
+#: app/templates/vehicles/view.html:255
 msgid "Maintenance History"
 msgstr "정비 이력"
 
@@ -4709,8 +4729,8 @@ msgstr "아직 정비 이력이 없습니다."
 
 #: app/templates/maintenance/history.html:70
 msgid ""
-"History includes recorded completions and the latest saved service "
-"details. Earlier overwritten details cannot be recovered."
+"History includes recorded completions and the latest saved service details. "
+"Earlier overwritten details cannot be recovered."
 msgstr "이력에는 기록된 정비와 마지막으로 저장된 정비 정보가 포함됩니다. 이전에 덮어쓴 정보는 복구할 수 없습니다."
 
 #: app/templates/maintenance/index.html:4
@@ -4811,8 +4831,7 @@ msgstr "무슨 일이 있었나요?"
 
 #: app/templates/notes/index.html:11
 msgid ""
-"Record events and observations that don't fit fuel, expenses or "
-"maintenance"
+"Record events and observations that don't fit fuel, expenses or maintenance"
 msgstr "주유, 비용, 정비에 해당하지 않는 사건이나 관찰 내용을 기록하십시오"
 
 #: app/templates/notes/index.html:79
@@ -4825,7 +4844,7 @@ msgstr "차량에 대해 기억해 둘 만한 내용을 기록해 보세요."
 
 #: app/templates/partials/mobile_nav.html:63 app/templates/trips/form.html:6
 #: app/templates/trips/form.html:17 app/templates/trips/form.html:134
-#: app/templates/trips/index.html:23 app/templates/vehicles/view.html:235
+#: app/templates/trips/index.html:23 app/templates/vehicles/view.html:245
 msgid "Log Trip"
 msgstr "주행 기록"
 
@@ -4968,7 +4987,8 @@ msgid "No recurring expenses"
 msgstr "반복 비용이 없습니다"
 
 #: app/templates/recurring/index.html:58
-msgid "Set up recurring expenses like insurance, road tax, or parking permits."
+msgid ""
+"Set up recurring expenses like insurance, road tax, or parking permits."
 msgstr "보험, 자동차세 또는 주차 허가증과 같은 반복 비용을 설정하십시오."
 
 #: app/templates/reminders/_reminder_row.html:11
@@ -4976,7 +4996,7 @@ msgid "Mark as not completed"
 msgstr "미완료로 표시"
 
 #: app/templates/reminders/_reminder_row.html:13
-#: app/templates/vehicles/view.html:334
+#: app/templates/vehicles/view.html:344
 msgid "Mark as completed"
 msgstr "완료로 표시"
 
@@ -5072,7 +5092,8 @@ msgid "Get started by adding a reminder for your vehicle."
 msgstr "차량에 대한 알림을 추가하여 시작하십시오."
 
 #: app/templates/search/index.html:36
-msgid "Find expenses, fuel logs, documents, notes, trips, and charging sessions"
+msgid ""
+"Find expenses, fuel logs, documents, notes, trips, and charging sessions"
 msgstr "지출, 주유 기록, 문서, 메모, 주행, 충전 세션 검색"
 
 #: app/templates/search/index.html:39
@@ -5108,7 +5129,8 @@ msgstr "결과 없음"
 msgid "Try a different search term or a wider date range."
 msgstr "다른 검색어를 사용하거나 날짜 범위를 넓혀 보세요."
 
-#: app/templates/stations/cheapest.html:8 app/templates/stations/prices.html:14
+#: app/templates/stations/cheapest.html:8
+#: app/templates/stations/prices.html:14
 msgid "Back to stations"
 msgstr "주유소로 돌아가기"
 
@@ -5121,8 +5143,8 @@ msgstr "최근 보고된 가격순 주유소 순위"
 msgid "Add a Station"
 msgstr "주유소 추가"
 
-#: app/templates/stations/cheapest.html:27 app/templates/stations/index.html:32
-#: app/templates/stations/prices.html:15
+#: app/templates/stations/cheapest.html:27
+#: app/templates/stations/index.html:32 app/templates/stations/prices.html:15
 msgid "No address"
 msgstr "주소 없음"
 
@@ -5242,8 +5264,8 @@ msgstr "이 주유소의 가격 이력이 없습니다."
 msgid "Prices are automatically recorded when you log fuel at this station."
 msgstr "이 주유소에서 주유를 기록하면 가격이 자동으로 기록됩니다."
 
-#: app/templates/timeline/index.html:4 app/templates/vehicles/view.html:247
-#: app/templates/vehicles/view.html:558
+#: app/templates/timeline/index.html:4 app/templates/vehicles/view.html:257
+#: app/templates/vehicles/view.html:568
 msgid "Timeline"
 msgstr "타임라인"
 
@@ -5308,8 +5330,8 @@ msgstr "구매일"
 
 #: app/templates/tires/form.html:69
 msgid ""
-"Optional. Kept for reference; the distance covered comes from when the "
-"set is on the vehicle."
+"Optional. Kept for reference; the distance covered comes from when the set "
+"is on the vehicle."
 msgstr "선택 사항. 참고용으로만 저장되며, 주행거리는 세트가 차량에 장착된 기간을 기준으로 계산됩니다."
 
 #: app/templates/tires/form.html:77
@@ -5660,7 +5682,7 @@ msgstr "등록 번호 / 번호판"
 msgid "e.g., ABC 123"
 msgstr "예: ABC 123"
 
-#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:396
+#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:406
 msgid "VIN"
 msgstr "VIN"
 
@@ -5712,8 +5734,8 @@ msgstr "계정 기본값 사용"
 
 #: app/templates/vehicles/form.html:130
 msgid ""
-"Override the odometer unit for this vehicle. Useful when you have "
-"vehicles with different odometer units."
+"Override the odometer unit for this vehicle. Useful when you have vehicles "
+"with different odometer units."
 msgstr "이 차량의 주행거리계 단위를 재정의합니다. 차량마다 주행거리계 단위가 다를 때 유용합니다."
 
 #: app/templates/vehicles/form.html:132
@@ -5722,8 +5744,8 @@ msgstr "시작 계기판 수치"
 
 #: app/templates/vehicles/form.html:132
 msgid ""
-"Optional reading when cost tracking began, in the vehicle’s odometer unit"
-" or engine hours."
+"Optional reading when cost tracking began, in the vehicle’s odometer unit or"
+" engine hours."
 msgstr "비용 기록을 시작할 때의 수치입니다(선택 사항). 차량 주행 거리계 단위 또는 엔진 가동 시간으로 입력합니다."
 
 #: app/templates/vehicles/form.html:142
@@ -5735,14 +5757,16 @@ msgid "Active (show in lists and calculations)"
 msgstr "활성 (목록 및 계산에 표시)"
 
 #: app/templates/vehicles/form.html:160
-msgid "Shared — all users on this instance can view and log against this vehicle"
+msgid ""
+"Shared — all users on this instance can view and log against this vehicle"
 msgstr "공유됨 — 이 인스턴스의 모든 사용자가 이 차량을 조회하고 기록할 수 있습니다"
 
 #: app/templates/vehicles/form.html:168
 msgid ""
 "Link this vehicle to Tessie for automatic odometer and battery tracking. "
 "When enabled, manual odometer entry will be disabled."
-msgstr "이 차량을 Tessie에 연결하여 주행거리계와 배터리를 자동으로 추적합니다. 활성화하면 수동 주행거리계 입력이 비활성화됩니다."
+msgstr ""
+"이 차량을 Tessie에 연결하여 주행거리계와 배터리를 자동으로 추적합니다. 활성화하면 수동 주행거리계 입력이 비활성화됩니다."
 
 #: app/templates/vehicles/form.html:170
 msgid "Tessie VIN"
@@ -5765,7 +5789,7 @@ msgid "Tessie tracking is active for this vehicle"
 msgstr "이 차량에 대해 Tessie 추적이 활성화되어 있습니다"
 
 #: app/templates/vehicles/form.html:192 app/templates/vehicles/form.html:197
-#: app/templates/vehicles/view.html:592
+#: app/templates/vehicles/view.html:602
 msgid "Specifications"
 msgstr "사양"
 
@@ -5783,8 +5807,8 @@ msgstr "사양 추가"
 
 #: app/templates/vehicles/form.html:208
 msgid ""
-"Set a yearly distance limit to track progress — useful for leasing "
-"contracts or insurance policies."
+"Set a yearly distance limit to track progress — useful for leasing contracts"
+" or insurance policies."
 msgstr "진행 상황을 추적할 연간 거리 한도를 설정하십시오. 리스 계약이나 보험 약관에 유용합니다."
 
 #: app/templates/vehicles/form.html:212
@@ -5879,7 +5903,7 @@ msgstr "부품 편집"
 #: app/templates/vehicles/part_form.html:4
 #: app/templates/vehicles/part_form.html:11
 #: app/templates/vehicles/part_form.html:71
-#: app/templates/vehicles/parts.html:11 app/templates/vehicles/view.html:587
+#: app/templates/vehicles/parts.html:11 app/templates/vehicles/view.html:597
 msgid "Add Part"
 msgstr "부품 추가"
 
@@ -5969,7 +5993,7 @@ msgid "Any additional notes about this part..."
 msgstr "이 부품에 대한 추가 메모…"
 
 #: app/templates/vehicles/parts.html:4 app/templates/vehicles/parts.html:10
-#: app/templates/vehicles/view.html:567
+#: app/templates/vehicles/view.html:577
 msgid "Parts & Consumables"
 msgstr "부품 및 소모품"
 
@@ -6026,8 +6050,8 @@ msgstr "제거"
 msgid "This vehicle is not shared with anyone yet."
 msgstr "이 차량은 아직 아무와도 공유되지 않았습니다."
 
-#: app/templates/vehicles/view.html:30 app/templates/vehicles/view.html:610
-#: app/templates/vehicles/view.html:614
+#: app/templates/vehicles/view.html:30 app/templates/vehicles/view.html:620
+#: app/templates/vehicles/view.html:624
 msgid "Photos"
 msgstr "사진"
 
@@ -6063,313 +6087,333 @@ msgstr "영수증 이미지가 포함된 PDF 보고서 다운로드"
 msgid "PDF + Receipts"
 msgstr "PDF + 영수증"
 
-#: app/templates/vehicles/view.html:73 app/templates/vehicles/view.html:232
+#: app/templates/vehicles/view.html:73 app/templates/vehicles/view.html:242
 msgid "Add Charging"
 msgstr "충전 추가"
 
 #: app/templates/vehicles/view.html:82
 msgid ""
-"This vehicle is archived. It won't appear in regular lists or "
-"calculations."
+"This vehicle is archived. It won't appear in regular lists or calculations."
 msgstr "이 차량은 보관 처리되었습니다. 일반 목록이나 계산에 표시되지 않습니다."
 
 #: app/templates/vehicles/view.html:90 app/templates/vehicles/view.html:92
 msgid "Last Odometer"
 msgstr "최근 주행거리계"
 
-#: app/templates/vehicles/view.html:110
+#: app/templates/vehicles/view.html:106
+#, python-format
+msgid "Last %(num)d fill-ups"
+msgstr "최근 %(num)d회 주유"
+
+#: app/templates/vehicles/view.html:112
+#, python-format
+msgid "Last %(num)d charges"
+msgstr "최근 %(num)d회 충전"
+
+#: app/templates/vehicles/view.html:112
 msgid "Avg. Charging"
 msgstr "평균 충전"
 
-#: app/templates/vehicles/view.html:129
+#: app/templates/vehicles/view.html:130
+#, python-format
+msgid "%(pct)d%% better than your average"
+msgstr "평균보다 %(pct)d%% 좋음"
+
+#: app/templates/vehicles/view.html:131
+#, python-format
+msgid "%(pct)d%% worse than your average"
+msgstr "평균보다 %(pct)d%% 나쁨"
+
+#: app/templates/vehicles/view.html:132
+msgid "In line with your average"
+msgstr "평균 수준"
+
+#: app/templates/vehicles/view.html:139
 msgid "A missed fill-up in the range means we can’t calculate this honestly."
 msgstr "이 구간에 누락된 주유가 있어 정확하게 계산할 수 없습니다."
 
-#: app/templates/vehicles/view.html:131
+#: app/templates/vehicles/view.html:141
 msgid ""
 "Consumption can’t be worked out until the distance run on each fuel is "
-"recorded — the odometer can’t tell petrol from LPG. Add it to your fill-"
-"ups."
+"recorded — the odometer can’t tell petrol from LPG. Add it to your fill-ups."
 msgstr ""
-"각 연료로 주행한 거리를 기록하기 전에는 연비를 계산할 수 없습니다. 주행거리계는 휘발유와 LPG를 구분하지 못합니다. 주유 기록에"
-" 추가해 주세요."
+"각 연료로 주행한 거리를 기록하기 전에는 연비를 계산할 수 없습니다. 주행거리계는 휘발유와 LPG를 구분하지 못합니다. 주유 기록에 "
+"추가해 주세요."
 
-#: app/templates/vehicles/view.html:133
+#: app/templates/vehicles/view.html:143
 msgid "Not enough distance or fuel data yet to calculate this."
 msgstr "이를 계산하기에 거리 또는 연료 데이터가 충분하지 않습니다."
 
-#: app/templates/vehicles/view.html:135
+#: app/templates/vehicles/view.html:145
 msgid "Needs at least two full-tank fill-ups."
 msgstr "최소 두 번의 가득 채우기 기록이 필요합니다."
 
-#: app/templates/vehicles/view.html:146
+#: app/templates/vehicles/view.html:156
 msgid "Cost per"
 msgstr "단위당 비용"
 
-#: app/templates/vehicles/view.html:175
+#: app/templates/vehicles/view.html:185
 msgid "Annual Mileage"
 msgstr "연간 주행거리"
 
-#: app/templates/vehicles/view.html:178
+#: app/templates/vehicles/view.html:188
 msgid "Over limit"
 msgstr "한도 초과"
 
-#: app/templates/vehicles/view.html:179
+#: app/templates/vehicles/view.html:189
 msgid "Approaching limit"
 msgstr "한도 근접"
 
-#: app/templates/vehicles/view.html:180
+#: app/templates/vehicles/view.html:190
 msgid "On pace"
 msgstr "정상 속도"
 
-#: app/templates/vehicles/view.html:181
+#: app/templates/vehicles/view.html:191
 msgid "Over pace"
 msgstr "속도 초과"
 
-#: app/templates/vehicles/view.html:185 app/templates/vehicles/view.html:187
+#: app/templates/vehicles/view.html:195 app/templates/vehicles/view.html:197
 msgid "Time elapsed"
 msgstr "경과 시간"
 
-#: app/templates/vehicles/view.html:191
+#: app/templates/vehicles/view.html:201
 msgid "of year elapsed"
 msgstr "연도 경과"
 
-#: app/templates/vehicles/view.html:192
+#: app/templates/vehicles/view.html:202
 msgid "remaining"
 msgstr "남음"
 
-#: app/templates/vehicles/view.html:193
+#: app/templates/vehicles/view.html:203
 msgid "days remaining"
 msgstr "일 남음"
 
-#: app/templates/vehicles/view.html:194
+#: app/templates/vehicles/view.html:204
 msgid "projected year-end"
 msgstr "연말 예상치"
 
-#: app/templates/vehicles/view.html:195
+#: app/templates/vehicles/view.html:205
 msgid "expected at this point"
 msgstr "현재 시점 예상치"
 
-#: app/templates/vehicles/view.html:214
+#: app/templates/vehicles/view.html:224
 msgid "Total Hours"
 msgstr "총 가동 시간"
 
-#: app/templates/vehicles/view.html:216
+#: app/templates/vehicles/view.html:226
 msgid "Fuel Used"
 msgstr "사용한 연료"
 
-#: app/templates/vehicles/view.html:218
+#: app/templates/vehicles/view.html:228
 msgid "CO₂ Emissions"
 msgstr "CO₂ 배출량"
 
-#: app/templates/vehicles/view.html:220
+#: app/templates/vehicles/view.html:230
 msgid "tonnes (estimated)"
 msgstr "톤 (추정)"
 
-#: app/templates/vehicles/view.html:222
+#: app/templates/vehicles/view.html:232
 msgid "kg (estimated)"
 msgstr "kg (추정)"
 
-#: app/templates/vehicles/view.html:260
+#: app/templates/vehicles/view.html:270
 #, python-format
 msgid "From %(start)s to %(end)s"
 msgstr "%(start)s ~ %(end)s"
 
-#: app/templates/vehicles/view.html:278
+#: app/templates/vehicles/view.html:288
 msgid "Upcoming Maintenance"
 msgstr "다가오는 정비"
 
-#: app/templates/vehicles/view.html:311
+#: app/templates/vehicles/view.html:321
 msgid "Upcoming Reminders"
 msgstr "다가오는 알림"
 
-#: app/templates/vehicles/view.html:324
+#: app/templates/vehicles/view.html:334
 #, python-format
 msgid "%(days)s days overdue"
 msgstr "%(days)s일 지남"
 
-#: app/templates/vehicles/view.html:327
+#: app/templates/vehicles/view.html:337
 #, python-format
 msgid "In %(days)s days"
 msgstr "%(days)s일 후"
 
-#: app/templates/vehicles/view.html:355
+#: app/templates/vehicles/view.html:365
 msgid "DVLA Status"
 msgstr "DVLA 상태"
 
-#: app/templates/vehicles/view.html:356 app/templates/vehicles/view.html:386
-#: app/templates/vehicles/view.html:1000 app/templates/vehicles/view.html:1007
-#: app/templates/vehicles/view.html:1055 app/templates/vehicles/view.html:1062
+#: app/templates/vehicles/view.html:366 app/templates/vehicles/view.html:396
+#: app/templates/vehicles/view.html:1010 app/templates/vehicles/view.html:1017
+#: app/templates/vehicles/view.html:1065 app/templates/vehicles/view.html:1072
 msgid "Refresh"
 msgstr "새로고침"
 
-#: app/templates/vehicles/view.html:363
+#: app/templates/vehicles/view.html:373
 msgid "MOT Status"
 msgstr "MOT 상태"
 
-#: app/templates/vehicles/view.html:364
+#: app/templates/vehicles/view.html:374
 msgid "MOT Expiry"
 msgstr "MOT 만료"
 
-#: app/templates/vehicles/view.html:365
+#: app/templates/vehicles/view.html:375
 msgid "Tax Status"
 msgstr "세금 상태"
 
-#: app/templates/vehicles/view.html:366
+#: app/templates/vehicles/view.html:376
 msgid "Tax Due"
 msgstr "세금 만기"
 
-#: app/templates/vehicles/view.html:368 app/templates/vehicles/view.html:401
+#: app/templates/vehicles/view.html:378 app/templates/vehicles/view.html:411
 msgid "Last updated"
 msgstr "마지막 업데이트"
 
-#: app/templates/vehicles/view.html:371
+#: app/templates/vehicles/view.html:381
 msgid "No DVLA data available for this vehicle."
 msgstr "이 차량에 대한 DVLA 데이터가 없습니다."
 
-#: app/templates/vehicles/view.html:372
+#: app/templates/vehicles/view.html:382
 msgid "Fetch from DVLA"
 msgstr "DVLA에서 가져오기"
 
-#: app/templates/vehicles/view.html:383
+#: app/templates/vehicles/view.html:393
 msgid "Tessie Status"
 msgstr "Tessie 상태"
 
-#: app/templates/vehicles/view.html:383
+#: app/templates/vehicles/view.html:393
 msgid "Live"
 msgstr "실시간"
 
-#: app/templates/vehicles/view.html:385 app/templates/vehicles/view.html:1028
-#: app/templates/vehicles/view.html:1035
+#: app/templates/vehicles/view.html:395 app/templates/vehicles/view.html:1038
+#: app/templates/vehicles/view.html:1045
 msgid "Import Charges"
 msgstr "충전 기록 가져오기"
 
-#: app/templates/vehicles/view.html:394
+#: app/templates/vehicles/view.html:404
 msgid "Battery Level"
 msgstr "배터리 수준"
 
-#: app/templates/vehicles/view.html:395
+#: app/templates/vehicles/view.html:405
 msgid "Est. Range"
 msgstr "예상 주행 거리"
 
-#: app/templates/vehicles/view.html:404
+#: app/templates/vehicles/view.html:414
 msgid "No Tessie data available for this vehicle yet."
 msgstr "이 차량에 대한 Tessie 데이터가 아직 없습니다."
 
-#: app/templates/vehicles/view.html:405
+#: app/templates/vehicles/view.html:415
 msgid "Fetch from Tessie"
 msgstr "Tessie에서 가져오기"
 
-#: app/templates/vehicles/view.html:419
+#: app/templates/vehicles/view.html:429
 msgid "Fuel Consumption Trend"
 msgstr "연비 추이"
 
-#: app/templates/vehicles/view.html:427
+#: app/templates/vehicles/view.html:437
 msgid "Fuel Price Trend"
 msgstr "연료 가격 추이"
 
-#: app/templates/vehicles/view.html:454
+#: app/templates/vehicles/view.html:464
 msgid "All"
 msgstr "전체"
 
-#: app/templates/vehicles/view.html:487
+#: app/templates/vehicles/view.html:497
 msgid "(Full)"
 msgstr "(가득 참)"
 
-#: app/templates/vehicles/view.html:519
+#: app/templates/vehicles/view.html:529
 msgid "Delete this charging session?"
 msgstr "이 충전 기록을 삭제할까요?"
 
-#: app/templates/vehicles/view.html:567
+#: app/templates/vehicles/view.html:577
 msgid "Toggle section"
 msgstr "섹션 펼치기/접기"
 
-#: app/templates/vehicles/view.html:579
+#: app/templates/vehicles/view.html:589
 msgid "Buy"
 msgstr "구매"
 
-#: app/templates/vehicles/view.html:587
+#: app/templates/vehicles/view.html:597
 msgid "No parts added yet."
 msgstr "아직 추가된 부품이 없습니다."
 
-#: app/templates/vehicles/view.html:627
+#: app/templates/vehicles/view.html:637
 msgid "Previous photo"
 msgstr "이전 사진"
 
-#: app/templates/vehicles/view.html:628
+#: app/templates/vehicles/view.html:638
 msgid "Next photo"
 msgstr "다음 사진"
 
-#: app/templates/vehicles/view.html:642
+#: app/templates/vehicles/view.html:652
 msgid "Main"
 msgstr "대표"
 
-#: app/templates/vehicles/view.html:646
+#: app/templates/vehicles/view.html:656
 msgid "Set as main"
 msgstr "대표 사진으로 지정"
 
-#: app/templates/vehicles/view.html:653
+#: app/templates/vehicles/view.html:663
 msgid "Delete this photo?"
 msgstr "이 사진을 삭제할까요?"
 
-#: app/templates/vehicles/view.html:663
+#: app/templates/vehicles/view.html:673
 msgid "No photos yet."
 msgstr "아직 사진이 없습니다."
 
-#: app/templates/vehicles/view.html:674
+#: app/templates/vehicles/view.html:684
 msgid "Archive this vehicle"
 msgstr "이 차량 보관하기"
 
-#: app/templates/vehicles/view.html:675
+#: app/templates/vehicles/view.html:685
 msgid ""
 "Archived vehicles won't appear in regular lists or calculations. You can "
 "restore them later."
 msgstr "보관된 차량은 일반 목록이나 계산에 표시되지 않습니다. 나중에 복원할 수 있습니다."
 
-#: app/templates/vehicles/view.html:677
+#: app/templates/vehicles/view.html:687
 msgid "Restore this vehicle"
 msgstr "이 차량 복원하기"
 
-#: app/templates/vehicles/view.html:678
+#: app/templates/vehicles/view.html:688
 msgid ""
-"Restore this vehicle to make it active again and include it in "
-"calculations."
+"Restore this vehicle to make it active again and include it in calculations."
 msgstr "이 차량을 복원하여 다시 활성화하고 계산에 포함시킵니다."
 
-#: app/templates/vehicles/view.html:684
+#: app/templates/vehicles/view.html:694
 msgid "Archive Vehicle"
 msgstr "차량 보관"
 
-#: app/templates/vehicles/view.html:689
+#: app/templates/vehicles/view.html:699
 msgid "Restore Vehicle"
 msgstr "차량 복원"
 
-#: app/templates/vehicles/view.html:695
+#: app/templates/vehicles/view.html:705
 msgid "Delete this vehicle"
 msgstr "이 차량 삭제하기"
 
-#: app/templates/vehicles/view.html:696
+#: app/templates/vehicles/view.html:706
 msgid ""
-"Once you delete a vehicle, there is no going back. This will also delete "
-"all associated fuel logs and expenses."
+"Once you delete a vehicle, there is no going back. This will also delete all"
+" associated fuel logs and expenses."
 msgstr "차량을 삭제하면 되돌릴 수 없습니다. 관련된 모든 주유 기록과 비용도 함께 삭제됩니다."
 
-#: app/templates/vehicles/view.html:699
+#: app/templates/vehicles/view.html:709
 msgid ""
-"Are you sure you want to delete this vehicle? This action cannot be "
-"undone."
+"Are you sure you want to delete this vehicle? This action cannot be undone."
 msgstr "이 차량을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
 
-#: app/templates/vehicles/view.html:701
+#: app/templates/vehicles/view.html:711
 msgid "Delete Vehicle"
 msgstr "차량 삭제"
 
-#: app/templates/vehicles/view.html:916
+#: app/templates/vehicles/view.html:926
 msgid ""
-"Not enough data to show consumption trend. Add more fuel logs with full "
-"tank fills."
+"Not enough data to show consumption trend. Add more fuel logs with full tank"
+" fills."
 msgstr "소비 추이를 표시할 데이터가 충분하지 않습니다. 완전 충전한 주유 기록을 더 추가해 보세요."
 
-#: app/templates/vehicles/view.html:954
+#: app/templates/vehicles/view.html:964
 msgid "No fuel prices recorded yet."
 msgstr "아직 기록된 연료 가격이 없습니다."

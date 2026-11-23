@@ -7,53 +7,53 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-22 15:03-0400\n"
+"POT-Creation-Date: 2026-11-23 18:49+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: no\n"
 "Language-Team: no <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: no\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.11.0\n"
 
-#: app/models.py:52
+#: app/models.py:56
 msgid "Editor"
 msgstr "Redaktør"
 
-#: app/models.py:53
+#: app/models.py:57
 msgid "Contributor"
 msgstr "Bidragsyter"
 
-#: app/models.py:54
+#: app/models.py:58
 msgid "Viewer"
 msgstr "Leser"
 
-#: app/models.py:58
+#: app/models.py:62
 msgid "Full access to the vehicles and data this account can see."
 msgstr "Full tilgang til kjøretøyene og dataene denne kontoen kan se."
 
-#: app/models.py:59
+#: app/models.py:63
 msgid ""
 "Can record fuel fill-ups and charging sessions. Everything else is read-"
 "only."
 msgstr "Kan registrere fyllinger og ladeøkter. Alt annet er skrivebeskyttet."
 
-#: app/models.py:60
+#: app/models.py:64
 msgid "Read-only. Can see the data but cannot change anything."
 msgstr "Skrivebeskyttet. Kan se dataene, men kan ikke endre noe."
 
-#: app/models.py:205 app/templates/auth/_user_list.html:15
+#: app/models.py:209 app/templates/auth/_user_list.html:15
 #: app/templates/auth/create_user.html:47 app/templates/auth/edit_user.html:31
 msgid "Administrator"
 msgstr "Administrator"
 
-#: app/models.py:436 app/templates/maintenance/form.html:113
+#: app/models.py:440 app/templates/maintenance/form.html:113
 msgid "Engine hours"
 msgstr "Motortimer"
 
-#: app/models.py:437 app/templates/charging/_log.html:41
+#: app/models.py:441 app/templates/charging/_log.html:41
 #: app/templates/charging/form.html:101 app/templates/dashboard.html:187
 #: app/templates/dashboard.html:213 app/templates/expenses/form.html:71
 #: app/templates/fuel/_quick_form.html:33 app/templates/fuel/form.html:81
@@ -61,17 +61,17 @@ msgstr "Motortimer"
 #: app/templates/notes/form.html:25 app/templates/notes/index.html:35
 #: app/templates/tires/index.html:58 app/templates/tires/index.html:76
 #: app/templates/trips/index.html:80 app/templates/vehicles/index.html:71
-#: app/templates/vehicles/view.html:87 app/templates/vehicles/view.html:393
-#: app/templates/vehicles/view.html:470 app/templates/vehicles/view.html:491
-#: app/templates/vehicles/view.html:513 app/templates/vehicles/view.html:532
+#: app/templates/vehicles/view.html:87 app/templates/vehicles/view.html:403
+#: app/templates/vehicles/view.html:480 app/templates/vehicles/view.html:501
+#: app/templates/vehicles/view.html:523 app/templates/vehicles/view.html:542
 msgid "Odometer"
 msgstr "Kilometerstand"
 
-#: app/models.py:442 app/models.py:1579 app/templates/trips/form.html:151
+#: app/models.py:446 app/models.py:1647 app/templates/trips/form.html:151
 msgid "Hours"
 msgstr "Timer"
 
-#: app/models.py:443 app/templates/allowance/form.html:36
+#: app/models.py:447 app/templates/allowance/form.html:36
 #: app/templates/allowance/index.html:52
 #: app/templates/auth/settings/_units.html:33 app/templates/trips/form.html:85
 #: app/templates/trips/form.html:151 app/templates/trips/index.html:82
@@ -79,476 +79,476 @@ msgstr "Timer"
 msgid "Distance"
 msgstr "Distanse"
 
-#: app/models.py:1525
+#: app/models.py:1593
 msgid "Front Tire Size"
 msgstr "Størrelse foran (dekk)"
 
-#: app/models.py:1526
+#: app/models.py:1594
 msgid "Rear Tire Size"
 msgstr "Størrelse bak (dekk)"
 
-#: app/models.py:1527
+#: app/models.py:1595
 msgid "Wheel Size"
 msgstr "Felgstørrelse"
 
-#: app/models.py:1528
+#: app/models.py:1596
 msgid "Engine Oil Type"
 msgstr "Motoroljetype"
 
-#: app/models.py:1529
+#: app/models.py:1597
 msgid "Oil Capacity"
 msgstr "Oljekapasitet"
 
-#: app/models.py:1530
+#: app/models.py:1598
 msgid "Coolant Type"
 msgstr "Kjølevæsketype"
 
-#: app/models.py:1531
+#: app/models.py:1599
 msgid "Front Wiper Size"
 msgstr "Viskerstørrelse foran"
 
-#: app/models.py:1532
+#: app/models.py:1600
 msgid "Rear Wiper Size"
 msgstr "Viskerstørrelse bak"
 
-#: app/models.py:1533
+#: app/models.py:1601
 msgid "Battery Type"
 msgstr "Batteritype"
 
-#: app/models.py:1534
+#: app/models.py:1602
 msgid "Spark Plug Type"
 msgstr "Tennplugtype"
 
-#: app/models.py:1535
+#: app/models.py:1603
 msgid "Air Filter Part #"
 msgstr "Luftfilter delenr."
 
-#: app/models.py:1536
+#: app/models.py:1604
 msgid "Cabin Filter Part #"
 msgstr "Kupéfilter delenr."
 
-#: app/models.py:1537
+#: app/models.py:1605
 msgid "Front Brake Pads"
 msgstr "Bremseklosser foran"
 
-#: app/models.py:1538
+#: app/models.py:1606
 msgid "Rear Brake Pads"
 msgstr "Bremseklosser bak"
 
-#: app/models.py:1539 app/models.py:2385
+#: app/models.py:1607 app/models.py:2453
 msgid "Transmission Fluid"
 msgstr "Girolje"
 
-#: app/models.py:1540 app/models.py:1680 app/models.py:1745
+#: app/models.py:1608 app/models.py:1748 app/models.py:1813
 #: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "Egendefinert"
 
-#: app/models.py:1545 app/routes/maintenance.py:99
+#: app/models.py:1613 app/routes/maintenance.py:99
 #: app/templates/auth/settings/_menu.html:6
 #: app/templates/auth/settings/_menu.html:10 app/templates/base.html:537
 #: app/templates/partials/mobile_nav.html:28
 msgid "Maintenance"
 msgstr "Vedlikehold"
 
-#: app/models.py:1546
+#: app/models.py:1614
 msgid "Repairs"
 msgstr "Reparasjoner"
 
-#: app/models.py:1547
+#: app/models.py:1615
 msgid "Inspection"
 msgstr "Kontroll"
 
-#: app/models.py:1548
+#: app/models.py:1616
 msgid "Insurance"
 msgstr "Forsikring"
 
-#: app/models.py:1549
+#: app/models.py:1617
 msgid "Loan Payment"
 msgstr "Lånebetaling"
 
-#: app/models.py:1550 app/models.py:1675
+#: app/models.py:1618 app/models.py:1743
 msgid "Road Tax"
 msgstr "Årsavgift"
 
-#: app/models.py:1551 app/templates/auth/settings/_users.html:8
+#: app/models.py:1619 app/templates/auth/settings/_users.html:8
 msgid "Registration"
 msgstr "Registrering"
 
-#: app/models.py:1552
+#: app/models.py:1620
 msgid "Parking"
 msgstr "Parkering"
 
-#: app/models.py:1553
+#: app/models.py:1621
 msgid "Tolls"
 msgstr "Bomavgifter"
 
-#: app/models.py:1554
+#: app/models.py:1622
 msgid "Cleaning"
 msgstr "Rengjøring"
 
-#: app/models.py:1555
+#: app/models.py:1623
 msgid "Accessories"
 msgstr "Tilbehør"
 
-#: app/models.py:1556 app/models.py:1573 app/models.py:1606 app/models.py:1713
-#: app/models.py:1723 app/models.py:1781 app/models.py:1789 app/models.py:2391
+#: app/models.py:1624 app/models.py:1641 app/models.py:1674 app/models.py:1781
+#: app/models.py:1791 app/models.py:1849 app/models.py:1857 app/models.py:2459
 msgid "Other"
 msgstr "Annet"
 
-#: app/models.py:1561
+#: app/models.py:1629
 msgid "Car"
 msgstr "Bil"
 
-#: app/models.py:1562
+#: app/models.py:1630
 msgid "Van"
 msgstr "Varebil"
 
-#: app/models.py:1563
+#: app/models.py:1631
 msgid "Motorbike"
 msgstr "Motorsykkel"
 
-#: app/models.py:1564
+#: app/models.py:1632
 msgid "Scooter"
 msgstr "Scooter"
 
-#: app/models.py:1565
+#: app/models.py:1633
 msgid "Truck"
 msgstr "Lastebil"
 
-#: app/models.py:1566
+#: app/models.py:1634
 msgid "SUV"
 msgstr "SUV"
 
-#: app/models.py:1567
+#: app/models.py:1635
 msgid "Hatchback"
 msgstr "Halvkombi"
 
-#: app/models.py:1568
+#: app/models.py:1636
 msgid "Station Wagon / Estate"
 msgstr "Stasjonsvogn"
 
-#: app/models.py:1569
+#: app/models.py:1637
 msgid "Pickup / Ute"
 msgstr "Pickup"
 
-#: app/models.py:1570
+#: app/models.py:1638
 msgid "Tractor"
 msgstr "Traktor"
 
-#: app/models.py:1571
+#: app/models.py:1639
 msgid "ATV/UTV"
 msgstr "ATV/UTV"
 
-#: app/models.py:1572
+#: app/models.py:1640
 msgid "Boat"
 msgstr "Båt"
 
-#: app/models.py:1578
+#: app/models.py:1646
 msgid "Mileage (km/mi)"
 msgstr "Kilometerstand (km/mi)"
 
-#: app/models.py:1584 app/templates/auth/settings/_units.html:35
+#: app/models.py:1652 app/templates/auth/settings/_units.html:35
 msgid "Kilometres (km)"
 msgstr "Kilometer (km)"
 
-#: app/models.py:1585 app/templates/auth/settings/_units.html:36
+#: app/models.py:1653 app/templates/auth/settings/_units.html:36
 msgid "Miles (mi)"
 msgstr "Miles (mi)"
 
-#: app/models.py:1590
+#: app/models.py:1658
 msgid "Petrol/Gasoline"
 msgstr "Bensin"
 
-#: app/models.py:1594
+#: app/models.py:1662
 msgid "Premium petrol (Octane)"
 msgstr "Premium bensin (oktan)"
 
-#: app/models.py:1595
+#: app/models.py:1663
 msgid "Diesel"
 msgstr "Diesel"
 
-#: app/models.py:1596
+#: app/models.py:1664
 msgid "Electric"
 msgstr "Elektrisk"
 
-#: app/models.py:1597
+#: app/models.py:1665
 msgid "Hybrid"
 msgstr "Hybrid"
 
-#: app/models.py:1598
+#: app/models.py:1666
 msgid "Plug-in Hybrid"
 msgstr "Ladbar hybrid"
 
-#: app/models.py:1599
+#: app/models.py:1667
 msgid "LPG"
 msgstr "LPG"
 
-#: app/models.py:1600
+#: app/models.py:1668
 msgid "CNG"
 msgstr "CNG"
 
-#: app/models.py:1601
+#: app/models.py:1669
 msgid "Hydrogen"
 msgstr "Hydrogen"
 
-#: app/models.py:1602
+#: app/models.py:1670
 msgid "E85/Flex Fuel"
 msgstr "E85/Flex Fuel"
 
-#: app/models.py:1605
+#: app/models.py:1673
 msgid "AdBlue/DEF"
 msgstr "AdBlue/DEF"
 
-#: app/models.py:1672
+#: app/models.py:1740
 msgid "MOT/Inspection"
 msgstr "EU-kontroll"
 
-#: app/models.py:1673
+#: app/models.py:1741
 msgid "Service Due"
 msgstr "Service forfaller"
 
-#: app/models.py:1674
+#: app/models.py:1742
 msgid "Insurance Renewal"
 msgstr "Fornyelse av forsikring"
 
-#: app/models.py:1676
+#: app/models.py:1744
 msgid "Registration Renewal"
 msgstr "Fornyelse av registrering"
 
-#: app/models.py:1677
+#: app/models.py:1745
 msgid "Warranty Expiry"
 msgstr "Utløp av garanti"
 
-#: app/models.py:1678
+#: app/models.py:1746
 msgid "Tire Change"
 msgstr "Dekkskift"
 
-#: app/models.py:1679 app/models.py:1728
+#: app/models.py:1747 app/models.py:1796
 msgid "Oil Change"
 msgstr "Oljeskift"
 
-#: app/models.py:1699
+#: app/models.py:1767
 msgid "No Repeat"
 msgstr "Ingen gjentakelse"
 
-#: app/models.py:1700
+#: app/models.py:1768
 msgid "Day(s)"
 msgstr "Dag(er)"
 
-#: app/models.py:1701
+#: app/models.py:1769
 msgid "Week(s)"
 msgstr "Uke(r)"
 
-#: app/models.py:1702
+#: app/models.py:1770
 msgid "Month(s)"
 msgstr "Måned(er)"
 
-#: app/models.py:1703
+#: app/models.py:1771
 msgid "Year(s)"
 msgstr "År"
 
-#: app/models.py:1708
+#: app/models.py:1776
 msgid "Business"
 msgstr "Jobb"
 
-#: app/models.py:1709
+#: app/models.py:1777
 msgid "Personal"
 msgstr "Privat"
 
-#: app/models.py:1710
+#: app/models.py:1778
 msgid "Commute"
 msgstr "Arbeidsreise"
 
-#: app/models.py:1711
+#: app/models.py:1779
 msgid "Medical"
 msgstr "Medisinsk"
 
-#: app/models.py:1712
+#: app/models.py:1780
 msgid "Charity"
 msgstr "Veldedighet"
 
-#: app/models.py:1718
+#: app/models.py:1786
 msgid "Home Charging"
 msgstr "Hjemmelading"
 
-#: app/models.py:1719
+#: app/models.py:1787
 msgid "Level 1"
 msgstr "Nivå 1"
 
-#: app/models.py:1720
+#: app/models.py:1788
 msgid "Level 2"
 msgstr "Nivå 2"
 
-#: app/models.py:1721
+#: app/models.py:1789
 msgid "DC Fast Charge"
 msgstr "DC-hurtiglading"
 
-#: app/models.py:1722
+#: app/models.py:1790
 msgid "Tesla Supercharger"
 msgstr "Tesla Supercharger"
 
-#: app/models.py:1729 app/models.py:2377
+#: app/models.py:1797 app/models.py:2445
 msgid "Oil Filter"
 msgstr "Oljefilter"
 
-#: app/models.py:1730 app/models.py:2378
+#: app/models.py:1798 app/models.py:2446
 msgid "Air Filter"
 msgstr "Luftfilter"
 
-#: app/models.py:1731
+#: app/models.py:1799
 msgid "Cabin/Pollen Filter"
 msgstr "Kupé-/pollenfilter"
 
-#: app/models.py:1732 app/models.py:2379
+#: app/models.py:1800 app/models.py:2447
 msgid "Fuel Filter"
 msgstr "Drivstoffilter"
 
-#: app/models.py:1733
+#: app/models.py:1801
 msgid "Spark Plugs"
 msgstr "Tennplugger"
 
-#: app/models.py:1734
+#: app/models.py:1802
 msgid "Brake Pads"
 msgstr "Bremseklosser"
 
-#: app/models.py:1735 app/models.py:2383
+#: app/models.py:1803 app/models.py:2451
 msgid "Brake Fluid"
 msgstr "Bremsevæske"
 
-#: app/models.py:1736
+#: app/models.py:1804
 msgid "Coolant Flush"
 msgstr "Kjølevæskeskift"
 
-#: app/models.py:1737
+#: app/models.py:1805
 msgid "Transmission Service"
 msgstr "Girkasseservice"
 
-#: app/models.py:1738
+#: app/models.py:1806
 msgid "Timing Belt"
 msgstr "Kamrem"
 
-#: app/models.py:1739
+#: app/models.py:1807
 msgid "Serpentine Belt"
 msgstr "Drivrem"
 
-#: app/models.py:1740
+#: app/models.py:1808
 msgid "Tire Rotation"
 msgstr "Dekkrotering"
 
-#: app/models.py:1741
+#: app/models.py:1809
 msgid "Wheel Alignment"
 msgstr "Hjulinnstilling"
 
-#: app/models.py:1742
+#: app/models.py:1810
 msgid "Battery Check/Replace"
 msgstr "Batterikontroll/-bytte"
 
-#: app/models.py:1743
+#: app/models.py:1811
 msgid "Wiper Blades"
 msgstr "Viskerblader"
 
-#: app/models.py:1744
+#: app/models.py:1812
 msgid "Full Service"
 msgstr "Full service"
 
-#: app/models.py:1749 app/models.py:2376
+#: app/models.py:1817 app/models.py:2444
 msgid "Engine Oil"
 msgstr "Motorolje"
 
-#: app/models.py:1750
+#: app/models.py:1818
 msgid "Servicing"
 msgstr "Service"
 
-#: app/models.py:1751 app/templates/vehicles/view.html:246
+#: app/models.py:1819 app/templates/vehicles/view.html:256
 msgid "Parts"
 msgstr "Deler"
 
-#: app/models.py:1774
+#: app/models.py:1842
 msgid "Insurance Policy"
 msgstr "Forsikringsavtale"
 
-#: app/models.py:1775
+#: app/models.py:1843
 msgid "Registration/V5C"
 msgstr "Registreringsbevis"
 
-#: app/models.py:1776
+#: app/models.py:1844
 msgid "MOT Certificate"
 msgstr "EU-kontrollattest"
 
-#: app/models.py:1777
+#: app/models.py:1845
 msgid "Service Record"
 msgstr "Servicehistorikk"
 
-#: app/models.py:1778
+#: app/models.py:1846
 msgid "Purchase Invoice"
 msgstr "Kjøpsfaktura"
 
-#: app/models.py:1779
+#: app/models.py:1847
 msgid "Warranty Document"
 msgstr "Garantidokument"
 
-#: app/models.py:1780
+#: app/models.py:1848
 msgid "Owner's Manual"
 msgstr "Instruksjonsbok"
 
-#: app/models.py:1786
+#: app/models.py:1854
 msgid "Summer"
 msgstr "Sommer"
 
-#: app/models.py:1787
+#: app/models.py:1855
 msgid "Winter"
 msgstr "Vinter"
 
-#: app/models.py:1788
+#: app/models.py:1856
 msgid "All Season"
 msgstr "Helår"
 
-#: app/models.py:2380
+#: app/models.py:2448
 msgid "Cabin Filter"
 msgstr "Kupéfilter"
 
-#: app/models.py:2381
+#: app/models.py:2449
 msgid "Spark Plug"
 msgstr "Tennplugg"
 
-#: app/models.py:2382
+#: app/models.py:2450
 msgid "Brake Pad"
 msgstr "Bremsekloss"
 
-#: app/models.py:2384
+#: app/models.py:2452
 msgid "Coolant"
 msgstr "Kjølevæske"
 
-#: app/models.py:2386
+#: app/models.py:2454
 msgid "Battery"
 msgstr "Batteri"
 
-#: app/models.py:2387
+#: app/models.py:2455
 msgid "Tire"
 msgstr "Dekk"
 
-#: app/models.py:2388
+#: app/models.py:2456
 msgid "Belt"
 msgstr "Rem"
 
-#: app/models.py:2389
+#: app/models.py:2457
 msgid "Wiper Blade"
 msgstr "Viskerblad"
 
-#: app/models.py:2390
+#: app/models.py:2458
 msgid "Light Bulb"
 msgstr "Lyspære"
 
-#: app/models.py:2660 app/templates/tires/index.html:68
+#: app/models.py:2728 app/templates/tires/index.html:68
 msgid "All axles"
 msgstr "Alle aksler"
 
-#: app/models.py:2660 app/templates/tires/index.html:69
+#: app/models.py:2728 app/templates/tires/index.html:69
 msgid "Front axle"
 msgstr "Foraksel"
 
-#: app/models.py:2660 app/templates/tires/index.html:70
+#: app/models.py:2728 app/templates/tires/index.html:70
 msgid "Rear axle"
 msgstr "Bakaksel"
 
@@ -576,9 +576,9 @@ msgstr "Passordet må inneholde minst én liten bokstav"
 msgid "Password must contain at least one digit"
 msgstr "Passordet må inneholde minst ett siffer"
 
-#: app/routes/allowance.py:62 app/routes/expenses.py:256 app/routes/fuel.py:233
-#: app/routes/fuel.py:649 app/routes/notes.py:44 app/routes/reminders.py:70
-#: app/routes/tires.py:77 app/routes/trips.py:96
+#: app/routes/allowance.py:62 app/routes/expenses.py:256
+#: app/routes/fuel.py:222 app/routes/fuel.py:638 app/routes/notes.py:44
+#: app/routes/reminders.py:70 app/routes/tires.py:77 app/routes/trips.py:96
 #: app/templates/fuel/_quick_no_vehicle.html:3
 msgid "Please add a vehicle first"
 msgstr "Vennligst legg til et kjøretøy først"
@@ -590,9 +590,9 @@ msgstr "Vennligst legg til et kjøretøy først"
 #: app/routes/documents.py:167 app/routes/documents.py:207
 #: app/routes/expenses.py:265 app/routes/expenses.py:355
 #: app/routes/expenses.py:410 app/routes/expenses.py:441
-#: app/routes/expenses.py:446 app/routes/fuel.py:242 app/routes/fuel.py:389
-#: app/routes/fuel.py:549 app/routes/fuel.py:604 app/routes/fuel.py:609
-#: app/routes/fuel.py:661 app/routes/fuel.py:662 app/routes/maintenance.py:220
+#: app/routes/expenses.py:446 app/routes/fuel.py:231 app/routes/fuel.py:378
+#: app/routes/fuel.py:538 app/routes/fuel.py:593 app/routes/fuel.py:598
+#: app/routes/fuel.py:650 app/routes/fuel.py:651 app/routes/maintenance.py:220
 #: app/routes/maintenance.py:267 app/routes/maintenance.py:325
 #: app/routes/notes.py:53 app/routes/notes.py:100 app/routes/notes.py:141
 #: app/routes/reminders.py:78 app/routes/reminders.py:133
@@ -602,14 +602,14 @@ msgstr "Vennligst legg til et kjøretøy først"
 #: app/routes/tires.py:274 app/routes/trips.py:104 app/routes/trips.py:177
 #: app/routes/trips.py:221 app/routes/trips.py:254 app/routes/trips.py:286
 #: app/routes/trips.py:297 app/routes/trips.py:326 app/routes/vehicles.py:173
-#: app/routes/vehicles.py:319 app/routes/vehicles.py:421
-#: app/routes/vehicles.py:447 app/routes/vehicles.py:498
-#: app/routes/vehicles.py:503 app/routes/vehicles.py:535
-#: app/routes/vehicles.py:540 app/routes/vehicles.py:568
-#: app/routes/vehicles.py:599 app/routes/vehicles.py:618
-#: app/routes/vehicles.py:634 app/routes/vehicles.py:725
-#: app/routes/vehicles.py:805 app/routes/vehicles.py:834
-#: app/routes/vehicles.py:872 app/routes/vehicles.py:910
+#: app/routes/vehicles.py:338 app/routes/vehicles.py:440
+#: app/routes/vehicles.py:466 app/routes/vehicles.py:517
+#: app/routes/vehicles.py:522 app/routes/vehicles.py:554
+#: app/routes/vehicles.py:559 app/routes/vehicles.py:587
+#: app/routes/vehicles.py:618 app/routes/vehicles.py:637
+#: app/routes/vehicles.py:653 app/routes/vehicles.py:744
+#: app/routes/vehicles.py:824 app/routes/vehicles.py:853
+#: app/routes/vehicles.py:891 app/routes/vehicles.py:929
 msgid "Access denied"
 msgstr "Tilgang nektet"
 
@@ -685,14 +685,16 @@ msgstr "Import mislyktes: %(error)s"
 
 #: app/routes/api.py:3077
 #, python-format
-msgid "Clarkson import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs"
+msgid ""
+"Clarkson import complete: %(vehicles)s vehicles, %(fuel_logs)s fuel logs"
 msgstr ""
 "Clarkson-import fullført: %(vehicles)s kjøretøy, %(fuel_logs)s "
 "drivstofflogger"
 
 #: app/routes/api.py:3250
 #, python-format
-msgid "Fuelly import complete: %(vehicles)s new vehicles, %(fuel_logs)s fuel logs"
+msgid ""
+"Fuelly import complete: %(vehicles)s new vehicles, %(fuel_logs)s fuel logs"
 msgstr ""
 "Fuelly-import fullført: %(vehicles)s nye kjøretøy, %(fuel_logs)s "
 "drivstofflogger"
@@ -756,37 +758,40 @@ msgstr "Den opplastede sikkerhetskopien er utløpt. Last den opp på nytt."
 #: app/routes/api.py:3916
 #, python-format
 msgid ""
-"Backup restored: %(added)s records added, %(skipped)s already present and"
-" left alone."
+"Backup restored: %(added)s records added, %(skipped)s already present and "
+"left alone."
 msgstr ""
-"Sikkerhetskopi gjenopprettet: %(added)s poster lagt til, %(skipped)s "
-"fantes allerede og ble latt være."
+"Sikkerhetskopi gjenopprettet: %(added)s poster lagt til, %(skipped)s fantes "
+"allerede og ble latt være."
 
 #: app/routes/api.py:3924
 #, python-format
 msgid "Restore failed: %(error)s"
 msgstr "Gjenoppretting mislyktes: %(error)s"
 
-#: app/routes/auth.py:36
+#: app/routes/auth.py:37
 #, python-format
 msgid "Too many failed sign-in attempts. Try again in %(minutes)s minutes."
-msgstr "For mange mislykkede påloggingsforsøk. Prøv igjen om %(minutes)s minutter."
+msgstr ""
+"For mange mislykkede påloggingsforsøk. Prøv igjen om %(minutes)s minutter."
 
 #: app/routes/auth.py:55
 msgid "Invalid username or password"
 msgstr "Ugyldig brukernavn eller passord"
 
 #: app/routes/auth.py:82
-msgid "Password reset by email is not available. Please contact an administrator."
+msgid ""
+"Password reset by email is not available. Please contact an administrator."
 msgstr ""
 "Tilbakestilling av passord via e-post er ikke tilgjengelig. Vennligst "
 "kontakt en administrator."
 
 #: app/routes/auth.py:111
-msgid "If an account with that email exists, a password reset link has been sent."
+msgid ""
+"If an account with that email exists, a password reset link has been sent."
 msgstr ""
-"Hvis en konto med den e-postadressen finnes, er en lenke for "
-"tilbakestilling av passord sendt."
+"Hvis en konto med den e-postadressen finnes, er en lenke for tilbakestilling"
+" av passord sendt."
 
 #: app/routes/auth.py:124
 msgid "Invalid or expired reset link. Please request a new one."
@@ -933,8 +938,8 @@ msgstr "Ladenivået må være et heltall mellom 0 og 100"
 #: app/routes/charging.py:113
 msgid "No electric vehicles found. Add an EV or hybrid vehicle first."
 msgstr ""
-"Ingen elektriske kjøretøy funnet. Legg til et elbil- eller hybridkjøretøy"
-" først."
+"Ingen elektriske kjøretøy funnet. Legg til et elbil- eller hybridkjøretøy "
+"først."
 
 #: app/routes/charging.py:166
 msgid "Charging session logged successfully"
@@ -970,11 +975,10 @@ msgstr "Dokument oppdatert"
 msgid "Document \"%(title)s\" deleted"
 msgstr "Dokument \"%(title)s\" slettet"
 
-#: app/routes/expenses.py:62 app/routes/vehicles.py:479
+#: app/routes/expenses.py:62 app/routes/vehicles.py:498
 #, python-format
 msgid ""
-"These files were not saved because the file type is not supported: "
-"%(names)s"
+"These files were not saved because the file type is not supported: %(names)s"
 msgstr "Disse filene ble ikke lagret fordi filtypen ikke støttes: %(names)s"
 
 #: app/routes/expenses.py:315
@@ -993,42 +997,42 @@ msgstr "Utgift oppdatert"
 msgid "Expense deleted successfully"
 msgstr "Utgift slettet"
 
-#: app/routes/expenses.py:455 app/routes/fuel.py:618
+#: app/routes/expenses.py:455 app/routes/fuel.py:607
 msgid "Attachment deleted"
 msgstr "Vedlegg slettet"
 
-#: app/routes/fuel.py:359
+#: app/routes/fuel.py:348
 msgid "Fuel log added successfully"
 msgstr "Drivstofflogg lagt til"
 
-#: app/routes/fuel.py:522
+#: app/routes/fuel.py:511
 msgid "Fuel log updated successfully"
 msgstr "Drivstofflogg oppdatert"
 
-#: app/routes/fuel.py:583
+#: app/routes/fuel.py:572
 msgid "Fuel log deleted successfully"
 msgstr "Drivstofflogg slettet"
 
-#: app/routes/fuel.py:720 app/routes/fuel.py:723
+#: app/routes/fuel.py:709 app/routes/fuel.py:712
 msgid "Fuel log added!"
 msgstr "Drivstofflogg lagt til!"
 
-#: app/routes/main.py:146 app/routes/vehicles.py:254
+#: app/routes/main.py:146 app/routes/vehicles.py:259
 #: app/templates/base.html:592 app/templates/dashboard.html:74
 #: app/templates/dashboard.html:223 app/templates/partials/mobile_nav.html:23
 #: app/templates/timeline/index.html:15 app/templates/timeline/index.html:100
-#: app/templates/trips/index.html:81 app/templates/vehicles/view.html:455
-#: app/templates/vehicles/view.html:482 app/templates/vehicles/view.html:484
+#: app/templates/trips/index.html:81 app/templates/vehicles/view.html:465
+#: app/templates/vehicles/view.html:492 app/templates/vehicles/view.html:494
 msgid "Fuel"
 msgstr "Drivstoff"
 
-#: app/routes/main.py:149 app/routes/vehicles.py:257
+#: app/routes/main.py:149 app/routes/vehicles.py:262
 #: app/templates/charging/_log.html:67 app/templates/dashboard.html:75
 #: app/templates/dashboard.html:224 app/templates/dashboard.html:311
 #: app/templates/timeline/index.html:15 app/templates/timeline/index.html:102
-#: app/templates/vehicles/view.html:456 app/templates/vehicles/view.html:506
-#: app/templates/vehicles/view.html:508 app/templates/vehicles/view.html:556
-#: app/templates/vehicles/view.html:970
+#: app/templates/vehicles/view.html:466 app/templates/vehicles/view.html:516
+#: app/templates/vehicles/view.html:518 app/templates/vehicles/view.html:566
+#: app/templates/vehicles/view.html:980
 msgid "Charging"
 msgstr "Lading"
 
@@ -1174,7 +1178,8 @@ msgstr "%(prices)s sanntidspriser oppdatert fra %(matched)s stasjoner"
 
 #: app/routes/stations.py:176
 msgid "Fuel price sources are unavailable. Saved prices have been kept."
-msgstr "Kilder til drivstoffpriser er utilgjengelige. Lagrede priser er beholdt."
+msgstr ""
+"Kilder til drivstoffpriser er utilgjengelige. Lagrede priser er beholdt."
 
 #: app/routes/stations.py:178
 msgid ""
@@ -1186,7 +1191,8 @@ msgstr "Noen stasjoner kunne ikke kobles fordi prisdataene er ufullstendige."
 msgid ""
 "No unique forecourt match found. Check the station postcode, address and "
 "brand."
-msgstr "Ingen entydig stasjon funnet. Kontroller postnummer, adresse og merke."
+msgstr ""
+"Ingen entydig stasjon funnet. Kontroller postnummer, adresse og merke."
 
 #: app/routes/stations.py:187
 #, python-format
@@ -1196,8 +1202,8 @@ msgstr "Noen forhandlerkilder kunne ikke leses: %(errors)s"
 #: app/routes/stations.py:198 app/routes/stations.py:214
 msgid "UK fuel prices are not enabled. An admin can turn them on in Settings."
 msgstr ""
-"Britiske drivstoffpriser er ikke aktivert. En administrator kan slå dem "
-"på i Innstillinger."
+"Britiske drivstoffpriser er ikke aktivert. En administrator kan slå dem på i"
+" Innstillinger."
 
 #: app/routes/stations.py:234
 msgid "You can only delete your own price entries"
@@ -1213,7 +1219,8 @@ msgstr "Gi dekksettet et navn"
 
 #: app/routes/tires.py:106 app/routes/tires.py:142
 msgid "Invalid data submitted. Please check the odometer and cost fields."
-msgstr "Ugyldige data ble sendt inn. Sjekk feltene for kilometerstand og kostnad."
+msgstr ""
+"Ugyldige data ble sendt inn. Sjekk feltene for kilometerstand og kostnad."
 
 #: app/routes/tires.py:113
 #, python-format
@@ -1238,7 +1245,8 @@ msgstr "Ugyldig aksel"
 
 #: app/routes/tires.py:194
 msgid "The fitting date and reading cannot precede the current fitting."
-msgstr "Monteringsdatoen og målerstanden kan ikke være før gjeldende montering."
+msgstr ""
+"Monteringsdatoen og målerstanden kan ikke være før gjeldende montering."
 
 #: app/routes/tires.py:206 app/routes/tires.py:247
 #, python-format
@@ -1255,7 +1263,8 @@ msgid "That tire set is not on the vehicle"
 msgstr "Det dekksettet står ikke på kjøretøyet"
 
 #: app/routes/tires.py:240
-msgid "The odometer reading cannot be lower than the one the set was fitted at"
+msgid ""
+"The odometer reading cannot be lower than the one the set was fitted at"
 msgstr "Kilometerstanden kan ikke være lavere enn da settet ble montert"
 
 #: app/routes/tires.py:264
@@ -1295,7 +1304,7 @@ msgstr "Mal oppdatert"
 msgid "Template deleted"
 msgstr "Mal slettet"
 
-#: app/routes/vehicles.py:95 app/routes/vehicles.py:327
+#: app/routes/vehicles.py:95 app/routes/vehicles.py:346
 msgid "Starting odometer must be a nonnegative number."
 msgstr "Startavlesningen må være et ikke-negativt tall."
 
@@ -1304,112 +1313,109 @@ msgstr "Startavlesningen må være et ikke-negativt tall."
 msgid "Vehicle \"%(name)s\" added successfully"
 msgstr "Kjøretøy \"%(name)s\" lagt til"
 
-#: app/routes/vehicles.py:339
+#: app/routes/vehicles.py:358
 msgid ""
 "Tracking unit cannot be changed once readings have been logged for this "
 "vehicle. Existing readings were kept as they are."
 msgstr ""
-"Registreringsenheten kan ikke endres etter at det er registrert "
-"avlesninger for dette kjøretøyet. Eksisterende avlesninger ble beholdt "
-"som de var."
+"Registreringsenheten kan ikke endres etter at det er registrert avlesninger "
+"for dette kjøretøyet. Eksisterende avlesninger ble beholdt som de var."
 
-#: app/routes/vehicles.py:397
+#: app/routes/vehicles.py:416
 msgid "Vehicle updated successfully"
 msgstr "Kjøretøy oppdatert"
 
-#: app/routes/vehicles.py:431
+#: app/routes/vehicles.py:450
 msgid "Vehicle deleted successfully"
 msgstr "Kjøretøy slettet"
 
-#: app/routes/vehicles.py:482
+#: app/routes/vehicles.py:501
 msgid "Photo added"
 msgstr "Bilde lagt til"
 
-#: app/routes/vehicles.py:484
+#: app/routes/vehicles.py:503
 #, python-format
 msgid "%(count)s photos added"
 msgstr "%(count)s bilder lagt til"
 
-#: app/routes/vehicles.py:486
+#: app/routes/vehicles.py:505
 msgid "No photos were selected"
 msgstr "Ingen bilder ble valgt"
 
-#: app/routes/vehicles.py:524
+#: app/routes/vehicles.py:543
 msgid "Main photo updated"
 msgstr "Hovedbilde oppdatert"
 
-#: app/routes/vehicles.py:557
+#: app/routes/vehicles.py:576
 msgid "Photo deleted"
 msgstr "Bilde slettet"
 
-#: app/routes/vehicles.py:576
+#: app/routes/vehicles.py:595
 msgid "User not found"
 msgstr "Bruker ikke funnet"
 
-#: app/routes/vehicles.py:578
+#: app/routes/vehicles.py:597
 msgid "You are already the owner"
 msgstr "Du er allerede eieren"
 
-#: app/routes/vehicles.py:580
+#: app/routes/vehicles.py:599
 msgid "Vehicle already shared with this user"
 msgstr "Kjøretøyet er allerede delt med denne brukeren"
 
-#: app/routes/vehicles.py:584
+#: app/routes/vehicles.py:603
 #, python-format
 msgid "Vehicle shared with %(username)s"
 msgstr "Kjøretøy delt med %(username)s"
 
-#: app/routes/vehicles.py:606
+#: app/routes/vehicles.py:625
 #, python-format
 msgid "Sharing removed for %(username)s"
 msgstr "Deling fjernet for %(username)s"
 
-#: app/routes/vehicles.py:623
+#: app/routes/vehicles.py:642
 #, python-format
 msgid "Vehicle \"%(name)s\" has been archived"
 msgstr "Kjøretøy \"%(name)s\" er arkivert"
 
-#: app/routes/vehicles.py:639
+#: app/routes/vehicles.py:658
 #, python-format
 msgid "Vehicle \"%(name)s\" has been restored"
 msgstr "Kjøretøy \"%(name)s\" er gjenopprettet"
 
-#: app/routes/vehicles.py:731
+#: app/routes/vehicles.py:750
 msgid "PDF generation is not available. Please install weasyprint."
 msgstr "PDF-generering er ikke tilgjengelig. Vennligst installer weasyprint."
 
-#: app/routes/vehicles.py:854
+#: app/routes/vehicles.py:873
 #, python-format
 msgid "Part \"%(name)s\" added successfully"
 msgstr "Del \"%(name)s\" lagt til"
 
-#: app/routes/vehicles.py:877 app/routes/vehicles.py:915
+#: app/routes/vehicles.py:896 app/routes/vehicles.py:934
 msgid "Part not found"
 msgstr "Del ikke funnet"
 
-#: app/routes/vehicles.py:892
+#: app/routes/vehicles.py:911
 msgid "Part updated successfully"
 msgstr "Del oppdatert"
 
-#: app/routes/vehicles.py:921
+#: app/routes/vehicles.py:940
 msgid "Part deleted successfully"
 msgstr "Del slettet"
 
-#: app/services/telegram_bot.py:127
+#: app/services/telegram_bot.py:126
 msgid ""
 "Send a fill-up as one line, for example:\n"
 "40L 4800tk 45230km\n"
 "35.5 l @120 odo 45230 partial\n"
 "\n"
-"Add a vehicle name if you have more than one. /undo removes the last "
-"entry, /unlink disconnects this chat."
+"Add a vehicle name if you have more than one. /undo removes the last entry, /unlink disconnects this chat."
 msgstr ""
 "Send en fylling som én linje, for eksempel:\n"
 "40L 4800tk 45230km\n"
 "35.5 l @120 odo 45230 partial\n"
 "\n"
-"Legg til kjøretøyets navn hvis du har mer enn ett. /undo fjerner den "
-"siste oppføringen, /unlink kobler fra denne chatten."
+"Legg til kjøretøyets navn hvis du har mer enn ett. /undo fjerner den siste oppføringen, /unlink kobler fra denne chatten."
 
 #: app/services/telegram_bot.py:144
 msgid "full tank"
@@ -1419,22 +1425,23 @@ msgstr "full tank"
 msgid "partial fill"
 msgstr "delvis fylling"
 
-#: app/services/telegram_bot.py:145
+#: app/services/telegram_bot.py:146
 #, python-format
 msgid "Saved for %(vehicle)s: %(details)s"
 msgstr "Lagret for %(vehicle)s: %(details)s"
 
 #: app/services/telegram_bot.py:148
-msgid "No odometer reading, so this fill-up will not count towards consumption."
+msgid ""
+"No odometer reading, so this fill-up will not count towards consumption."
 msgstr "Ingen kilometerstand, så denne fyllingen teller ikke med i forbruket."
 
 #: app/services/telegram_bot.py:150
 msgid ""
-"The odometer is lower than the last reading for this vehicle. Check it, "
-"or /undo."
+"The odometer is lower than the last reading for this vehicle. Check it, or "
+"/undo."
 msgstr ""
-"Kilometerstanden er lavere enn den siste for dette kjøretøyet. Sjekk den,"
-" eller /undo."
+"Kilometerstanden er lavere enn den siste for dette kjøretøyet. Sjekk den, "
+"eller /undo."
 
 #: app/services/telegram_bot.py:152
 msgid "Some numbers were not understood and were left out."
@@ -1478,7 +1485,8 @@ msgstr "Fjernet den siste fyllingen for %(vehicle)s."
 msgid ""
 "That code is not valid or has expired. Get a new one from Settings in "
 "OdoDash."
-msgstr "Koden er ugyldig eller utløpt. Hent en ny under Innstillinger i OdoDash."
+msgstr ""
+"Koden er ugyldig eller utløpt. Hent en ny under Innstillinger i OdoDash."
 
 #: app/services/telegram_bot.py:213
 #, python-format
@@ -1487,12 +1495,11 @@ msgstr "Koblet til %(username)s."
 
 #: app/services/telegram_bot.py:219
 msgid ""
-"This chat is not linked to an OdoDash account yet. Open Settings in "
-"OdoDash, choose Connect Telegram, and send the code it shows here."
+"This chat is not linked to an OdoDash account yet. Open Settings in OdoDash,"
+" choose Connect Telegram, and send the code it shows here."
 msgstr ""
-"Denne chatten er ikke koblet til en OdoDash-konto ennå. Åpne "
-"Innstillinger i OdoDash, velg Koble til Telegram, og send koden som vises"
-" hit."
+"Denne chatten er ikke koblet til en OdoDash-konto ennå. Åpne Innstillinger i"
+" OdoDash, velg Koble til Telegram, og send koden som vises hit."
 
 #: app/services/telegram_bot.py:230
 msgid "This chat is no longer linked. You can link it again from Settings."
@@ -1502,11 +1509,11 @@ msgstr ""
 
 #: app/services/telegram_bot.py:232
 msgid ""
-"Photos are not read yet. Send the fill-up as text, for example: 40L "
-"4800tk 45230km"
+"Photos are not read yet. Send the fill-up as text, for example: 40L 4800tk "
+"45230km"
 msgstr ""
-"Bilder leses ikke ennå. Send fyllingen som tekst, for eksempel: 40L "
-"4800tk 45230km"
+"Bilder leses ikke ennå. Send fyllingen som tekst, for eksempel: 40L 4800tk "
+"45230km"
 
 #: app/templates/_toasts.html:102
 msgid "Dismiss"
@@ -1524,7 +1531,7 @@ msgstr "Kjøretøy"
 #: app/templates/auth/settings/_menu.html:9 app/templates/base.html:532
 #: app/templates/fuel/index.html:4 app/templates/fuel/index.html:14
 #: app/templates/fuel/index.html:82 app/templates/import/csv_upload.html:18
-#: app/templates/search/index.html:64 app/templates/vehicles/view.html:555
+#: app/templates/search/index.html:64 app/templates/vehicles/view.html:565
 msgid "Fuel Logs"
 msgstr "Drivstofflogger"
 
@@ -1540,9 +1547,10 @@ msgstr "Elbillading"
 #: app/templates/expenses/index.html:80 app/templates/expenses/index.html:89
 #: app/templates/expenses/index.html:229
 #: app/templates/import/csv_upload.html:18
-#: app/templates/partials/mobile_nav.html:25 app/templates/search/index.html:55
-#: app/templates/timeline/index.html:15 app/templates/timeline/index.html:101
-#: app/templates/vehicles/view.html:457 app/templates/vehicles/view.html:557
+#: app/templates/partials/mobile_nav.html:25
+#: app/templates/search/index.html:55 app/templates/timeline/index.html:15
+#: app/templates/timeline/index.html:101 app/templates/vehicles/view.html:467
+#: app/templates/vehicles/view.html:567
 msgid "Expenses"
 msgstr "Utgifter"
 
@@ -1556,9 +1564,10 @@ msgstr "Påminnelser"
 #: app/templates/auth/settings/_menu.html:7
 #: app/templates/auth/settings/_menu.html:11 app/templates/base.html:536
 #: app/templates/import/csv_upload.html:19
-#: app/templates/partials/mobile_nav.html:27 app/templates/search/index.html:89
-#: app/templates/trips/index.html:4 app/templates/trips/index.html:20
-#: app/templates/trips/index.html:66 app/templates/trips/index.html:73
+#: app/templates/partials/mobile_nav.html:27
+#: app/templates/search/index.html:89 app/templates/trips/index.html:4
+#: app/templates/trips/index.html:20 app/templates/trips/index.html:66
+#: app/templates/trips/index.html:73
 msgid "Trips"
 msgstr "Turer"
 
@@ -1570,7 +1579,8 @@ msgstr "Gjentakende"
 #: app/templates/auth/settings/_menu.html:7
 #: app/templates/auth/settings/_menu.html:11 app/templates/base.html:539
 #: app/templates/documents/index.html:4 app/templates/documents/index.html:11
-#: app/templates/partials/mobile_nav.html:30 app/templates/search/index.html:73
+#: app/templates/partials/mobile_nav.html:30
+#: app/templates/search/index.html:73
 msgid "Documents"
 msgstr "Dokumenter"
 
@@ -1587,7 +1597,7 @@ msgstr "Bensinstasjoner"
 #: app/templates/auth/settings/_menu.html:8
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:541
 #: app/templates/dashboard.html:288 app/templates/partials/mobile_nav.html:32
-#: app/templates/vehicles/view.html:211
+#: app/templates/vehicles/view.html:221
 msgid "Mileage Allowance"
 msgstr "Kjøregodtgjørelse"
 
@@ -1608,7 +1618,7 @@ msgstr "Dekk"
 #: app/templates/trips/template_form.html:58
 #: app/templates/vehicles/form.html:192
 #: app/templates/vehicles/part_form.html:66
-#: app/templates/vehicles/view.html:601
+#: app/templates/vehicles/view.html:611
 msgid "Notes"
 msgstr "Notater"
 
@@ -1617,8 +1627,9 @@ msgid "What's new"
 msgstr "Hva er nytt"
 
 #: app/templates/base.html:572 app/templates/base.html:658
-#: app/templates/partials/mobile_nav.html:129 app/templates/search/index.html:4
-#: app/templates/search/index.html:36 app/templates/search/index.html:49
+#: app/templates/partials/mobile_nav.html:129
+#: app/templates/search/index.html:4 app/templates/search/index.html:36
+#: app/templates/search/index.html:49
 msgid "Search"
 msgstr "Søk"
 
@@ -1714,13 +1725,13 @@ msgstr "Brukt i %(month)s"
 msgid "%(amount)s by this point last month"
 msgstr "%(amount)s på samme tidspunkt forrige måned"
 
-#: app/templates/dashboard.html:65 app/templates/vehicles/view.html:256
-#: app/templates/vehicles/view.html:268
+#: app/templates/dashboard.html:65 app/templates/vehicles/view.html:266
+#: app/templates/vehicles/view.html:278
 msgid "Monthly Spending"
 msgstr "Månedlige utgifter"
 
 #: app/templates/dashboard.html:76 app/templates/dashboard.html:285
-#: app/templates/vehicles/view.html:209
+#: app/templates/vehicles/view.html:219
 msgid "Other Expenses"
 msgstr "Andre utgifter"
 
@@ -1733,9 +1744,9 @@ msgid "Needs attention"
 msgstr "Trenger oppmerksomhet"
 
 #: app/templates/dashboard.html:88 app/templates/dashboard.html:168
-#: app/templates/dashboard.html:256 app/templates/vehicles/view.html:279
-#: app/templates/vehicles/view.html:312 app/templates/vehicles/view.html:341
-#: app/templates/vehicles/view.html:568 app/templates/vehicles/view.html:584
+#: app/templates/dashboard.html:256 app/templates/vehicles/view.html:289
+#: app/templates/vehicles/view.html:322 app/templates/vehicles/view.html:351
+#: app/templates/vehicles/view.html:578 app/templates/vehicles/view.html:594
 msgid "View all"
 msgstr "Vis alle"
 
@@ -1747,13 +1758,13 @@ msgstr "%(num)d dager på overtid"
 
 #: app/templates/dashboard.html:96
 #: app/templates/reminders/_reminder_row.html:40
-#: app/templates/vehicles/view.html:325
+#: app/templates/vehicles/view.html:335
 msgid "Due today"
 msgstr "Forfaller i dag"
 
 #: app/templates/dashboard.html:97
 #: app/templates/reminders/_reminder_row.html:42
-#: app/templates/vehicles/view.html:326
+#: app/templates/vehicles/view.html:336
 msgid "Due tomorrow"
 msgstr "Forfaller i morgen"
 
@@ -1780,7 +1791,7 @@ msgstr "Ingen påminnelser"
 
 #: app/templates/dashboard.html:111 app/templates/partials/mobile_nav.html:65
 #: app/templates/reminders/index.html:25 app/templates/reminders/index.html:64
-#: app/templates/vehicles/view.html:241
+#: app/templates/vehicles/view.html:251
 msgid "Add Reminder"
 msgstr "Legg til påminnelse"
 
@@ -1815,7 +1826,7 @@ msgstr "totalt %(all_time)s"
 msgid "mixed units"
 msgstr "blandede enheter"
 
-#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:151
+#: app/templates/dashboard.html:148 app/templates/vehicles/view.html:161
 #, python-format
 msgid "Net cost per %(unit)s"
 msgstr "Nettokostnad per %(unit)s"
@@ -1824,7 +1835,7 @@ msgstr "Nettokostnad per %(unit)s"
 msgid "All time"
 msgstr "Siden start"
 
-#: app/templates/dashboard.html:155 app/templates/vehicles/view.html:259
+#: app/templates/dashboard.html:155 app/templates/vehicles/view.html:269
 msgid "Average per month"
 msgstr "Gjennomsnitt per måned"
 
@@ -1852,11 +1863,11 @@ msgid "Manage"
 msgstr "Administrer"
 
 #: app/templates/dashboard.html:191 app/templates/reminders/index.html:53
-#: app/templates/vehicles/view.html:290
+#: app/templates/vehicles/view.html:300
 msgid "Overdue"
 msgstr "Forfalt"
 
-#: app/templates/dashboard.html:192 app/templates/vehicles/view.html:290
+#: app/templates/dashboard.html:192 app/templates/vehicles/view.html:300
 msgid "Due soon"
 msgstr "Forfaller snart"
 
@@ -1865,7 +1876,7 @@ msgid "Add your first vehicle"
 msgstr "Legg til ditt første kjøretøy"
 
 #: app/templates/dashboard.html:203 app/templates/dashboard.html:241
-#: app/templates/vehicles/view.html:451 app/templates/vehicles/view.html:453
+#: app/templates/vehicles/view.html:461 app/templates/vehicles/view.html:463
 msgid "Recent activity"
 msgstr "Nylig aktivitet"
 
@@ -1878,7 +1889,7 @@ msgstr "Nylig aktivitet"
 #: app/templates/stations/prices.html:36 app/templates/timeline/index.html:32
 #: app/templates/tires/index.html:55 app/templates/tires/index.html:73
 #: app/templates/trips/form.html:45 app/templates/trips/index.html:78
-#: app/templates/trips/report.html:61 app/templates/vehicles/view.html:467
+#: app/templates/trips/report.html:61 app/templates/vehicles/view.html:477
 msgid "Date"
 msgstr "Dato"
 
@@ -1886,7 +1897,7 @@ msgstr "Dato"
 #: app/templates/maintenance/history.html:20
 #: app/templates/reminders/form.html:27 app/templates/reminders/index.html:37
 #: app/templates/tires/form.html:33 app/templates/vehicles/form.html:10
-#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:468
+#: app/templates/vehicles/form.html:43 app/templates/vehicles/view.html:478
 msgid "Type"
 msgstr "Type"
 
@@ -1906,7 +1917,7 @@ msgstr "Kjøretøy"
 
 #: app/templates/dashboard.html:212 app/templates/expenses/index.html:145
 #: app/templates/expenses/index.html:146 app/templates/notes/index.html:72
-#: app/templates/notes/index.html:73 app/templates/vehicles/view.html:469
+#: app/templates/notes/index.html:73 app/templates/vehicles/view.html:479
 msgid "Details"
 msgstr "Detaljer"
 
@@ -1915,11 +1926,11 @@ msgstr "Detaljer"
 msgid "Amount"
 msgstr "Beløp"
 
-#: app/templates/dashboard.html:241 app/templates/vehicles/view.html:552
+#: app/templates/dashboard.html:241 app/templates/vehicles/view.html:562
 msgid "No fuel logs yet."
 msgstr "Ingen drivstofflogger ennå."
 
-#: app/templates/dashboard.html:247 app/templates/vehicles/view.html:437
+#: app/templates/dashboard.html:247 app/templates/vehicles/view.html:447
 msgid "Expenses by Category"
 msgstr "Utgifter etter kategori"
 
@@ -1945,16 +1956,16 @@ msgstr "Legg til notat"
 msgid "Total Cost"
 msgstr "Total kostnad"
 
-#: app/templates/dashboard.html:281 app/templates/vehicles/view.html:204
+#: app/templates/dashboard.html:281 app/templates/vehicles/view.html:214
 msgid "Total Fuel Cost"
 msgstr "Totale drivstoffkostnader"
 
-#: app/templates/dashboard.html:283 app/templates/vehicles/view.html:207
+#: app/templates/dashboard.html:283 app/templates/vehicles/view.html:217
 msgid "Total Charging Cost"
 msgstr "Total ladekostnad"
 
 #: app/templates/dashboard.html:286 app/templates/trips/index.html:58
-#: app/templates/trips/report.html:31 app/templates/vehicles/view.html:214
+#: app/templates/trips/report.html:31 app/templates/vehicles/view.html:224
 msgid "Total Distance"
 msgstr "Total distanse"
 
@@ -1963,7 +1974,7 @@ msgstr "Total distanse"
 msgid "This total covers vehicles metered in distance and in engine hours."
 msgstr "Denne summen omfatter kjøretøy som måles i distanse og i motortimer."
 
-#: app/templates/dashboard.html:289 app/templates/vehicles/view.html:212
+#: app/templates/dashboard.html:289 app/templates/vehicles/view.html:222
 msgid "Net Cost"
 msgstr "Nettokostnad"
 
@@ -2008,8 +2019,9 @@ msgstr "Tilbake til kjøregodtgjørelse"
 #: app/templates/allowance/form.html:26 app/templates/allowance/index.html:51
 #: app/templates/documents/form.html:77 app/templates/documents/view.html:32
 #: app/templates/expenses/form.html:116 app/templates/expenses/index.html:95
-#: app/templates/maintenance/form.html:56 app/templates/recurring/form.html:107
-#: app/templates/trips/form.html:124 app/templates/trips/report.html:62
+#: app/templates/maintenance/form.html:56
+#: app/templates/recurring/form.html:107 app/templates/trips/form.html:124
+#: app/templates/trips/report.html:62
 #: app/templates/trips/template_form.html:53
 msgid "Description"
 msgstr "Beskrivelse"
@@ -2040,7 +2052,8 @@ msgid "Save Changes"
 msgstr "Lagre endringer"
 
 #: app/templates/allowance/index.html:11
-msgid "Record allowance income for business use; it offsets your running costs"
+msgid ""
+"Record allowance income for business use; it offsets your running costs"
 msgstr ""
 "Registrer godtgjørelsesinntekt for jobbkjøring; den motregner løpende "
 "kostnader"
@@ -2075,8 +2088,8 @@ msgstr "Oppføringer"
 #: app/templates/allowance/index.html:54 app/templates/charging/_log.html:43
 #: app/templates/expenses/index.html:97 app/templates/fuel/index.html:94
 #: app/templates/notes/index.html:36 app/templates/stations/prices.html:39
-#: app/templates/trips/index.html:83 app/templates/vehicles/view.html:229
-#: app/templates/vehicles/view.html:472
+#: app/templates/trips/index.html:83 app/templates/vehicles/view.html:239
+#: app/templates/vehicles/view.html:482
 msgid "Actions"
 msgstr "Handlinger"
 
@@ -2090,9 +2103,9 @@ msgstr "Handlinger"
 #: app/templates/trips/index.html:131
 #: app/templates/trips/templates_index.html:40
 #: app/templates/vehicles/parts.html:45 app/templates/vehicles/view.html:68
-#: app/templates/vehicles/view.html:182 app/templates/vehicles/view.html:331
-#: app/templates/vehicles/view.html:496 app/templates/vehicles/view.html:518
-#: app/templates/vehicles/view.html:537
+#: app/templates/vehicles/view.html:192 app/templates/vehicles/view.html:341
+#: app/templates/vehicles/view.html:506 app/templates/vehicles/view.html:528
+#: app/templates/vehicles/view.html:547
 msgid "Edit"
 msgstr "Rediger"
 
@@ -2109,8 +2122,8 @@ msgstr "Slette denne godtgjørelsesoppføringen?"
 #: app/templates/trips/index.html:136
 #: app/templates/trips/templates_index.html:44
 #: app/templates/vehicles/form.html:17 app/templates/vehicles/parts.html:49
-#: app/templates/vehicles/view.html:500 app/templates/vehicles/view.html:521
-#: app/templates/vehicles/view.html:540 app/templates/vehicles/view.html:655
+#: app/templates/vehicles/view.html:510 app/templates/vehicles/view.html:531
+#: app/templates/vehicles/view.html:550 app/templates/vehicles/view.html:665
 msgid "Delete"
 msgstr "Slett"
 
@@ -2159,10 +2172,10 @@ msgstr "Rolle"
 #: app/templates/auth/_user_role.html:14
 msgid "Administrators always have full access, whatever role is set."
 msgstr ""
-"Administratorer har alltid full tilgang, uansett hvilken rolle som er "
-"satt."
+"Administratorer har alltid full tilgang, uansett hvilken rolle som er satt."
 
-#: app/templates/auth/create_user.html:5 app/templates/auth/create_user.html:11
+#: app/templates/auth/create_user.html:5
+#: app/templates/auth/create_user.html:11
 #: app/templates/auth/create_user.html:51
 #: app/templates/auth/settings/_users.html:6 app/templates/auth/users.html:10
 msgid "Create User"
@@ -2239,10 +2252,11 @@ msgid "Reset your password"
 msgstr "Tilbakestill passordet ditt"
 
 #: app/templates/auth/forgot_password.html:6
-msgid "Enter your email address and we'll send you a link to reset your password."
+msgid ""
+"Enter your email address and we'll send you a link to reset your password."
 msgstr ""
-"Skriv inn e-postadressen din, så sender vi deg en lenke for å "
-"tilbakestille passordet."
+"Skriv inn e-postadressen din, så sender vi deg en lenke for å tilbakestille "
+"passordet."
 
 #: app/templates/auth/forgot_password.html:15
 msgid "Send Reset Link"
@@ -2382,19 +2396,17 @@ msgstr "Noe gikk galt. Prøv igjen."
 
 #: app/templates/auth/settings.html:84
 msgid ""
-"Are you sure you want to regenerate your API key? The current key will "
-"stop working immediately."
+"Are you sure you want to regenerate your API key? The current key will stop "
+"working immediately."
 msgstr ""
-"Er du sikker på at du vil generere en ny API-nøkkel? Den nåværende "
-"nøkkelen slutter å virke umiddelbart."
+"Er du sikker på at du vil generere en ny API-nøkkel? Den nåværende nøkkelen "
+"slutter å virke umiddelbart."
 
 #: app/templates/auth/settings.html:85
 msgid ""
-"Are you sure you want to revoke your API key? This action cannot be "
-"undone."
+"Are you sure you want to revoke your API key? This action cannot be undone."
 msgstr ""
-"Er du sikker på at du vil tilbakekalle API-nøkkelen? Dette kan ikke "
-"angres."
+"Er du sikker på at du vil tilbakekalle API-nøkkelen? Dette kan ikke angres."
 
 #: app/templates/auth/settings.html:86
 msgid "Please enter an API token"
@@ -2414,19 +2426,19 @@ msgstr "API-nøkkelen er gyldig!"
 
 #: app/templates/auth/settings.html:89
 msgid ""
-"Regenerate the Home Assistant key? Home Assistant will ask for the new "
-"key before it updates again."
+"Regenerate the Home Assistant key? Home Assistant will ask for the new key "
+"before it updates again."
 msgstr ""
 "Generere Home Assistant-nøkkelen på nytt? Home Assistant ber om den nye "
 "nøkkelen før den oppdaterer igjen."
 
 #: app/templates/auth/settings.html:90
 msgid ""
-"Revoke the Home Assistant key? Home Assistant will stop updating until "
-"you create a new one."
+"Revoke the Home Assistant key? Home Assistant will stop updating until you "
+"create a new one."
 msgstr ""
-"Tilbakekalle Home Assistant-nøkkelen? Home Assistant slutter å oppdatere "
-"til du oppretter en ny."
+"Tilbakekalle Home Assistant-nøkkelen? Home Assistant slutter å oppdatere til"
+" du oppretter en ny."
 
 #: app/templates/auth/settings.html:305
 msgid "Checking..."
@@ -2534,11 +2546,11 @@ msgstr "Medlem siden"
 
 #: app/templates/auth/settings/_account.html:19
 msgid ""
-"Your account can see the data but cannot change it. Ask an administrator "
-"if you need more access."
+"Your account can see the data but cannot change it. Ask an administrator if "
+"you need more access."
 msgstr ""
-"Kontoen din kan se dataene, men ikke endre dem. Spør en administrator "
-"hvis du trenger mer tilgang."
+"Kontoen din kan se dataene, men ikke endre dem. Spør en administrator hvis "
+"du trenger mer tilgang."
 
 #: app/templates/auth/settings/_account.html:19
 msgid ""
@@ -2558,11 +2570,10 @@ msgstr "Lagre navn"
 
 #: app/templates/auth/settings/_account.html:28
 msgid ""
-"Shown in the greeting and the sidebar. You still sign in with your "
-"username."
+"Shown in the greeting and the sidebar. You still sign in with your username."
 msgstr ""
-"Vises i hilsenen og i sidepanelet. Du logger fortsatt inn med "
-"brukernavnet ditt."
+"Vises i hilsenen og i sidepanelet. Du logger fortsatt inn med brukernavnet "
+"ditt."
 
 #: app/templates/auth/settings/_account.html:34
 msgid "Save Email"
@@ -2598,7 +2609,7 @@ msgid "Update Password"
 msgstr "Oppdater passord"
 
 #: app/templates/auth/settings/_account.html:62
-#: app/templates/vehicles/view.html:670
+#: app/templates/vehicles/view.html:680
 msgid "Danger Zone"
 msgstr "Faresone"
 
@@ -2665,9 +2676,8 @@ msgid ""
 "Generate an API key to access May programmatically. You can use it to "
 "integrate with other applications or build your own tools."
 msgstr ""
-"Generer en API-nøkkel for å få programmatisk tilgang til May. Du kan "
-"bruke den til å integrere med andre applikasjoner eller bygge dine egne "
-"verktøy."
+"Generer en API-nøkkel for å få programmatisk tilgang til May. Du kan bruke "
+"den til å integrere med andre applikasjoner eller bygge dine egne verktøy."
 
 #: app/templates/auth/settings/_api.html:31
 msgid "Generate API Key"
@@ -2680,8 +2690,8 @@ msgstr "API-nøkkel generert"
 #: app/templates/auth/settings/_api.html:40
 msgid "Copy your API key now. For security, it won't be shown in full again."
 msgstr ""
-"Kopier API-nøkkelen din nå. Av sikkerhetsgrunner vil den ikke vises i sin"
-" helhet igjen."
+"Kopier API-nøkkelen din nå. Av sikkerhetsgrunner vil den ikke vises i sin "
+"helhet igjen."
 
 #: app/templates/auth/settings/_api.html:47
 msgid "Done"
@@ -2767,7 +2777,8 @@ msgstr "Anbefalt"
 msgid ""
 "Download all data and files (images, documents, attachments) as a ZIP "
 "archive"
-msgstr "Last ned alle data og filer (bilder, dokumenter, vedlegg) som et ZIP-arkiv"
+msgstr ""
+"Last ned alle data og filer (bilder, dokumenter, vedlegg) som et ZIP-arkiv"
 
 #: app/templates/auth/settings/_data.html:23
 msgid "Download ZIP"
@@ -2822,8 +2833,8 @@ msgid ""
 "Restore a JSON export (.json) or full backup (.zip) from another May "
 "instance"
 msgstr ""
-"Gjenopprett en JSON-eksport (.json) eller full sikkerhetskopi (.zip) fra "
-"en annen May-installasjon"
+"Gjenopprett en JSON-eksport (.json) eller full sikkerhetskopi (.zip) fra en "
+"annen May-installasjon"
 
 #: app/templates/auth/settings/_data.html:47
 msgid "Restore"
@@ -2835,10 +2846,11 @@ msgid "CSV Import"
 msgstr "CSV-import"
 
 #: app/templates/auth/settings/_data.html:52
-msgid "Import fuel logs, expenses, trips, or charging sessions from any CSV file"
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file"
 msgstr ""
-"Importer fyllinger, utgifter, turer eller ladeøkter fra en hvilken som "
-"helst CSV-fil"
+"Importer fyllinger, utgifter, turer eller ladeøkter fra en hvilken som helst"
+" CSV-fil"
 
 #: app/templates/auth/settings/_data.html:59
 msgid "Import from Hammond SQLite database (.db file)"
@@ -2981,12 +2993,11 @@ msgstr "Abonner på påminnelsene dine i en hvilken som helst kalenderapp"
 
 #: app/templates/auth/settings/_integrations.html:94
 msgid ""
-"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any "
-"other calendar app that supports iCal subscriptions."
+"Add this calendar to Apple Calendar, Google Calendar, Outlook, or any other "
+"calendar app that supports iCal subscriptions."
 msgstr ""
-"Legg til denne kalenderen i Apple Calendar, Google Calendar, Outlook "
-"eller en hvilken som helst annen kalenderapp som støtter iCal-"
-"abonnementer."
+"Legg til denne kalenderen i Apple Calendar, Google Calendar, Outlook eller "
+"en hvilken som helst annen kalenderapp som støtter iCal-abonnementer."
 
 #: app/templates/auth/settings/_integrations.html:95
 msgid "Webcal URL"
@@ -2995,8 +3006,7 @@ msgstr "Webcal-URL"
 #: app/templates/auth/settings/_integrations.html:95
 msgid "Use this URL for most calendar apps (Apple Calendar, Outlook, etc.)"
 msgstr ""
-"Bruk denne URL-en for de fleste kalenderapper (Apple Calendar, Outlook "
-"osv.)"
+"Bruk denne URL-en for de fleste kalenderapper (Apple Calendar, Outlook osv.)"
 
 #: app/templates/auth/settings/_integrations.html:97
 msgid "HTTPS URL"
@@ -3035,8 +3045,8 @@ msgid ""
 "Each vehicle becomes a Home Assistant device with sensors and alerts. No "
 "YAML needed."
 msgstr ""
-"Hvert kjøretøy blir en Home Assistant-enhet med sensorer og varsler. "
-"Ingen YAML nødvendig."
+"Hvert kjøretøy blir en Home Assistant-enhet med sensorer og varsler. Ingen "
+"YAML nødvendig."
 
 #: app/templates/auth/settings/_integrations.html:122
 msgid "Create key"
@@ -3060,8 +3070,8 @@ msgid ""
 "This key can only read your vehicles and log fuel. It cannot change or "
 "delete anything else."
 msgstr ""
-"Denne nøkkelen kan bare lese kjøretøyene dine og registrere fyllinger. "
-"Den kan ikke endre eller slette noe annet."
+"Denne nøkkelen kan bare lese kjøretøyene dine og registrere fyllinger. Den "
+"kan ikke endre eller slette noe annet."
 
 #: app/templates/auth/settings/_integrations.html:132
 #: app/templates/auth/settings/_integrations.html:179
@@ -3085,7 +3095,8 @@ msgid "Install the integration"
 msgstr "Installer integrasjonen"
 
 #: app/templates/auth/settings/_integrations.html:160
-msgid "Opens your Home Assistant and adds the OdoDash integration through HACS."
+msgid ""
+"Opens your Home Assistant and adds the OdoDash integration through HACS."
 msgstr "Åpner Home Assistant og legger til OdoDash-integrasjonen via HACS."
 
 #: app/templates/auth/settings/_integrations.html:164
@@ -3159,11 +3170,11 @@ msgstr "Samlet oversikt"
 
 #: app/templates/auth/settings/_integrations.html:222
 msgid ""
-"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, "
-"and it is saved as a fuel log."
+"Send a fill-up to the bot as one line, for example 40L 4800tk 45230km, and "
+"it is saved as a fuel log."
 msgstr ""
-"Send en fylling til boten som én linje, for eksempel 40L 4800tk 45230km, "
-"så lagres den som en fylling."
+"Send en fylling til boten som én linje, for eksempel 40L 4800tk 45230km, så "
+"lagres den som en fylling."
 
 #: app/templates/auth/settings/_integrations.html:228
 msgid "Your account is connected to Telegram."
@@ -3223,10 +3234,9 @@ msgid ""
 "status, and vehicle details for UK registered vehicles. This enables "
 "automatic population of vehicle information when adding new vehicles."
 msgstr ""
-"DVLA Vehicle Enquiry Service lar deg slå opp MOT-status, avgiftsstatus og"
-" kjøretøydetaljer for britiskregistrerte kjøretøy. Dette muliggjør "
-"automatisk utfylling av kjøretøyinformasjon når du legger til nye "
-"kjøretøy."
+"DVLA Vehicle Enquiry Service lar deg slå opp MOT-status, avgiftsstatus og "
+"kjøretøydetaljer for britiskregistrerte kjøretøy. Dette muliggjør automatisk"
+" utfylling av kjøretøyinformasjon når du legger til nye kjøretøy."
 
 #: app/templates/auth/settings/_integrations.html:274
 msgid "How to get an API key"
@@ -3277,13 +3287,13 @@ msgstr "Synkroniser Tesla-kjøretøydata via Tessie"
 
 #: app/templates/auth/settings/_integrations.html:302
 msgid ""
-"Tessie allows you to automatically sync odometer readings, battery level,"
-" and range from your Tesla vehicles. When enabled for a vehicle, odometer"
-" tracking becomes automatic."
+"Tessie allows you to automatically sync odometer readings, battery level, "
+"and range from your Tesla vehicles. When enabled for a vehicle, odometer "
+"tracking becomes automatic."
 msgstr ""
 "Tessie lar deg automatisk synkronisere kilometerstand, batterinivå og "
-"rekkevidde fra Tesla-kjøretøyene dine. Når det er aktivert for et "
-"kjøretøy, blir kilometerstanden automatisk sporet."
+"rekkevidde fra Tesla-kjøretøyene dine. Når det er aktivert for et kjøretøy, "
+"blir kilometerstanden automatisk sporet."
 
 #: app/templates/auth/settings/_integrations.html:303
 msgid "Important"
@@ -3332,14 +3342,14 @@ msgstr "Lagre Tessie-innstillinger"
 #: app/templates/auth/settings/_integrations.html:335
 msgid ""
 "UK retailers publish forecourt prices under the government fuel price "
-"transparency scheme. May matches your saved stations to those forecourts "
-"by postcode and records the prices, so price history and Cheapest Fuel "
-"stay up to date without manual entry."
+"transparency scheme. May matches your saved stations to those forecourts by "
+"postcode and records the prices, so price history and Cheapest Fuel stay up "
+"to date without manual entry."
 msgstr ""
-"Britiske forhandlere publiserer stasjonspriser under myndighetenes "
-"ordning for prisåpenhet. May kobler de lagrede stasjonene dine mot disse "
-"stasjonene via postnummer og registrerer prisene, slik at prishistorikk "
-"og billigste drivstoff holdes oppdatert uten manuell registrering."
+"Britiske forhandlere publiserer stasjonspriser under myndighetenes ordning "
+"for prisåpenhet. May kobler de lagrede stasjonene dine mot disse stasjonene "
+"via postnummer og registrerer prisene, slik at prishistorikk og billigste "
+"drivstoff holdes oppdatert uten manuell registrering."
 
 #: app/templates/auth/settings/_integrations.html:339
 msgid "Before you start"
@@ -3351,15 +3361,16 @@ msgstr "Det trengs ingen API-nøkkel; kildene er åpne data"
 
 #: app/templates/auth/settings/_integrations.html:342
 msgid "Give each station a postcode so it can be matched to a forecourt"
-msgstr "Gi hver stasjon et postnummer slik at den kan kobles til en bensinstasjon"
+msgstr ""
+"Gi hver stasjon et postnummer slik at den kan kobles til en bensinstasjon"
 
 #: app/templates/auth/settings/_integrations.html:343
 msgid ""
 "Prices refresh automatically every few hours, or on demand from the Fuel "
 "Stations page"
 msgstr ""
-"Prisene oppdateres automatisk med noen timers mellomrom, eller ved behov "
-"fra siden Bensinstasjoner"
+"Prisene oppdateres automatisk med noen timers mellomrom, eller ved behov fra"
+" siden Bensinstasjoner"
 
 #: app/templates/auth/settings/_integrations.html:344
 msgid "See the"
@@ -3424,11 +3435,11 @@ msgstr "Ingen standard"
 
 #: app/templates/auth/settings/_menu.html:33
 msgid ""
-"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging"
-" sessions"
+"Pre-selected vehicle when adding fuel logs, expenses, trips, and charging "
+"sessions"
 msgstr ""
-"Forhåndsvalgt kjøretøy ved registrering av drivstofflogger, utgifter, "
-"turer og ladeøkter"
+"Forhåndsvalgt kjøretøy ved registrering av drivstofflogger, utgifter, turer "
+"og ladeøkter"
 
 #: app/templates/auth/settings/_menu.html:36
 #: app/templates/auth/settings/_menu.html:37
@@ -3581,7 +3592,8 @@ msgstr "Fjern det lagrede tokenet"
 
 #: app/templates/auth/settings/_notifications.html:79
 msgid "sends notifications to your devices. Enter your User Key below."
-msgstr "sender varsler til enhetene dine. Skriv inn brukernøkkelen din nedenfor."
+msgstr ""
+"sender varsler til enhetene dine. Skriv inn brukernøkkelen din nedenfor."
 
 #: app/templates/auth/settings/_notifications.html:81
 msgid "Pushover User Key"
@@ -3598,8 +3610,7 @@ msgstr "Påminnelser sendes til den tilknyttede Telegram-chatten din."
 #: app/templates/auth/settings/_notifications.html:94
 msgid "Link your Telegram chat under Services to receive reminders there."
 msgstr ""
-"Koble til Telegram-chatten din under Tjenester for å motta påminnelser "
-"der."
+"Koble til Telegram-chatten din under Tjenester for å motta påminnelser der."
 
 #: app/templates/auth/settings/_notifications.html:100
 msgid "Notifications will be sent as JSON POST requests to your webhook URL."
@@ -3702,11 +3713,11 @@ msgstr "Webhook"
 
 #: app/templates/auth/settings/_notifications.html:182
 msgid ""
-"Webhooks allow users to integrate with any service that accepts HTTP POST"
-" requests (Home Assistant, Discord, Slack, etc.)"
+"Webhooks allow users to integrate with any service that accepts HTTP POST "
+"requests (Home Assistant, Discord, Slack, etc.)"
 msgstr ""
-"Webhooks lar brukere integrere med alle tjenester som aksepterer HTTP "
-"POST-forespørsler (Home Assistant, Discord, Slack osv.)"
+"Webhooks lar brukere integrere med alle tjenester som aksepterer HTTP POST-"
+"forespørsler (Home Assistant, Discord, Slack osv.)"
 
 #: app/templates/auth/settings/_notifications.html:186
 msgid "Save Notification Settings"
@@ -3847,7 +3858,7 @@ msgstr "Tillat nye brukere å opprette kontoer"
 msgid "Cost per kWh"
 msgstr "Kostnad per kWh"
 
-#: app/templates/charging/_log.html:22 app/templates/vehicles/view.html:164
+#: app/templates/charging/_log.html:22 app/templates/vehicles/view.html:174
 msgid "Last charge"
 msgstr "Siste lading"
 
@@ -3866,7 +3877,7 @@ msgstr "kWh"
 #: app/templates/charging/_log.html:42 app/templates/expenses/form.html:124
 #: app/templates/expenses/index.html:96 app/templates/fuel/index.html:93
 #: app/templates/timeline/index.html:35 app/templates/tires/form.html:61
-#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:471
+#: app/templates/tires/index.html:45 app/templates/vehicles/view.html:481
 msgid "Cost"
 msgstr "Kostnad"
 
@@ -3877,8 +3888,7 @@ msgstr "Ingen ladeøkter"
 #: app/templates/charging/_log.html:100
 msgid "Start tracking your EV charging to monitor energy usage and costs."
 msgstr ""
-"Begynn å spore elbilladingen din for å overvåke energiforbruk og "
-"kostnader."
+"Begynn å spore elbilladingen din for å overvåke energiforbruk og kostnader."
 
 #: app/templates/charging/_log.html:101
 #: app/templates/partials/mobile_nav.html:58
@@ -3961,7 +3971,8 @@ msgid "Log Charge"
 msgstr "Registrer lading"
 
 #: app/templates/components/forms.html:60 app/templates/expenses/form.html:194
-#: app/templates/fuel/form.html:254 app/templates/import/backup_preview.html:75
+#: app/templates/fuel/form.html:254
+#: app/templates/import/backup_preview.html:75
 #: app/templates/import/csv_mapping.html:95
 #: app/templates/maintenance/index.html:94
 msgid "Cancel"
@@ -4044,7 +4055,8 @@ msgstr "Valgfrie notater"
 
 #: app/templates/documents/form.html:82
 #: app/templates/import/csv_mapping.html:15
-#: app/templates/import/csv_upload.html:10 app/templates/vehicles/view.html:615
+#: app/templates/import/csv_upload.html:10
+#: app/templates/vehicles/view.html:625
 msgid "Upload"
 msgstr "Last opp"
 
@@ -4081,8 +4093,10 @@ msgid "No documents for this vehicle yet."
 msgstr "Ingen dokumenter for dette kjøretøyet ennå."
 
 #: app/templates/documents/index.html:68
-msgid "Store your vehicle documents, insurance policies, and MOT certificates."
-msgstr "Lagre kjøretøydokumenter, forsikringsavtaler og EU-kontrollsertifikater."
+msgid ""
+"Store your vehicle documents, insurance policies, and MOT certificates."
+msgstr ""
+"Lagre kjøretøydokumenter, forsikringsavtaler og EU-kontrollsertifikater."
 
 #: app/templates/documents/view.html:16
 msgid "This document has expired!"
@@ -4104,7 +4118,7 @@ msgstr "Rediger utgift"
 #: app/templates/expenses/form.html:195 app/templates/expenses/index.html:21
 #: app/templates/expenses/index.html:195
 #: app/templates/partials/mobile_nav.html:62
-#: app/templates/vehicles/view.html:238
+#: app/templates/vehicles/view.html:248
 msgid "Add Expense"
 msgstr "Legg til utgift"
 
@@ -4164,7 +4178,8 @@ msgstr "— ingen —"
 
 #: app/templates/expenses/form.html:153
 msgid "Optional — records the schedule as performed on the expense date"
-msgstr "Valgfritt — registrerer vedlikeholdsplanen som utført på utgiftsdatoen"
+msgstr ""
+"Valgfritt — registrerer vedlikeholdsplanen som utført på utgiftsdatoen"
 
 #: app/templates/expenses/form.html:161 app/templates/fuel/form.html:186
 #: app/templates/vehicles/form.html:192
@@ -4231,7 +4246,7 @@ msgstr "Filtrert sum"
 msgid "Receipts:"
 msgstr "Kvitteringer:"
 
-#: app/templates/expenses/index.html:152 app/templates/vehicles/view.html:538
+#: app/templates/expenses/index.html:152 app/templates/vehicles/view.html:548
 msgid "Delete this expense?"
 msgstr "Slette denne utgiften?"
 
@@ -4278,11 +4293,11 @@ msgid "From Tessie"
 msgstr "Fra Tessie"
 
 #: app/templates/fuel/_quick_form.html:53 app/templates/fuel/form.html:115
-#: app/templates/vehicles/view.html:926
+#: app/templates/vehicles/view.html:936
 msgid "Price per"
 msgstr "Pris per"
 
-#: app/templates/fuel/_quick_form.html:71 app/templates/vehicles/view.html:159
+#: app/templates/fuel/_quick_form.html:71 app/templates/vehicles/view.html:169
 msgid "Full tank"
 msgstr "Full tank"
 
@@ -4323,7 +4338,7 @@ msgstr "Rediger drivstofflogg"
 #: app/templates/fuel/form.html:4 app/templates/fuel/form.html:38
 #: app/templates/fuel/form.html:255 app/templates/fuel/index.html:28
 #: app/templates/fuel/index.html:171 app/templates/partials/mobile_nav.html:60
-#: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:552
+#: app/templates/vehicles/view.html:71 app/templates/vehicles/view.html:562
 msgid "Add Fuel Log"
 msgstr "Legg til drivstofflogg"
 
@@ -4343,8 +4358,8 @@ msgstr "Siste kilometerstand"
 
 #: app/templates/fuel/form.html:96
 msgid ""
-"Leave blank if the reading was not recorded. Enter 0 to confirm a genuine"
-" zero reading."
+"Leave blank if the reading was not recorded. Enter 0 to confirm a genuine "
+"zero reading."
 msgstr ""
 "La feltet stå tomt hvis målerstanden ikke ble registrert. Skriv 0 for å "
 "bekrefte en faktisk nullverdi."
@@ -4372,9 +4387,8 @@ msgstr "Distanse på dette drivstoffet"
 
 #: app/templates/fuel/form.html:172
 msgid ""
-"Distance run on this fuel since your last fill-up of it. The odometer "
-"can’t tell the fuels apart, so consumption for a dual-fuel vehicle needs "
-"this."
+"Distance run on this fuel since your last fill-up of it. The odometer can’t "
+"tell the fuels apart, so consumption for a dual-fuel vehicle needs this."
 msgstr ""
 "Distanse kjørt på dette drivstoffet siden forrige fylling av det. "
 "Kilometertelleren skiller ikke drivstoffene, så forbruket for et "
@@ -4420,11 +4434,11 @@ msgstr "Kvittering / vedlegg"
 msgid "Track your fuel fill-ups and consumption"
 msgstr "Spor drivstoffylling og forbruk"
 
-#: app/templates/fuel/index.html:45 app/templates/vehicles/view.html:106
+#: app/templates/fuel/index.html:45 app/templates/vehicles/view.html:107
 msgid "Avg. Consumption"
 msgstr "Gj.snitt forbruk"
 
-#: app/templates/fuel/index.html:51 app/templates/vehicles/view.html:158
+#: app/templates/fuel/index.html:51 app/templates/vehicles/view.html:168
 msgid "Last fill"
 msgstr "Siste fylling"
 
@@ -4461,7 +4475,7 @@ msgstr "Ufullstendig"
 msgid "incl. tax %(amount)s"
 msgstr "inkl. avgift %(amount)s"
 
-#: app/templates/fuel/index.html:150 app/templates/vehicles/view.html:497
+#: app/templates/fuel/index.html:150 app/templates/vehicles/view.html:507
 msgid "Delete this fuel log?"
 msgstr "Slette denne drivstoffloggen?"
 
@@ -4496,7 +4510,8 @@ msgid "Restore Preview"
 msgstr "Forhåndsvisning av gjenoppretting"
 
 #: app/templates/import/backup_preview.html:9
-msgid "Nothing has been changed yet. This is what will be added to your account."
+msgid ""
+"Nothing has been changed yet. This is what will be added to your account."
 msgstr "Ingenting er endret ennå. Dette blir lagt til i kontoen din."
 
 #: app/templates/import/backup_preview.html:12
@@ -4550,8 +4565,8 @@ msgid ""
 "Everything in this backup is already in your account. Restoring it will "
 "change nothing."
 msgstr ""
-"Alt i denne sikkerhetskopien finnes allerede i kontoen din. Å "
-"gjenopprette den endrer ingenting."
+"Alt i denne sikkerhetskopien finnes allerede i kontoen din. Å gjenopprette "
+"den endrer ingenting."
 
 #: app/templates/import/backup_upload.html:8
 #: app/templates/import/csv_upload.html:8
@@ -4565,15 +4580,14 @@ msgstr "Gjenopprett en May-sikkerhetskopi"
 #: app/templates/import/backup_upload.html:9
 msgid "Restore a JSON export or a full backup ZIP produced by May."
 msgstr ""
-"Gjenopprett en JSON-eksport eller en full sikkerhetskopi som ZIP laget av"
-" May."
+"Gjenopprett en JSON-eksport eller en full sikkerhetskopi som ZIP laget av "
+"May."
 
 #: app/templates/import/backup_upload.html:14
 msgid ""
-"The backup is merged into your account. Nothing is deleted or "
-"overwritten, and records that are already here are skipped rather than "
-"duplicated. You will see a summary of what will be added before anything "
-"is written."
+"The backup is merged into your account. Nothing is deleted or overwritten, "
+"and records that are already here are skipped rather than duplicated. You "
+"will see a summary of what will be added before anything is written."
 msgstr ""
 "Sikkerhetskopien slås sammen med kontoen din. Ingenting slettes eller "
 "overskrives, og poster som allerede finnes hoppes over i stedet for å "
@@ -4582,8 +4596,8 @@ msgstr ""
 
 #: app/templates/import/backup_upload.html:15
 msgid ""
-"Documents, attachments and vehicle images can only be restored from a "
-"full backup ZIP, because a JSON export does not contain the files."
+"Documents, attachments and vehicle images can only be restored from a full "
+"backup ZIP, because a JSON export does not contain the files."
 msgstr ""
 "Dokumenter, vedlegg og kjøretøybilder kan bare gjenopprettes fra en full "
 "sikkerhetskopi som ZIP, fordi en JSON-eksport ikke inneholder filene."
@@ -4673,10 +4687,11 @@ msgid "Import from CSV"
 msgstr "Importer fra CSV"
 
 #: app/templates/import/csv_upload.html:9
-msgid "Import fuel logs, expenses, trips, or charging sessions from any CSV file."
+msgid ""
+"Import fuel logs, expenses, trips, or charging sessions from any CSV file."
 msgstr ""
-"Importer fyllinger, utgifter, turer eller ladeøkter fra en hvilken som "
-"helst CSV-fil."
+"Importer fyllinger, utgifter, turer eller ladeøkter fra en hvilken som helst"
+" CSV-fil."
 
 #: app/templates/import/csv_upload.html:38
 msgid "CSV File"
@@ -4686,11 +4701,13 @@ msgstr "CSV-fil"
 msgid "Next: Map Columns"
 msgstr "Neste: koble kolonner"
 
-#: app/templates/maintenance/form.html:5 app/templates/maintenance/form.html:17
+#: app/templates/maintenance/form.html:5
+#: app/templates/maintenance/form.html:17
 msgid "Edit Maintenance Schedule"
 msgstr "Rediger vedlikeholdsplan"
 
-#: app/templates/maintenance/form.html:5 app/templates/maintenance/form.html:17
+#: app/templates/maintenance/form.html:5
+#: app/templates/maintenance/form.html:17
 msgid "New Maintenance Schedule"
 msgstr "Ny vedlikeholdsplan"
 
@@ -4701,7 +4718,8 @@ msgstr "Tilbake til vedlikehold"
 
 #: app/templates/maintenance/form.html:32 app/templates/recurring/form.html:26
 #: app/templates/stations/form.html:16 app/templates/tires/form.html:22
-#: app/templates/vehicles/form.html:38 app/templates/vehicles/part_form.html:24
+#: app/templates/vehicles/form.html:38
+#: app/templates/vehicles/part_form.html:24
 msgid "Name"
 msgstr "Navn"
 
@@ -4732,11 +4750,11 @@ msgstr "Serviceintervall"
 
 #: app/templates/maintenance/form.html:64
 msgid ""
-"Set how often this maintenance should be performed. You can set distance,"
-" time, or both."
+"Set how often this maintenance should be performed. You can set distance, "
+"time, or both."
 msgstr ""
-"Angi hvor ofte dette vedlikeholdet skal utføres. Du kan angi distanse, "
-"tid, eller begge deler."
+"Angi hvor ofte dette vedlikeholdet skal utføres. Du kan angi distanse, tid, "
+"eller begge deler."
 
 #: app/templates/maintenance/form.html:68
 msgid "Every (hours)"
@@ -4772,9 +4790,10 @@ msgstr "f.eks. 12"
 
 #: app/templates/maintenance/form.html:97
 msgid ""
-"This vehicle is metered in engine hours, so its service interval is "
-"counted in hours."
-msgstr "Dette kjøretøyet måles i motortimer, så serviceintervallet telles i timer."
+"This vehicle is metered in engine hours, so its service interval is counted "
+"in hours."
+msgstr ""
+"Dette kjøretøyet måles i motortimer, så serviceintervallet telles i timer."
 
 #: app/templates/maintenance/form.html:102
 msgid "Last Performed"
@@ -4814,7 +4833,8 @@ msgstr "Slette denne vedlikeholdsplanen?"
 
 #: app/templates/maintenance/history.html:3
 #: app/templates/maintenance/history.html:10
-#: app/templates/maintenance/index.html:11 app/templates/vehicles/view.html:245
+#: app/templates/maintenance/index.html:11
+#: app/templates/vehicles/view.html:255
 msgid "Maintenance History"
 msgstr "Vedlikeholdshistorikk"
 
@@ -4824,11 +4844,11 @@ msgstr "Ingen vedlikeholdshistorikk ennå."
 
 #: app/templates/maintenance/history.html:70
 msgid ""
-"History includes recorded completions and the latest saved service "
-"details. Earlier overwritten details cannot be recovered."
+"History includes recorded completions and the latest saved service details. "
+"Earlier overwritten details cannot be recovered."
 msgstr ""
-"Historikken omfatter registrerte servicer og de sist lagrede "
-"opplysningene. Tidligere overskrevne opplysninger kan ikke gjenopprettes."
+"Historikken omfatter registrerte servicer og de sist lagrede opplysningene. "
+"Tidligere overskrevne opplysninger kan ikke gjenopprettes."
 
 #: app/templates/maintenance/index.html:4
 #: app/templates/maintenance/index.html:10
@@ -4928,8 +4948,7 @@ msgstr "Hva skjedde?"
 
 #: app/templates/notes/index.html:11
 msgid ""
-"Record events and observations that don't fit fuel, expenses or "
-"maintenance"
+"Record events and observations that don't fit fuel, expenses or maintenance"
 msgstr ""
 "Registrer hendelser og observasjoner som ikke passer under drivstoff, "
 "utgifter eller vedlikehold"
@@ -4944,7 +4963,7 @@ msgstr "Skriv ned alt verdt å huske om kjøretøyene dine."
 
 #: app/templates/partials/mobile_nav.html:63 app/templates/trips/form.html:6
 #: app/templates/trips/form.html:17 app/templates/trips/form.html:134
-#: app/templates/trips/index.html:23 app/templates/vehicles/view.html:235
+#: app/templates/trips/index.html:23 app/templates/vehicles/view.html:245
 msgid "Log Trip"
 msgstr "Registrer tur"
 
@@ -5087,7 +5106,8 @@ msgid "No recurring expenses"
 msgstr "Ingen gjentakende utgifter"
 
 #: app/templates/recurring/index.html:58
-msgid "Set up recurring expenses like insurance, road tax, or parking permits."
+msgid ""
+"Set up recurring expenses like insurance, road tax, or parking permits."
 msgstr ""
 "Sett opp gjentakende utgifter som forsikring, veiavgift eller "
 "parkeringstillatelser."
@@ -5097,7 +5117,7 @@ msgid "Mark as not completed"
 msgstr "Merk som ikke utført"
 
 #: app/templates/reminders/_reminder_row.html:13
-#: app/templates/vehicles/view.html:334
+#: app/templates/vehicles/view.html:344
 msgid "Mark as completed"
 msgstr "Merk som fullført"
 
@@ -5147,8 +5167,8 @@ msgid ""
 "e.g. \"Every 2 Year(s)\" for an MOT due every two years. When marked "
 "complete, the next occurrence is created automatically."
 msgstr ""
-"f.eks. «Hver 2. år» for en EU-kontroll som forfaller annethvert år. Når "
-"den markeres som fullført, opprettes neste forekomst automatisk."
+"f.eks. «Hver 2. år» for en EU-kontroll som forfaller annethvert år. Når den "
+"markeres som fullført, opprettes neste forekomst automatisk."
 
 #: app/templates/reminders/form.html:68
 msgid "Notify me"
@@ -5195,8 +5215,10 @@ msgid "Get started by adding a reminder for your vehicle."
 msgstr "Kom i gang ved å legge til en påminnelse for kjøretøyet ditt."
 
 #: app/templates/search/index.html:36
-msgid "Find expenses, fuel logs, documents, notes, trips, and charging sessions"
-msgstr "Finn utgifter, drivstofflogger, dokumenter, notater, turer og ladeøkter"
+msgid ""
+"Find expenses, fuel logs, documents, notes, trips, and charging sessions"
+msgstr ""
+"Finn utgifter, drivstofflogger, dokumenter, notater, turer og ladeøkter"
 
 #: app/templates/search/index.html:39
 msgid "Search term"
@@ -5231,7 +5253,8 @@ msgstr "Ingen resultater"
 msgid "Try a different search term or a wider date range."
 msgstr "Prøv et annet søkeord eller et bredere datointervall."
 
-#: app/templates/stations/cheapest.html:8 app/templates/stations/prices.html:14
+#: app/templates/stations/cheapest.html:8
+#: app/templates/stations/prices.html:14
 msgid "Back to stations"
 msgstr "Tilbake til stasjoner"
 
@@ -5244,8 +5267,8 @@ msgstr "Stasjoner rangert etter sist rapporterte priser"
 msgid "Add a Station"
 msgstr "Legg til en stasjon"
 
-#: app/templates/stations/cheapest.html:27 app/templates/stations/index.html:32
-#: app/templates/stations/prices.html:15
+#: app/templates/stations/cheapest.html:27
+#: app/templates/stations/index.html:32 app/templates/stations/prices.html:15
 msgid "No address"
 msgstr "Ingen adresse"
 
@@ -5260,8 +5283,7 @@ msgstr "Ingen prisdata tilgjengelig"
 #: app/templates/stations/cheapest.html:45
 msgid "Prices are automatically tracked when you log fuel at saved stations."
 msgstr ""
-"Priser spores automatisk når du registrerer drivstoff ved lagrede "
-"stasjoner."
+"Priser spores automatisk når du registrerer drivstoff ved lagrede stasjoner."
 
 #: app/templates/stations/form.html:4 app/templates/stations/form.html:9
 msgid "Edit Fuel Station"
@@ -5349,7 +5371,8 @@ msgstr "Ingen bensinstasjoner"
 
 #: app/templates/stations/index.html:48
 msgid "Save your favorite stations for quick access when logging fuel."
-msgstr "Lagre favorittstasjoner for hurtig tilgang ved registrering av drivstoff."
+msgstr ""
+"Lagre favorittstasjoner for hurtig tilgang ved registrering av drivstoff."
 
 #: app/templates/stations/prices.html:58
 msgid "Delete this price entry? This cannot be undone."
@@ -5365,10 +5388,11 @@ msgstr "Ingen prishistorikk tilgjengelig for denne stasjonen."
 
 #: app/templates/stations/prices.html:72
 msgid "Prices are automatically recorded when you log fuel at this station."
-msgstr "Priser registreres automatisk når du fyller drivstoff ved denne stasjonen."
+msgstr ""
+"Priser registreres automatisk når du fyller drivstoff ved denne stasjonen."
 
-#: app/templates/timeline/index.html:4 app/templates/vehicles/view.html:247
-#: app/templates/vehicles/view.html:558
+#: app/templates/timeline/index.html:4 app/templates/vehicles/view.html:257
+#: app/templates/vehicles/view.html:568
 msgid "Timeline"
 msgstr "Tidslinje"
 
@@ -5433,8 +5457,8 @@ msgstr "Kjøpsdato"
 
 #: app/templates/tires/form.html:69
 msgid ""
-"Optional. Kept for reference; the distance covered comes from when the "
-"set is on the vehicle."
+"Optional. Kept for reference; the distance covered comes from when the set "
+"is on the vehicle."
 msgstr ""
 "Valgfritt. Lagres som referanse; distansen telles mens settet står på "
 "kjøretøyet."
@@ -5448,8 +5472,8 @@ msgid ""
 "Track each set of tires on and off the vehicle, and the distance it has "
 "covered"
 msgstr ""
-"Følg med på når hvert dekksett settes på og tas av, og hvor langt det har"
-" gått"
+"Følg med på når hvert dekksett settes på og tas av, og hvor langt det har "
+"gått"
 
 #: app/templates/tires/index.html:27
 msgid "Fitted"
@@ -5626,7 +5650,8 @@ msgstr "Ingen turer samsvarer med disse filtrene."
 
 #: app/templates/trips/index.html:157
 msgid "Start logging your trips for mileage tracking and tax deductions."
-msgstr "Begynn å registrere turene dine for kjørelengdesporing og skattefradrag."
+msgstr ""
+"Begynn å registrere turene dine for kjørelengdesporing og skattefradrag."
 
 #: app/templates/trips/index.html:158
 msgid "Log Your First Trip"
@@ -5791,7 +5816,7 @@ msgstr "Registrering / kjennemerke"
 msgid "e.g., ABC 123"
 msgstr "f.eks. AB 12345"
 
-#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:396
+#: app/templates/vehicles/form.html:71 app/templates/vehicles/view.html:406
 msgid "VIN"
 msgstr "VIN"
 
@@ -5816,8 +5841,8 @@ msgid ""
 "Optional. Use for vehicles with a secondary fluid to track, e.g. AdBlue "
 "alongside Diesel."
 msgstr ""
-"Valgfritt. Brukes for kjøretøy med en sekundær væske å spore, f.eks. "
-"AdBlue sammen med diesel."
+"Valgfritt. Brukes for kjøretøy med en sekundær væske å spore, f.eks. AdBlue "
+"sammen med diesel."
 
 #: app/templates/vehicles/form.html:106
 msgid "Tank Capacity (L)"
@@ -5845,8 +5870,8 @@ msgstr "Bruk kontostandard"
 
 #: app/templates/vehicles/form.html:130
 msgid ""
-"Override the odometer unit for this vehicle. Useful when you have "
-"vehicles with different odometer units."
+"Override the odometer unit for this vehicle. Useful when you have vehicles "
+"with different odometer units."
 msgstr ""
 "Overstyr kilometerstandenheten for dette kjøretøyet. Nyttig når du har "
 "kjøretøy med ulike enheter for kilometerstand."
@@ -5857,8 +5882,8 @@ msgstr "Startavlesning"
 
 #: app/templates/vehicles/form.html:132
 msgid ""
-"Optional reading when cost tracking began, in the vehicle’s odometer unit"
-" or engine hours."
+"Optional reading when cost tracking began, in the vehicle’s odometer unit or"
+" engine hours."
 msgstr ""
 "Valgfri måleravlesning da kostnadsregistreringen startet, i kjøretøyets "
 "avstandsenhet eller i motortimer."
@@ -5872,7 +5897,8 @@ msgid "Active (show in lists and calculations)"
 msgstr "Aktiv (vises i lister og beregninger)"
 
 #: app/templates/vehicles/form.html:160
-msgid "Shared — all users on this instance can view and log against this vehicle"
+msgid ""
+"Shared — all users on this instance can view and log against this vehicle"
 msgstr ""
 "Delt — alle brukere på denne instansen kan se og registrere mot dette "
 "kjøretøyet"
@@ -5882,9 +5908,9 @@ msgid ""
 "Link this vehicle to Tessie for automatic odometer and battery tracking. "
 "When enabled, manual odometer entry will be disabled."
 msgstr ""
-"Koble dette kjøretøyet til Tessie for automatisk sporing av "
-"kilometerstand og batteri. Når dette er aktivert, deaktiveres manuell "
-"registrering av kilometerstand."
+"Koble dette kjøretøyet til Tessie for automatisk sporing av kilometerstand "
+"og batteri. Når dette er aktivert, deaktiveres manuell registrering av "
+"kilometerstand."
 
 #: app/templates/vehicles/form.html:170
 msgid "Tessie VIN"
@@ -5901,15 +5927,14 @@ msgstr "Slå opp"
 #: app/templates/vehicles/form.html:181
 msgid "Enable Tessie tracking (disables manual odometer entry)"
 msgstr ""
-"Aktiver Tessie-sporing (deaktiverer manuell registrering av "
-"kilometerstand)"
+"Aktiver Tessie-sporing (deaktiverer manuell registrering av kilometerstand)"
 
 #: app/templates/vehicles/form.html:184
 msgid "Tessie tracking is active for this vehicle"
 msgstr "Tessie-sporing er aktiv for dette kjøretøyet"
 
 #: app/templates/vehicles/form.html:192 app/templates/vehicles/form.html:197
-#: app/templates/vehicles/view.html:592
+#: app/templates/vehicles/view.html:602
 msgid "Specifications"
 msgstr "Spesifikasjoner"
 
@@ -5920,8 +5945,8 @@ msgstr "Sporing av årlig kjørelengde"
 #: app/templates/vehicles/form.html:198
 msgid "Add technical details like tire sizes, oil type, wiper sizes, etc."
 msgstr ""
-"Legg til tekniske detaljer som dekkstørrelser, oljetype, viskerstørrelser"
-" osv."
+"Legg til tekniske detaljer som dekkstørrelser, oljetype, viskerstørrelser "
+"osv."
 
 #: app/templates/vehicles/form.html:202
 msgid "Add Specification"
@@ -5929,8 +5954,8 @@ msgstr "Legg til spesifikasjon"
 
 #: app/templates/vehicles/form.html:208
 msgid ""
-"Set a yearly distance limit to track progress — useful for leasing "
-"contracts or insurance policies."
+"Set a yearly distance limit to track progress — useful for leasing contracts"
+" or insurance policies."
 msgstr ""
 "Angi en årlig distansegrense for å spore fremgang — nyttig for "
 "leasingkontrakter eller forsikringsavtaler."
@@ -6027,7 +6052,7 @@ msgstr "Rediger del"
 #: app/templates/vehicles/part_form.html:4
 #: app/templates/vehicles/part_form.html:11
 #: app/templates/vehicles/part_form.html:71
-#: app/templates/vehicles/parts.html:11 app/templates/vehicles/view.html:587
+#: app/templates/vehicles/parts.html:11 app/templates/vehicles/view.html:597
 msgid "Add Part"
 msgstr "Legg til del"
 
@@ -6117,7 +6142,7 @@ msgid "Any additional notes about this part..."
 msgstr "Flere notater om denne delen …"
 
 #: app/templates/vehicles/parts.html:4 app/templates/vehicles/parts.html:10
-#: app/templates/vehicles/view.html:567
+#: app/templates/vehicles/view.html:577
 msgid "Parts & Consumables"
 msgstr "Deler og forbruksvarer"
 
@@ -6176,8 +6201,8 @@ msgstr "Fjern"
 msgid "This vehicle is not shared with anyone yet."
 msgstr "Dette kjøretøyet er ikke delt med noen ennå."
 
-#: app/templates/vehicles/view.html:30 app/templates/vehicles/view.html:610
-#: app/templates/vehicles/view.html:614
+#: app/templates/vehicles/view.html:30 app/templates/vehicles/view.html:620
+#: app/templates/vehicles/view.html:624
 msgid "Photos"
 msgstr "Bilder"
 
@@ -6213,14 +6238,13 @@ msgstr "Last ned PDF-rapport med kvitteringsbilder"
 msgid "PDF + Receipts"
 msgstr "PDF + kvitteringer"
 
-#: app/templates/vehicles/view.html:73 app/templates/vehicles/view.html:232
+#: app/templates/vehicles/view.html:73 app/templates/vehicles/view.html:242
 msgid "Add Charging"
 msgstr "Legg til lading"
 
 #: app/templates/vehicles/view.html:82
 msgid ""
-"This vehicle is archived. It won't appear in regular lists or "
-"calculations."
+"This vehicle is archived. It won't appear in regular lists or calculations."
 msgstr ""
 "Dette kjøretøyet er arkivert. Det vises ikke i vanlige lister eller "
 "beregninger."
@@ -6229,253 +6253,276 @@ msgstr ""
 msgid "Last Odometer"
 msgstr "Siste kilometerstand"
 
-#: app/templates/vehicles/view.html:110
+#: app/templates/vehicles/view.html:106
+#, python-format
+msgid "Last %(num)d fill-ups"
+msgstr "Siste %(num)d tankinger"
+
+#: app/templates/vehicles/view.html:112
+#, python-format
+msgid "Last %(num)d charges"
+msgstr "Siste %(num)d ladinger"
+
+#: app/templates/vehicles/view.html:112
 msgid "Avg. Charging"
 msgstr "Gj.snitt lading"
 
-#: app/templates/vehicles/view.html:129
+#: app/templates/vehicles/view.html:130
+#, python-format
+msgid "%(pct)d%% better than your average"
+msgstr "%(pct)d%% bedre enn gjennomsnittet ditt"
+
+#: app/templates/vehicles/view.html:131
+#, python-format
+msgid "%(pct)d%% worse than your average"
+msgstr "%(pct)d%% dårligere enn gjennomsnittet ditt"
+
+#: app/templates/vehicles/view.html:132
+msgid "In line with your average"
+msgstr "På linje med gjennomsnittet ditt"
+
+#: app/templates/vehicles/view.html:139
 msgid "A missed fill-up in the range means we can’t calculate this honestly."
 msgstr ""
 "En ufullstendig fylling i perioden gjør at vi ikke kan beregne dette "
 "pålitelig."
 
-#: app/templates/vehicles/view.html:131
+#: app/templates/vehicles/view.html:141
 msgid ""
 "Consumption can’t be worked out until the distance run on each fuel is "
-"recorded — the odometer can’t tell petrol from LPG. Add it to your fill-"
-"ups."
+"recorded — the odometer can’t tell petrol from LPG. Add it to your fill-ups."
 msgstr ""
-"Forbruket kan ikke beregnes før distansen på hvert drivstoff er "
-"registrert – kilometertelleren skiller ikke bensin fra LPG. Legg den inn "
-"ved fyllingene dine."
+"Forbruket kan ikke beregnes før distansen på hvert drivstoff er registrert –"
+" kilometertelleren skiller ikke bensin fra LPG. Legg den inn ved fyllingene "
+"dine."
 
-#: app/templates/vehicles/view.html:133
+#: app/templates/vehicles/view.html:143
 msgid "Not enough distance or fuel data yet to calculate this."
 msgstr "Ikke nok distanse- eller drivstoffdata ennå til å beregne dette."
 
-#: app/templates/vehicles/view.html:135
+#: app/templates/vehicles/view.html:145
 msgid "Needs at least two full-tank fill-ups."
 msgstr "Krever minst to fulle tankfyllinger."
 
-#: app/templates/vehicles/view.html:146
+#: app/templates/vehicles/view.html:156
 msgid "Cost per"
 msgstr "Kostnad per"
 
-#: app/templates/vehicles/view.html:175
+#: app/templates/vehicles/view.html:185
 msgid "Annual Mileage"
 msgstr "Årlig kjørelengde"
 
-#: app/templates/vehicles/view.html:178
+#: app/templates/vehicles/view.html:188
 msgid "Over limit"
 msgstr "Over grensen"
 
-#: app/templates/vehicles/view.html:179
+#: app/templates/vehicles/view.html:189
 msgid "Approaching limit"
 msgstr "Nærmer seg grensen"
 
-#: app/templates/vehicles/view.html:180
+#: app/templates/vehicles/view.html:190
 msgid "On pace"
 msgstr "I rute"
 
-#: app/templates/vehicles/view.html:181
+#: app/templates/vehicles/view.html:191
 msgid "Over pace"
 msgstr "Foran skjema"
 
-#: app/templates/vehicles/view.html:185 app/templates/vehicles/view.html:187
+#: app/templates/vehicles/view.html:195 app/templates/vehicles/view.html:197
 msgid "Time elapsed"
 msgstr "Tid gått"
 
-#: app/templates/vehicles/view.html:191
+#: app/templates/vehicles/view.html:201
 msgid "of year elapsed"
 msgstr "av året gått"
 
-#: app/templates/vehicles/view.html:192
+#: app/templates/vehicles/view.html:202
 msgid "remaining"
 msgstr "gjenstår"
 
-#: app/templates/vehicles/view.html:193
+#: app/templates/vehicles/view.html:203
 msgid "days remaining"
 msgstr "dager gjenstår"
 
-#: app/templates/vehicles/view.html:194
+#: app/templates/vehicles/view.html:204
 msgid "projected year-end"
 msgstr "forventet ved årsslutt"
 
-#: app/templates/vehicles/view.html:195
+#: app/templates/vehicles/view.html:205
 msgid "expected at this point"
 msgstr "forventet på dette tidspunktet"
 
-#: app/templates/vehicles/view.html:214
+#: app/templates/vehicles/view.html:224
 msgid "Total Hours"
 msgstr "Totalt antall timer"
 
-#: app/templates/vehicles/view.html:216
+#: app/templates/vehicles/view.html:226
 msgid "Fuel Used"
 msgstr "Brukt drivstoff"
 
-#: app/templates/vehicles/view.html:218
+#: app/templates/vehicles/view.html:228
 msgid "CO₂ Emissions"
 msgstr "CO₂-utslipp"
 
-#: app/templates/vehicles/view.html:220
+#: app/templates/vehicles/view.html:230
 msgid "tonnes (estimated)"
 msgstr "tonn (estimert)"
 
-#: app/templates/vehicles/view.html:222
+#: app/templates/vehicles/view.html:232
 msgid "kg (estimated)"
 msgstr "kg (estimert)"
 
-#: app/templates/vehicles/view.html:260
+#: app/templates/vehicles/view.html:270
 #, python-format
 msgid "From %(start)s to %(end)s"
 msgstr "Fra %(start)s til %(end)s"
 
-#: app/templates/vehicles/view.html:278
+#: app/templates/vehicles/view.html:288
 msgid "Upcoming Maintenance"
 msgstr "Kommende vedlikehold"
 
-#: app/templates/vehicles/view.html:311
+#: app/templates/vehicles/view.html:321
 msgid "Upcoming Reminders"
 msgstr "Kommende påminnelser"
 
-#: app/templates/vehicles/view.html:324
+#: app/templates/vehicles/view.html:334
 #, python-format
 msgid "%(days)s days overdue"
 msgstr "%(days)s dager forsinket"
 
-#: app/templates/vehicles/view.html:327
+#: app/templates/vehicles/view.html:337
 #, python-format
 msgid "In %(days)s days"
 msgstr "Om %(days)s dager"
 
-#: app/templates/vehicles/view.html:355
+#: app/templates/vehicles/view.html:365
 msgid "DVLA Status"
 msgstr "DVLA-status"
 
-#: app/templates/vehicles/view.html:356 app/templates/vehicles/view.html:386
-#: app/templates/vehicles/view.html:1000 app/templates/vehicles/view.html:1007
-#: app/templates/vehicles/view.html:1055 app/templates/vehicles/view.html:1062
+#: app/templates/vehicles/view.html:366 app/templates/vehicles/view.html:396
+#: app/templates/vehicles/view.html:1010 app/templates/vehicles/view.html:1017
+#: app/templates/vehicles/view.html:1065 app/templates/vehicles/view.html:1072
 msgid "Refresh"
 msgstr "Oppdater"
 
-#: app/templates/vehicles/view.html:363
+#: app/templates/vehicles/view.html:373
 msgid "MOT Status"
 msgstr "MOT-status"
 
-#: app/templates/vehicles/view.html:364
+#: app/templates/vehicles/view.html:374
 msgid "MOT Expiry"
 msgstr "MOT-utløp"
 
-#: app/templates/vehicles/view.html:365
+#: app/templates/vehicles/view.html:375
 msgid "Tax Status"
 msgstr "Avgiftsstatus"
 
-#: app/templates/vehicles/view.html:366
+#: app/templates/vehicles/view.html:376
 msgid "Tax Due"
 msgstr "Avgift forfaller"
 
-#: app/templates/vehicles/view.html:368 app/templates/vehicles/view.html:401
+#: app/templates/vehicles/view.html:378 app/templates/vehicles/view.html:411
 msgid "Last updated"
 msgstr "Sist oppdatert"
 
-#: app/templates/vehicles/view.html:371
+#: app/templates/vehicles/view.html:381
 msgid "No DVLA data available for this vehicle."
 msgstr "Ingen DVLA-data tilgjengelig for dette kjøretøyet."
 
-#: app/templates/vehicles/view.html:372
+#: app/templates/vehicles/view.html:382
 msgid "Fetch from DVLA"
 msgstr "Hent fra DVLA"
 
-#: app/templates/vehicles/view.html:383
+#: app/templates/vehicles/view.html:393
 msgid "Tessie Status"
 msgstr "Tessie-status"
 
-#: app/templates/vehicles/view.html:383
+#: app/templates/vehicles/view.html:393
 msgid "Live"
 msgstr "Direkte"
 
-#: app/templates/vehicles/view.html:385 app/templates/vehicles/view.html:1028
-#: app/templates/vehicles/view.html:1035
+#: app/templates/vehicles/view.html:395 app/templates/vehicles/view.html:1038
+#: app/templates/vehicles/view.html:1045
 msgid "Import Charges"
 msgstr "Importer ladeøkter"
 
-#: app/templates/vehicles/view.html:394
+#: app/templates/vehicles/view.html:404
 msgid "Battery Level"
 msgstr "Batterinivå"
 
-#: app/templates/vehicles/view.html:395
+#: app/templates/vehicles/view.html:405
 msgid "Est. Range"
 msgstr "Est. rekkevidde"
 
-#: app/templates/vehicles/view.html:404
+#: app/templates/vehicles/view.html:414
 msgid "No Tessie data available for this vehicle yet."
 msgstr "Ingen Tessie-data tilgjengelig for dette kjøretøyet ennå."
 
-#: app/templates/vehicles/view.html:405
+#: app/templates/vehicles/view.html:415
 msgid "Fetch from Tessie"
 msgstr "Hent fra Tessie"
 
-#: app/templates/vehicles/view.html:419
+#: app/templates/vehicles/view.html:429
 msgid "Fuel Consumption Trend"
 msgstr "Trend for drivstofforbruk"
 
-#: app/templates/vehicles/view.html:427
+#: app/templates/vehicles/view.html:437
 msgid "Fuel Price Trend"
 msgstr "Drivstoffpristrend"
 
-#: app/templates/vehicles/view.html:454
+#: app/templates/vehicles/view.html:464
 msgid "All"
 msgstr "Alle"
 
-#: app/templates/vehicles/view.html:487
+#: app/templates/vehicles/view.html:497
 msgid "(Full)"
 msgstr "(Full)"
 
-#: app/templates/vehicles/view.html:519
+#: app/templates/vehicles/view.html:529
 msgid "Delete this charging session?"
 msgstr "Slette denne ladeøkten?"
 
-#: app/templates/vehicles/view.html:567
+#: app/templates/vehicles/view.html:577
 msgid "Toggle section"
 msgstr "Vis/skjul seksjon"
 
-#: app/templates/vehicles/view.html:579
+#: app/templates/vehicles/view.html:589
 msgid "Buy"
 msgstr "Kjøp"
 
-#: app/templates/vehicles/view.html:587
+#: app/templates/vehicles/view.html:597
 msgid "No parts added yet."
 msgstr "Ingen deler lagt til ennå."
 
-#: app/templates/vehicles/view.html:627
+#: app/templates/vehicles/view.html:637
 msgid "Previous photo"
 msgstr "Forrige bilde"
 
-#: app/templates/vehicles/view.html:628
+#: app/templates/vehicles/view.html:638
 msgid "Next photo"
 msgstr "Neste bilde"
 
-#: app/templates/vehicles/view.html:642
+#: app/templates/vehicles/view.html:652
 msgid "Main"
 msgstr "Hoved"
 
-#: app/templates/vehicles/view.html:646
+#: app/templates/vehicles/view.html:656
 msgid "Set as main"
 msgstr "Angi som hovedbilde"
 
-#: app/templates/vehicles/view.html:653
+#: app/templates/vehicles/view.html:663
 msgid "Delete this photo?"
 msgstr "Slette dette bildet?"
 
-#: app/templates/vehicles/view.html:663
+#: app/templates/vehicles/view.html:673
 msgid "No photos yet."
 msgstr "Ingen bilder ennå."
 
-#: app/templates/vehicles/view.html:674
+#: app/templates/vehicles/view.html:684
 msgid "Archive this vehicle"
 msgstr "Arkiver dette kjøretøyet"
 
-#: app/templates/vehicles/view.html:675
+#: app/templates/vehicles/view.html:685
 msgid ""
 "Archived vehicles won't appear in regular lists or calculations. You can "
 "restore them later."
@@ -6483,58 +6530,56 @@ msgstr ""
 "Arkiverte kjøretøy vises ikke i vanlige lister eller beregninger. Du kan "
 "gjenopprette dem senere."
 
-#: app/templates/vehicles/view.html:677
+#: app/templates/vehicles/view.html:687
 msgid "Restore this vehicle"
 msgstr "Gjenopprett dette kjøretøyet"
 
-#: app/templates/vehicles/view.html:678
+#: app/templates/vehicles/view.html:688
 msgid ""
-"Restore this vehicle to make it active again and include it in "
-"calculations."
+"Restore this vehicle to make it active again and include it in calculations."
 msgstr ""
-"Gjenopprett dette kjøretøyet for å gjøre det aktivt igjen og inkludere "
-"det i beregninger."
+"Gjenopprett dette kjøretøyet for å gjøre det aktivt igjen og inkludere det i"
+" beregninger."
 
-#: app/templates/vehicles/view.html:684
+#: app/templates/vehicles/view.html:694
 msgid "Archive Vehicle"
 msgstr "Arkiver kjøretøy"
 
-#: app/templates/vehicles/view.html:689
+#: app/templates/vehicles/view.html:699
 msgid "Restore Vehicle"
 msgstr "Gjenopprett kjøretøy"
 
-#: app/templates/vehicles/view.html:695
+#: app/templates/vehicles/view.html:705
 msgid "Delete this vehicle"
 msgstr "Slett dette kjøretøyet"
 
-#: app/templates/vehicles/view.html:696
+#: app/templates/vehicles/view.html:706
 msgid ""
-"Once you delete a vehicle, there is no going back. This will also delete "
-"all associated fuel logs and expenses."
+"Once you delete a vehicle, there is no going back. This will also delete all"
+" associated fuel logs and expenses."
 msgstr ""
-"Når du sletter et kjøretøy, kan det ikke angres. Dette vil også slette "
-"alle tilknyttede drivstofflogger og utgifter."
+"Når du sletter et kjøretøy, kan det ikke angres. Dette vil også slette alle "
+"tilknyttede drivstofflogger og utgifter."
 
-#: app/templates/vehicles/view.html:699
+#: app/templates/vehicles/view.html:709
 msgid ""
-"Are you sure you want to delete this vehicle? This action cannot be "
-"undone."
+"Are you sure you want to delete this vehicle? This action cannot be undone."
 msgstr ""
-"Er du sikker på at du vil slette dette kjøretøyet? Denne handlingen kan "
-"ikke angres."
+"Er du sikker på at du vil slette dette kjøretøyet? Denne handlingen kan ikke"
+" angres."
 
-#: app/templates/vehicles/view.html:701
+#: app/templates/vehicles/view.html:711
 msgid "Delete Vehicle"
 msgstr "Slett kjøretøy"
 
-#: app/templates/vehicles/view.html:916
+#: app/templates/vehicles/view.html:926
 msgid ""
-"Not enough data to show consumption trend. Add more fuel logs with full "
-"tank fills."
+"Not enough data to show consumption trend. Add more fuel logs with full tank"
+" fills."
 msgstr ""
-"Ikke nok data til å vise forbrukstrend. Legg til flere drivstofflogger "
-"med fulle tankfyllinger."
+"Ikke nok data til å vise forbrukstrend. Legg til flere drivstofflogger med "
+"fulle tankfyllinger."
 
-#: app/templates/vehicles/view.html:954
+#: app/templates/vehicles/view.html:964
 msgid "No fuel prices recorded yet."
 msgstr "Ingen drivstoffpriser registrert ennå."

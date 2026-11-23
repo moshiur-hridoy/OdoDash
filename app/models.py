@@ -7,6 +7,10 @@ from flask_babel import lazy_gettext as _l
 from app import db
 from app.utils import utcnow
 
+# How many of the latest fill-up (or charging) spans count as "recent" when the
+# vehicle page's gauges compare them with the lifetime average.
+RECENT_SPANS = 3
+
 # Currency symbols for display in UI
 CURRENCY_SYMBOLS = {
     'USD': '$',
@@ -752,7 +756,17 @@ class Vehicle(db.Model):
         On a bi-fuel vehicle the figure covers one fuel at a time and needs
         the distance the driver attributed to that fuel (issue #221).
         """
-        segments = self._valid_consumption_segments(fuel_type)
+        return self._consumption_from_segments(
+            self._valid_consumption_segments(fuel_type), consumption_unit, volume_unit)
+
+    def _consumption_from_segments(self, segments, consumption_unit, volume_unit):
+        """Fuel consumption over ``segments``, in the unit asked for.
+
+        The arithmetic behind :meth:`get_average_consumption`, split out so
+        the same figure can be worked out over just the latest spans
+        (:meth:`get_recent_consumption`). None when there is nothing to
+        divide.
+        """
         if not segments:
             return None
 
@@ -777,6 +791,24 @@ class Vehicle(db.Model):
                 return km / litres if litres > 0 else None
             return (litres / km) * 100  # L/100km
         return None
+
+    def get_recent_consumption(self, consumption_unit=None, volume_unit='L',
+                               fuel_type=None, spans=RECENT_SPANS):
+        """The latest ``spans`` fill-up spans against the lifetime average.
+
+        Returns ``(recent, average)`` in the unit asked for, or None until
+        there are more usable spans than the window holds: with fewer, the
+        "recent" figure would simply be the average again and say nothing.
+        The vehicle page colours its gauge from this (#17).
+        """
+        segments = self._valid_consumption_segments(fuel_type)
+        if not segments or len(segments) <= spans:
+            return None
+        recent = self._consumption_from_segments(segments[-spans:], consumption_unit, volume_unit)
+        average = self._consumption_from_segments(segments, consumption_unit, volume_unit)
+        if not recent or not average:
+            return None
+        return recent, average
 
     def get_consumption_unavailable_reason(self, fuel_type=None):
         """Explain why :meth:`get_average_consumption` returns ``None``.
@@ -831,6 +863,7 @@ class Vehicle(db.Model):
                 'fuel_type': fuel_type,
                 'value': self.get_average_consumption(consumption_unit, volume_unit, fuel_type),
                 'reason': self.get_consumption_unavailable_reason(fuel_type),
+                'recent': self.get_recent_consumption(consumption_unit, volume_unit, fuel_type),
             }
             for fuel_type in self.get_propulsion_fuel_types() or [self.get_primary_fuel_type()]
         ]
@@ -926,6 +959,41 @@ class Vehicle(db.Model):
         target = distance_unit or self.get_effective_odometer_unit()
         distance = _distance_in(raw_distance, self.get_effective_odometer_unit(), target)
         return (total_kwh / distance) * 100 if distance > 0 else None
+
+    def get_recent_charging_consumption(self, distance_unit=None, spans=RECENT_SPANS):
+        """The latest ``spans`` charging spans against the lifetime figure.
+
+        Returns ``(recent, lifetime)`` in kWh per 100 distance units, or None
+        until there are more spans than the window holds. Both figures count
+        each span as the energy added at its end over the distance since the
+        charge before, so they compare like for like; that is why ``lifetime``
+        can differ slightly from :meth:`get_average_charging_consumption`,
+        which also counts the first session's energy.
+        """
+        sessions = (self.charging_sessions
+                    .filter(ChargingSession.odometer.isnot(None))
+                    .order_by(ChargingSession.odometer)
+                    .all())
+        segments = []
+        for start, end in zip(sessions, sessions[1:]):
+            distance = end.odometer - start.odometer
+            if distance > 0 and end.kwh_added and end.kwh_added > 0:
+                segments.append((distance, end.kwh_added))
+        if len(segments) <= spans:
+            return None
+
+        def per_100(window):
+            distance = sum(d for d, _ in window)
+            kwh = sum(k for _, k in window)
+            if not self.tracks_hours():
+                target = distance_unit or self.get_effective_odometer_unit()
+                distance = _distance_in(distance, self.get_effective_odometer_unit(), target)
+            return (kwh / distance) * 100 if distance > 0 else None
+
+        recent, lifetime = per_100(segments[-spans:]), per_100(segments)
+        if not recent or not lifetime:
+            return None
+        return recent, lifetime
 
     def get_cost_per_kwh(self):
         """Average cost per kWh across all charging sessions with data."""

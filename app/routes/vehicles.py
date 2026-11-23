@@ -9,7 +9,7 @@ from flask_babel import gettext as _
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
 from app import db
-from app.utils import parse_starting_odometer, parse_decimal, utcnow
+from app.utils import parse_starting_odometer, parse_decimal, utcnow, consumption_trend, LOWER_IS_BETTER_UNITS
 from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
 from app.services.tessie import TessieService
 
@@ -227,8 +227,13 @@ def view(vehicle_id):
         'avg_consumption': vehicle.get_average_consumption(current_user.consumption_unit, current_user.volume_unit),
         # Dual-fuel vehicles get a figure per fuel rather than one blended
         # number that describes neither fuel (#221).
-        'consumption_by_fuel': vehicle.get_average_consumption_by_fuel(
-            current_user.consumption_unit, current_user.volume_unit),
+        'consumption_by_fuel': [
+            dict(entry, trend=_gauge_trend(
+                entry['recent'],
+                (vehicle.get_consumption_unit() or current_user.consumption_unit) in LOWER_IS_BETTER_UNITS))
+            for entry in vehicle.get_average_consumption_by_fuel(
+                current_user.consumption_unit, current_user.volume_unit)],
+        'charging_trend': _gauge_trend(vehicle.get_recent_charging_consumption(), True),
         'cost_per_distance': vehicle.get_cost_per_distance(),
         'net_cost_per_distance': vehicle.get_net_cost_per_distance() if current_user.show_net_cost_per_distance else None,
         'total_fuel_volume': vehicle.get_total_fuel_volume(),
@@ -301,6 +306,20 @@ def view(vehicle_id):
                            photos=_vehicle_photos(vehicle),
                            can_edit=_owns_vehicle(vehicle),
                            annual_mileage_stats=vehicle.get_annual_mileage_stats())
+
+
+def _gauge_trend(pair, lower_is_better):
+    """How the latest spans compare with the lifetime figure, for a gauge.
+
+    ``pair`` is ``(recent, average)`` from the vehicle, or None when there are
+    too few spans to say. The trend is 'better' (green), 'steady' (yellow) or
+    'worse' (red); ``change`` is the gap as a whole percentage.
+    """
+    if not pair:
+        return None
+    recent, average = pair
+    trend = consumption_trend(recent, average, lower_is_better) or 'steady'
+    return {'trend': trend, 'recent': recent, 'change': abs(round((recent / average - 1) * 100))}
 
 
 def _as_date(value):

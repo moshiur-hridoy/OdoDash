@@ -98,16 +98,18 @@
         {#- A gauge per average: one per fuel on a dual-fuel vehicle (#221), plus
             charging on an EV or plug-in. The arc reads against a fixed scale
             for its unit, the way a dashboard gauge does. -#}
-        {% set scales = {'L/100km': 20, 'mpg': 80, 'mpg_us': 80, 'L / h': 30} %}
+        {% set scales = {'L/100km': 20, 'mpg': 80, 'mpg_us': 80, 'km/L': 60, 'L / h': 30} %}
         {% set gauges = [] %}
         {% if vehicle.uses_fuel() %}
             {% for entry in stats.consumption_by_fuel %}
                 {% set _g = gauges.append({'value': entry.value, 'reason': entry.reason, 'unit': consumption_unit, 'scale': scales.get(consumption_unit),
+                    'trend': entry.trend, 'recent_label': _('Last %(num)d fill-ups', num=3),
                     'label': _('Avg. Consumption') ~ ((' · ' ~ (entry.fuel_type|fuel_type_label)) if stats.consumption_by_fuel|length > 1 else '')}) %}
             {% endfor %}
         {% endif %}
         {% if vehicle.uses_charging() %}
-            {% set _g = gauges.append({'value': stats.avg_charging_consumption, 'reason': 'charging', 'unit': 'kWh / 100 ' ~ unit, 'scale': 30, 'label': _('Avg. Charging')}) %}
+            {% set _g = gauges.append({'value': stats.avg_charging_consumption, 'reason': 'charging', 'unit': 'kWh / 100 ' ~ unit, 'scale': 30,
+                'trend': stats.charging_trend, 'recent_label': _('Last %(num)d charges', num=3), 'label': _('Avg. Charging')}) %}
         {% endif %}
         {% if gauges %}
         <div class="vp-gauges">
@@ -116,7 +118,7 @@
             <figure class="vp-gauge">
                 <svg viewBox="0 0 180 104" aria-hidden="true">
                     <path class="vp-gauge__track" d="M20 90 A70 70 0 0 1 160 90" fill="none" stroke-width="10" stroke-linecap="round"/>
-                    {% if pct > 0 %}<path class="vp-gauge__fill" d="M20 90 A70 70 0 0 1 160 90" fill="none" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ pct }} 100"/>{% endif %}
+                    {% if pct > 0 %}<path class="vp-gauge__fill{% if g.trend %} vp-gauge__fill--{{ g.trend.trend }}{% endif %}" d="M20 90 A70 70 0 0 1 160 90" fill="none" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ pct }} 100"/>{% endif %}
                 </svg>
                 {% if g.value %}
                 <p class="vp-gauge__value">{{ "%.1f"|format(g.value) }}</p>
@@ -124,6 +126,14 @@
                 <p class="vp-gauge__value vp-gauge__value--empty">&mdash;</p>
                 {% endif %}
                 <figcaption><span class="vp-label">{{ g.label }}</span><br><span class="vp-label">{{ g.unit }}</span></figcaption>
+                {% if g.trend %}
+                {% set trend_text = (_('%(pct)d%% better than your average', pct=g.trend.change) if g.trend.trend == 'better'
+                                     else _('%(pct)d%% worse than your average', pct=g.trend.change) if g.trend.trend == 'worse'
+                                     else _('In line with your average')) %}
+                <p class="vp-gauge__trend vp-gauge__trend--{{ g.trend.trend }}">
+                    {{- g.recent_label }}: {{ "%.1f"|format(g.trend.recent) }} · {{ trend_text -}}
+                </p>
+                {% endif %}
                 {% if not g.value and g.reason != 'charging' %}
                 {% if g.reason == 'missed_fill_up' %}
                     {% set consumption_hint = _('A missed fill-up in the range means we can’t calculate this honestly.') %}
