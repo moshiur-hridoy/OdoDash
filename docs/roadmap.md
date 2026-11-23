@@ -130,6 +130,12 @@ the effort. Agree the scope of each item before building it.
 - [ ] **Bangladesh paperwork types.** Add Tax Token, Fitness Certificate and
       Route Permit as reminder and document types (English names; the road tax
       and registration types are UK-flavoured today).
+- [ ] **Driving Licence reminder and document type.** A licence belongs to a
+      person, but a reminder needs a vehicle today (`vehicle_id` is required),
+      so the simple version attaches it to the owner's main vehicle. Person-level
+      reminders would be a larger change with a migration; decide before
+      building. New type names need translations in every catalogue
+      (`scripts/fill_po.py`).
 - [ ] **Starter reminders for a new vehicle.** When a vehicle is added, offer
       to create its main paperwork reminders in one step (registration, tax,
       insurance, fitness) with their due dates.
