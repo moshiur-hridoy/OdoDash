@@ -1,0 +1,33 @@
+name: Sync main
+
+# main is a leftover from the May fork, but old links (/tree/main and
+# raw.githubusercontent.com/.../main/...) still reach it, so it must not go
+# stale. Fast-forward it to ododash-release on every release merge.
+#
+# The push is never forced: if main ever holds a commit that ododash-release
+# lacks, the job fails instead of overwriting it.
+on:
+  push:
+    branches:
+      - ododash-release
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ododash-release
+          fetch-depth: 0
+
+      - name: Fast-forward main
+        run: git push origin HEAD:refs/heads/main
