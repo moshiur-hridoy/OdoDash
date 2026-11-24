@@ -9,7 +9,7 @@ from flask_babel import gettext as _
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
 from app import db
-from app.utils import parse_decimal, utcnow
+from app.utils import parse_starting_odometer, parse_decimal, utcnow, consumption_trend, LOWER_IS_BETTER_UNITS
 from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
 from app.services.tessie import TessieService
 
@@ -87,13 +87,21 @@ def index():
 @bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    """Create a vehicle with an optional validated cost-tracking baseline."""
     if request.method == 'POST':
+        try:
+            starting_odometer = parse_starting_odometer(request.form.get('starting_odometer'))
+        except ValueError:
+            flash(_('Starting odometer must be a nonnegative number.'), 'error')
+            return redirect(url_for('vehicles.new'))
+
         vehicle = Vehicle(
             owner_id=current_user.id,
             name=request.form.get('name'),
             vehicle_type=request.form.get('vehicle_type'),
             tracking_unit=request.form.get('tracking_unit', 'mileage'),
             odometer_unit=request.form.get('odometer_unit') or None,
+            starting_odometer=starting_odometer,
             make=request.form.get('make'),
             model=request.form.get('model'),
             year=int(request.form.get('year')) if request.form.get('year') else None,
@@ -219,9 +227,15 @@ def view(vehicle_id):
         'avg_consumption': vehicle.get_average_consumption(current_user.consumption_unit, current_user.volume_unit),
         # Dual-fuel vehicles get a figure per fuel rather than one blended
         # number that describes neither fuel (#221).
-        'consumption_by_fuel': vehicle.get_average_consumption_by_fuel(
-            current_user.consumption_unit, current_user.volume_unit),
+        'consumption_by_fuel': [
+            dict(entry, trend=_gauge_trend(
+                entry['recent'],
+                (vehicle.get_consumption_unit() or current_user.consumption_unit) in LOWER_IS_BETTER_UNITS))
+            for entry in vehicle.get_average_consumption_by_fuel(
+                current_user.consumption_unit, current_user.volume_unit)],
+        'charging_trend': _gauge_trend(vehicle.get_recent_charging_consumption(), True),
         'cost_per_distance': vehicle.get_cost_per_distance(),
+        'net_cost_per_distance': vehicle.get_net_cost_per_distance() if current_user.show_net_cost_per_distance else None,
         'total_fuel_volume': vehicle.get_total_fuel_volume(),
         'total_co2_kg': vehicle.get_total_co2_kg(current_user.volume_unit),
         'fuel_logs_count': vehicle.fuel_logs.count(),
@@ -294,6 +308,20 @@ def view(vehicle_id):
                            annual_mileage_stats=vehicle.get_annual_mileage_stats())
 
 
+def _gauge_trend(pair, lower_is_better):
+    """How the latest spans compare with the lifetime figure, for a gauge.
+
+    ``pair`` is ``(recent, average)`` from the vehicle, or None when there are
+    too few spans to say. The trend is 'better' (green), 'steady' (yellow) or
+    'worse' (red); ``change`` is the gap as a whole percentage.
+    """
+    if not pair:
+        return None
+    recent, average = pair
+    trend = consumption_trend(recent, average, lower_is_better) or 'steady'
+    return {'trend': trend, 'recent': recent, 'change': abs(round((recent / average - 1) * 100))}
+
+
 def _as_date(value):
     """A date from a date or datetime, so the kinds of log sort together."""
     return value.date() if isinstance(value, datetime) else value
@@ -302,6 +330,7 @@ def _as_date(value):
 @bp.route('/<int:vehicle_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(vehicle_id):
+    """Let owners and administrators update a vehicle and set or clear its starting odometer."""
     vehicle = db.get_or_404(Vehicle, vehicle_id)
 
     # Check ownership
@@ -310,6 +339,14 @@ def edit(vehicle_id):
         return redirect(url_for('vehicles.index'))
 
     if request.method == 'POST':
+        try:
+            starting_odometer = (parse_starting_odometer(request.form.get('starting_odometer'))
+                                 if 'starting_odometer' in request.form else vehicle.starting_odometer)
+        except ValueError:
+            flash(_('Starting odometer must be a nonnegative number.'), 'error')
+            return redirect(url_for('vehicles.edit', vehicle_id=vehicle.id))
+        vehicle.starting_odometer = starting_odometer
+
         vehicle.name = request.form.get('name')
         vehicle.vehicle_type = request.form.get('vehicle_type')
         # Changing the tracking unit would reinterpret every reading already

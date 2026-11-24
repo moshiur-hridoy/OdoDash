@@ -104,6 +104,11 @@
     --ds-warning-soft: #fbefd5;
     --ds-danger: #a12828;
     --ds-danger-soft: #fbe5e5;
+    /* The status colours above are tuned for text; a gauge arc is a wide
+       stroke, so it gets brighter green / yellow / red of its own. */
+    --ds-gauge-better: #2f9e57;
+    --ds-gauge-steady: #e3a812;
+    --ds-gauge-worse: #d94848;
 
     /* Odometer read-out */
     --ds-digit-bg: #f2f1ed;
@@ -161,6 +166,9 @@
     --ds-warning-soft: #33270f;
     --ds-danger: #ff9d9d;
     --ds-danger-soft: #3a1618;
+    --ds-gauge-better: #5fd08a;
+    --ds-gauge-steady: #f2c46b;
+    --ds-gauge-worse: #ff8585;
 
     --ds-digit-bg: #0b0d10;
     --ds-digit-off: #4a4f57;
@@ -678,6 +686,11 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
    it is hovered or focused (tapped, on a phone). Past periods are a tint of
    the accent and the current one the accent itself. */
 .ds-bars { display: flex; align-items: stretch; gap: 8px; height: 140px; margin-top: 20px; }
+/* Where the card is stretched by a taller neighbour, the bars take the free
+   height instead of leaving it empty. */
+.vp-spend { display: flex; flex-direction: column; }
+.vp-spend > .ds-card__body { flex: 1; display: flex; flex-direction: column; }
+.ds-bars--fill { flex: 1 1 140px; height: auto; min-height: 140px; max-height: 440px; }
 .ds-bars__col {
   flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center;
   border-radius: var(--ds-radius-sm); outline: none; cursor: default;
@@ -897,14 +910,16 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 /* The log table: month header rows, a date block, and figures in mono. */
 .ds-log .ds-table td { font-size: var(--ds-text-sm); }
 .ds-log .ds-table td.ds-num { font-family: var(--ds-font-mono); white-space: nowrap; }
+.ds-log__month { background: var(--ds-surface-sunken); }
 .ds-log__month th, .ds-log__month td {
-  padding-top: 18px; padding-bottom: 8px; border-bottom: 1px solid var(--ds-border);
+  padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--ds-border);
   font-size: var(--ds-text-xs); font-weight: 600; color: var(--ds-text); text-transform: none;
 }
 .ds-log__month th { font-family: var(--ds-font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ds-text-muted); }
 .ds-log__month td { font-family: var(--ds-font-mono); }
 .ds-log__month td span { font-weight: 400; color: var(--ds-text-muted); }
-.ds-log tbody tr.ds-log__month:hover { background: transparent; }
+.ds-log tbody tr.ds-log__month:hover { background: var(--ds-surface-sunken); }
+.ds-log__total-label { margin-inline-end: 8px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
 .ds-log__date { width: 44px; }
 .ds-log__day { display: block; font-family: var(--ds-font-mono); font-size: var(--ds-text-base); font-weight: 600; line-height: 1.1; }
 .ds-log__dow { display: block; font-size: 11px; color: var(--ds-text-muted); }
@@ -1584,6 +1599,13 @@ fieldset.ds-field > legend { padding: 0; margin-bottom: 6px; }
 .vp-gauge svg { width: 168px; height: 98px; }
 .vp-gauge__track { stroke: var(--ds-surface-sunken); }
 .vp-gauge__fill { stroke: var(--ds-accent); }
+.vp-gauge__fill--better { stroke: var(--ds-gauge-better); }
+.vp-gauge__fill--steady { stroke: var(--ds-gauge-steady); }
+.vp-gauge__fill--worse { stroke: var(--ds-gauge-worse); }
+.vp-gauge__trend { max-width: 220px; margin: 6px 0 0; font-size: 12px; text-align: center; color: var(--ds-text-muted); }
+.vp-gauge__trend--better { color: var(--ds-success); }
+.vp-gauge__trend--steady { color: var(--ds-warning); }
+.vp-gauge__trend--worse { color: var(--ds-danger); }
 .vp-gauge__value { margin: -44px 0 0; font-family: var(--ds-font-mono); font-size: 28px; font-weight: 600; line-height: 1.2; }
 .vp-gauge__value--empty { color: var(--ds-text-subtle); }
 .vp-gauge figcaption { margin-top: 4px; text-align: center; }

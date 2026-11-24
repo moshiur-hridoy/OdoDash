@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import extract, func
 from sqlalchemy.orm import joinedload
 from app import db
-from app.utils import parse_decimal
+from app.utils import parse_decimal, consumption_trend, LOWER_IS_BETTER_UNITS
 from app.models import (
     Vehicle, FuelLog, Attachment, FuelStation, FuelPriceHistory, FUEL_TYPES,
     resolve_price_fuel_type,
@@ -64,23 +64,12 @@ def _form_rejected(vehicles, field, message, log=None):
                            error_message=message), 422
 
 
-# Consumption units where a smaller figure is the better one; the rest
-# (mpg, km/L) read the other way round.
-LOWER_IS_BETTER = {'L/100km', 'L / h'}
-# How far a fill has to sit from the vehicle's average before the list
-# marks it as better or worse, so ordinary noise stays unmarked.
-CONSUMPTION_TREND_MARGIN = 0.05
+LOWER_IS_BETTER = LOWER_IS_BETTER_UNITS
 
 
 def _consumption_trend(value, average, unit):
     """'better', 'worse' or None for one fill against its vehicle's average."""
-    if not value or not average:
-        return None
-    ratio = value / average - 1
-    if abs(ratio) < CONSUMPTION_TREND_MARGIN:
-        return None
-    lower = unit in LOWER_IS_BETTER
-    return 'better' if (ratio < 0) == lower else 'worse'
+    return consumption_trend(value, average, unit in LOWER_IS_BETTER)
 
 
 def _fuel_rows(logs):

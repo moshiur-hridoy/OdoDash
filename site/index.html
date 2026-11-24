@@ -3,13 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OdoDash · Self-hosted vehicle tracking</title>
-<meta name="description" content="OdoDash is a self-hosted, open-source dashboard for fuel, EV charging, expenses, maintenance, reminders and trips across all your vehicles.">
+<title>OdoDash · Self-hosted vehicle tracker for fuel, expenses and maintenance</title>
+<meta name="description" content="OdoDash is a free, open-source, self-hosted vehicle tracker for fuel, EV charging, expenses, maintenance, reminders and trips. Designed and maintained by Moshiur Hridoy.">
+<meta name="author" content="Moshiur Hridoy">
+<link rel="canonical" href="https://moshiur-hridoy.github.io/OdoDash/">
+<link rel="author" href="https://www.moshiurhridoy.com/">
 <meta name="theme-color" content="#07090d">
-<meta property="og:title" content="OdoDash · Self-hosted vehicle tracking">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OdoDash">
+<meta property="og:url" content="https://moshiur-hridoy.github.io/OdoDash/">
+<meta property="og:title" content="OdoDash · Self-hosted vehicle tracker for fuel, expenses and maintenance">
 <meta property="og:description" content="Fuel, EV charging, expenses, maintenance and trips in one beautiful, self-hosted dashboard.">
 <meta property="og:image" content="https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/dashboard-dark.png">
+<meta property="og:image:alt" content="The OdoDash dashboard in dark mode">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://moshiur-hridoy.github.io/OdoDash/#app",
+      "name": "OdoDash",
+      "url": "https://moshiur-hridoy.github.io/OdoDash/",
+      "description": "A free, open-source, self-hosted vehicle tracker for fuel, EV charging, expenses, maintenance, reminders and trips.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Linux, macOS, Windows (Docker)",
+      "license": "https://github.com/moshiur-hridoy/OdoDash/blob/ododash-release/LICENSE",
+      "codeRepository": "https://github.com/moshiur-hridoy/OdoDash",
+      "image": "https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/screenshots/dashboard-dark.png",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@id": "https://www.moshiurhridoy.com/#person" },
+      "isBasedOn": "https://github.com/dannymcc/may",
+      "sameAs": ["https://github.com/moshiur-hridoy/OdoDash", "https://www.moshiurhridoy.com/ododash"]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.moshiurhridoy.com/#person",
+      "name": "Moshiur Hridoy",
+      "alternateName": "Moshiur Rahman Hridoy",
+      "url": "https://www.moshiurhridoy.com/",
+      "jobTitle": "Product Designer",
+      "address": { "@type": "PostalAddress", "addressLocality": "Dhaka", "addressCountry": "BD" },
+      "sameAs": ["https://www.linkedin.com/in/moshiurhridoy/", "https://github.com/moshiur-hridoy"]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "What is OdoDash?", "acceptedAnswer": { "@type": "Answer", "text": "OdoDash is a free, open-source, self-hosted vehicle tracker. It logs fuel, EV charging, expenses, maintenance, reminders and trips for every car or bike you own, and shows them in a light or dark dashboard." } },
+        { "@type": "Question", "name": "Does OdoDash need an account or the cloud?", "acceptedAnswer": { "@type": "Answer", "text": "No. You run it on your own server with Docker, your data stays in your own database, and there is no account, telemetry or subscription. It is MIT licensed." } },
+        { "@type": "Question", "name": "How is OdoDash different from May?", "acceptedAnswer": { "@type": "Answer", "text": "OdoDash is a fork of May by Danny McClelland. It keeps May's data model, REST API and import format, so May backups restore directly, and adds a redesigned interface, accent colours, phone-friendly navigation, a public demo and more languages." } },
+        { "@type": "Question", "name": "Can I run OdoDash on a Raspberry Pi?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Docker images are multi-arch for amd64 and arm64, so the same docker compose file runs on a Raspberry Pi." } },
+        { "@type": "Question", "name": "Who makes OdoDash?", "acceptedAnswer": { "@type": "Answer", "text": "Moshiur Hridoy, a product designer in Dhaka, Bangladesh, redesigns and maintains OdoDash. He started it because he wanted to track his own bike, and wrote up the story as a case study on his portfolio." } }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230284c7'/%3E%3Ccircle cx='32' cy='34' r='16' fill='none' stroke='%23fff' stroke-width='5' stroke-dasharray='70 31' transform='rotate(135 32 34)'/%3E%3Cpath d='M32 34l9-9' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root {
@@ -294,6 +344,17 @@ code.inline { font-family: var(--mono); font-size: 0.88em; padding: 2px 6px; bor
 .chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: 14px; white-space: nowrap; }
 .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 @keyframes scroll { to { transform: translateX(-50%); } }
+
+/* ---------- FAQ ---------- */
+.faq { margin-top: 40px; max-width: 760px; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; list-style: none; padding: 20px 0; font-size: 17px; font-weight: 600; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--accent-text); font-family: var(--mono); transition: transform 0.2s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.faq p { margin: 0 0 20px; color: var(--muted); font-size: 16px; }
+.faq p a { color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
 
 /* ---------- CTA ---------- */
 .cta {
@@ -583,6 +644,21 @@ footer { margin-top: 96px; padding: 40px 0 56px; border-top: 1px solid var(--lin
     </div>
   </section>
 
+  <!-- ================= FAQ ================= -->
+  <section class="section" id="faq">
+    <div class="wrap">
+      <span class="eyebrow reveal">Questions</span>
+      <h2 class="reveal d1">Good to know <span class="dim">before you install.</span></h2>
+      <div class="faq reveal d2">
+        <details><summary>What is OdoDash?</summary><p>OdoDash is a free, open-source, self-hosted vehicle tracker. It logs fuel, EV charging, expenses, maintenance, reminders and trips for every car or bike you own, and shows them in a light or dark dashboard.</p></details>
+        <details><summary>Does OdoDash need an account or the cloud?</summary><p>No. You run it on your own server with Docker, your data stays in your own database, and there is no account, telemetry or subscription. It is MIT licensed.</p></details>
+        <details><summary>How is OdoDash different from May?</summary><p>OdoDash is a fork of <a href="https://github.com/dannymcc/may" target="_blank" rel="noopener">May</a> by Danny McClelland. It keeps May's data model, REST API and import format, so May backups restore directly, and adds a redesigned interface, accent colours, phone-friendly navigation, a public demo and more languages.</p></details>
+        <details><summary>Can I run OdoDash on a Raspberry Pi?</summary><p>Yes. The Docker images are multi-arch for amd64 and arm64, so the same docker compose file runs on a Raspberry Pi.</p></details>
+        <details><summary>Who makes OdoDash?</summary><p><a href="https://www.moshiurhridoy.com" target="_blank" rel="author noopener">Moshiur Hridoy</a>, a product designer in Dhaka, Bangladesh, redesigns and maintains OdoDash. He started it because he wanted to track his own bike, and wrote up the story as a <a href="https://www.moshiurhridoy.com/ododash" target="_blank" rel="noopener">case study</a> on his portfolio.</p></details>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= CTA ================= -->
   <section class="wrap">
     <div class="cta reveal">
@@ -609,7 +685,7 @@ footer { margin-top: 96px; padding: 40px 0 56px; border-top: 1px solid var(--lin
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4.5 16.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13.5l4-4"/></svg></span>
         OdoDash
       </a>
-      <p class="credit">A designer-led fork of <a href="https://github.com/dannymcc/may" target="_blank" rel="noopener">May</a> by Danny McClelland, with thanks for the foundation it is built on.</p>
+      <p class="credit">A designer-led fork of <a href="https://github.com/dannymcc/may" target="_blank" rel="noopener">May</a> by Danny McClelland, with thanks for the foundation it is built on. Designed and maintained by <a href="https://www.moshiurhridoy.com" target="_blank" rel="author noopener">Moshiur Hridoy</a>.</p>
     </div>
     <div class="foot-links">
       <a href="https://github.com/moshiur-hridoy/OdoDash" target="_blank" rel="noopener">GitHub</a>

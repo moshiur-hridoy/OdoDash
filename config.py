@@ -11,7 +11,7 @@ basedir = Path(__file__).parent.absolute()
 load_dotenv(basedir / '.env')
 
 
-APP_VERSION = '0.51.0'
+APP_VERSION = '0.52.0'
 RELEASE_CHANNEL = os.environ.get('RELEASE_CHANNEL', 'stable')
 GIT_SHA = os.environ.get('GIT_SHA', '')[:7]  # Short SHA
 GITHUB_REPO = 'moshiur-hridoy/OdoDash'
@@ -47,6 +47,40 @@ def _read_secret_key(path):
         return path.read_text().strip()
     except OSError:
         return None
+
+
+# Example values that shipped in docker-compose.yml, .env.example and the docs.
+# Anyone can read them, so a key signed with one is no key at all.
+PLACEHOLDER_SECRET_KEYS = frozenset({
+    'change-me-in-production',
+    'change-me-in-staging',
+    'your-secret-key',
+    'your-secret-key-here',
+    'your-secure-random-string',
+})
+
+
+def _secret_key_from_environment():
+    """The SECRET_KEY the operator set, or None if there is no usable one.
+
+    An empty value counts as unset, and so does a placeholder copied from an
+    example file: it is ignored with a warning so OdoDash falls back to its own
+    generated key instead of signing sessions with a publicly known string.
+    """
+    key = (os.environ.get('SECRET_KEY') or '').strip()
+    if not key:
+        return None
+    if key.lower() in PLACEHOLDER_SECRET_KEYS:
+        import warnings
+        warnings.warn(
+            f"SECRET_KEY is set to the example value {key!r}, which anyone can "
+            "look up, so it is being ignored and a generated key is used "
+            "instead. Set SECRET_KEY to your own long random string, for "
+            "example the output of: openssl rand -hex 32",
+            RuntimeWarning
+        )
+        return None
+    return key
 
 
 def _warn_secret_key_not_saved(path):
@@ -159,7 +193,7 @@ class Config:
     FLATPICKR_JS_CDN_URL = FLATPICKR_JS_CDN_URL
     FLATPICKR_CSS_ASSET_URL = FLATPICKR_CSS_ASSET_URL
     FLATPICKR_CSS_CDN_URL = FLATPICKR_CSS_CDN_URL
-    SECRET_KEY = os.environ.get('SECRET_KEY') or _load_or_create_secret_key()
+    SECRET_KEY = _secret_key_from_environment() or _load_or_create_secret_key()
     _database_url = os.environ.get('DATABASE_URL') or f'sqlite:///{basedir}/data/may.db'
     # SQLAlchemy 2.x dropped the legacy 'postgres://' scheme still emitted by
     # some hosting providers; normalise it so those URLs keep working (#239).

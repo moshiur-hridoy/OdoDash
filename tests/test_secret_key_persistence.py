@@ -163,3 +163,47 @@ class TestSecretKeyPersistsAcrossProcesses:
         assert json.loads(result.stdout)['SECRET_KEY']
         assert 'RuntimeWarning' in result.stderr
         assert 'Set SECRET_KEY for production' in result.stderr
+
+
+class TestExampleSecretKeysAreNotUsed:
+    """A SECRET_KEY copied from an example file is a key anyone can look up,
+    so config.py ignores it and falls back to a generated, persisted one."""
+
+    def test_compose_placeholder_is_replaced_by_a_generated_key(self, tmp_path):
+        settings = run_config(tmp_path, env={'SECRET_KEY': 'change-me-in-production'})
+
+        assert settings['SECRET_KEY'] != 'change-me-in-production'
+        key_file = tmp_path / 'data' / '.secret_key'
+        assert key_file.read_text().strip() == settings['SECRET_KEY']
+
+    def test_placeholder_is_ignored_whatever_its_case_or_padding(self, tmp_path):
+        settings = run_config(tmp_path, env={'SECRET_KEY': '  Change-Me-In-Staging '})
+
+        assert settings['SECRET_KEY'].strip().lower() != 'change-me-in-staging'
+
+    def test_placeholder_key_is_stable_across_worker_processes(self, tmp_path):
+        env = {'SECRET_KEY': 'your-secret-key-here'}
+
+        assert run_config(tmp_path, env=env)['SECRET_KEY'] == \
+            run_config(tmp_path, env=env)['SECRET_KEY']
+
+    def test_placeholder_is_reported_in_a_warning(self, tmp_path):
+        result = run_config_raw(tmp_path, env={'SECRET_KEY': 'change-me-in-production'})
+
+        assert result.returncode == 0, result.stderr
+        assert 'change-me-in-production' in result.stderr
+        assert 'openssl rand -hex 32' in result.stderr
+
+    def test_empty_value_from_compose_uses_the_generated_key(self, tmp_path):
+        """docker-compose.yml passes SECRET_KEY= when .env sets none."""
+        result = run_config_raw(tmp_path, env={'SECRET_KEY': ''})
+
+        assert result.returncode == 0, result.stderr
+        assert 'example value' not in result.stderr
+        assert (tmp_path / 'data' / '.secret_key').read_text().strip()
+
+    def test_a_real_key_is_still_used_as_given(self, tmp_path):
+        result = run_config_raw(tmp_path, env={'SECRET_KEY': 'a-long-random-value-0123456789'})
+
+        assert json.loads(result.stdout)['SECRET_KEY'] == 'a-long-random-value-0123456789'
+        assert 'example value' not in result.stderr

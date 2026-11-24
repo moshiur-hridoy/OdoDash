@@ -1,0 +1,64 @@
+name: Bug report
+description: Something does not work as it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please search the open issues first.
+        **Security problems:** do not post them here. Use [private reporting](https://github.com/moshiur-hridoy/OdoDash/security/advisories/new).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Fuel > Add
+        2. Enter ...
+        3. Save
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OdoDash version
+      description: Shown in Settings > About and in the sidebar.
+      placeholder: "0.51.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: How do you run it?
+      options:
+        - Docker (docker compose)
+        - Portainer / ZimaOS / other stack manager
+        - Python (run.py or Gunicorn)
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      options:
+        - SQLite (default)
+        - PostgreSQL
+        - Not sure
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      description: Include it for display problems.
+      placeholder: "Safari on iPhone 15, or Firefox on Windows"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Container logs (`docker logs <container>`) or a screenshot. Remove personal details, plates and keys first.

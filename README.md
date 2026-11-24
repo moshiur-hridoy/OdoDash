@@ -17,8 +17,10 @@ OdoDash tracks fuel, expenses, reminders and maintenance across your whole fleet
 - **Active maintenance:** upstream bugs and useful PRs are merged here quickly.
 
 <p align="center">
-  <a href="https://ododashdemo.moshiur.space/"><b>Try the live demo</b></a> (login <code>demo</code> / <code>demo</code>, resets nightly) · <a href="https://moshiur-hridoy.github.io/OdoDash/">Website</a>
+  <a href="https://ododashdemo.moshiur.space/"><b>Try the live demo</b></a> (login <code>demo</code> / <code>demo</code>, resets nightly) · <a href="https://moshiur-hridoy.github.io/OdoDash/">Website</a> · <a href="https://www.moshiurhridoy.com/ododash">Case study</a>
 </p>
+
+<p align="center"><sub>Designed and maintained by <a href="https://www.moshiurhridoy.com">Moshiur Hridoy</a></sub></p>
 
 <p align="center">
   <picture>
@@ -101,15 +103,16 @@ Looking at other self-hosted options? [LubeLogger](https://github.com/hargata/lu
 - 📁 **Documents and receipts:** attach files to vehicles, fuel logs and expenses
 - 📊 **Analytics and PDF reports:** spending trends, consumption charts, printable vehicle reports
 - 🎨 **Customisable:** dark mode, branding, units, many currencies and 20 languages
-- 🔌 **Integrations:** REST API, Home Assistant, calendar subscription, UK fuel prices, DVLA lookup
+- 🔌 **Integrations:** REST API, Home Assistant, Telegram fuel logging, calendar subscription, UK fuel prices, DVLA lookup
 - 📥 **Import and export:** May backups, Fuelly CSV, JSON and CSV export
 - 🐳 **Self-hosted:** Docker and PWA ready
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/moshiur-hridoy/OdoDash.git
-cd OdoDash
+mkdir ododash && cd ododash
+curl -O https://raw.githubusercontent.com/moshiur-hridoy/OdoDash/ododash-release/docker-compose.yml
+echo "SECRET_KEY=$(openssl rand -hex 32)" > .env
 docker compose up -d
 ```
 
@@ -146,7 +149,7 @@ Details, the REST endpoints and the YAML alternative are in [Integrations](docs/
 | [Configuration](docs/configuration.md) | `.env`, environment variables, PUID/PGID |
 | [Usage](docs/usage.md) | Every feature, from fuel logs to import and restore |
 | [Administration](docs/administration.md) | Admin settings, user roles, REST API |
-| [Integrations](docs/integrations.md) | UK fuel prices, Home Assistant, calendar |
+| [Integrations](docs/integrations.md) | UK fuel prices, Home Assistant, Telegram, calendar |
 | [Languages](docs/translations.md) | Supported languages, improving and adding translations |
 | [Troubleshooting](docs/troubleshooting.md) | Common problems and fixes |
 | [Changelog](CHANGELOG.md) | What changed in each release |
@@ -164,7 +167,8 @@ Contributions are welcome. OdoDash is a designer-led project, so UI/UX ideas, an
 MIT License, see [LICENSE](LICENSE). The original May project is Copyright (c) 2026 Danny McClelland.
 
 - Original project: [May](https://github.com/dannymcc/may) by [Danny McClelland](https://github.com/dannymcc)
+- Everyone who has contributed to May and OdoDash: [Contributors](https://github.com/moshiur-hridoy/OdoDash/graphs/contributors)
 
 ---
 
-**OdoDash is a fork of [May](https://github.com/dannymcc/may), created by [Danny McClelland](https://github.com/dannymcc). Redesigned and maintained by [moshiur-hridoy](https://github.com/moshiur-hridoy).**
+**OdoDash is a fork of [May](https://github.com/dannymcc/may), created by [Danny McClelland](https://github.com/dannymcc). Redesigned and maintained by [Moshiur Hridoy](https://www.moshiurhridoy.com), a product designer in Dhaka, Bangladesh ([GitHub](https://github.com/moshiur-hridoy) · [LinkedIn](https://www.linkedin.com/in/moshiurhridoy/)).** Read how the redesign came together in the [OdoDash case study](https://www.moshiurhridoy.com/ododash).

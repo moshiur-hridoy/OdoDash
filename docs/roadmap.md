@@ -89,5 +89,56 @@ still a wide table on phones (fuel, expenses, tires, notes, allowance, users).
 - [ ] **#385 / #406** Expense categories (Car Payment, MOT/Service). Upstream
       PR #407 is a candidate to adapt.
 
-After Block D, return to the feature plan (Bangla translation, receipt scan,
-insights).
+After Block D, return to the feature plan (receipt scan, insights). Bangla
+translation is low priority: most vehicle owners in Bangladesh already use
+English-language apps, so Bangla waits until someone asks for it.
+
+## Block E: gaps found against similar projects (target 0.5x)
+
+From a comparison on 2026-11-23 with Tracktor, LubeLogger, Hammond, MyGarage,
+MASHINA and MotoMate. Only gaps are listed; OdoDash already leads on
+import/restore (May, CSV, Hammond, Clarkson, Fuelly), REST API,
+Home Assistant, calendar feed, DVLA and UK fuel prices. Ordered by value for
+the effort. Agree the scope of each item before building it.
+
+- [ ] **Scheduled auto-backup** (#29). Today a backup is a manual export. Run the
+      full backup on a schedule and keep the last N copies in the data
+      folder; later, email it or send it to S3/Paperless (LubeLogger,
+      MotoMate do this).
+- [ ] **Fuelio and Drivvo import** (#27). The big import sources still
+      missing (Drivvo shows "Soon" in Settings). Needs a real export file of
+      each as a fixture first.
+- [ ] **More notification channels** (#28): Discord, Gotify, Slack, Matrix next to
+      email, ntfy, Pushover, webhook and Telegram.
+- [ ] **OIDC/SSO sign-in** (Authelia, Authentik, Keycloak) for homelab users.
+      Larger item: needs its own plan (account matching by email, registration
+      mode, API keys stay local).
+- [ ] **Receipt OCR** (local, optional) to prefill fuel and expense forms.
+      Already named in the feature plan above.
+- [ ] **VIN decode** (NHTSA, optional) to fill make, model and year.
+- [ ] **Feature toggles.** Switch whole features (charging, trips, tires,
+      documents) off so unused sections disappear (Tracktor). Menu visibility
+      exists; this would also hide the data entry points.
+- [ ] **Bulk actions** on lists: duplicate, move to another vehicle, delete
+      several (LubeLogger).
+- [ ] **Custom fields** on records (LubeLogger).
+- [ ] **Sale history PDF** for selling a vehicle: all records in one report
+      (MASHINA).
+- [ ] **Tyre tread depth** measurements, if not already on the tire form.
+- [ ] **Kiosk / wall display** view with live refresh (LubeLogger).
+- [ ] **OpenAPI spec** for the REST API.
+- [ ] **Bangladesh paperwork types.** Add Tax Token, Fitness Certificate and
+      Route Permit as reminder and document types (English names; the road tax
+      and registration types are UK-flavoured today).
+- [ ] **Driving Licence reminder and document type.** A licence belongs to a
+      person, but a reminder needs a vehicle today (`vehicle_id` is required),
+      so the simple version attaches it to the owner's main vehicle. Person-level
+      reminders would be a larger change with a migration; decide before
+      building. New type names need translations in every catalogue
+      (`scripts/fill_po.py`).
+- [ ] **Starter reminders for a new vehicle.** When a vehicle is added, offer
+      to create its main paperwork reminders in one step (registration, tax,
+      insurance, fitness) with their due dates.
+
+Not planned for now: OBD2/Torque/WiCAN telemetry (MyGarage) and AI helpers,
+which are far from the current scope.

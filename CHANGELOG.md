@@ -10,6 +10,31 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+## [0.52.0] - 2026-11-24
+
+### Security
+
+- OdoDash no longer signs sessions with an example `SECRET_KEY`. The supplied `docker-compose.yml` used to pass `change-me-in-production` when you hadn't set a key, and anyone who knows that string can forge a login cookie. Compose now passes an empty value, and OdoDash ignores `change-me-in-production`, `change-me-in-staging`, `your-secret-key`, `your-secret-key-here` and `your-secure-random-string` with a warning in the logs, generating and saving its own key instead. If you were running on one of those values you are signed out once after updating; set your own key with `openssl rand -hex 32` to manage it yourself.
+
+### Added
+
+- An optional starting odometer on a vehicle. If tracking began before the first logged reading, enter the meter reading at the start and distance and running costs count from there. Leave it blank to keep the existing calculation; zero is a valid starting point. Distance uses the lower of the starting reading and the lowest logged one. The vehicle form, the API and backup/restore support the field. Contributed by [@emerrick](https://github.com/emerrick) in #16.
+- An optional net cost per distance on the vehicle page and the dashboard, switched on in Settings → Units & Values. It deducts recorded mileage reimbursements from spending before dividing by tracked distance. Off by default. Contributed by [@emerrick](https://github.com/emerrick) in #17.
+- The consumption gauge on the vehicle page is green, yellow or red by how the last three fill-ups (or charges) compare with the lifetime figure, with a line saying by how much. It needs more than three usable spans, and uses the same 5% margin and better-or-worse direction as the fuel list, so ordinary noise stays unmarked.
+
+### Changed
+
+- A month's total in the lists and the timeline now sits in a tinted band and reads "Total" before the amount, so it can no longer be mistaken for the cost of the entry below it.
+- The Telegram bot is now documented in Integrations: setting up the bot, linking your chat, what a message can say, `/undo` and `/unlink`, and who can use it.
+- The landing page has a short FAQ, a canonical address, structured data, a sitemap and a robots file, and the README and landing page name who designs and maintains OdoDash.
+- Dependencies: `python-dotenv` >= 1.2.4, `gunicorn` >= 27.0.1, `python-dateutil` >= 4.0.0, `psycopg2-binary` >= 2.9.13, `coverage` >= 7.17.3.
+- The project has a security policy (`SECURITY.md`), bug-report and feature-request issue forms, and a test run on every pull request into `dev` and `ododash-release`. Dependabot checks monthly and keeps at most three pull requests open.
+
+### Fixed
+
+- On a vehicle page, the Monthly Spending chart no longer leaves a block of empty space under it when the Upcoming Maintenance and Reminders lists beside it grow. The chart now takes the free height of its card, up to a limit, and keeps its fixed height on the dashboard and on a phone.
+- The km/L consumption gauge had no scale, so its arc never drew. It now has one.
+
 ## [0.51.0] - 2026-11-22
 
 ### Added

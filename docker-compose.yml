@@ -10,7 +10,9 @@ services:
     volumes:
       - may_data:/app/data
     environment:
-      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      # Set SECRET_KEY in .env (openssl rand -hex 32). Left empty, OdoDash
+      # generates a key on first start and keeps it in the data volume.
+      - SECRET_KEY=${SECRET_KEY:-}
       - DATABASE_URL=sqlite:////app/data/may.db
       - UPLOAD_FOLDER=/app/data/uploads
       # Optional: run the container as a specific host user/group so bind-mounted

@@ -23,11 +23,13 @@ If you don't set `SECRET_KEY`, OdoDash generates one on first start and saves it
 you'd rather manage the key, or if you run more than one instance behind a load
 balancer and want them to share sessions.
 
-The supplied `docker-compose.yml` passes a placeholder `SECRET_KEY` when you
-haven't set one of your own, so under Compose OdoDash signs sessions with that
-rather than generating a key. Set `SECRET_KEY` in `.env` next to
-`docker-compose.yml`, or remove the line from the compose file to let OdoDash
-generate and keep its own.
+The supplied `docker-compose.yml` passes `SECRET_KEY` through from `.env` next to
+it, and passes an empty value when you haven't set one, in which case OdoDash
+generates and keeps its own key. An example value such as
+`change-me-in-production` or `your-secure-random-string` is never used: OdoDash
+logs a warning, ignores it and generates a key instead, because anyone can look
+those up. Use your own long random string, for example the output of
+`openssl rand -hex 32`.
 
 The `.env` file must sit next to `config.py` in the application directory, and
 it is read when OdoDash starts. Variables set in the real environment take

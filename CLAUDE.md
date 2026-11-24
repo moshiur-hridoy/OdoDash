@@ -191,6 +191,15 @@ The project uses GitHub Actions (`.github/workflows/docker.yml`) to automaticall
    git reset --hard origin/ododash-release
    git push origin dev --force
    ```
+9. `main` is fast-forwarded to `ododash-release` automatically by
+   `.github/workflows/sync-main.yml` on every push to `ododash-release`. `main`
+   is a leftover from the May fork, but old links (`/tree/main`,
+   `raw.githubusercontent.com/.../main/...`) still reach it, so it must not go
+   stale. The workflow never force-pushes, so a failed run means `main` has
+   diverged and needs a look. To sync by hand:
+   ```bash
+   git push origin origin/ododash-release:refs/heads/main
+   ```
 
 ### Docker Deployment
 

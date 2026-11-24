@@ -205,7 +205,9 @@ def dashboard():
     total_distance_unit = (shared_reading_unit(vehicles, current_user.distance_unit)
                            if vehicles else current_user.distance_unit)
 
+    net_cost_per_distance = net_cost / total_distance if total_distance_unit and total_distance > 0 else None
     return render_template('dashboard.html',
+                           net_cost_per_distance=net_cost_per_distance,
                            period=period,
                            today=now,
                            period_start=current_start,

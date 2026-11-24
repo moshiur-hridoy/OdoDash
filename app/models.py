@@ -7,6 +7,10 @@ from flask_babel import lazy_gettext as _l
 from app import db
 from app.utils import utcnow
 
+# How many of the latest fill-up (or charging) spans count as "recent" when the
+# vehicle page's gauges compare them with the lifetime average.
+RECENT_SPANS = 3
+
 # Currency symbols for display in UI
 CURRENCY_SYMBOLS = {
     'USD': '$',
@@ -135,6 +139,8 @@ class User(UserMixin, db.Model):
     telegram_chat_id = db.Column(db.String(32), unique=True, index=True)
     telegram_link_code = db.Column(db.String(16), unique=True, index=True)
     telegram_link_expires = db.Column(db.DateTime)
+
+    show_net_cost_per_distance = db.Column(db.Boolean, default=False, server_default=db.false(), nullable=False)
 
     # Menu preferences
     start_page = db.Column(db.String(50), default='dashboard')  # dashboard, vehicles, fuel, expenses, etc.
@@ -316,6 +322,7 @@ class Vehicle(db.Model):
     tracking_unit = db.Column(db.String(20), default='mileage')  # mileage, hours
 
     # Per-vehicle odometer unit override (if None, falls back to user's distance_unit)
+    starting_odometer = db.Column(db.Float, nullable=True)
     odometer_unit = db.Column(db.String(10), default=None)  # km, mi, or None (use user preference)
 
     # Fuel info
@@ -542,6 +549,15 @@ class Vehicle(db.Model):
         span is returned as logged and ``distance_unit`` is ignored — there
         is no km/mi conversion to apply to an hour (#323).
         """
+        if self.starting_odometer is not None:
+            readings = [value for _, value in self.get_odometer_readings()]
+            baseline = min([self.starting_odometer, *readings])
+            if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer is not None:
+                endpoint = _distance_in(self.tessie_last_odometer, 'km', self.get_effective_odometer_unit())
+            else:
+                endpoint = max(readings, default=baseline)
+            return self._reading_in(max(0, endpoint - baseline), distance_unit)
+
         if not self.tracks_hours() and self.uses_tessie_odometer() and self.tessie_last_odometer:
             # Tessie reports km.
             odometer = self.tessie_last_odometer
@@ -740,7 +756,17 @@ class Vehicle(db.Model):
         On a bi-fuel vehicle the figure covers one fuel at a time and needs
         the distance the driver attributed to that fuel (issue #221).
         """
-        segments = self._valid_consumption_segments(fuel_type)
+        return self._consumption_from_segments(
+            self._valid_consumption_segments(fuel_type), consumption_unit, volume_unit)
+
+    def _consumption_from_segments(self, segments, consumption_unit, volume_unit):
+        """Fuel consumption over ``segments``, in the unit asked for.
+
+        The arithmetic behind :meth:`get_average_consumption`, split out so
+        the same figure can be worked out over just the latest spans
+        (:meth:`get_recent_consumption`). None when there is nothing to
+        divide.
+        """
         if not segments:
             return None
 
@@ -765,6 +791,24 @@ class Vehicle(db.Model):
                 return km / litres if litres > 0 else None
             return (litres / km) * 100  # L/100km
         return None
+
+    def get_recent_consumption(self, consumption_unit=None, volume_unit='L',
+                               fuel_type=None, spans=RECENT_SPANS):
+        """The latest ``spans`` fill-up spans against the lifetime average.
+
+        Returns ``(recent, average)`` in the unit asked for, or None until
+        there are more usable spans than the window holds: with fewer, the
+        "recent" figure would simply be the average again and say nothing.
+        The vehicle page colours its gauge from this (#17).
+        """
+        segments = self._valid_consumption_segments(fuel_type)
+        if not segments or len(segments) <= spans:
+            return None
+        recent = self._consumption_from_segments(segments[-spans:], consumption_unit, volume_unit)
+        average = self._consumption_from_segments(segments, consumption_unit, volume_unit)
+        if not recent or not average:
+            return None
+        return recent, average
 
     def get_consumption_unavailable_reason(self, fuel_type=None):
         """Explain why :meth:`get_average_consumption` returns ``None``.
@@ -819,6 +863,7 @@ class Vehicle(db.Model):
                 'fuel_type': fuel_type,
                 'value': self.get_average_consumption(consumption_unit, volume_unit, fuel_type),
                 'reason': self.get_consumption_unavailable_reason(fuel_type),
+                'recent': self.get_recent_consumption(consumption_unit, volume_unit, fuel_type),
             }
             for fuel_type in self.get_propulsion_fuel_types() or [self.get_primary_fuel_type()]
         ]
@@ -915,6 +960,41 @@ class Vehicle(db.Model):
         distance = _distance_in(raw_distance, self.get_effective_odometer_unit(), target)
         return (total_kwh / distance) * 100 if distance > 0 else None
 
+    def get_recent_charging_consumption(self, distance_unit=None, spans=RECENT_SPANS):
+        """The latest ``spans`` charging spans against the lifetime figure.
+
+        Returns ``(recent, lifetime)`` in kWh per 100 distance units, or None
+        until there are more spans than the window holds. Both figures count
+        each span as the energy added at its end over the distance since the
+        charge before, so they compare like for like; that is why ``lifetime``
+        can differ slightly from :meth:`get_average_charging_consumption`,
+        which also counts the first session's energy.
+        """
+        sessions = (self.charging_sessions
+                    .filter(ChargingSession.odometer.isnot(None))
+                    .order_by(ChargingSession.odometer)
+                    .all())
+        segments = []
+        for start, end in zip(sessions, sessions[1:]):
+            distance = end.odometer - start.odometer
+            if distance > 0 and end.kwh_added and end.kwh_added > 0:
+                segments.append((distance, end.kwh_added))
+        if len(segments) <= spans:
+            return None
+
+        def per_100(window):
+            distance = sum(d for d, _ in window)
+            kwh = sum(k for _, k in window)
+            if not self.tracks_hours():
+                target = distance_unit or self.get_effective_odometer_unit()
+                distance = _distance_in(distance, self.get_effective_odometer_unit(), target)
+            return (kwh / distance) * 100 if distance > 0 else None
+
+        recent, lifetime = per_100(segments[-spans:]), per_100(segments)
+        if not recent or not lifetime:
+            return None
+        return recent, lifetime
+
     def get_cost_per_kwh(self):
         """Average cost per kWh across all charging sessions with data."""
         total_kwh = self.get_total_charging_kwh()
@@ -939,6 +1019,13 @@ class Vehicle(db.Model):
         total_distance = self.get_total_distance()
         if total_distance > 0:
             return total_cost / total_distance
+        return None
+
+    def get_net_cost_per_distance(self):
+        """Cost after mileage reimbursements per km, mile, or engine hour."""
+        total_distance = self.get_total_distance()
+        if total_distance > 0:
+            return self.get_net_cost() / total_distance
         return None
 
     def is_electric(self):
@@ -1042,6 +1129,7 @@ class Vehicle(db.Model):
             'make': self.make,
             'model': self.model,
             'year': self.year,
+            'starting_odometer': self.starting_odometer,
             'purchase_date': self.purchase_date.isoformat() if self.purchase_date else None,
             'registration': self.registration,
             'vin': self.vin,
