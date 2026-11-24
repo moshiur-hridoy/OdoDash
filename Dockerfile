@@ -2,12 +2,12 @@
 # target platform, so this stage runs on the build host's own architecture
 # rather than under emulation for the arm64 image. build_css.py fetches the
 # pinned Tailwind CLI and refuses it unless its checksum matches.
-FROM --platform=$BUILDPLATFORM python:3.12-slim AS css
+FROM --platform=$BUILDPLATFORM python:3.15-slim AS css
 WORKDIR /src
 COPY . .
 RUN python scripts/build_css.py
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 WORKDIR /app
 
