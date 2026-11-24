@@ -101,42 +101,46 @@ import/restore (May, CSV, Hammond, Clarkson, Fuelly), REST API,
 Home Assistant, calendar feed, DVLA and UK fuel prices. Ordered by value for
 the effort. Agree the scope of each item before building it.
 
-- [ ] **Scheduled auto-backup** (#29). Today a backup is a manual export. Run the
+Targets set 2026-11-25 (milestones on GitHub): **0.53.0** is the small items and the ones the
+maintainer needs; **0.54.0** follows; items with no target are open for contributors
+(`help wanted`) or need a design first.
+
+- [ ] **Scheduled auto-backup** (#29, 0.53.0). Today a backup is a manual export. Run the
       full backup on a schedule and keep the last N copies in the data
       folder; later, email it or send it to S3/Paperless (LubeLogger,
       MotoMate do this).
-- [ ] **Fuelio and Drivvo import** (#27). The big import sources still
+- [ ] **Fuelio and Drivvo import** (#27, 0.54.0). The big import sources still
       missing (Drivvo shows "Soon" in Settings). Needs a real export file of
       each as a fixture first.
-- [ ] **More notification channels** (#28): Discord, Gotify, Slack, Matrix next to
+- [ ] **More notification channels** (#28, 0.54.0): Discord, Gotify, Slack, Matrix next to
       email, ntfy, Pushover, webhook and Telegram.
-- [ ] **OIDC/SSO sign-in** (Authelia, Authentik, Keycloak) for homelab users.
+- [ ] **OIDC/SSO sign-in** (#48, no target; Authelia, Authentik, Keycloak) for homelab users.
       Larger item: needs its own plan (account matching by email, registration
       mode, API keys stay local).
-- [ ] **Receipt OCR** (local, optional) to prefill fuel and expense forms.
+- [ ] **Receipt OCR** (#48, no target; local, optional) to prefill fuel and expense forms.
       Already named in the feature plan above.
-- [ ] **VIN decode** (NHTSA, optional) to fill make, model and year.
-- [ ] **Feature toggles.** Switch whole features (charging, trips, tires,
+- [ ] **VIN decode** (#48, no target; NHTSA, optional) to fill make, model and year.
+- [ ] **Feature toggles** (#43, 0.54.0). Switch whole features (charging, trips, tires,
       documents) off so unused sections disappear (Tracktor). Menu visibility
       exists; this would also hide the data entry points.
-- [ ] **Bulk actions** on lists: duplicate, move to another vehicle, delete
+- [ ] **Bulk actions** (#42, 0.54.0, after #29) on lists: duplicate, move to another vehicle, delete
       several (LubeLogger).
-- [ ] **Custom fields** on records (LubeLogger).
-- [ ] **Sale history PDF** for selling a vehicle: all records in one report
+- [ ] **Custom fields** on records (#47, needs a design; LubeLogger).
+- [ ] **Sale history PDF** (#45, help wanted) for selling a vehicle: all records in one report
       (MASHINA).
-- [ ] **Tyre tread depth** measurements, if not already on the tire form.
-- [ ] **Kiosk / wall display** view with live refresh (LubeLogger).
-- [ ] **OpenAPI spec** for the REST API.
-- [ ] **Bangladesh paperwork types.** Add Tax Token, Fitness Certificate and
+- [ ] **Tyre tread depth** measurements (#44, help wanted; not on the tire form today).
+- [ ] **Kiosk / wall display** (#48, no target) view with live refresh (LubeLogger).
+- [ ] **OpenAPI spec** (#46, help wanted) for the REST API.
+- [ ] **Bangladesh paperwork types** (#39, 0.53.0). Add Tax Token, Fitness Certificate and
       Route Permit as reminder and document types (English names; the road tax
       and registration types are UK-flavoured today).
-- [ ] **Driving Licence reminder and document type.** A licence belongs to a
+- [ ] **Driving Licence reminder and document type** (#40, 0.53.0, decide first). A licence belongs to a
       person, but a reminder needs a vehicle today (`vehicle_id` is required),
       so the simple version attaches it to the owner's main vehicle. Person-level
       reminders would be a larger change with a migration; decide before
       building. New type names need translations in every catalogue
       (`scripts/fill_po.py`).
-- [ ] **Starter reminders for a new vehicle.** When a vehicle is added, offer
+- [ ] **Starter reminders for a new vehicle** (#41, 0.53.0). When a vehicle is added, offer
       to create its main paperwork reminders in one step (registration, tax,
       insurance, fitness) with their due dates.
 
