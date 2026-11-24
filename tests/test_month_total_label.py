@@ -10,7 +10,9 @@ def test_month_row_labels_its_total(auth_client, sample_vehicle, sample_fuel_log
     assert response.status_code == 200
     html = response.get_data(as_text=True)
     assert 'class="ds-log__month"' in html
-    assert 'ds-log__total-label' in html
+    # The element, not just the word: without a built app.css the page inlines
+    # the whole stylesheet source, which names every class too.
+    assert 'class="ds-log__total-label"' in html
 
 
 def test_month_band_is_tinted_in_the_stylesheet():
@@ -31,7 +33,9 @@ def test_vehicle_spending_chart_fills_its_card(auth_client, test_user, sample_ve
                             price_per_unit=1.5, total_cost=15.0, is_full_tank=True))
     _db.session.commit()
     html = auth_client.get(f'/vehicles/{sample_vehicle.id}').get_data(as_text=True)
-    assert 'ds-bars ds-bars--fill' in html
-    assert 'vp-spend' in html
+    assert 'class="ds-bars ds-bars--fill"' in html
+    assert 'ds-grow-2 vp-spend' in html
     dashboard = auth_client.get('/dashboard').get_data(as_text=True)
-    assert 'ds-bars--fill' not in dashboard
+    # Match the element: with no built app.css the page inlines the stylesheet
+    # source, which names the class too.
+    assert 'class="ds-bars ds-bars--fill"' not in dashboard
