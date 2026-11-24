@@ -1,6 +1,6 @@
 import pytest
 from app import db
-from app.models import FuelStation, FuelPriceHistory
+from app.models import FuelStation, FuelLog, FuelPriceHistory, User, Vehicle
 from datetime import date
 
 
@@ -94,6 +94,108 @@ class TestStationEdit:
         assert resp.status_code == 200
         db.session.refresh(sample_station)
         assert sample_station.name == 'Shell Garage'
+
+
+def _add_fuel_log(vehicle, user, station_text):
+    log = FuelLog(
+        vehicle_id=vehicle.id,
+        user_id=user.id,
+        date=date(2024, 3, 1),
+        odometer=10000,
+        station=station_text,
+    )
+    db.session.add(log)
+    db.session.commit()
+    return log
+
+
+class TestStationEditUpdatesLogs:
+    """#37: a rename or rebrand updates the station text stored on fuel logs."""
+
+    def _edit(self, auth_client, station, **form):
+        return auth_client.post(
+            f'/stations/{station.id}/edit', data=form, follow_redirects=True)
+
+    def test_rename_updates_matching_logs(
+            self, auth_client, test_user, sample_vehicle, sample_station):
+        matching = _add_fuel_log(sample_vehicle, test_user, 'Shell Station (Shell)')
+        by_name_only = _add_fuel_log(sample_vehicle, test_user, 'Shell Station')
+        other_text = _add_fuel_log(sample_vehicle, test_user, 'Corner shop')
+
+        resp = self._edit(auth_client, sample_station,
+                          name='Shell Garage', brand='Shell')
+        assert resp.status_code == 200
+
+        db.session.refresh(matching)
+        db.session.refresh(by_name_only)
+        db.session.refresh(other_text)
+        assert matching.station == 'Shell Garage (Shell)'
+        assert by_name_only.station == 'Shell Station'
+        assert other_text.station == 'Corner shop'
+
+    def test_brand_only_change_updates_logs(
+            self, auth_client, test_user, sample_vehicle, sample_station):
+        log = _add_fuel_log(sample_vehicle, test_user, 'Shell Station (Shell)')
+
+        resp = self._edit(auth_client, sample_station,
+                          name='Shell Station', brand='Esso')
+        assert resp.status_code == 200
+
+        db.session.refresh(log)
+        assert log.station == 'Shell Station (Esso)'
+
+    def test_station_without_brand(
+            self, auth_client, test_user, sample_vehicle):
+        station = FuelStation(user_id=test_user.id, name='Village Pump')
+        db.session.add(station)
+        db.session.commit()
+        log = _add_fuel_log(sample_vehicle, test_user, 'Village Pump')
+
+        resp = self._edit(auth_client, station, name='Village Garage', brand='')
+        assert resp.status_code == 200
+
+        db.session.refresh(log)
+        assert log.station == 'Village Garage'
+
+    def test_same_display_text_leaves_logs(
+            self, auth_client, test_user, sample_vehicle, sample_station):
+        log = _add_fuel_log(sample_vehicle, test_user, 'Shell Station (Shell)')
+
+        resp = self._edit(auth_client, sample_station,
+                          name='Shell Station', brand='Shell',
+                          address='9 New Road')
+        assert resp.status_code == 200
+
+        db.session.refresh(log)
+        assert log.station == 'Shell Station (Shell)'
+
+    def test_rename_leaves_logs_on_inaccessible_vehicles(
+            self, auth_client, test_user, sample_vehicle, sample_station):
+        other_user = User(username='otheruser', email='other@example.com')
+        other_user.set_password('OtherPass123!')
+        db.session.add(other_user)
+        db.session.commit()
+        other_vehicle = Vehicle(
+            owner_id=other_user.id,
+            name='Other Car',
+            vehicle_type='car',
+            make='Toyota',
+            model='Corolla',
+            fuel_type='petrol',
+        )
+        db.session.add(other_vehicle)
+        db.session.commit()
+        visible = _add_fuel_log(sample_vehicle, test_user, 'Shell Station (Shell)')
+        hidden = _add_fuel_log(other_vehicle, other_user, 'Shell Station (Shell)')
+
+        resp = self._edit(auth_client, sample_station,
+                          name='Shell Garage', brand='Shell')
+        assert resp.status_code == 200
+
+        db.session.refresh(visible)
+        db.session.refresh(hidden)
+        assert visible.station == 'Shell Garage (Shell)'
+        assert hidden.station == 'Shell Station (Shell)'
 
 
 class TestStationDelete:

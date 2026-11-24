@@ -5,7 +5,7 @@ from sqlalchemy import func
 from flask_babel import gettext as _
 from app import db
 from app.utils import parse_decimal
-from app.models import FuelStation, FuelPriceHistory, fuel_type_label
+from app.models import FuelStation, FuelLog, FuelPriceHistory, fuel_type_label
 from app.services.uk_fuel_prices import UKFuelPriceService
 
 bp = Blueprint('stations', __name__, url_prefix='/stations')
@@ -65,6 +65,7 @@ def edit(station_id):
     station = db.get_or_404(FuelStation, station_id)
 
     if request.method == 'POST':
+        old_display_name = station.display_name
         station.name = request.form.get('name')
         station.brand = request.form.get('brand')
         station.address = request.form.get('address')
@@ -81,6 +82,16 @@ def edit(station_id):
             station.longitude = parse_decimal(request.form.get('longitude'))
         else:
             station.longitude = None
+
+        # Fuel logs store the station as copied text, so a rename leaves
+        # them showing the old value (#37). The match on the exact old text
+        # leaves hand-typed station names alone.
+        if station.display_name != old_display_name:
+            vehicle_ids = [vehicle.id for vehicle in current_user.get_all_vehicles()]
+            FuelLog.query.filter(
+                FuelLog.station == old_display_name,
+                FuelLog.vehicle_id.in_(vehicle_ids),
+            ).update({'station': station.display_name})
 
         db.session.commit()
         flash(_('Station updated'), 'success')
