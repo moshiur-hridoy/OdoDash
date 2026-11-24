@@ -10,6 +10,11 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Changed
+
+- Dependencies: `certifi` >= 2026.11.20, `pytest` >= 9.2.0, `coverage` >= 7.17.4.
+- Dependabot now sends the Python updates as one monthly pull request, skips patch releases (every image build already installs the newest release that satisfies `requirements.txt`), and no longer proposes Python base image bumps; moving to a new Python version is done by hand.
+
 ## [0.52.0] - 2026-11-24
 
 ### Security
