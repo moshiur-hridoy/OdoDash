@@ -1745,6 +1745,7 @@ REMINDER_TYPES = [
     ('tax_token', _l('Tax Token')),
     ('fitness_certificate', _l('Fitness Certificate')),
     ('route_permit', _l('Route Permit')),
+    ('driving_licence', _l('Driving Licence')),
     ('warranty', _l('Warranty Expiry')),
     ('tire_change', _l('Tire Change')),
     ('oil_change', _l('Oil Change')),
@@ -1762,6 +1763,7 @@ REMINDER_EXPENSE_CATEGORIES = {
     'tax_token': 'tax',
     'fitness_certificate': 'inspection',
     'route_permit': 'registration',
+    'driving_licence': 'other',
     'tire_change': 'maintenance',
     'oil_change': 'maintenance',
 }
@@ -1851,6 +1853,7 @@ DOCUMENT_TYPES = [
     ('tax_token', _l('Tax Token')),
     ('fitness_certificate', _l('Fitness Certificate')),
     ('route_permit', _l('Route Permit')),
+    ('driving_licence', _l('Driving Licence')),
     ('service_record', _l('Service Record')),
     ('purchase', _l('Purchase Invoice')),
     ('warranty', _l('Warranty Document')),

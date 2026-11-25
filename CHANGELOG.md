@@ -13,6 +13,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 ### Added
 
 - Tax Token, Fitness Certificate and Route Permit, the papers a Bangladesh vehicle owner has to renew, can now be chosen as a reminder type and as a document type. A reminder of one of these types pre-selects a sensible expense category when you log the renewal (Road Tax, Inspection and Registration). Existing reminders and documents are unchanged, and the JSON export, full backup and restore carry the new types. Every shipped language has the three names (#39).
+- Driving Licence as a reminder type and a document type, so its expiry gets a reminder like insurance or the Tax Token. A reminder needs a vehicle, so file the licence under the vehicle you drive most; a reminder that belongs to a person rather than a vehicle may follow if people ask for it (#40).
 
 ### Changed
 

@@ -7,7 +7,7 @@
 {% block content %}
 {%- set chosen = vehicles|selectattr('id', 'equalto', (selected_vehicle|int) if selected_vehicle else -1)|list -%}
 {%- set chosen_type = document.document_type if document else document_types[0][0] -%}
-{%- set type_icons = {'insurance': 'document', 'registration': 'note', 'mot': 'check', 'tax_token': 'money', 'fitness_certificate': 'check', 'route_permit': 'map', 'service_record': 'wrench',
+{%- set type_icons = {'insurance': 'document', 'registration': 'note', 'mot': 'check', 'tax_token': 'money', 'fitness_certificate': 'check', 'route_permit': 'map', 'driving_licence': 'wallet', 'service_record': 'wrench',
                       'purchase': 'receipt', 'warranty': 'alert', 'manual': 'document', 'other': 'dots'} -%}
 {%- set reminding = not document or document.remind_before_expiry -%}
 <div class="ds form-page">
