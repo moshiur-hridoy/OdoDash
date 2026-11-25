@@ -154,8 +154,9 @@ maintainer needs; **0.54.0** follows; items with no target are open for contribu
 - [ ] **Parts and supplies stock** that records can draw from (LubeLogger).
       OdoDash has Parts per vehicle; this would be stock across vehicles.
 - [ ] **Dashboard widgets the user can rearrange** (Tracktor).
-- [ ] **Fresh product screenshots.** The README and the landing page still
-      show 0.49.0 (blue accent). Retake them in light, dark and phone.
+- [x] **Fresh product screenshots.** Retaken for 0.52.0 on 2026-11-25 with
+      `scripts/screenshots/` (light, dark, accent, settings, branding, phone). They
+      reach the landing page with the next release merge.
 
 Not planned for now: OBD2/Torque/WiCAN telemetry (MyGarage) and AI helpers,
 which are far from the current scope.
