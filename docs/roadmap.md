@@ -96,7 +96,8 @@ English-language apps, so Bangla waits until someone asks for it.
 ## Block E: gaps found against similar projects (target 0.5x)
 
 From a comparison on 2026-11-23 with Tracktor, LubeLogger, Hammond, MyGarage,
-MASHINA and MotoMate. Only gaps are listed; OdoDash already leads on
+MASHINA and MotoMate, extended on 2026-11-25 from the READMEs, docs and public
+screenshots of LubeLogger and Tracktor (read, not installed or tried). Only gaps are listed; OdoDash already leads on
 import/restore (May, CSV, Hammond, Clarkson, Fuelly), REST API,
 Home Assistant, calendar feed, DVLA and UK fuel prices. Ordered by value for
 the effort. Agree the scope of each item before building it.
@@ -120,7 +121,7 @@ maintainer needs; **0.54.0** follows; items with no target are open for contribu
 - [ ] **Receipt OCR** (#48, no target; local, optional) to prefill fuel and expense forms.
       Already named in the feature plan above.
 - [ ] **VIN decode** (#48, no target; NHTSA, optional) to fill make, model and year.
-- [ ] **Feature toggles** (#43, 0.54.0). Switch whole features (charging, trips, tires,
+- [ ] **Feature toggles** (#43, 0.54.0; Tracktor keeps five instance-wide toggles in its config table: fuel log, maintenance, compliance, reminders, overview, set from a Settings tab). Switch whole features (charging, trips, tires,
       documents) off so unused sections disappear (Tracktor). Menu visibility
       exists; this would also hide the data entry points.
 - [ ] **Bulk actions** (#42, 0.54.0, after #29) on lists: duplicate, move to another vehicle, delete
@@ -131,7 +132,7 @@ maintainer needs; **0.54.0** follows; items with no target are open for contribu
 - [ ] **Tyre tread depth** measurements (#44, help wanted; not on the tire form today).
 - [ ] **Kiosk / wall display** (#48, no target) view with live refresh (LubeLogger).
 - [ ] **OpenAPI spec** (#46, help wanted) for the REST API.
-- [ ] **Bangladesh paperwork types** (#39, 0.53.0). Add Tax Token, Fitness Certificate and
+- [ ] **Bangladesh paperwork types** (#39, 0.53.0; Tracktor already ships country-specific paperwork, India's pollution certificate, so the idea has a precedent). Add Tax Token, Fitness Certificate and
       Route Permit as reminder and document types (English names; the road tax
       and registration types are UK-flavoured today).
 - [ ] **Driving Licence reminder and document type** (#40, 0.53.0, decide first). A licence belongs to a
@@ -143,6 +144,18 @@ maintainer needs; **0.54.0** follows; items with no target are open for contribu
 - [ ] **Starter reminders for a new vehicle** (#41, 0.53.0). When a vehicle is added, offer
       to create its main paperwork reminders in one step (registration, tax,
       insurance, fitness) with their due dates.
+
+- [ ] **Reminders by odometer as well as date, whichever comes first**
+      (LubeLogger). A reminder here is date-only (`Reminder.due_date`); only
+      maintenance schedules take kilometres. Check how much overlap there is
+      before building.
+- [ ] **Planner board** for upcoming work, as a kanban of planned, doing and
+      done (LubeLogger). Needs a use case before a design.
+- [ ] **Parts and supplies stock** that records can draw from (LubeLogger).
+      OdoDash has Parts per vehicle; this would be stock across vehicles.
+- [ ] **Dashboard widgets the user can rearrange** (Tracktor).
+- [ ] **Fresh product screenshots.** The README and the landing page still
+      show 0.49.0 (blue accent). Retake them in light, dark and phone.
 
 Not planned for now: OBD2/Torque/WiCAN telemetry (MyGarage) and AI helpers,
 which are far from the current scope.
