@@ -136,22 +136,34 @@ data-bi-fuel="{{ 'true' if vehicle.declares_second_fuel() else 'false' }}"
 
         <div class="form-grid">
             <div class="ds-field">
-                <label class="ds-field__label" for="station">{{ _('Station') }}</label>
-                {#- One box: type a name, or pick a saved station from the list. A
-                    saved pick also sets station_id, which records the price
-                    against that station. -#}
-                <input type="text" name="station" id="station" class="ds-control" autocomplete="off"
-                       {%- if stations %} list="station-options"{% endif %}
-                       value="{{ posted.get('station', '') if posted else (log.station if log else '') }}"
-                       placeholder="{{ _('e.g., Shell, BP') }}">
-                <input type="hidden" name="station_id" id="station_id" value="{{ posted.get('station_id', '') if posted else '' }}">
+                <label class="ds-field__label" for="{{ 'station_choice' if stations else 'station' }}">{{ _('Station') }}</label>
+                {#- Pick a saved station from the menu, or type any name in the box.
+                    A saved pick also sets station_id, which records the price against
+                    that station. Opening a saved log selects the menu entry whose name
+                    matches the log's text but leaves station_id empty: only a change
+                    here changes the link, so a log is never attached to a station it
+                    was not saved with. -#}
+                {%- set station_text = posted.get('station', '') if posted else (log.station if log else '') -%}
+                {%- set station_link = (posted.get('station_id', '') if posted else '')|string -%}
                 {% if stations %}
-                <datalist id="station-options">
+                {% set ns = namespace(done=false) %}
+                <select id="station_choice" class="ds-control" autocomplete="off">
+                    <option value="">{{ _('Select station or enter manually...') }}</option>
                     {% for station in stations %}
-                    <option value="{{ station.name }}{% if station.brand %} ({{ station.brand }}){% endif %}" data-id="{{ station.id }}"></option>
+                    {% set label = station.name ~ ((' (' ~ station.brand ~ ')') if station.brand else '') %}
+                    {% set pick = not ns.done and (station.id|string == station_link or (not station_link and station_text and station_text == label)) %}
+                    {% if pick %}{% set ns.done = true %}{% endif %}
+                    <option value="{{ station.id }}" data-name="{{ label }}"{% if pick %} selected{% endif %}>
+                        {%- if station.is_favorite %}★ {% endif %}{{ label }}</option>
                     {% endfor %}
-                </datalist>
-                {% else %}
+                </select>
+                {% endif %}
+                <input type="text" name="station" id="station" class="ds-control" autocomplete="off"
+                       {%- if stations %} aria-label="{{ _('Station') }}"{% endif %}
+                       value="{{ station_text }}"
+                       placeholder="{{ _('e.g., Shell, BP') }}">
+                <input type="hidden" name="station_id" id="station_id" value="{{ station_link }}">
+                {% if not stations %}
                 <p class="form-hint"><a href="{{ url_for('stations.new') }}" class="auth__link">{{ _('Add saved stations') }}</a> {{ _('for quick selection and price tracking') }}</p>
                 {% endif %}
             </div>
@@ -441,15 +453,31 @@ function calculateFuelAmounts() {
 }
 
 // A name that matches a saved station links the fill to it; anything else
-// is a free-text station. Only typing changes the link, so opening a saved
-// log never attaches it to a station it was not saved with.
+// is a free-text station. Only changing the menu or typing changes the link,
+// so opening a saved log never attaches it to a station it was not saved with.
 function linkStation() {
     const input = document.getElementById('station');
     const hidden = document.getElementById('station_id');
-    const match = Array.prototype.find.call(
-        document.querySelectorAll('#station-options option'),
-        function(opt) { return opt.value === input.value; });
-    hidden.value = match ? match.getAttribute('data-id') : '';
+    const select = document.getElementById('station_choice');
+    let id = '';
+    if (select) {
+        Array.prototype.forEach.call(select.options, function(opt) {
+            if (!id && opt.value && opt.getAttribute('data-name') === input.value) id = opt.value;
+        });
+        select.value = id;
+    }
+    hidden.value = id;
+}
+
+function chooseStation() {
+    const select = document.getElementById('station_choice');
+    const option = select.options[select.selectedIndex];
+    if (option && option.value) {
+        document.getElementById('station').value = option.getAttribute('data-name');
+        document.getElementById('station_id').value = option.value;
+    } else {
+        document.getElementById('station_id').value = '';
+    }
 }
 
 // Initialize odometer and fuel type for selected vehicle
@@ -479,6 +507,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById('odometer').addEventListener('input', updateOdometerDelta);
     document.getElementById('station').addEventListener('input', linkStation);
+    const stationChoice = document.getElementById('station_choice');
+    if (stationChoice) stationChoice.addEventListener('change', chooseStation);
 });
 </script>
 {% endblock %}

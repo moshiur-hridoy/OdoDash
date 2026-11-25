@@ -12,6 +12,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ### Changed
 
+- The Station field on the Add and Edit Fuel Log form is a select menu of your saved stations, with a text box beside it for any other name, the same as the quick-fuel form. It used to be a text box with a suggestion list that only offered stations matching what it already held, so after a station was renamed the list looked empty (#38).
 - Dependencies: `certifi` >= 2026.11.20, `pytest` >= 9.2.0, `coverage` >= 7.17.4.
 - Dependabot now sends the Python updates as one monthly pull request, skips patch releases (every image build already installs the newest release that satisfies `requirements.txt`), and no longer proposes Python base image bumps; moving to a new Python version is done by hand.
 
