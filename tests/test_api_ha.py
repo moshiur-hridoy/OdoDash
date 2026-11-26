@@ -125,25 +125,26 @@ class TestHaVehicles:
         assert 'vehicles' in data
         assert data['count'] == 0
 
-    def test_list_vehicles_with_vehicle(self, client, ha_headers, ha_vehicle):
+    def test_list_vehicles_with_vehicle(self, client, ha_headers, ha_vehicle, ha_trip):
         resp = client.get('/api/ha/vehicles', headers=ha_headers)
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['count'] == 1
         v = data['vehicles'][0]
         assert v['name'] == 'HA Test Car'
-        assert 'current_odometer' in v
+        assert v['current_odometer'] == ha_trip.end_odometer
         assert 'fuel_type' in v
         assert v['unit_distance'] == 'km'
         assert v['unit_volume'] == 'L'
         assert v['currency'] == 'USD'
 
-    def test_vehicle_detail(self, client, ha_headers, ha_vehicle):
+    def test_vehicle_detail(self, client, ha_headers, ha_vehicle, ha_trip):
         resp = client.get(f'/api/ha/vehicles/{ha_vehicle.id}', headers=ha_headers)
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['id'] == ha_vehicle.id
         assert data['name'] == 'HA Test Car'
+        assert data['current_odometer'] == ha_trip.end_odometer
         assert data['unit_distance'] == 'km'
         assert data['unit_volume'] == 'L'
         assert data['currency'] == 'USD'
