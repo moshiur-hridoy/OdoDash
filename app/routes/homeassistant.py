@@ -191,10 +191,7 @@ def _vehicle_stats(vehicle, user, days=None):
     total_fuel_cost = sum(log.total_cost for log in fuel_logs)
 
     # Calculate distance driven
-    if len(fuel_logs) >= 2:
-        total_distance = fuel_logs[-1].odometer - fuel_logs[0].odometer
-    else:
-        total_distance = 0
+    total_distance = vehicle.get_total_distance(vehicle.get_effective_odometer_unit())
 
     # Calculate average consumption
     # Skip first fill for consumption calculation (don't know previous fill level)
