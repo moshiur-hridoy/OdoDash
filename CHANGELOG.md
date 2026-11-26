@@ -18,6 +18,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 ### Fixed
 
 - Renaming a fuel station or changing its brand now updates the station text on the fuel logs that were saved with it; hand-typed station names are left alone (#37).
+- The Home Assistant endpoints (vehicle list, vehicle detail, stats and overview) now report the same current odometer as the app: the latest reading from fuel logs, trips, charging sessions or expenses, or from Tessie where it is set up. It used to come from fuel logs alone (#50).
 
 ### Changed
 
