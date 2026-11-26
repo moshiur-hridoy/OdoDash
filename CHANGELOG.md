@@ -15,6 +15,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 - Tax Token, Fitness Certificate and Route Permit, the papers a Bangladesh vehicle owner has to renew, can now be chosen as a reminder type and as a document type. A reminder of one of these types pre-selects a sensible expense category when you log the renewal (Road Tax, Inspection and Registration). Existing reminders and documents are unchanged, and the JSON export, full backup and restore carry the new types. Every shipped language has the three names (#39).
 - Driving Licence as a reminder type and a document type, so its expiry gets a reminder like insurance or the Tax Token. A reminder needs a vehicle, so file the licence under the vehicle you drive most; a reminder that belongs to a person rather than a vehicle may follow if people ask for it (#40).
 
+### Fixed
+
+- Renaming a fuel station or changing its brand now updates the station text on the fuel logs that were saved with it; hand-typed station names are left alone (#37).
+
 ### Changed
 
 - The Station field on the Add and Edit Fuel Log form is a select menu of your saved stations, with a text box beside it for any other name, the same as the quick-fuel form. It used to be a text box with a suggestion list that only offered stations matching what it already held, so after a station was renamed the list looked empty (#38).

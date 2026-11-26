@@ -2199,6 +2199,17 @@ class FuelStation(db.Model):
         self.last_used = utcnow()
 
     @property
+    def display_name(self):
+        """Text a fuel log stores for this station: "name (brand)" or "name".
+
+        Matches the option labels in the fuel form datalists, so a station
+        rename can find the logs saved with the old text.
+        """
+        if self.brand:
+            return f'{self.name} ({self.brand})'
+        return self.name
+
+    @property
     def price_source_label(self):
         """Human-readable name of the linked price source, or None"""
         if not self.price_source:
