@@ -2,7 +2,7 @@
 import pytest
 from datetime import date, timedelta
 from app import db as _db_ext
-from app.models import User, Vehicle, FuelLog, MaintenanceSchedule, Reminder, ChargingSession
+from app.models import User, Vehicle, FuelLog, Trip, MaintenanceSchedule, Reminder, ChargingSession
 
 
 def make_ha_headers(api_key):
@@ -73,6 +73,22 @@ def ha_fuel_log(ha_user, ha_vehicle):
     return log
 
 
+@pytest.fixture
+def ha_trip(ha_user, ha_vehicle):
+    trip = Trip(
+        vehicle_id=ha_vehicle.id,
+        user_id=ha_user.id,
+        date=date(2024, 2, 1),
+        start_odometer=5500.0,
+        end_odometer=5510.0,
+        purpose='business',
+        description='Client meeting',
+    )
+    _db_ext.session.add(trip)
+    _db_ext.session.commit()
+    return trip
+
+
 class TestHaAuth:
     def test_no_token_returns_401(self, client):
         resp = client.get('/api/ha/status')
@@ -109,25 +125,26 @@ class TestHaVehicles:
         assert 'vehicles' in data
         assert data['count'] == 0
 
-    def test_list_vehicles_with_vehicle(self, client, ha_headers, ha_vehicle):
+    def test_list_vehicles_with_vehicle(self, client, ha_headers, ha_vehicle, ha_trip):
         resp = client.get('/api/ha/vehicles', headers=ha_headers)
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['count'] == 1
         v = data['vehicles'][0]
         assert v['name'] == 'HA Test Car'
-        assert 'current_odometer' in v
+        assert v['current_odometer'] == ha_trip.end_odometer
         assert 'fuel_type' in v
         assert v['unit_distance'] == 'km'
         assert v['unit_volume'] == 'L'
         assert v['currency'] == 'USD'
 
-    def test_vehicle_detail(self, client, ha_headers, ha_vehicle):
+    def test_vehicle_detail(self, client, ha_headers, ha_vehicle, ha_trip):
         resp = client.get(f'/api/ha/vehicles/{ha_vehicle.id}', headers=ha_headers)
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['id'] == ha_vehicle.id
         assert data['name'] == 'HA Test Car'
+        assert data['current_odometer'] == ha_trip.end_odometer
         assert data['unit_distance'] == 'km'
         assert data['unit_volume'] == 'L'
         assert data['currency'] == 'USD'
@@ -160,6 +177,11 @@ class TestHaVehicleStats:
         assert data['distance_unit'] == 'km'
         assert data['volume_unit'] == 'L'
         assert data['currency'] == 'USD'
+
+    def test_vehicle_stats_current_odometer_from_trip(self, client, ha_headers, ha_vehicle, ha_trip):
+        resp = client.get(f'/api/ha/vehicles/{ha_vehicle.id}/stats', headers=ha_headers)
+        assert resp.status_code == 200
+        assert resp.get_json()['current_odometer'] == ha_trip.end_odometer
 
     def test_vehicle_stats_not_found(self, client, ha_headers):
         resp = client.get('/api/ha/vehicles/99999/stats', headers=ha_headers)
@@ -402,6 +424,11 @@ class TestHaOverview:
         assert data['vehicles'] == []
         assert data['alerts_count'] == 0
         assert 'version' in data and 'currency' in data
+
+    def test_current_odometer_from_trip(self, client, ha_headers, ha_vehicle, ha_trip):
+        data = client.get('/api/ha/overview', headers=ha_headers).get_json()
+        vehicle = next(v for v in data['vehicles'] if v['id'] == ha_vehicle.id)
+        assert vehicle['current_odometer'] == ha_trip.end_odometer
 
     def test_other_users_vehicles_hidden(self, client, ha_headers, sample_vehicle):
         data = client.get('/api/ha/overview', headers=ha_headers).get_json()
