@@ -47,10 +47,11 @@ def ha_vehicle(ha_user):
 
 @pytest.fixture
 def ha_fuel_log(ha_user, ha_vehicle):
+    today = date.today()
     log = FuelLog(
         vehicle_id=ha_vehicle.id,
         user_id=ha_user.id,
-        date=date(2024, 1, 10),
+        date=today - timedelta(days=10),
         odometer=5000.0,
         volume=40.0,
         price_per_unit=1.60,
@@ -61,7 +62,7 @@ def ha_fuel_log(ha_user, ha_vehicle):
     log2 = FuelLog(
         vehicle_id=ha_vehicle.id,
         user_id=ha_user.id,
-        date=date(2024, 2, 10),
+        date=today - timedelta(days=3),
         odometer=5500.0,
         volume=38.0,
         price_per_unit=1.62,
@@ -74,19 +75,40 @@ def ha_fuel_log(ha_user, ha_vehicle):
 
 
 @pytest.fixture
-def ha_trip(ha_user, ha_vehicle):
-    trip = Trip(
-        vehicle_id=ha_vehicle.id,
-        user_id=ha_user.id,
-        date=date(2024, 2, 1),
-        start_odometer=5500.0,
-        end_odometer=5510.0,
-        purpose='business',
-        description='Client meeting',
-    )
-    _db_ext.session.add(trip)
+def ha_trips(ha_user, ha_vehicle):
+    today = date.today()
+    trips = [
+        Trip(
+            vehicle_id=ha_vehicle.id,
+            user_id=ha_user.id,
+            date=today - timedelta(days=10),
+            start_odometer=5000.0,
+            end_odometer=5100.0,
+            purpose='business',
+            description='Earlier client meeting',
+        ),
+        Trip(
+            vehicle_id=ha_vehicle.id,
+            user_id=ha_user.id,
+            date=today - timedelta(days=3),
+            start_odometer=5100.0,
+            end_odometer=5500.0,
+            purpose='business',
+            description='Recent client meeting',
+        ),
+        Trip(
+            vehicle_id=ha_vehicle.id,
+            user_id=ha_user.id,
+            date=today - timedelta(days=1),
+            start_odometer=5500.0,
+            end_odometer=5510.0,
+            purpose='business',
+            description='Latest client meeting',
+        ),
+    ]
+    _db_ext.session.add_all(trips)
     _db_ext.session.commit()
-    return trip
+    return trips
 
 
 class TestHaAuth:
@@ -125,26 +147,26 @@ class TestHaVehicles:
         assert 'vehicles' in data
         assert data['count'] == 0
 
-    def test_list_vehicles_with_vehicle(self, client, ha_headers, ha_vehicle, ha_trip):
+    def test_list_vehicles_with_vehicle(self, client, ha_headers, ha_vehicle, ha_trips):
         resp = client.get('/api/ha/vehicles', headers=ha_headers)
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['count'] == 1
         v = data['vehicles'][0]
         assert v['name'] == 'HA Test Car'
-        assert v['current_odometer'] == ha_trip.end_odometer
+        assert v['current_odometer'] == ha_trips[-1].end_odometer
         assert 'fuel_type' in v
         assert v['unit_distance'] == 'km'
         assert v['unit_volume'] == 'L'
         assert v['currency'] == 'USD'
 
-    def test_vehicle_detail(self, client, ha_headers, ha_vehicle, ha_trip):
+    def test_vehicle_detail(self, client, ha_headers, ha_vehicle, ha_trips):
         resp = client.get(f'/api/ha/vehicles/{ha_vehicle.id}', headers=ha_headers)
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['id'] == ha_vehicle.id
         assert data['name'] == 'HA Test Car'
-        assert data['current_odometer'] == ha_trip.end_odometer
+        assert data['current_odometer'] == ha_trips[-1].end_odometer
         assert data['unit_distance'] == 'km'
         assert data['unit_volume'] == 'L'
         assert data['currency'] == 'USD'
@@ -178,10 +200,26 @@ class TestHaVehicleStats:
         assert data['volume_unit'] == 'L'
         assert data['currency'] == 'USD'
 
-    def test_vehicle_stats_current_odometer_from_trip(self, client, ha_headers, ha_vehicle, ha_trip):
+    def test_vehicle_stats_current_odometer_from_trip(self, client, ha_headers, ha_vehicle, ha_trips):
         resp = client.get(f'/api/ha/vehicles/{ha_vehicle.id}/stats', headers=ha_headers)
         assert resp.status_code == 200
-        assert resp.get_json()['current_odometer'] == ha_trip.end_odometer
+        data = resp.get_json()
+        assert data['current_odometer'] == ha_trips[-1].end_odometer
+        assert data['total_distance'] == (
+            ha_trips[-1].end_odometer - ha_trips[0].start_odometer
+        )
+
+    def test_vehicle_stats_distance_since_period_start(self, client, ha_headers, ha_vehicle, ha_trips):
+        resp = client.get(
+            f'/api/ha/vehicles/{ha_vehicle.id}/stats?days=7',
+            headers=ha_headers,
+        )
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert data['current_odometer'] == ha_trips[-1].end_odometer
+        assert data['total_distance'] == (
+            ha_trips[-1].end_odometer - ha_trips[0].end_odometer
+        )
 
     def test_vehicle_stats_not_found(self, client, ha_headers):
         resp = client.get('/api/ha/vehicles/99999/stats', headers=ha_headers)
@@ -263,6 +301,13 @@ class TestHaSummary:
         assert resp.status_code == 200
         data = resp.get_json()
         assert data['total_vehicles'] == 1
+
+    def test_summary_distance_from_trips(self, client, ha_headers, ha_vehicle, ha_trips):
+        resp = client.get('/api/ha/summary', headers=ha_headers)
+        assert resp.status_code == 200
+        assert resp.get_json()['total_distance'] == (
+            ha_trips[-1].end_odometer - ha_trips[0].start_odometer
+        )
 
 
 class TestHaAddFuel:
@@ -425,10 +470,10 @@ class TestHaOverview:
         assert data['alerts_count'] == 0
         assert 'version' in data and 'currency' in data
 
-    def test_current_odometer_from_trip(self, client, ha_headers, ha_vehicle, ha_trip):
+    def test_current_odometer_from_trip(self, client, ha_headers, ha_vehicle, ha_trips):
         data = client.get('/api/ha/overview', headers=ha_headers).get_json()
         vehicle = next(v for v in data['vehicles'] if v['id'] == ha_vehicle.id)
-        assert vehicle['current_odometer'] == ha_trip.end_odometer
+        assert vehicle['current_odometer'] == ha_trips[-1].end_odometer
 
     def test_other_users_vehicles_hidden(self, client, ha_headers, sample_vehicle):
         data = client.get('/api/ha/overview', headers=ha_headers).get_json()
