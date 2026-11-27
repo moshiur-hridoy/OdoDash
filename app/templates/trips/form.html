@@ -37,6 +37,7 @@
     <section class="ds-card form-section">
         {% call(v) vehicle_picker(vehicles, form_vehicle) -%}
         data-last-odometer="{{ v.get_last_odometer(current_user.distance_unit) }}" data-odometer-unit="{{ v.get_reading_unit() }}"
+        data-last-trip-location="{{ v.get_last_trip_location() or '' }}"
         data-hours-metered="{{ 'true' if v.tracks_hours() else 'false' }}" data-default-purpose="{{ v.default_trip_purpose or 'business' }}"
         data-uses-tessie="{{ 'true' if v.uses_tessie_odometer() else 'false' }}" data-tank-capacity="{{ v.tank_capacity or '' }}"
         data-tessie-odometer="{% if v.tessie_last_odometer %}{% if current_user.distance_unit == 'mi' %}{{ (v.tessie_last_odometer * 0.621371)|round|int }}{% else %}{{ v.tessie_last_odometer|round|int }}{% endif %}{% endif %}"
@@ -112,7 +113,7 @@
             <div class="ds-field">
                 <label class="ds-field__label" for="start_location">{{ _('Start Location') }}</label>
                 <input type="text" name="start_location" id="start_location" class="ds-control"
-                       value="{{ trip.start_location if trip and trip.start_location else '' }}" placeholder="{{ _('e.g., Home, Office') }}">
+                       value="{{ trip.start_location if trip and trip.start_location else (last_trip_location if last_trip_location else '') }}" placeholder="{{ _('e.g., Home, Office') }}">
             </div>
             <div class="ds-field">
                 <label class="ds-field__label" for="end_location">{{ _('End Location') }}</label>
@@ -143,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('trip-form');
     var startInput = document.getElementById('start_odometer');
     var endInput = document.getElementById('end_odometer');
+    var locationInput = document.getElementById('start_location');
     var isEditing = {{ 'true' if trip else 'false' }};
     var T = {
         lastOdometer: {{ _('Last odometer')|tojson }}, lastHours: {{ _('Last engine hours')|tojson }},
@@ -152,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     var volumeUnit = {{ current_user.volume_unit|tojson }};
     var prefilled = null;   // the start reading this page filled in itself
+    var prefilledLocation = locationInput.value;
 
     function vehicle() { return window.dsSelectedVehicle(form); }
 
@@ -189,6 +192,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!isEditing && (!startInput.value || startInput.value === prefilled)) {
             startInput.value = last;
             prefilled = last;
+        }
+        var lastLocation = v.dataset.lastTripLocation || '';
+        if (!isEditing && (!locationInput.value || locationInput.value === prefilledLocation)) {
+            locationInput.value = lastLocation;
+            prefilledLocation = lastLocation;
         }
         calculateDistance();
         calculateFuelUsed();
