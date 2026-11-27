@@ -15,6 +15,8 @@ def sample_trip(app, test_user, sample_vehicle):
         end_odometer=10150.0,
         purpose='business',
         description='Client meeting',
+        start_location='Office',
+        end_location='Client A',
     )
     db.session.add(trip)
     db.session.commit()
@@ -108,6 +110,19 @@ class TestTripNew:
     def test_get_new_form_returns_200(self, auth_client, sample_vehicle):
         resp = auth_client.get('/trips/new')
         assert resp.status_code == 200
+
+    def test_new_form_prefills_start_location_from_last_trip(
+            self, auth_client, sample_vehicle, sample_trip):
+        last_trip_location = sample_vehicle.get_last_trip_location()
+        assert last_trip_location == sample_trip.end_location
+
+        resp = auth_client.get('/trips/new')
+
+        assert resp.status_code == 200
+        assert (
+            b'value="' + last_trip_location.encode() + b'" '
+            b'placeholder="' in resp.data
+        )
 
     def test_create_trip(self, auth_client, sample_vehicle, test_user):
         resp = auth_client.post('/trips/new', data={
