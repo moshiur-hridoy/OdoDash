@@ -38,6 +38,55 @@ class TestTripIndex:
         assert resp.status_code == 200
         assert b'Client meeting' in resp.data
 
+    def test_last_trip_location_matches_trip_list_order(self, test_user, sample_vehicle):
+        db.session.add_all(
+            [
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 2, 1),
+                    start_odometer=30000.0,
+                    end_odometer=30100.0,
+                    purpose="business",
+                    start_location="Old Office",
+                    end_location="Old Client",
+                ),
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 3, 1),
+                    start_odometer=10000.0,
+                    end_odometer=10100.0,
+                    purpose="business",
+                    start_location="Office",
+                    end_location="Low Odometer Client",
+                ),
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 3, 2),
+                    start_odometer=12000.0,
+                    end_odometer=12400.0,
+                    purpose="business",
+                    start_location="Client A",
+                    end_location="First with incorrect Odometer",
+                ),
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 3, 3),
+                    start_odometer=12100.0,
+                    end_odometer=12200.0,
+                    purpose="business",
+                    start_location="Client B",
+                    end_location="Latest Match",
+                ),
+            ]
+        )
+        db.session.commit()
+
+        assert sample_vehicle.get_last_trip_location() == "Latest Match"
+
     def test_index_orders_same_day_trips_by_odometer(self, auth_client, test_user, sample_vehicle):
         """Trips logged on the same date should be listed by odometer
         (most recently driven first), not by insertion order (#325)."""
