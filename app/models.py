@@ -917,7 +917,11 @@ class Vehicle(db.Model):
 
         Returns the location of the last trip, or None if no trips exist.
         """
-        last_trip = self.trips.order_by(Trip.end_odometer.desc()).first()
+        last_trip = self.trips.order_by(
+            Trip.date.desc(),
+            Trip.start_odometer.desc(),
+            Trip.id.desc(),
+        ).first()
         return last_trip.end_location if last_trip else None
 
     def get_fitted_tire_set(self):
