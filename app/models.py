@@ -912,6 +912,14 @@ class Vehicle(db.Model):
 
         return max(fuel_odo, trip_odo, charge_odo, expense_odo)
 
+    def get_last_trip_location(self):
+        """Get the most recent location based on the last trip.
+
+        Returns the location of the last trip, or None if no trips exist.
+        """
+        last_trip = self.trips.order_by(Trip.end_odometer.desc()).first()
+        return last_trip.end_location if last_trip else None
+
     def get_fitted_tire_set(self):
         """The tire set currently on this vehicle, or None (#293)."""
         for tire_set in self.tire_sets.all():
