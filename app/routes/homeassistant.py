@@ -32,6 +32,7 @@ sensor:
 from flask import Blueprint, jsonify, request, current_app
 from functools import wraps
 from app import db
+from app.permissions import authorises_by_key, refuse_unless_permitted
 from app.models import (
     User, Vehicle, FuelLog, Expense, MaintenanceSchedule,
     RecurringExpense, Document, Reminder, ChargingSession
@@ -90,10 +91,14 @@ def token_required(f):
         if not user:
             return jsonify({'error': 'Invalid API token'}), 401
 
+        refusal = refuse_unless_permitted(user)
+        if refusal is not None:
+            return refusal
+
         # Add user to kwargs for route access
         kwargs['user'] = user
         return f(*args, **kwargs)
-    return decorated
+    return authorises_by_key(decorated)
 
 
 @bp.route('/status')

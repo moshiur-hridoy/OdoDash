@@ -13,6 +13,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request, send_from_directory, current_app, url_for, render_template, Response, flash, redirect, session
 from flask_login import login_required, current_user
 from app import db
+from app.permissions import authorises_by_key, refuse_unless_permitted, request_api_key
 from app.models import (
     User, Vehicle, VehicleSpec, FuelLog, Expense, EXPENSE_CATEGORIES,
     Reminder, MaintenanceSchedule, RecurringExpense, FuelStation,
@@ -49,20 +50,10 @@ def docs():
 # =============================================================================
 
 def api_auth_required(f):
-    """Decorator for API key authentication"""
+    """Decorator for API key authentication and the key account's role."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        api_key = None
-
-        # Check Authorization header
-        auth_header = request.headers.get('Authorization')
-        if auth_header and auth_header.startswith('Bearer '):
-            api_key = auth_header[7:]
-
-        # Check X-API-Key header
-        if not api_key:
-            api_key = request.headers.get('X-API-Key')
-
+        api_key = request_api_key()
         if not api_key:
             return jsonify({'error': 'API key required', 'code': 'missing_api_key'}), 401
 
@@ -70,11 +61,15 @@ def api_auth_required(f):
         if not user:
             return jsonify({'error': 'Invalid API key', 'code': 'invalid_api_key'}), 401
 
+        refusal = refuse_unless_permitted(user)
+        if refusal is not None:
+            return refusal
+
         # Attach user to request context
         request.api_user = user
         return f(*args, **kwargs)
 
-    return decorated_function
+    return authorises_by_key(decorated_function)
 
 
 def get_api_user():

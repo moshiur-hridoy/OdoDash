@@ -10,13 +10,17 @@ the application the request is about to write to and refuses the request when
 the account's role does not cover it. Read requests are never blocked here —
 what an account can *see* is still governed by vehicle ownership and sharing.
 
+Requests authenticated by key (``/api/v1`` and ``/api/ha``) are checked by
+their authentication decorator, against the account the key belongs to, since
+only the decorator knows for certain who that is.
+
 The mapping is by blueprint by default, so a new route in, say, ``fuel.py``
 is covered the moment it is added. Endpoints that do not fit their
 blueprint's scope (the API and Home Assistant blueprints, which span every
 area) are listed individually, and any unrecognised write endpoint is refused
 for restricted roles rather than allowed.
 """
-from flask import request, redirect, url_for, flash, jsonify
+from flask import request, redirect, url_for, flash, jsonify, current_app
 from flask_login import current_user
 from flask_babel import gettext as _
 
@@ -103,6 +107,25 @@ def scope_for_endpoint(endpoint):
     return BLUEPRINT_SCOPES.get(blueprint)
 
 
+def request_api_key():
+    """The API key a request carries: ``Authorization: Bearer`` or ``X-API-Key``."""
+    auth_header = request.headers.get('Authorization') or ''
+    scheme, _separator, token = auth_header.partition(' ')
+    if scheme.lower() == 'bearer' and token.strip():
+        return token.strip()
+    return request.headers.get('X-API-Key') or None
+
+
+def authorises_by_key(view):
+    """Mark a view whose decorator authenticates a key and checks its role.
+
+    The ``before_request`` guard leaves such views alone: a session cookie sent
+    alongside the key must not decide what the key's account may do.
+    """
+    view.authorises_by_key = True
+    return view
+
+
 def _acting_user():
     """The user this request acts as: the signed-in user or an API key holder."""
     if current_user and current_user.is_authenticated:
@@ -110,19 +133,7 @@ def _acting_user():
 
     from app.models import User
 
-    api_key = None
-    auth_header = request.headers.get('Authorization')
-    if auth_header and auth_header.lower().startswith('bearer '):
-        api_key = auth_header[7:]
-    if not api_key:
-        api_key = request.headers.get('X-API-Key')
-    if not api_key:
-        return None
-    user = User.get_by_api_key(api_key)
-    if user is None and request.blueprint == 'homeassistant':
-        # The Home Assistant key is valid only on /api/ha/*.
-        user = User.get_by_ha_token(api_key)
-    return user
+    return User.get_by_api_key(request_api_key())
 
 
 def _wants_json():
@@ -142,13 +153,9 @@ def _refuse():
     return redirect(url_for('main.dashboard'))
 
 
-def check_request_permission():
-    """``before_request`` hook enforcing the acting user's role."""
-    endpoint = request.endpoint
-    if not endpoint or endpoint in ACCOUNT_ENDPOINTS:
-        return None
-
-    scope = scope_for_endpoint(endpoint)
+def refuse_unless_permitted(user):
+    """The refusal for this request if ``user``'s role does not allow it."""
+    scope = scope_for_endpoint(request.endpoint)
     is_write = request.method in WRITE_METHODS
     # A GET on a route that also accepts POST is a form page; there is no
     # point letting a restricted user fill in a form that will be refused.
@@ -160,11 +167,6 @@ def check_request_permission():
     )
     if not is_write and not is_form_page:
         return None
-
-    user = _acting_user()
-    if user is None:
-        # Not signed in — leave the refusal to login_required / API auth.
-        return None
     if user.is_admin:
         return None
 
@@ -174,6 +176,22 @@ def check_request_permission():
         return None if user.has_full_write_access else _refuse()
 
     return None if user.can_write(scope) else _refuse()
+
+
+def check_request_permission():
+    """``before_request`` hook enforcing the acting user's role."""
+    endpoint = request.endpoint
+    if not endpoint or endpoint in ACCOUNT_ENDPOINTS:
+        return None
+    view = current_app.view_functions.get(endpoint)
+    if getattr(view, 'authorises_by_key', False):
+        return None
+
+    user = _acting_user()
+    if user is None:
+        # Not signed in — leave the refusal to login_required / API auth.
+        return None
+    return refuse_unless_permitted(user)
 
 
 def register_permission_hooks(app):

@@ -317,3 +317,77 @@ class TestAdminRoleManagement:
     def test_non_admin_cannot_reach_user_management(self, auth_client):
         response = auth_client.get('/auth/users', follow_redirects=True)
         assert 'Admin privileges required' in response.get_data(as_text=True)
+
+
+# ---------------------------------------------------------------------------
+# Key-authenticated requests are judged by the key's account
+# ---------------------------------------------------------------------------
+
+class TestKeyAccountRole:
+    EXPENSE = {'date': '2024-02-01', 'category': 'maintenance',
+               'description': 'New tyres', 'cost': 300}
+
+    def _key(self, user):
+        key = user.generate_api_key()
+        db.session.commit()
+        return key
+
+    def _expenses_url(self, vehicle):
+        return f'/api/v1/vehicles/{vehicle.id}/expenses'
+
+    @pytest.mark.parametrize('scheme', ['Bearer', 'bearer', 'BEARER'])
+    def test_bearer_scheme_is_case_insensitive_and_checked(
+            self, client, viewer, sample_vehicle, scheme):
+        headers = {'Authorization': f'{scheme} {self._key(viewer)}'}
+        assert client.get('/api/v1/vehicles', headers=headers).status_code == 200
+        response = client.post(self._expenses_url(sample_vehicle),
+                               json=self.EXPENSE, headers=headers)
+        assert response.status_code == 403
+
+    @pytest.mark.parametrize('scheme', ['Bearer', 'bearer'])
+    def test_a_second_header_does_not_lift_the_limit(
+            self, client, viewer, sample_vehicle, sample_fuel_log, scheme):
+        headers = {'X-API-Key': self._key(viewer), 'Authorization': f'{scheme} x'}
+        assert client.post(self._expenses_url(sample_vehicle), json=self.EXPENSE,
+                           headers=headers).status_code in (401, 403)
+        assert client.delete(f'/api/v1/fuel/{sample_fuel_log.id}',
+                             headers=headers).status_code in (401, 403)
+        assert Expense.query.count() == 0
+        assert db.session.get(FuelLog, sample_fuel_log.id) is not None
+
+    def test_an_editors_session_does_not_lift_the_limit(
+            self, auth_client, viewer, sample_vehicle):
+        response = auth_client.post(self._expenses_url(sample_vehicle), json=self.EXPENSE,
+                                    headers={'X-API-Key': self._key(viewer)})
+        assert response.status_code == 403
+        assert Expense.query.count() == 0
+
+    def test_a_viewers_session_does_not_limit_an_editors_key(
+            self, client, viewer, test_user, sample_vehicle):
+        key = self._key(test_user)
+        _login(client, 'owner')
+        response = client.post(self._expenses_url(sample_vehicle), json=self.EXPENSE,
+                               headers={'X-API-Key': key})
+        assert response.status_code == 201
+
+    @pytest.mark.parametrize('token', ['generate_api_key', 'generate_ha_token'])
+    def test_home_assistant_fuel_entry_follows_the_role(
+            self, client, viewer, sample_vehicle, token):
+        key = getattr(viewer, token)()
+        db.session.commit()
+        response = client.post(
+            '/api/ha/fuel/add',
+            json={'vehicle_id': sample_vehicle.id, 'odometer': 20000, 'volume': 40},
+            headers={'Authorization': f'Bearer {key}'})
+        assert response.status_code == 403
+        assert FuelLog.query.count() == 0
+
+    def test_every_key_route_checks_the_role_itself(self, app):
+        """A route under these prefixes without the decorator would skip the check."""
+        rules = [rule for rule in app.url_map.iter_rules()
+                 if rule.rule.startswith(('/api/v1/', '/api/ha/'))]
+        assert rules
+        unmarked = [rule.rule for rule in rules
+                    if not getattr(app.view_functions[rule.endpoint],
+                                   'authorises_by_key', False)]
+        assert unmarked == []
