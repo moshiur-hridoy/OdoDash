@@ -49,6 +49,8 @@ class TestTripIndex:
             end_odometer=10050.0,
             purpose='business',
             description='Morning trip',
+            start_location='Office',
+            end_location='Client A',
         )
         db.session.add(earlier)
         db.session.commit()
@@ -61,6 +63,8 @@ class TestTripIndex:
             end_odometer=10120.0,
             purpose='business',
             description='Afternoon trip',
+            start_location='Client A',
+            end_location='Client B',
         )
         db.session.add(later)
         db.session.commit()
@@ -82,6 +86,8 @@ class TestTripIndex:
             end_odometer=20100.0,
             purpose='business',
             description='Older high-odometer trip',
+            start_location='Office',
+            end_location='Client A',
         )
         newer = Trip(
             vehicle_id=sample_vehicle.id,
@@ -91,6 +97,8 @@ class TestTripIndex:
             end_odometer=10100.0,
             purpose='business',
             description='Newer low-odometer trip',
+            start_location='Warehouse',
+            end_location='Depot',
         )
         db.session.add_all([older, newer])
         db.session.commit()
