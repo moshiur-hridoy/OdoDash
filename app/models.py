@@ -40,6 +40,10 @@ def get_currency_symbol(currency_code):
     return CURRENCY_SYMBOLS.get(code, currency_code)
 
 
+def new_session_token():
+    return secrets.token_hex(16)
+
+
 # User roles (#285). Roles sit below the admin flag: an administrator always
 # has full access, and every other account carries one of these roles.
 #
@@ -96,6 +100,9 @@ class User(UserMixin, db.Model):
     # username stays the login handle; an empty name falls back to it.
     display_name = db.Column(db.String(64))
     password_hash = db.Column(db.String(256), nullable=False)
+    # Part of what a login cookie holds. An id alone can be reused by a later
+    # account (SQLite does), which must not inherit the earlier one's cookies.
+    session_token = db.Column(db.String(32), default=new_session_token)
     is_admin = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(20), default=ROLE_EDITOR)  # editor, contributor, viewer (#285)
     created_at = db.Column(db.DateTime, default=utcnow)
@@ -178,6 +185,10 @@ class User(UserMixin, db.Model):
                                       backref=db.backref('shared_users', lazy='dynamic'))
     fuel_logs = db.relationship('FuelLog', backref='user', lazy='dynamic')
     expenses = db.relationship('Expense', backref='user', lazy='dynamic')
+
+    def get_id(self):
+        """What Flask-Login stores in the session and remember-me cookies."""
+        return f'{self.id}:{self.session_token or ""}'
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
