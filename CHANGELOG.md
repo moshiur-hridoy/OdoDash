@@ -10,6 +10,11 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Security
+
+- CSV import now accepts only a vehicle you have access to. A signed-in user who sent another vehicle's ID could see its name and add records to it.
+- The New Trip page no longer includes the odometer reading of a vehicle you have no access to when its ID is put in the address.
+
 ### Added
 
 - Tax Token, Fitness Certificate and Route Permit, the papers a Bangladesh vehicle owner has to renew, can now be chosen as a reminder type and as a document type. A reminder of one of these types pre-selects a sensible expense category when you log the renewal (Road Tax, Inspection and Registration). Existing reminders and documents are unchanged, and the JSON export, full backup and restore carry the new types. Every shipped language has the three names (#39).

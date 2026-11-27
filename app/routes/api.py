@@ -3314,7 +3314,7 @@ def csv_import_preview():
         return redirect(url_for('api.csv_import_upload'))
 
     vehicle = db.session.get(Vehicle, vehicle_id)
-    if not vehicle:
+    if not vehicle or vehicle not in current_user.get_all_vehicles():
         flash(_('Vehicle not found.'), 'error')
         return redirect(url_for('api.csv_import_upload'))
 
@@ -3399,7 +3399,7 @@ def csv_import_execute():
         return redirect(url_for('auth.settings') + '#integrations')
 
     vehicle = db.session.get(Vehicle, vehicle_id)
-    if not vehicle:
+    if not vehicle or vehicle not in current_user.get_all_vehicles():
         flash(_('Vehicle not found.'), 'error')
         return redirect(url_for('auth.settings') + '#integrations')
 
