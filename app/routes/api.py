@@ -22,6 +22,7 @@ from app.models import (
 )
 from app.services.backup_export import build_full_backup
 from app.services.tessie import TessieService
+from app.services.uploads import INLINE_EXTENSIONS, SCRIPTLESS_EXTENSIONS, extension_of
 from app.services.backup_restore import (
     BackupError, SECTION_LABELS, describe_backup, read_backup, restore_backup
 )
@@ -280,7 +281,12 @@ def process_reminders():
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):
     """Serve uploaded files (public for branding assets like logo)"""
-    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+    extension = extension_of(filename)
+    response = send_from_directory(current_app.config['UPLOAD_FOLDER'], filename,
+                                   as_attachment=extension not in INLINE_EXTENSIONS)
+    if extension not in SCRIPTLESS_EXTENSIONS:
+        response.headers['Content-Security-Policy'] = 'sandbox'
+    return response
 
 
 # =============================================================================

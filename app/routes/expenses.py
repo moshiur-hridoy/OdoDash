@@ -12,6 +12,7 @@ from app.models import (Vehicle, Expense, Attachment, MaintenanceSchedule, Remin
                         EXPENSE_CATEGORIES, MAINTENANCE_GROUPS, MAINTENANCE_PART_TYPES)
 from app.routes.reminders import complete_reminder
 from app.security import get_safe_redirect_url
+from app.services.uploads import remove_unused_upload
 
 bp = Blueprint('expenses', __name__, url_prefix='/expenses')
 
@@ -412,14 +413,11 @@ def delete(expense_id):
 
     vehicle_id = expense.vehicle_id
 
-    # Delete attachments
-    for attachment in expense.attachments.all():
-        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], attachment.filename)
-        if os.path.exists(file_path):
-            os.remove(file_path)
-
+    filenames = [attachment.filename for attachment in expense.attachments.all()]
     db.session.delete(expense)
     db.session.commit()
+    for filename in filenames:
+        remove_unused_upload(current_app.config['UPLOAD_FOLDER'], filename)
     flash(_('Expense deleted successfully'), 'success')
 
     # Redirect back to vehicle page if we came from there (#283)
@@ -446,11 +444,9 @@ def delete_attachment(expense_id, attachment_id):
         flash(_('Access denied'), 'error')
         return redirect(url_for('expenses.edit', expense_id=expense_id))
 
-    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], attachment.filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
+    filename = attachment.filename
     db.session.delete(attachment)
     db.session.commit()
+    remove_unused_upload(current_app.config['UPLOAD_FOLDER'], filename)
     flash(_('Attachment deleted'), 'success')
     return redirect(url_for('expenses.edit', expense_id=expense_id))

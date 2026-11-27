@@ -14,6 +14,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 - CSV import now accepts only a vehicle you have access to. A signed-in user who sent another vehicle's ID could see its name and add records to it.
 - The New Trip page no longer includes the odometer reading of a vehicle you have no access to when its ID is put in the address.
+- An account's role now applies to every API and Home Assistant request according to the account the key belongs to. Some combinations of headers let a viewer or contributor key change data on vehicles shared with it.
+- Restoring a backup now writes only the kinds of file the upload forms accept, and only when a record refers to them. A file name already used by another account is stored under a new name, and deleting a record no longer removes a file that something else still uses.
+- Uploaded files other than pictures and PDFs are now sent as downloads rather than opened in the browser.
+- A sign-in cookie left over from a deleted account can no longer open a newer account. **Everyone is signed out once after updating** and signs in again as usual. API and Home Assistant keys are not affected.
 
 ### Added
 
