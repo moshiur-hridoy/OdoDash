@@ -40,6 +40,10 @@ def get_currency_symbol(currency_code):
     return CURRENCY_SYMBOLS.get(code, currency_code)
 
 
+def new_session_token():
+    return secrets.token_hex(16)
+
+
 # User roles (#285). Roles sit below the admin flag: an administrator always
 # has full access, and every other account carries one of these roles.
 #
@@ -96,6 +100,9 @@ class User(UserMixin, db.Model):
     # username stays the login handle; an empty name falls back to it.
     display_name = db.Column(db.String(64))
     password_hash = db.Column(db.String(256), nullable=False)
+    # Part of what a login cookie holds. An id alone can be reused by a later
+    # account (SQLite does), which must not inherit the earlier one's cookies.
+    session_token = db.Column(db.String(32), default=new_session_token)
     is_admin = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(20), default=ROLE_EDITOR)  # editor, contributor, viewer (#285)
     created_at = db.Column(db.DateTime, default=utcnow)
@@ -178,6 +185,10 @@ class User(UserMixin, db.Model):
                                       backref=db.backref('shared_users', lazy='dynamic'))
     fuel_logs = db.relationship('FuelLog', backref='user', lazy='dynamic')
     expenses = db.relationship('Expense', backref='user', lazy='dynamic')
+
+    def get_id(self):
+        """What Flask-Login stores in the session and remember-me cookies."""
+        return f'{self.id}:{self.session_token or ""}'
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -1742,6 +1753,10 @@ REMINDER_TYPES = [
     ('insurance', _l('Insurance Renewal')),
     ('tax', _l('Road Tax')),
     ('registration', _l('Registration Renewal')),
+    ('tax_token', _l('Tax Token')),
+    ('fitness_certificate', _l('Fitness Certificate')),
+    ('route_permit', _l('Route Permit')),
+    ('driving_licence', _l('Driving Licence')),
     ('warranty', _l('Warranty Expiry')),
     ('tire_change', _l('Tire Change')),
     ('oil_change', _l('Oil Change')),
@@ -1756,6 +1771,10 @@ REMINDER_EXPENSE_CATEGORIES = {
     'insurance': 'insurance',
     'tax': 'tax',
     'registration': 'registration',
+    'tax_token': 'tax',
+    'fitness_certificate': 'inspection',
+    'route_permit': 'registration',
+    'driving_licence': 'other',
     'tire_change': 'maintenance',
     'oil_change': 'maintenance',
 }
@@ -1842,6 +1861,10 @@ DOCUMENT_TYPES = [
     ('insurance', _l('Insurance Policy')),
     ('registration', _l('Registration/V5C')),
     ('mot', _l('MOT Certificate')),
+    ('tax_token', _l('Tax Token')),
+    ('fitness_certificate', _l('Fitness Certificate')),
+    ('route_permit', _l('Route Permit')),
+    ('driving_licence', _l('Driving Licence')),
     ('service_record', _l('Service Record')),
     ('purchase', _l('Purchase Invoice')),
     ('warranty', _l('Warranty Document')),
@@ -2185,6 +2208,17 @@ class FuelStation(db.Model):
         """Increment usage counter when station is used"""
         self.times_used = (self.times_used or 0) + 1
         self.last_used = utcnow()
+
+    @property
+    def display_name(self):
+        """Text a fuel log stores for this station: "name (brand)" or "name".
+
+        Matches the option labels in the fuel form datalists, so a station
+        rename can find the logs saved with the old text.
+        """
+        if self.brand:
+            return f'{self.name} ({self.brand})'
+        return self.name
 
     @property
     def price_source_label(self):

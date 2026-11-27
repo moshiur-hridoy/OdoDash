@@ -1,6 +1,9 @@
 version: 2
 updates:
-  # Python dependencies
+  # Python dependencies. requirements.txt uses ">=" floors, so every image
+  # build already installs the newest release; a PR only raises the floor.
+  # One monthly PR for all of them, and patch releases are skipped. Security
+  # updates are separate and are not affected by these rules.
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -11,8 +14,18 @@ updates:
     labels:
       - "dependencies"
     open-pull-requests-limit: 3
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
 
-  # Base image in the Dockerfile
+  # Base image in the Dockerfile. Moving to a new Python version is a decision
+  # (wheels for WeasyPrint, Pillow and psycopg2 have to exist), so Python
+  # major and minor bumps are made by hand, not proposed.
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -22,6 +35,11 @@ updates:
       prefix: "deps"
     labels:
       - "dependencies"
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -33,3 +51,7 @@ updates:
       prefix: "ci"
     labels:
       - "ci"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

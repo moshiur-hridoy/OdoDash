@@ -12,6 +12,7 @@ from app.security import (
     validate_webhook_url, admin_required, login_throttle
 )
 from app.services.notifications import NotificationService
+from app.services.uploads import remove_unused_upload
 from config import APP_VERSION, DISPLAY_VERSION, RELEASE_CHANNEL, GITHUB_REPO
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -473,16 +474,11 @@ def branding():
     if 'logo' in request.files:
         file = request.files['logo']
         if file and file.filename and allowed_file(file.filename):
-            # Delete old logo
             old_logo = AppSettings.get('logo_filename')
-            if old_logo:
-                old_path = os.path.join(current_app.config['UPLOAD_FOLDER'], old_logo)
-                if os.path.exists(old_path):
-                    os.remove(old_path)
-
             filename = f"logo_{uuid.uuid4().hex}_{secure_filename(file.filename)}"
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
             AppSettings.set('logo_filename', filename)
+            remove_unused_upload(current_app.config['UPLOAD_FOLDER'], old_logo)
 
     flash(_('Branding settings updated successfully'), 'success')
     return redirect(url_for('auth.settings') + '#branding')
@@ -495,10 +491,8 @@ def remove_logo():
     """Remove the uploaded logo"""
     logo_filename = AppSettings.get('logo_filename')
     if logo_filename:
-        logo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], logo_filename)
-        if os.path.exists(logo_path):
-            os.remove(logo_path)
         AppSettings.set('logo_filename', '')
+        remove_unused_upload(current_app.config['UPLOAD_FOLDER'], logo_filename)
 
     flash(_('Logo removed successfully'), 'success')
     return redirect(url_for('auth.settings') + '#branding')

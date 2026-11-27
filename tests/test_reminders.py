@@ -46,6 +46,12 @@ class TestReminderNew:
         resp = auth_client.get('/reminders/new')
         assert resp.status_code == 200
 
+    def test_new_form_script_starts_with_an_empty_title(self, auth_client, sample_vehicle):
+        # An HTML-escaped '' here was a syntax error, so picking a type
+        # never filled the title.
+        resp = auth_client.get('/reminders/new')
+        assert b'var auto = "";' in resp.data
+
     def test_create_reminder(self, auth_client, sample_vehicle, test_user):
         resp = auth_client.post('/reminders/new', data={
             'vehicle_id': str(sample_vehicle.id),
@@ -70,6 +76,10 @@ class TestReminderEdit:
     def test_get_edit_form_returns_200(self, auth_client, sample_reminder):
         resp = auth_client.get(f'/reminders/{sample_reminder.id}/edit')
         assert resp.status_code == 200
+
+    def test_edit_form_script_leaves_the_title_alone(self, auth_client, sample_reminder):
+        resp = auth_client.get(f'/reminders/{sample_reminder.id}/edit')
+        assert b'var auto = null;' in resp.data
 
     def test_edit_reminder(self, auth_client, sample_reminder):
         resp = auth_client.post(f'/reminders/{sample_reminder.id}/edit', data={

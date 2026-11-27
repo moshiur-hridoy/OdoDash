@@ -32,6 +32,7 @@ sensor:
 from flask import Blueprint, jsonify, request, current_app
 from functools import wraps
 from app import db
+from app.permissions import authorises_by_key, refuse_unless_permitted
 from app.models import (
     User, Vehicle, FuelLog, Expense, MaintenanceSchedule,
     RecurringExpense, Document, Reminder, ChargingSession
@@ -90,10 +91,14 @@ def token_required(f):
         if not user:
             return jsonify({'error': 'Invalid API token'}), 401
 
+        refusal = refuse_unless_permitted(user)
+        if refusal is not None:
+            return refusal
+
         # Add user to kwargs for route access
         kwargs['user'] = user
         return f(*args, **kwargs)
-    return decorated
+    return authorises_by_key(decorated)
 
 
 @bp.route('/status')
@@ -119,11 +124,6 @@ def vehicles(user):
     }
 
     for v in vehicles:
-        # Get latest odometer reading
-        latest_log = FuelLog.query.filter_by(vehicle_id=v.id).order_by(
-            FuelLog.odometer.desc()
-        ).first()
-
         vehicle_data = {
             'id': v.id,
             'name': v.name,
@@ -132,7 +132,7 @@ def vehicles(user):
             'year': v.year,
             'registration': v.registration,
             'fuel_type': v.fuel_type,
-            'current_odometer': latest_log.odometer if latest_log else 0,
+            'current_odometer': v.get_last_odometer(),
             # current_odometer is the raw stored reading, so for an
             # hours-metered vehicle it is engine hours and the account's
             # distance preference does not describe it (#324).
@@ -153,11 +153,6 @@ def vehicle_detail(vehicle_id, user):
     if not vehicle:
         return jsonify({'error': 'Vehicle not found'}), 404
 
-    # Get latest odometer reading
-    latest_log = FuelLog.query.filter_by(vehicle_id=vehicle.id).order_by(
-        FuelLog.odometer.desc()
-    ).first()
-
     return jsonify({
         'id': vehicle.id,
         'name': vehicle.name,
@@ -166,7 +161,7 @@ def vehicle_detail(vehicle_id, user):
         'year': vehicle.year,
         'registration': vehicle.registration,
         'fuel_type': vehicle.fuel_type,
-        'current_odometer': latest_log.odometer if latest_log else 0,
+        'current_odometer': vehicle.get_last_odometer(),
         'unit_distance': vehicle.get_reading_unit(),
         'unit_volume': user.volume_unit,
         'currency': user.currency
@@ -230,11 +225,6 @@ def _vehicle_stats(vehicle, user, days=None):
         FuelLog.date.desc()
     ).first()
 
-    # Get current odometer
-    latest_log = FuelLog.query.filter_by(vehicle_id=vehicle.id).order_by(
-        FuelLog.odometer.desc()
-    ).first()
-
     return {
         'vehicle_id': vehicle.id,
         'vehicle_name': vehicle.name,
@@ -250,7 +240,7 @@ def _vehicle_stats(vehicle, user, days=None):
         'last_fill_date': last_fill.date.isoformat() if last_fill else None,
         'last_fill_volume': last_fill.volume if last_fill else None,
         'last_fill_cost': last_fill.total_cost if last_fill else None,
-        'current_odometer': latest_log.odometer if latest_log else 0,
+        'current_odometer': vehicle.get_last_odometer(),
         'distance_unit': vehicle.get_reading_unit(),
         'volume_unit': user.volume_unit,
         'currency': user.currency,

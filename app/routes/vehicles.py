@@ -12,6 +12,7 @@ from app import db
 from app.utils import parse_starting_odometer, parse_decimal, utcnow, consumption_trend, LOWER_IS_BETTER_UNITS
 from app.models import Vehicle, VehicleSpec, VehiclePart, FuelLog, Expense, ChargingSession, User, Reminder, MaintenanceSchedule, Attachment, VEHICLE_TYPES, FUEL_TYPES, VEHICLE_SPEC_TYPES, REMINDER_TYPES, PART_TYPES, TRACKING_UNITS, ODOMETER_UNITS, TRIP_PURPOSES, EXPENSE_CATEGORIES, AppSettings
 from app.services.tessie import TessieService
+from app.services.uploads import remove_unused_upload
 
 bp = Blueprint('vehicles', __name__, url_prefix='/vehicles')
 
@@ -33,27 +34,14 @@ def _upload_path(filename):
     return os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
 
 
-def _delete_upload(filename):
-    """Remove an uploaded file, ignoring one that has already gone."""
-    if not filename:
-        return
-    path = _upload_path(filename)
-    if os.path.exists(path):
-        os.remove(path)
-
-
 def _delete_unused_upload(filename):
-    """Remove an uploaded file unless a gallery photo still points at it.
+    """Remove an uploaded file unless some record still points at it.
 
     The main image and the gallery share the uploads folder, and setting a
     gallery photo as the main image reuses its file (#147), so a file may be
-    referenced by both.
+    referenced by both. Call this after the record that used it has changed.
     """
-    if not filename:
-        return
-    if Attachment.query.filter_by(filename=filename).first():
-        return
-    _delete_upload(filename)
+    remove_unused_upload(current_app.config['UPLOAD_FOLDER'], filename)
 
 
 def _vehicle_photos(vehicle):
@@ -384,11 +372,11 @@ def edit(vehicle_id):
         vehicle.tessie_enabled = request.form.get('tessie_enabled') == 'on'
 
         # Handle image upload
+        replaced_image = None
         if 'image' in request.files:
             file = request.files['image']
             if file and file.filename and allowed_file(file.filename):
-                # Delete the old image, unless it is also a gallery photo
-                _delete_unused_upload(vehicle.image_filename)
+                replaced_image = vehicle.image_filename
 
                 filename = f"{uuid.uuid4().hex}_{secure_filename(file.filename)}"
                 file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
@@ -413,6 +401,8 @@ def edit(vehicle_id):
                 db.session.add(spec)
 
         db.session.commit()
+        # Delete the old image, unless it is also a gallery photo
+        _delete_unused_upload(replaced_image)
         flash(_('Vehicle updated successfully'), 'success')
         return redirect(url_for('vehicles.view', vehicle_id=vehicle.id))
 
@@ -440,13 +430,14 @@ def delete(vehicle_id):
         flash(_('Access denied'), 'error')
         return redirect(url_for('vehicles.index'))
 
-    # Delete the main image and every gallery photo (#147)
-    _delete_upload(vehicle.image_filename)
-    for photo in _vehicle_photos(vehicle):
-        _delete_upload(photo.filename)
+    # The main image and every gallery photo go with the vehicle (#147)
+    filenames = {vehicle.image_filename}
+    filenames.update(photo.filename for photo in _vehicle_photos(vehicle))
 
     db.session.delete(vehicle)
     db.session.commit()
+    for filename in filenames:
+        _delete_unused_upload(filename)
     flash(_('Vehicle deleted successfully'), 'success')
     return redirect(url_for('vehicles.index'))
 

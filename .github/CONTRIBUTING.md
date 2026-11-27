@@ -13,6 +13,8 @@ Before starting work, comment on an existing issue or open a new one if you have
 
 This keeps work visible, avoids duplicated effort, and lets maintainers give early guidance.
 
+Comment and wait for a reply before you start. We take one pull request per issue, and an issue that someone has already claimed in a comment is theirs: a pull request for it will not be merged while that claim is active. A claim lapses after two weeks without activity.
+
 ### 2. Fork & Branch
 
 Work in your own fork, and create a feature branch from **`dev`**. The default branch (`ododash-release`) is production and only receives changes through a pull request from `dev`, so please never target it directly.
@@ -53,6 +55,16 @@ When you open a PR:
 3. **For UI changes, before/after screenshots are required.** This is how we review visual work — a screenshot tells the story faster than a thousand words.
 4. Reference the issue your PR closes (e.g. `Closes #12`).
 5. Keep the change focused. One PR, one concern.
+
+### Using AI tools
+
+AI coding tools are fine; the maintainer uses them too (see [AGENTS.md](../AGENTS.md)). What matters is that a person stands behind every pull request:
+
+- You have read the change, run it yourself, run the tests, and can answer questions about it.
+- One pull request is one issue you commented on first. Please do not open pull requests in bulk, or against issues nobody has asked you to take.
+- You are around to answer review comments.
+
+A pull request that nobody is answering for will be closed.
 
 ### What to expect
 

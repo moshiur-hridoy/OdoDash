@@ -18,6 +18,7 @@ from app.security import (
 )
 from flask_babel import gettext as _
 from app.services.tessie import TessieService
+from app.services.uploads import remove_unused_upload
 from app.routes.log_helpers import (
     month_start as _month_start, group_by_month as _group_by_month,
     monthly_totals as _monthly_totals,
@@ -540,11 +541,7 @@ def delete(log_id):
 
     vehicle_id = log.vehicle_id
 
-    # Delete attachments
-    for attachment in log.attachments.all():
-        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], attachment.filename)
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    filenames = [attachment.filename for attachment in log.attachments.all()]
 
     # Clean up matching fuel price history entries and keep each affected
     # station's usage counter in step with the chart view (#252): deleting a
@@ -569,6 +566,8 @@ def delete(log_id):
 
     db.session.delete(log)
     db.session.commit()
+    for filename in filenames:
+        remove_unused_upload(current_app.config['UPLOAD_FOLDER'], filename)
     flash(_('Fuel log deleted successfully'), 'success')
     # Redirect back to vehicle page if we came from there (#283), using the
     # same `return_to` token the new and edit routes take (#312).
@@ -598,12 +597,10 @@ def delete_attachment(log_id, attachment_id):
         flash(_('Access denied'), 'error')
         return redirect(url_for('fuel.edit', log_id=log_id))
 
-    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], attachment.filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
+    filename = attachment.filename
     db.session.delete(attachment)
     db.session.commit()
+    remove_unused_upload(current_app.config['UPLOAD_FOLDER'], filename)
     flash(_('Attachment deleted'), 'success')
     return redirect(url_for('fuel.edit', log_id=log_id))
 

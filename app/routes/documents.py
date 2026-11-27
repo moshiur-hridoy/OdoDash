@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from flask_babel import gettext as _
 from app import db
 from app.models import Vehicle, Document, DOCUMENT_TYPES
+from app.services.uploads import remove_unused_upload
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 
@@ -207,17 +208,15 @@ def delete(document_id):
         flash(_('Access denied'), 'error')
         return redirect(url_for('documents.index'))
 
-    # Delete file
-    try:
-        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], document.filename)
-        if os.path.exists(file_path):
-            os.remove(file_path)
-    except Exception:
-        pass
-
     title = document.title
+    filename = document.filename
     db.session.delete(document)
     db.session.commit()
+
+    try:
+        remove_unused_upload(current_app.config['UPLOAD_FOLDER'], filename)
+    except OSError:
+        pass
 
     flash(_('Document "%(title)s" deleted') % {'title': title}, 'success')
     return redirect(url_for('documents.index'))

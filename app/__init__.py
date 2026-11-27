@@ -304,6 +304,24 @@ WHERE (s.last_performed_date IS NOT NULL OR s.last_performed_odometer IS NOT NUL
             """))
 
 
+def _backfill_session_tokens():
+    """Give accounts that predate session tokens one each.
+
+    Their existing cookies stop matching, so they sign in once more.
+    """
+    from app.models import User, new_session_token
+
+    missing = db.session.execute(
+        db.select(User.id).where(User.session_token.is_(None))).scalars().all()
+    for user_id in missing:
+        # Conditional, because several workers may start at the same moment
+        db.session.execute(
+            db.update(User)
+            .where(User.id == user_id, User.session_token.is_(None))
+            .values(session_token=new_session_token()))
+    db.session.commit()
+
+
 def get_locale():
     """Select the best language for the user"""
     # If user is logged in and has a language preference, use it
@@ -352,8 +370,14 @@ def create_app(config_class=Config):
     from app.models import User, AppSettings
 
     @login_manager.user_loader
-    def load_user(user_id):
-        return db.session.get(User, int(user_id))
+    def load_user(cookie_id):
+        user_id, _separator, token = str(cookie_id).partition(':')
+        if not user_id.isdigit():
+            return None
+        user = db.session.get(User, int(user_id))
+        if user is None or token != (user.session_token or ''):
+            return None
+        return user
 
     def compiled_stylesheet_url():
         """URL of the compiled Tailwind stylesheet, or None when it is absent.
@@ -603,6 +627,7 @@ def create_app(config_class=Config):
             _bootstrap_alembic_version(app)
         # Run schema migrations for new columns on existing tables
         _run_schema_migrations(app)
+        _backfill_session_tokens()
         # Create default admin user if no users exist
         if app.config.get('DEMO_MODE'):
             from app.demo import seed_demo_data

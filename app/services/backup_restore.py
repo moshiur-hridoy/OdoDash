@@ -5,11 +5,17 @@ in, and any record that already matches an existing one on its natural key is
 skipped rather than duplicated. Nothing is ever deleted or overwritten, so a
 restore can never destroy data the user still has.
 
+File names inside a backup are not trusted: only known upload types that a
+record refers to are written, and a name another account already uses gets a
+new one (see :class:`RestoredFiles`).
+
 The two-step flow in the UI (preview, then apply) uses the same code path:
 ``restore_backup(..., dry_run=True)`` does the whole thing inside the request's
 transaction and rolls it back, so the preview counts are exactly what a real
 restore would do.
 """
+import hashlib
+import itertools
 import json
 import logging
 import math
@@ -17,7 +23,10 @@ import os
 import zipfile
 from datetime import datetime, date, time
 
+from werkzeug.utils import secure_filename
+
 from app import db
+from app.services.uploads import extension_of, upload_references
 from app.models import (
     Vehicle, FuelLog, Expense, Trip, ChargingSession, Reminder,
     MaintenanceSchedule, MaintenanceEvent, RecurringExpense, Document, VehicleSpec,
@@ -25,6 +34,15 @@ from app.models import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Every type the upload forms accept for vehicle data. The branding logo (the
+# one place that takes SVG) is not part of a backup. A name without any
+# extension is also allowed: uploads whose original name had no Latin letters
+# are stored that way, and they are only ever sent as downloads.
+RESTORABLE_EXTENSIONS = {
+    'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'doc', 'docx', 'xlsx', 'xls',
+    'txt', 'csv', 'epub',
+}
 
 # Sections we know how to restore, in the order they are shown in the summary
 SECTION_LABELS = {
@@ -406,6 +424,98 @@ def _zip_upload_names(zip_path):
     return available
 
 
+def _is_restorable(filename):
+    # Checked in the sanitised form too, which can differ: "a.html." has no
+    # extension as written but becomes "a.html".
+    return all(
+        extension_of(name) in RESTORABLE_EXTENSIONS or not extension_of(name)
+        for name in (filename, secure_filename(filename))
+    )
+
+
+class RestoredFiles:
+    """Decides what each uploaded file in a backup is called on this instance.
+
+    A name is kept when this account's records already use it, or when nothing
+    uses it and it is free on disk. Otherwise the file is stored under a name
+    made from the account and the content, so restoring the same backup again
+    arrives at the same name.
+    """
+
+    def __init__(self, zip_path, upload_folder, user):
+        self.zip_path = zip_path
+        self.upload_folder = upload_folder
+        self.user_id = user.id
+        self.entries = _zip_upload_names(zip_path)
+        self.to_write = {}   # stored name -> ZIP entry
+        self._names = {}     # name in the backup -> stored name
+
+    def claim(self, filename):
+        """The name to put on a record, or None if the file cannot be restored."""
+        if filename not in self.entries or not _is_restorable(filename):
+            return None
+        if filename not in self._names:
+            stored = self._choose_name(filename)
+            self._names[filename] = stored
+            self._queue(stored, self.entries[filename])
+        return self._names[filename]
+
+    def recover(self, filename):
+        """Put back a missing file for a record this account already has."""
+        if filename not in self.entries or not _is_restorable(filename):
+            return
+        if self._used_by_this_account(filename, upload_references(filename)):
+            self._queue(filename, self.entries[filename])
+
+    def _used_by_this_account(self, filename, references):
+        return (filename, self.user_id) in references
+
+    def _used_by_others(self, references):
+        return any(owner_id != self.user_id for _name, owner_id in references)
+
+    def _exists(self, filename):
+        return bool(self.upload_folder) and os.path.exists(
+            os.path.join(self.upload_folder, filename))
+
+    def _holds(self, filename, content):
+        try:
+            with open(os.path.join(self.upload_folder, filename), 'rb') as handle:
+                return handle.read() == content
+        except OSError:
+            return False
+
+    def _usable(self, filename, content):
+        references = upload_references(filename)
+        if self._used_by_this_account(filename, references):
+            return True
+        if self._used_by_others(references):
+            return False
+        return not self._exists(filename) or self._holds(filename, content)
+
+    def _choose_name(self, filename):
+        if self._used_by_this_account(filename, upload_references(filename)):
+            return filename
+        with zipfile.ZipFile(self.zip_path) as zf:
+            content = zf.read(self.entries[filename])
+        safe = secure_filename(filename)
+        if safe == filename and self._usable(filename, content):
+            return filename
+
+        digest = hashlib.sha256(content).hexdigest()[:32]
+        stem, extension = os.path.splitext(safe or 'file')
+        for attempt in itertools.count():
+            suffix = f'-{attempt}' if attempt else ''
+            candidate = (f'restored_{self.user_id}_{digest}{suffix}_'
+                         f'{stem[-80:]}{extension}')
+            if self._usable(candidate, content):
+                return candidate
+
+    def _queue(self, stored, entry):
+        # Never fill in a file another account's record is waiting for
+        if not self._exists(stored) and not self._used_by_others(upload_references(stored)):
+            self.to_write[stored] = entry
+
+
 def restore_backup(data, user, zip_path=None, upload_folder=None, dry_run=False):
     """Merge a backup into ``user``'s account.
 
@@ -415,13 +525,12 @@ def restore_backup(data, user, zip_path=None, upload_folder=None, dry_run=False)
     """
     summary = _new_summary()
     summary['vehicle_details'] = []
-    available_files = _zip_upload_names(zip_path)
 
     try:
-        _restore_vehicles(data, user, summary, available_files)
+        files = RestoredFiles(zip_path, upload_folder, user)
+        _restore_vehicles(data, user, summary, files)
         _restore_stations(data, user, summary)
-        _copy_files(zip_path, available_files, upload_folder, summary,
-                    dry_run=dry_run)
+        _copy_files(files, summary, dry_run=dry_run)
         if dry_run:
             db.session.rollback()
         else:
@@ -460,7 +569,7 @@ def _vehicle_match(vehicle_values, existing):
     return None
 
 
-def _restore_vehicles(data, user, summary, available_files):
+def _restore_vehicles(data, user, summary, files):
     existing_vehicles = list(
         Vehicle.query.filter_by(owner_id=user.id).all()
     )
@@ -477,9 +586,7 @@ def _restore_vehicles(data, user, summary, available_files):
         vehicle = _vehicle_match(values, existing_vehicles)
         detail = {'name': values['name'], 'sections': {}}
         if vehicle is None:
-            if not values.get('image_filename') or (
-                    values['image_filename'] not in available_files):
-                values['image_filename'] = None
+            values['image_filename'] = files.claim(values.get('image_filename'))
             vehicle = Vehicle(owner_id=user.id, **values)
             db.session.add(vehicle)
             db.session.flush()
@@ -487,13 +594,14 @@ def _restore_vehicles(data, user, summary, available_files):
             summary['vehicles']['added'] += 1
             detail['status'] = 'new'
         else:
+            files.recover(values.get('image_filename'))
             summary['vehicles']['skipped'] += 1
             detail['status'] = 'existing'
 
         for section in VEHICLE_SECTIONS:
             added, skipped, (attach_added, attach_skipped) = _restore_child_records(
                 section, raw_vehicle.get(section.name) or [], vehicle, user,
-                available_files, summary['tire_fitments']
+                files, summary['tire_fitments']
             )
             summary[section.name]['added'] += added
             summary[section.name]['skipped'] += skipped
@@ -503,8 +611,8 @@ def _restore_vehicles(data, user, summary, available_files):
                 detail['sections'][section.name] = {'added': added, 'skipped': skipped}
 
         added, skipped = _restore_attachments(
-            raw_vehicle.get('attachments') or [], vehicle, user,
-            available_files, owner_field='vehicle_id', owner_id=vehicle.id
+            raw_vehicle.get('attachments') or [], files,
+            owner_field='vehicle_id', owner_id=vehicle.id
         )
         summary['attachments']['added'] += added
         summary['attachments']['skipped'] += skipped
@@ -559,7 +667,7 @@ def _restore_fitments(tire_set, records, counts):
             counts['added'] += 1
 
 
-def _restore_child_records(section, records, vehicle, user, available_files, fitment_counts):
+def _restore_child_records(section, records, vehicle, user, files, fitment_counts):
     """Add a vehicle's child records, skipping ones that already exist.
 
     Returns ``(added, skipped, attachments)`` where ``attachments`` is the
@@ -582,8 +690,8 @@ def _restore_child_records(section, records, vehicle, user, available_files, fit
         if section.name == 'fuel_logs' and 'odometer_confirmed' not in values:
             values['odometer_confirmed'] = bool(values.get('odometer'))
         if section.needs_file:
-            filename = values.get('filename')
-            if not filename or filename not in available_files:
+            values['filename'] = files.claim(values.get('filename'))
+            if not values['filename']:
                 # Without the uploaded file the record would point at nothing
                 skipped += 1
                 continue
@@ -598,6 +706,9 @@ def _restore_child_records(section, records, vehicle, user, available_files, fit
                 # The record is already here, so its attachments may be too;
                 # they are counted as skipped rather than duplicated.
                 attach_skipped += len(record.get('attachments') or [])
+                for attachment in record.get('attachments') or []:
+                    if isinstance(attachment, dict):
+                        files.recover(_parse_str(attachment.get('filename')))
             continue
 
         row = section.model(vehicle_id=vehicle.id, **values)
@@ -612,7 +723,7 @@ def _restore_child_records(section, records, vehicle, user, available_files, fit
         if owner_field and record.get('attachments'):
             db.session.flush()
             sub_added, sub_skipped = _restore_attachments(
-                record['attachments'], vehicle, user, available_files,
+                record['attachments'], files,
                 owner_field=owner_field, owner_id=row.id
             )
             attach_added += sub_added
@@ -621,8 +732,7 @@ def _restore_child_records(section, records, vehicle, user, available_files, fit
     return added, skipped, (attach_added, attach_skipped)
 
 
-def _restore_attachments(records, vehicle, user, available_files,
-                         owner_field='vehicle_id', owner_id=None):
+def _restore_attachments(records, files, owner_field='vehicle_id', owner_id=None):
     added = skipped = 0
     section = ATTACHMENT_SECTION
     existing = {
@@ -634,12 +744,14 @@ def _restore_attachments(records, vehicle, user, available_files,
         if not isinstance(record, dict):
             continue
         values = section.parse(record)
-        filename = values.get('filename')
-        if not filename or filename not in available_files:
+        original = values.get('filename')
+        filename = files.claim(original)
+        if not filename:
             skipped += 1
             continue
+        values['filename'] = filename
         if not values.get('original_filename'):
-            values['original_filename'] = filename
+            values['original_filename'] = original
         key = section.key_of_record(values)
         if key in existing:
             skipped += 1
@@ -721,31 +833,27 @@ def _restore_price_history(data, user, summary, station_by_old_id, station_by_na
         summary['fuel_price_history']['added'] += 1
 
 
-def _copy_files(zip_path, available_files, upload_folder, summary, dry_run=False):
-    """Copy uploaded files out of a full backup ZIP into the uploads folder.
+def _copy_files(files, summary, dry_run=False):
+    """Write the files that restored records need into the uploads folder.
 
-    Files already present are left alone — upload names are UUID-prefixed, so
-    a clash means the same file has been restored before.
+    Only the names :class:`RestoredFiles` queued are written, never over a file
+    that is already there. Everything else in the ZIP counts as skipped.
     """
-    if not zip_path or not available_files or not upload_folder:
+    if not files.entries or not files.upload_folder:
         return
 
     if not dry_run:
-        os.makedirs(upload_folder, exist_ok=True)
+        os.makedirs(files.upload_folder, exist_ok=True)
+        with zipfile.ZipFile(files.zip_path) as zf:
+            for stored, entry in files.to_write.items():
+                try:
+                    with zf.open(entry) as source, \
+                            open(os.path.join(files.upload_folder, stored), 'xb') as dest:
+                        dest.write(source.read())
+                    summary['files']['added'] += 1
+                except (KeyError, OSError) as exc:
+                    logger.warning('Backup restore: could not write %s: %s', stored, exc)
+    else:
+        summary['files']['added'] = len(files.to_write)
 
-    with zipfile.ZipFile(zip_path) as zf:
-        for base, name in available_files.items():
-            target = os.path.join(upload_folder, base)
-            if os.path.exists(target):
-                summary['files']['skipped'] += 1
-                continue
-            if dry_run:
-                summary['files']['added'] += 1
-                continue
-            try:
-                with zf.open(name) as source, open(target, 'wb') as dest:
-                    dest.write(source.read())
-                summary['files']['added'] += 1
-            except (KeyError, OSError) as exc:
-                logger.warning('Backup restore: could not write %s: %s', base, exc)
-                summary['files']['skipped'] += 1
+    summary['files']['skipped'] = max(0, len(files.entries) - summary['files']['added'])

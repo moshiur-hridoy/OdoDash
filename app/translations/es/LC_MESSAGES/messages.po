@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-23 18:49+0600\n"
+"POT-Creation-Date: 2026-11-25 12:15+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -137,11 +137,11 @@ msgstr "Pastillas freno delanteras"
 msgid "Rear Brake Pads"
 msgstr "Pastillas freno traseras"
 
-#: app/models.py:1607 app/models.py:2453
+#: app/models.py:1607 app/models.py:2465
 msgid "Transmission Fluid"
 msgstr "Líquido transmisión"
 
-#: app/models.py:1608 app/models.py:1748 app/models.py:1813
+#: app/models.py:1608 app/models.py:1752 app/models.py:1821
 #: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "Personalizado"
@@ -193,8 +193,8 @@ msgstr "Limpieza"
 msgid "Accessories"
 msgstr "Accesorios"
 
-#: app/models.py:1624 app/models.py:1641 app/models.py:1674 app/models.py:1781
-#: app/models.py:1791 app/models.py:1849 app/models.py:1857 app/models.py:2459
+#: app/models.py:1624 app/models.py:1641 app/models.py:1674 app/models.py:1789
+#: app/models.py:1799 app/models.py:1861 app/models.py:1869 app/models.py:2471
 msgid "Other"
 msgstr "Otro"
 
@@ -318,239 +318,255 @@ msgstr "Renovación seguro"
 msgid "Registration Renewal"
 msgstr "Renovación de matriculación"
 
-#: app/models.py:1745
+#: app/models.py:1745 app/models.py:1853
+msgid "Tax Token"
+msgstr "Distintivo de impuesto"
+
+#: app/models.py:1746 app/models.py:1854
+msgid "Fitness Certificate"
+msgstr "Certificado de aptitud"
+
+#: app/models.py:1747 app/models.py:1855
+msgid "Route Permit"
+msgstr "Permiso de ruta"
+
+#: app/models.py:1748 app/models.py:1856
+msgid "Driving Licence"
+msgstr "Permiso de conducir"
+
+#: app/models.py:1749
 msgid "Warranty Expiry"
 msgstr "Vencimiento de garantía"
 
-#: app/models.py:1746
+#: app/models.py:1750
 msgid "Tire Change"
 msgstr "Cambio de neumáticos"
 
-#: app/models.py:1747 app/models.py:1796
+#: app/models.py:1751 app/models.py:1804
 msgid "Oil Change"
 msgstr "Cambio de aceite"
 
-#: app/models.py:1767
+#: app/models.py:1775
 msgid "No Repeat"
 msgstr "No repetir"
 
-#: app/models.py:1768
+#: app/models.py:1776
 msgid "Day(s)"
 msgstr "Día(s)"
 
-#: app/models.py:1769
+#: app/models.py:1777
 msgid "Week(s)"
 msgstr "Semana(s)"
 
-#: app/models.py:1770
+#: app/models.py:1778
 msgid "Month(s)"
 msgstr "Mes(es)"
 
-#: app/models.py:1771
+#: app/models.py:1779
 msgid "Year(s)"
 msgstr "Año(s)"
 
-#: app/models.py:1776
+#: app/models.py:1784
 msgid "Business"
 msgstr "Negocios"
 
-#: app/models.py:1777
+#: app/models.py:1785
 msgid "Personal"
 msgstr "Personal"
 
-#: app/models.py:1778
+#: app/models.py:1786
 msgid "Commute"
 msgstr "Desplazamiento"
 
-#: app/models.py:1779
+#: app/models.py:1787
 msgid "Medical"
 msgstr "Médico"
 
-#: app/models.py:1780
+#: app/models.py:1788
 msgid "Charity"
 msgstr "Caridad"
 
-#: app/models.py:1786
+#: app/models.py:1794
 msgid "Home Charging"
 msgstr "Carga en casa"
 
-#: app/models.py:1787
+#: app/models.py:1795
 msgid "Level 1"
 msgstr "Nivel 1"
 
-#: app/models.py:1788
+#: app/models.py:1796
 msgid "Level 2"
 msgstr "Nivel 2"
 
-#: app/models.py:1789
+#: app/models.py:1797
 msgid "DC Fast Charge"
 msgstr "Carga rápida DC"
 
-#: app/models.py:1790
+#: app/models.py:1798
 msgid "Tesla Supercharger"
 msgstr "Supercargador Tesla"
 
-#: app/models.py:1797 app/models.py:2445
+#: app/models.py:1805 app/models.py:2457
 msgid "Oil Filter"
 msgstr "Filtro de aceite"
 
-#: app/models.py:1798 app/models.py:2446
+#: app/models.py:1806 app/models.py:2458
 msgid "Air Filter"
 msgstr "Filtro de aire"
 
-#: app/models.py:1799
+#: app/models.py:1807
 msgid "Cabin/Pollen Filter"
 msgstr "Filtro habitáculo"
 
-#: app/models.py:1800 app/models.py:2447
+#: app/models.py:1808 app/models.py:2459
 msgid "Fuel Filter"
 msgstr "Filtro de combustible"
 
-#: app/models.py:1801
+#: app/models.py:1809
 msgid "Spark Plugs"
 msgstr "Bujías"
 
-#: app/models.py:1802
+#: app/models.py:1810
 msgid "Brake Pads"
 msgstr "Pastillas de freno"
 
-#: app/models.py:1803 app/models.py:2451
+#: app/models.py:1811 app/models.py:2463
 msgid "Brake Fluid"
 msgstr "Líquido de frenos"
 
-#: app/models.py:1804
+#: app/models.py:1812
 msgid "Coolant Flush"
 msgstr "Renovar líquido refrigerante"
 
-#: app/models.py:1805
+#: app/models.py:1813
 msgid "Transmission Service"
 msgstr "Servicio de transmisión"
 
-#: app/models.py:1806
+#: app/models.py:1814
 msgid "Timing Belt"
 msgstr "Correa de distribución"
 
-#: app/models.py:1807
+#: app/models.py:1815
 msgid "Serpentine Belt"
 msgstr "Correa de distribución"
 
-#: app/models.py:1808
+#: app/models.py:1816
 msgid "Tire Rotation"
 msgstr "Rotación de neumáticos"
 
-#: app/models.py:1809
+#: app/models.py:1817
 msgid "Wheel Alignment"
 msgstr "Paralelo"
 
-#: app/models.py:1810
+#: app/models.py:1818
 msgid "Battery Check/Replace"
 msgstr "Comprobación/Reemplazo batería"
 
-#: app/models.py:1811
+#: app/models.py:1819
 msgid "Wiper Blades"
 msgstr "Gomas limpiaparabrisas"
 
-#: app/models.py:1812
+#: app/models.py:1820
 msgid "Full Service"
 msgstr "Servicio completo"
 
-#: app/models.py:1817 app/models.py:2444
+#: app/models.py:1825 app/models.py:2456
 msgid "Engine Oil"
 msgstr "Aceite Motor"
 
-#: app/models.py:1818
+#: app/models.py:1826
 msgid "Servicing"
 msgstr "Mantenimiento"
 
-#: app/models.py:1819 app/templates/vehicles/view.html:256
+#: app/models.py:1827 app/templates/vehicles/view.html:256
 msgid "Parts"
 msgstr "Piezas"
 
-#: app/models.py:1842
+#: app/models.py:1850
 msgid "Insurance Policy"
 msgstr "Póliza de seguro"
 
-#: app/models.py:1843
+#: app/models.py:1851
 msgid "Registration/V5C"
 msgstr "Matriculación/V5C"
 
-#: app/models.py:1844
+#: app/models.py:1852
 msgid "MOT Certificate"
 msgstr "Certificado ITV"
 
-#: app/models.py:1845
+#: app/models.py:1857
 msgid "Service Record"
 msgstr "Registro de servicio"
 
-#: app/models.py:1846
+#: app/models.py:1858
 msgid "Purchase Invoice"
 msgstr "Factura de compra"
 
-#: app/models.py:1847
+#: app/models.py:1859
 msgid "Warranty Document"
 msgstr "Documento de garantía"
 
-#: app/models.py:1848
+#: app/models.py:1860
 msgid "Owner's Manual"
 msgstr "Manual de propietario"
 
-#: app/models.py:1854
+#: app/models.py:1866
 msgid "Summer"
 msgstr "Verano"
 
-#: app/models.py:1855
+#: app/models.py:1867
 msgid "Winter"
 msgstr "Invierno"
 
-#: app/models.py:1856
+#: app/models.py:1868
 msgid "All Season"
 msgstr "Todo tiempo"
 
-#: app/models.py:2448
+#: app/models.py:2460
 msgid "Cabin Filter"
 msgstr "Filtro de habitáculo"
 
-#: app/models.py:2449
+#: app/models.py:2461
 msgid "Spark Plug"
 msgstr "Bujía"
 
-#: app/models.py:2450
+#: app/models.py:2462
 msgid "Brake Pad"
 msgstr "Pastilla de freno"
 
-#: app/models.py:2452
+#: app/models.py:2464
 msgid "Coolant"
 msgstr "Refrigerante"
 
-#: app/models.py:2454
+#: app/models.py:2466
 msgid "Battery"
 msgstr "Batería"
 
-#: app/models.py:2455
+#: app/models.py:2467
 msgid "Tire"
 msgstr "Neumático"
 
-#: app/models.py:2456
+#: app/models.py:2468
 msgid "Belt"
 msgstr "Correa"
 
-#: app/models.py:2457
+#: app/models.py:2469
 msgid "Wiper Blade"
 msgstr "Goma limpiaparabrisas"
 
-#: app/models.py:2458
+#: app/models.py:2470
 msgid "Light Bulb"
 msgstr "Bombilla de faro"
 
-#: app/models.py:2728 app/templates/tires/index.html:68
+#: app/models.py:2740 app/templates/tires/index.html:68
 msgid "All axles"
 msgstr "Todos los ejes"
 
-#: app/models.py:2728 app/templates/tires/index.html:69
+#: app/models.py:2740 app/templates/tires/index.html:69
 msgid "Front axle"
 msgstr "Eje delantero"
 
-#: app/models.py:2728 app/templates/tires/index.html:70
+#: app/models.py:2740 app/templates/tires/index.html:70
 msgid "Rear axle"
 msgstr "Eje trasero"
 

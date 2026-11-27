@@ -120,17 +120,67 @@ def test_many_vehicles_fall_back_to_a_select(auth_client, sample_vehicle, test_u
     assert 'type="radio" name="vehicle_id"' not in html
 
 
-def test_saved_stations_are_offered_in_one_field(auth_client, sample_vehicle, test_user):
+def _saved_station(user, name='Test Station', brand='BP'):
     from app.models import FuelStation
-    sample_station = FuelStation(user_id=test_user.id, name='Test Station', brand='BP')
-    db.session.add(sample_station)
+    station = FuelStation(user_id=user.id, name=name, brand=brand)
+    db.session.add(station)
     db.session.commit()
+    return station
+
+
+def _station_menu(html):
+    match = re.search(r'<select id="station_choice".*?</select>', html, re.S)
+    assert match, 'no station menu in the page'
+    return match.group(0)
+
+
+def test_saved_stations_are_a_select_menu(auth_client, sample_vehicle, test_user):
+    station = _saved_station(test_user)
     html = auth_client.get('/fuel/new').get_data(as_text=True)
-    assert 'list="station-options"' in _tag(html, 'station')
-    assert f'data-id="{sample_station.id}"' in html
-    # A refused save keeps the station link it was posted with.
-    html = _post_new(auth_client, sample_vehicle, station_id=str(sample_station.id)).get_data(as_text=True)
-    assert _value(html, 'station_id') == str(sample_station.id)
+    menu = _station_menu(html)
+    assert f'<option value="{station.id}" data-name="Test Station (BP)">' in menu
+    assert 'datalist' not in html
+    # Any other name is still typed into the box beside the menu.
+    assert 'list=' not in _tag(html, 'station')
+    assert _value(html, 'station') == ''
+    assert _value(html, 'station_id') == ''
+
+
+def test_without_saved_stations_only_the_text_box_is_shown(auth_client, sample_vehicle):
+    html = auth_client.get('/fuel/new').get_data(as_text=True)
+    assert 'id="station_choice"' not in html
+    assert 'name="station"' in html
+    assert '/stations/new' in html
+
+
+def test_a_refused_save_keeps_the_station_link(auth_client, sample_vehicle, test_user):
+    station = _saved_station(test_user)
+    html = _post_new(auth_client, sample_vehicle, station='Test Station (BP)',
+                     station_id=str(station.id)).get_data(as_text=True)
+    assert _value(html, 'station_id') == str(station.id)
+    assert f'<option value="{station.id}" data-name="Test Station (BP)" selected>' in _station_menu(html)
+
+
+def test_editing_selects_the_matching_station_without_linking_it(
+        auth_client, sample_fuel_log, test_user):
+    station = _saved_station(test_user)
+    sample_fuel_log.station = 'Test Station (BP)'
+    db.session.commit()
+    html = auth_client.get(f'/fuel/{sample_fuel_log.id}/edit').get_data(as_text=True)
+    assert f'value="{station.id}" data-name="Test Station (BP)" selected' in _station_menu(html)
+    assert _value(html, 'station') == 'Test Station (BP)'
+    # Opening a log never attaches it to a station it was not saved with.
+    assert _value(html, 'station_id') == ''
+
+
+def test_editing_a_log_with_another_name_selects_no_station(
+        auth_client, sample_fuel_log, test_user):
+    _saved_station(test_user)
+    sample_fuel_log.station = 'Clean Fuel Mohakhali (Mobil)'
+    db.session.commit()
+    html = auth_client.get(f'/fuel/{sample_fuel_log.id}/edit').get_data(as_text=True)
+    assert ' selected' not in _station_menu(html)
+    assert _value(html, 'station') == 'Clean Fuel Mohakhali (Mobil)'
 
 
 def test_more_details_opens_for_a_refused_optional_field(auth_client, sample_vehicle):

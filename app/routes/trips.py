@@ -148,7 +148,7 @@ def new():
     # Get last odometer for selected vehicle
     last_odometer = 0
     if selected_vehicle_id:
-        vehicle = db.session.get(Vehicle, selected_vehicle_id)
+        vehicle = next((v for v in vehicles if v.id == selected_vehicle_id), None)
         if vehicle:
             last_odometer = vehicle.get_last_odometer()
     elif len(vehicles) == 1:

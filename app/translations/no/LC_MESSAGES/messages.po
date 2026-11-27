@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-23 18:49+0600\n"
+"POT-Creation-Date: 2026-11-25 12:15+0600\n"
 "PO-Revision-Date: 2026-02-17 20:56+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: no <LL@li.org>\n"
@@ -135,11 +135,11 @@ msgstr "Bremseklosser foran"
 msgid "Rear Brake Pads"
 msgstr "Bremseklosser bak"
 
-#: app/models.py:1607 app/models.py:2453
+#: app/models.py:1607 app/models.py:2465
 msgid "Transmission Fluid"
 msgstr "Girolje"
 
-#: app/models.py:1608 app/models.py:1748 app/models.py:1813
+#: app/models.py:1608 app/models.py:1752 app/models.py:1821
 #: app/templates/auth/settings/_units.html:62
 msgid "Custom"
 msgstr "Egendefinert"
@@ -191,8 +191,8 @@ msgstr "Rengjøring"
 msgid "Accessories"
 msgstr "Tilbehør"
 
-#: app/models.py:1624 app/models.py:1641 app/models.py:1674 app/models.py:1781
-#: app/models.py:1791 app/models.py:1849 app/models.py:1857 app/models.py:2459
+#: app/models.py:1624 app/models.py:1641 app/models.py:1674 app/models.py:1789
+#: app/models.py:1799 app/models.py:1861 app/models.py:1869 app/models.py:2471
 msgid "Other"
 msgstr "Annet"
 
@@ -316,239 +316,255 @@ msgstr "Fornyelse av forsikring"
 msgid "Registration Renewal"
 msgstr "Fornyelse av registrering"
 
-#: app/models.py:1745
+#: app/models.py:1745 app/models.py:1853
+msgid "Tax Token"
+msgstr "Avgiftsmerke"
+
+#: app/models.py:1746 app/models.py:1854
+msgid "Fitness Certificate"
+msgstr "Egnethetsbevis"
+
+#: app/models.py:1747 app/models.py:1855
+msgid "Route Permit"
+msgstr "Rutetillatelse"
+
+#: app/models.py:1748 app/models.py:1856
+msgid "Driving Licence"
+msgstr "Førerkort"
+
+#: app/models.py:1749
 msgid "Warranty Expiry"
 msgstr "Utløp av garanti"
 
-#: app/models.py:1746
+#: app/models.py:1750
 msgid "Tire Change"
 msgstr "Dekkskift"
 
-#: app/models.py:1747 app/models.py:1796
+#: app/models.py:1751 app/models.py:1804
 msgid "Oil Change"
 msgstr "Oljeskift"
 
-#: app/models.py:1767
+#: app/models.py:1775
 msgid "No Repeat"
 msgstr "Ingen gjentakelse"
 
-#: app/models.py:1768
+#: app/models.py:1776
 msgid "Day(s)"
 msgstr "Dag(er)"
 
-#: app/models.py:1769
+#: app/models.py:1777
 msgid "Week(s)"
 msgstr "Uke(r)"
 
-#: app/models.py:1770
+#: app/models.py:1778
 msgid "Month(s)"
 msgstr "Måned(er)"
 
-#: app/models.py:1771
+#: app/models.py:1779
 msgid "Year(s)"
 msgstr "År"
 
-#: app/models.py:1776
+#: app/models.py:1784
 msgid "Business"
 msgstr "Jobb"
 
-#: app/models.py:1777
+#: app/models.py:1785
 msgid "Personal"
 msgstr "Privat"
 
-#: app/models.py:1778
+#: app/models.py:1786
 msgid "Commute"
 msgstr "Arbeidsreise"
 
-#: app/models.py:1779
+#: app/models.py:1787
 msgid "Medical"
 msgstr "Medisinsk"
 
-#: app/models.py:1780
+#: app/models.py:1788
 msgid "Charity"
 msgstr "Veldedighet"
 
-#: app/models.py:1786
+#: app/models.py:1794
 msgid "Home Charging"
 msgstr "Hjemmelading"
 
-#: app/models.py:1787
+#: app/models.py:1795
 msgid "Level 1"
 msgstr "Nivå 1"
 
-#: app/models.py:1788
+#: app/models.py:1796
 msgid "Level 2"
 msgstr "Nivå 2"
 
-#: app/models.py:1789
+#: app/models.py:1797
 msgid "DC Fast Charge"
 msgstr "DC-hurtiglading"
 
-#: app/models.py:1790
+#: app/models.py:1798
 msgid "Tesla Supercharger"
 msgstr "Tesla Supercharger"
 
-#: app/models.py:1797 app/models.py:2445
+#: app/models.py:1805 app/models.py:2457
 msgid "Oil Filter"
 msgstr "Oljefilter"
 
-#: app/models.py:1798 app/models.py:2446
+#: app/models.py:1806 app/models.py:2458
 msgid "Air Filter"
 msgstr "Luftfilter"
 
-#: app/models.py:1799
+#: app/models.py:1807
 msgid "Cabin/Pollen Filter"
 msgstr "Kupé-/pollenfilter"
 
-#: app/models.py:1800 app/models.py:2447
+#: app/models.py:1808 app/models.py:2459
 msgid "Fuel Filter"
 msgstr "Drivstoffilter"
 
-#: app/models.py:1801
+#: app/models.py:1809
 msgid "Spark Plugs"
 msgstr "Tennplugger"
 
-#: app/models.py:1802
+#: app/models.py:1810
 msgid "Brake Pads"
 msgstr "Bremseklosser"
 
-#: app/models.py:1803 app/models.py:2451
+#: app/models.py:1811 app/models.py:2463
 msgid "Brake Fluid"
 msgstr "Bremsevæske"
 
-#: app/models.py:1804
+#: app/models.py:1812
 msgid "Coolant Flush"
 msgstr "Kjølevæskeskift"
 
-#: app/models.py:1805
+#: app/models.py:1813
 msgid "Transmission Service"
 msgstr "Girkasseservice"
 
-#: app/models.py:1806
+#: app/models.py:1814
 msgid "Timing Belt"
 msgstr "Kamrem"
 
-#: app/models.py:1807
+#: app/models.py:1815
 msgid "Serpentine Belt"
 msgstr "Drivrem"
 
-#: app/models.py:1808
+#: app/models.py:1816
 msgid "Tire Rotation"
 msgstr "Dekkrotering"
 
-#: app/models.py:1809
+#: app/models.py:1817
 msgid "Wheel Alignment"
 msgstr "Hjulinnstilling"
 
-#: app/models.py:1810
+#: app/models.py:1818
 msgid "Battery Check/Replace"
 msgstr "Batterikontroll/-bytte"
 
-#: app/models.py:1811
+#: app/models.py:1819
 msgid "Wiper Blades"
 msgstr "Viskerblader"
 
-#: app/models.py:1812
+#: app/models.py:1820
 msgid "Full Service"
 msgstr "Full service"
 
-#: app/models.py:1817 app/models.py:2444
+#: app/models.py:1825 app/models.py:2456
 msgid "Engine Oil"
 msgstr "Motorolje"
 
-#: app/models.py:1818
+#: app/models.py:1826
 msgid "Servicing"
 msgstr "Service"
 
-#: app/models.py:1819 app/templates/vehicles/view.html:256
+#: app/models.py:1827 app/templates/vehicles/view.html:256
 msgid "Parts"
 msgstr "Deler"
 
-#: app/models.py:1842
+#: app/models.py:1850
 msgid "Insurance Policy"
 msgstr "Forsikringsavtale"
 
-#: app/models.py:1843
+#: app/models.py:1851
 msgid "Registration/V5C"
 msgstr "Registreringsbevis"
 
-#: app/models.py:1844
+#: app/models.py:1852
 msgid "MOT Certificate"
 msgstr "EU-kontrollattest"
 
-#: app/models.py:1845
+#: app/models.py:1857
 msgid "Service Record"
 msgstr "Servicehistorikk"
 
-#: app/models.py:1846
+#: app/models.py:1858
 msgid "Purchase Invoice"
 msgstr "Kjøpsfaktura"
 
-#: app/models.py:1847
+#: app/models.py:1859
 msgid "Warranty Document"
 msgstr "Garantidokument"
 
-#: app/models.py:1848
+#: app/models.py:1860
 msgid "Owner's Manual"
 msgstr "Instruksjonsbok"
 
-#: app/models.py:1854
+#: app/models.py:1866
 msgid "Summer"
 msgstr "Sommer"
 
-#: app/models.py:1855
+#: app/models.py:1867
 msgid "Winter"
 msgstr "Vinter"
 
-#: app/models.py:1856
+#: app/models.py:1868
 msgid "All Season"
 msgstr "Helår"
 
-#: app/models.py:2448
+#: app/models.py:2460
 msgid "Cabin Filter"
 msgstr "Kupéfilter"
 
-#: app/models.py:2449
+#: app/models.py:2461
 msgid "Spark Plug"
 msgstr "Tennplugg"
 
-#: app/models.py:2450
+#: app/models.py:2462
 msgid "Brake Pad"
 msgstr "Bremsekloss"
 
-#: app/models.py:2452
+#: app/models.py:2464
 msgid "Coolant"
 msgstr "Kjølevæske"
 
-#: app/models.py:2454
+#: app/models.py:2466
 msgid "Battery"
 msgstr "Batteri"
 
-#: app/models.py:2455
+#: app/models.py:2467
 msgid "Tire"
 msgstr "Dekk"
 
-#: app/models.py:2456
+#: app/models.py:2468
 msgid "Belt"
 msgstr "Rem"
 
-#: app/models.py:2457
+#: app/models.py:2469
 msgid "Wiper Blade"
 msgstr "Viskerblad"
 
-#: app/models.py:2458
+#: app/models.py:2470
 msgid "Light Bulb"
 msgstr "Lyspære"
 
-#: app/models.py:2728 app/templates/tires/index.html:68
+#: app/models.py:2740 app/templates/tires/index.html:68
 msgid "All axles"
 msgstr "Alle aksler"
 
-#: app/models.py:2728 app/templates/tires/index.html:69
+#: app/models.py:2740 app/templates/tires/index.html:69
 msgid "Front axle"
 msgstr "Foraksel"
 
-#: app/models.py:2728 app/templates/tires/index.html:70
+#: app/models.py:2740 app/templates/tires/index.html:70
 msgid "Rear axle"
 msgstr "Bakaksel"
 

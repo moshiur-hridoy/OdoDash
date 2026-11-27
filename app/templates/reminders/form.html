@@ -89,7 +89,7 @@
 // Picking a type on a new reminder fills an empty title with its name.
 document.addEventListener('DOMContentLoaded', function () {
     var title = document.getElementById('title');
-    var auto = {{ 'null' if reminder else "''" }};
+    var auto = {{ (none if reminder else '')|tojson }};
     if (auto === null) return;
     document.querySelectorAll('#reminder-form input[name="reminder_type"]').forEach(function (radio) {
         radio.addEventListener('change', function () {
