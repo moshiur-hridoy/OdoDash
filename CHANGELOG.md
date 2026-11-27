@@ -31,6 +31,7 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 - Renaming a fuel station or changing its brand now updates the station text on the fuel logs that were saved with it; hand-typed station names are left alone (#37). Contributed by [@draarivpatel-ui](https://github.com/draarivpatel-ui) in #49.
 - The Home Assistant endpoints (vehicle list, vehicle detail, stats and overview) now report the same current odometer as the app: the latest reading from fuel logs, trips, charging sessions or expenses, or from Tessie where it is set up. It used to come from fuel logs alone (#50). Contributed by [@ajain-93](https://github.com/ajain-93) in #51.
 - On the New Reminder form, picking a type fills an empty title with the type's name again. A script error had stopped it from working.
+- In Docker, uploading a picture or document no longer fails when the data folder on the host already belonged to the `PUID`/`PGID` user before the first start. The `uploads` folder was then created as root and stayed that way (#56). Reported by [@ubuntuaddicted](https://github.com/ubuntuaddicted).
 
 ### Changed
 
