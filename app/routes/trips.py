@@ -147,12 +147,15 @@ def new():
 
     # Get last odometer for selected vehicle
     last_odometer = 0
+    last_trip_location = None
     if selected_vehicle_id:
         vehicle = db.session.get(Vehicle, selected_vehicle_id)
         if vehicle:
             last_odometer = vehicle.get_last_odometer()
+            last_trip_location = vehicle.get_last_trip_location()
     elif len(vehicles) == 1:
         last_odometer = vehicles[0].get_last_odometer()
+        last_trip_location = vehicles[0].get_last_trip_location()
 
     templates = TripTemplate.query.filter_by(user_id=current_user.id).order_by(TripTemplate.name).all()
 
@@ -162,6 +165,7 @@ def new():
                            purposes=TRIP_PURPOSES,
                            selected_vehicle_id=selected_vehicle_id,
                            last_odometer=last_odometer,
+                           last_trip_location=last_trip_location,
                            templates=templates,
                            preload_template_id=preload_template_id)
 
