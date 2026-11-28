@@ -15,6 +15,8 @@ def sample_trip(app, test_user, sample_vehicle):
         end_odometer=10150.0,
         purpose='business',
         description='Client meeting',
+        start_location='Office',
+        end_location='Client A',
     )
     db.session.add(trip)
     db.session.commit()
@@ -36,6 +38,55 @@ class TestTripIndex:
         assert resp.status_code == 200
         assert b'Client meeting' in resp.data
 
+    def test_last_trip_location_matches_trip_list_order(self, test_user, sample_vehicle):
+        db.session.add_all(
+            [
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 2, 1),
+                    start_odometer=30000.0,
+                    end_odometer=30100.0,
+                    purpose="business",
+                    start_location="Old Office",
+                    end_location="Old Client",
+                ),
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 3, 1),
+                    start_odometer=10000.0,
+                    end_odometer=10100.0,
+                    purpose="business",
+                    start_location="Office",
+                    end_location="Low Odometer Client",
+                ),
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 3, 2),
+                    start_odometer=12000.0,
+                    end_odometer=12400.0,
+                    purpose="business",
+                    start_location="Client A",
+                    end_location="First with incorrect Odometer",
+                ),
+                Trip(
+                    vehicle_id=sample_vehicle.id,
+                    user_id=test_user.id,
+                    date=date(2024, 3, 3),
+                    start_odometer=12100.0,
+                    end_odometer=12200.0,
+                    purpose="business",
+                    start_location="Client B",
+                    end_location="Latest Match",
+                ),
+            ]
+        )
+        db.session.commit()
+
+        assert sample_vehicle.get_last_trip_location() == "Latest Match"
+
     def test_index_orders_same_day_trips_by_odometer(self, auth_client, test_user, sample_vehicle):
         """Trips logged on the same date should be listed by odometer
         (most recently driven first), not by insertion order (#325)."""
@@ -47,6 +98,8 @@ class TestTripIndex:
             end_odometer=10050.0,
             purpose='business',
             description='Morning trip',
+            start_location='Office',
+            end_location='Client A',
         )
         db.session.add(earlier)
         db.session.commit()
@@ -59,6 +112,8 @@ class TestTripIndex:
             end_odometer=10120.0,
             purpose='business',
             description='Afternoon trip',
+            start_location='Client A',
+            end_location='Client B',
         )
         db.session.add(later)
         db.session.commit()
@@ -80,6 +135,8 @@ class TestTripIndex:
             end_odometer=20100.0,
             purpose='business',
             description='Older high-odometer trip',
+            start_location='Office',
+            end_location='Client A',
         )
         newer = Trip(
             vehicle_id=sample_vehicle.id,
@@ -89,6 +146,8 @@ class TestTripIndex:
             end_odometer=10100.0,
             purpose='business',
             description='Newer low-odometer trip',
+            start_location='Warehouse',
+            end_location='Depot',
         )
         db.session.add_all([older, newer])
         db.session.commit()
@@ -108,6 +167,19 @@ class TestTripNew:
     def test_get_new_form_returns_200(self, auth_client, sample_vehicle):
         resp = auth_client.get('/trips/new')
         assert resp.status_code == 200
+
+    def test_new_form_prefills_start_location_from_last_trip(
+            self, auth_client, sample_vehicle, sample_trip):
+        last_trip_location = sample_vehicle.get_last_trip_location()
+        assert last_trip_location == sample_trip.end_location
+
+        resp = auth_client.get('/trips/new')
+
+        assert resp.status_code == 200
+        assert (
+            b'value="' + last_trip_location.encode() + b'" '
+            b'placeholder="' in resp.data
+        )
 
     def test_create_trip(self, auth_client, sample_vehicle, test_user):
         resp = auth_client.post('/trips/new', data={
