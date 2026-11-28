@@ -171,12 +171,13 @@ def vehicle_detail(vehicle_id, user):
 def _vehicle_stats(vehicle, user, days=None):
     """Fuel, expense and consumption figures for one vehicle.
 
-    ``days`` limits the fuel and expense totals to that many days back;
+    ``days`` limits the fuel and expense totals to that many days back and
+    measures distance from the odometer reading at the start of that window;
     ``None`` means all time. Shared by ``/vehicles/<id>/stats`` and
     ``/overview`` so the two never disagree.
     """
+    since_date = date.today() - timedelta(days=days) if days else None
     if days:
-        since_date = date.today() - timedelta(days=days)
         fuel_query = FuelLog.query.filter(
             FuelLog.vehicle_id == vehicle.id,
             FuelLog.date >= since_date
@@ -195,25 +196,32 @@ def _vehicle_stats(vehicle, user, days=None):
     total_fuel = sum(log.volume for log in fuel_logs)
     total_fuel_cost = sum(log.total_cost for log in fuel_logs)
 
-    # Calculate distance driven
+    # Keep fuel consumption tied to the span between fuel logs.
     if len(fuel_logs) >= 2:
-        total_distance = fuel_logs[-1].odometer - fuel_logs[0].odometer
+        fuel_distance = fuel_logs[-1].odometer - fuel_logs[0].odometer
     else:
-        total_distance = 0
+        fuel_distance = 0
+
+    if since_date:
+        total_distance = vehicle.get_distance_between(
+            since_date, date.today() + timedelta(days=1)
+        )
+    else:
+        total_distance = vehicle.get_total_distance()
 
     # Calculate average consumption
     # Skip first fill for consumption calculation (don't know previous fill level)
     consumption_unit = _consumption_unit(vehicle)
     if consumption_unit is None:
         avg_consumption = None
-    elif len(fuel_logs) >= 2 and total_distance > 0:
+    elif len(fuel_logs) >= 2 and fuel_distance > 0:
         consumption_fuel = sum(log.volume for log in fuel_logs[1:])
         if consumption_unit == 'mpg':
             # MPG (higher is better)
-            avg_consumption = total_distance / consumption_fuel if consumption_fuel > 0 else 0
+            avg_consumption = fuel_distance / consumption_fuel if consumption_fuel > 0 else 0
         else:
             # L/100km (lower is better)
-            avg_consumption = (consumption_fuel / total_distance) * 100 if total_distance > 0 else 0
+            avg_consumption = (consumption_fuel / fuel_distance) * 100 if fuel_distance > 0 else 0
     else:
         avg_consumption = 0
 
@@ -393,14 +401,8 @@ def summary(user):
     alerts_count = 0
 
     for vehicle in vehicles:
-        # Get fuel stats
-        fuel_logs = FuelLog.query.filter_by(vehicle_id=vehicle.id).order_by(
-            FuelLog.odometer.asc()
-        ).all()
-
-        if len(fuel_logs) >= 2:
-            total_distance += fuel_logs[-1].odometer - fuel_logs[0].odometer
-
+        total_distance += vehicle.get_total_distance()
+        fuel_logs = FuelLog.query.filter_by(vehicle_id=vehicle.id).all()
         total_fuel_cost += sum(log.total_cost for log in fuel_logs)
 
         # Get expense totals
