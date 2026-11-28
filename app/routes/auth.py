@@ -12,7 +12,7 @@ from app.security import (
     validate_webhook_url, admin_required, login_throttle
 )
 from app.services.notifications import NotificationService
-from app.services import scheduled_backup
+from app.services import account_deletion, scheduled_backup
 from app.services.uploads import remove_unused_upload
 from config import APP_VERSION, DISPLAY_VERSION, RELEASE_CHANNEL, GITHUB_REPO
 
@@ -643,11 +643,18 @@ def toggle_admin(user_id):
 def delete_user(user_id):
     user = db.get_or_404(User, user_id)
     if user.id != current_user.id:
-        backups = scheduled_backup.user_folder(user)
-        db.session.delete(user)
-        db.session.commit()
-        scheduled_backup.remove_all_backups(backups)
-        flash(_('User %(username)s deleted') % {'username': user.username}, 'success')
+        remaining = account_deletion.remaining_records(user)
+        if remaining:
+            records = ', '.join(f'{label} ({count})' for label, count in remaining)
+            flash(_('%(username)s was not deleted, because the account still has records: '
+                    '%(records)s. Remove them first.')
+                  % {'username': user.username, 'records': records}, 'error')
+        else:
+            backups = scheduled_backup.user_folder(user)
+            db.session.delete(user)
+            db.session.commit()
+            scheduled_backup.remove_all_backups(backups)
+            flash(_('User %(username)s deleted') % {'username': user.username}, 'success')
 
     return redirect(url_for('auth.settings') + '#users')
 

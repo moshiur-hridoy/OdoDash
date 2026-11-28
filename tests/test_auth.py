@@ -1,7 +1,9 @@
 """Tests for auth and admin routes in app/routes/auth.py."""
 import pytest
-from app.models import User, AppSettings
+from app.models import (User, AppSettings, FuelLog, FuelStation, MaintenanceEvent,
+                        Vehicle, vehicle_users)
 from app import db
+from app.services import account_deletion
 from config import DISPLAY_VERSION
 
 
@@ -439,6 +441,74 @@ class TestDeleteUserRoute:
         assert b'deleted' in response.data
         with app.app_context():
             assert db.session.get(User, user_id) is None
+
+    def _delete(self, client, user):
+        return client.post(f'/auth/users/{user.id}/delete', follow_redirects=True)
+
+    def _driver(self, vehicle):
+        """An account with access to someone else's vehicle and nothing else."""
+        driver = User(username='driver', email='driver@example.com')
+        driver.set_password('DriverPass123!')
+        db.session.add(driver)
+        driver.shared_vehicles.append(vehicle)
+        db.session.commit()
+        return driver
+
+    def test_an_account_with_its_own_records_is_kept_and_told_why(
+            self, admin_client, test_user, sample_vehicle):
+        db.session.add(FuelStation(user_id=test_user.id, name='Corner Station'))
+        db.session.commit()
+
+        response = self._delete(admin_client, test_user)
+
+        assert response.status_code == 200
+        page = response.get_data(as_text=True)
+        assert 'testuser was not deleted' in page
+        assert 'Vehicles (1), Fuel Stations (1)' in page
+        assert db.session.get(User, test_user.id) is not None
+        assert db.session.get(Vehicle, sample_vehicle.id).owner_id == test_user.id
+
+    def test_records_on_a_shared_vehicle_keep_the_account(
+            self, admin_client, sample_vehicle):
+        driver = self._driver(sample_vehicle)
+        db.session.add(FuelLog(vehicle_id=sample_vehicle.id, user_id=driver.id, odometer=1000))
+        db.session.commit()
+
+        response = self._delete(admin_client, driver)
+
+        assert response.status_code == 200
+        assert 'Fuel Logs (1)' in response.get_data(as_text=True)
+        assert db.session.get(User, driver.id) is not None
+
+    def test_service_history_alone_keeps_the_account(self, admin_client, sample_vehicle):
+        # Nothing but this table points at the driver, so the delete used to
+        # succeed and leave the row for the next account to reuse the id.
+        driver = self._driver(sample_vehicle)
+        db.session.add(MaintenanceEvent(vehicle_id=sample_vehicle.id, user_id=driver.id,
+                                        name='Oil change', maintenance_type='oil_change'))
+        db.session.commit()
+
+        response = self._delete(admin_client, driver)
+
+        assert 'Maintenance History (1)' in response.get_data(as_text=True)
+        assert db.session.get(User, driver.id) is not None
+
+    def test_access_to_a_shared_vehicle_does_not_keep_the_account(
+            self, admin_client, sample_vehicle):
+        driver_id = self._driver(sample_vehicle).id
+
+        self._delete(admin_client, db.session.get(User, driver_id))
+
+        assert db.session.get(User, driver_id) is None
+        assert db.session.get(Vehicle, sample_vehicle.id) is not None
+        assert db.session.query(vehicle_users).filter_by(user_id=driver_id).count() == 0
+
+    def test_every_record_that_can_keep_an_account_has_a_name(self, app):
+        tables = {table.name for table in db.metadata.tables.values()
+                  if table is not vehicle_users
+                  and any(fk.column.table is User.__table__ for fk in table.foreign_keys)}
+
+        assert tables == set(account_deletion.RECORD_LABELS)
 
     def test_delete_self_prevented(self, admin_client, admin_user, app):
         user_id = admin_user.id

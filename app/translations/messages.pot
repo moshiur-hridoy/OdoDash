@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-28 20:33+0600\n"
+"POT-Creation-Date: 2026-11-28 23:38+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -475,7 +475,8 @@ msgstr ""
 msgid "Servicing"
 msgstr ""
 
-#: app/models.py:1838 app/templates/vehicles/view.html:256
+#: app/models.py:1838 app/services/account_deletion.py:27
+#: app/templates/vehicles/view.html:256
 msgid "Parts"
 msgstr ""
 
@@ -790,7 +791,7 @@ msgid "Invalid or expired reset link. Please request a new one."
 msgstr ""
 
 #: app/routes/auth.py:134 app/routes/auth.py:192 app/routes/auth.py:278
-#: app/routes/auth.py:676 app/routes/auth.py:723
+#: app/routes/auth.py:683 app/routes/auth.py:730
 #: app/templates/partials/password_rules.html:33
 #: app/templates/partials/password_rules.html:48
 msgid "Passwords do not match"
@@ -804,7 +805,7 @@ msgstr ""
 msgid "New account registration is currently disabled."
 msgstr ""
 
-#: app/routes/auth.py:202 app/routes/auth.py:734
+#: app/routes/auth.py:202 app/routes/auth.py:741
 msgid "Username already exists"
 msgstr ""
 
@@ -820,7 +821,7 @@ msgstr ""
 msgid "You have been logged out."
 msgstr ""
 
-#: app/routes/auth.py:269 app/routes/auth.py:667
+#: app/routes/auth.py:269 app/routes/auth.py:674
 msgid "Email already in use by another account"
 msgstr ""
 
@@ -900,25 +901,32 @@ msgstr ""
 msgid "Admin status updated for %(username)s"
 msgstr ""
 
-#: app/routes/auth.py:650
+#: app/routes/auth.py:649
+#, python-format
+msgid ""
+"%(username)s was not deleted, because the account still has records: "
+"%(records)s. Remove them first."
+msgstr ""
+
+#: app/routes/auth.py:657
 #, python-format
 msgid "User %(username)s deleted"
 msgstr ""
 
-#: app/routes/auth.py:695
+#: app/routes/auth.py:702
 #, python-format
 msgid "User %(username)s updated successfully"
 msgstr ""
 
-#: app/routes/auth.py:718
+#: app/routes/auth.py:725
 msgid "Username, email, and password are required"
 msgstr ""
 
-#: app/routes/auth.py:739
+#: app/routes/auth.py:746
 msgid "Email already in use"
 msgstr ""
 
-#: app/routes/auth.py:748
+#: app/routes/auth.py:755
 #, python-format
 msgid "User %(username)s created successfully"
 msgstr ""
@@ -1398,6 +1406,135 @@ msgstr ""
 msgid "Part deleted successfully"
 msgstr ""
 
+#: app/services/account_deletion.py:16 app/templates/auth/settings/_menu.html:5
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:531
+#: app/templates/partials/mobile_nav.html:22
+#: app/templates/vehicles/index.html:3 app/templates/vehicles/index.html:7
+#: app/templates/vehicles/index.html:12
+msgid "Vehicles"
+msgstr ""
+
+#: app/services/account_deletion.py:17 app/templates/auth/settings/_menu.html:5
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:532
+#: app/templates/fuel/index.html:4 app/templates/fuel/index.html:14
+#: app/templates/fuel/index.html:82 app/templates/import/csv_upload.html:18
+#: app/templates/search/index.html:64 app/templates/vehicles/view.html:565
+msgid "Fuel Logs"
+msgstr ""
+
+#: app/services/account_deletion.py:18 app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:534
+#: app/templates/expenses/index.html:5 app/templates/expenses/index.html:20
+#: app/templates/expenses/index.html:80 app/templates/expenses/index.html:89
+#: app/templates/expenses/index.html:229
+#: app/templates/import/csv_upload.html:18
+#: app/templates/partials/mobile_nav.html:25 app/templates/search/index.html:55
+#: app/templates/timeline/index.html:15 app/templates/timeline/index.html:101
+#: app/templates/vehicles/view.html:467 app/templates/vehicles/view.html:567
+msgid "Expenses"
+msgstr ""
+
+#: app/services/account_deletion.py:19 app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:536
+#: app/templates/import/csv_upload.html:19
+#: app/templates/partials/mobile_nav.html:27 app/templates/search/index.html:89
+#: app/templates/trips/index.html:4 app/templates/trips/index.html:20
+#: app/templates/trips/index.html:66 app/templates/trips/index.html:73
+msgid "Trips"
+msgstr ""
+
+#: app/services/account_deletion.py:20
+#: app/templates/trips/templates_index.html:4
+#: app/templates/trips/templates_index.html:15
+#: app/templates/trips/templates_index.html:20
+msgid "Trip Templates"
+msgstr ""
+
+#: app/services/account_deletion.py:21 app/templates/charging/index.html:3
+#: app/templates/charging/index.html:13 app/templates/import/csv_upload.html:19
+#: app/templates/search/index.html:98
+msgid "Charging Sessions"
+msgstr ""
+
+#: app/services/account_deletion.py:22 app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10 app/templates/base.html:535
+#: app/templates/partials/mobile_nav.html:26
+#: app/templates/reminders/index.html:4 app/templates/reminders/index.html:24
+msgid "Reminders"
+msgstr ""
+
+#: app/services/account_deletion.py:23 app/templates/maintenance/index.html:4
+#: app/templates/maintenance/index.html:10
+#: app/templates/maintenance/index.html:16
+msgid "Maintenance Schedules"
+msgstr ""
+
+#: app/services/account_deletion.py:24 app/templates/maintenance/history.html:3
+#: app/templates/maintenance/history.html:10
+#: app/templates/maintenance/index.html:11 app/templates/vehicles/view.html:255
+msgid "Maintenance History"
+msgstr ""
+
+#: app/services/account_deletion.py:25 app/templates/auth/settings/_menu.html:6
+#: app/templates/auth/settings/_menu.html:10
+#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
+#: app/templates/recurring/index.html:16
+msgid "Recurring Expenses"
+msgstr ""
+
+#: app/services/account_deletion.py:26 app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:539
+#: app/templates/documents/index.html:4 app/templates/documents/index.html:11
+#: app/templates/partials/mobile_nav.html:30 app/templates/search/index.html:73
+msgid "Documents"
+msgstr ""
+
+#: app/services/account_deletion.py:28
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:542
+#: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:4
+#: app/templates/tires/index.html:10
+msgid "Tires"
+msgstr ""
+
+#: app/services/account_deletion.py:29 app/templates/auth/settings/_menu.html:8
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
+#: app/templates/charging/form.html:125 app/templates/dashboard.html:256
+#: app/templates/expenses/form.html:166 app/templates/fuel/form.html:234
+#: app/templates/notes/index.html:4 app/templates/notes/index.html:11
+#: app/templates/notes/index.html:28 app/templates/partials/mobile_nav.html:34
+#: app/templates/search/index.html:81 app/templates/stations/form.html:54
+#: app/templates/tires/form.html:71 app/templates/trips/form.html:129
+#: app/templates/trips/template_form.html:58
+#: app/templates/vehicles/form.html:192
+#: app/templates/vehicles/part_form.html:66
+#: app/templates/vehicles/view.html:611
+msgid "Notes"
+msgstr ""
+
+#: app/services/account_deletion.py:30 app/templates/allowance/index.html:3
+#: app/templates/allowance/index.html:11 app/templates/allowance/index.html:45
+#: app/templates/allowance/index.html:75
+#: app/templates/auth/settings/_menu.html:8
+#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:541
+#: app/templates/dashboard.html:288 app/templates/partials/mobile_nav.html:32
+#: app/templates/vehicles/view.html:221
+msgid "Mileage Allowance"
+msgstr ""
+
+#: app/services/account_deletion.py:31 app/templates/auth/settings/_menu.html:7
+#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:540
+#: app/templates/partials/mobile_nav.html:31
+#: app/templates/stations/index.html:4 app/templates/stations/index.html:9
+#: app/templates/stations/index.html:20
+msgid "Fuel Stations"
+msgstr ""
+
+#: app/services/account_deletion.py:32 app/templates/stations/index.html:37
+#: app/templates/stations/prices.html:3 app/templates/stations/prices.html:25
+#: app/templates/stations/prices.html:31
+msgid "Price History"
+msgstr ""
+
 #: app/services/telegram_bot.py:127
 msgid ""
 "Send a fill-up as one line, for example:\n"
@@ -1500,104 +1637,15 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
-#: app/templates/auth/settings/_menu.html:5
-#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:531
-#: app/templates/partials/mobile_nav.html:22
-#: app/templates/vehicles/index.html:3 app/templates/vehicles/index.html:7
-#: app/templates/vehicles/index.html:12
-msgid "Vehicles"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:5
-#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:532
-#: app/templates/fuel/index.html:4 app/templates/fuel/index.html:14
-#: app/templates/fuel/index.html:82 app/templates/import/csv_upload.html:18
-#: app/templates/search/index.html:64 app/templates/vehicles/view.html:565
-msgid "Fuel Logs"
-msgstr ""
-
 #: app/templates/auth/settings/_menu.html:7
 #: app/templates/auth/settings/_menu.html:12 app/templates/base.html:533
 #: app/templates/partials/mobile_nav.html:24
 msgid "EV Charging"
 msgstr ""
 
-#: app/templates/auth/settings/_menu.html:6
-#: app/templates/auth/settings/_menu.html:9 app/templates/base.html:534
-#: app/templates/expenses/index.html:5 app/templates/expenses/index.html:20
-#: app/templates/expenses/index.html:80 app/templates/expenses/index.html:89
-#: app/templates/expenses/index.html:229
-#: app/templates/import/csv_upload.html:18
-#: app/templates/partials/mobile_nav.html:25 app/templates/search/index.html:55
-#: app/templates/timeline/index.html:15 app/templates/timeline/index.html:101
-#: app/templates/vehicles/view.html:467 app/templates/vehicles/view.html:567
-msgid "Expenses"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:6
-#: app/templates/auth/settings/_menu.html:10 app/templates/base.html:535
-#: app/templates/partials/mobile_nav.html:26
-#: app/templates/reminders/index.html:4 app/templates/reminders/index.html:24
-msgid "Reminders"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:7
-#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:536
-#: app/templates/import/csv_upload.html:19
-#: app/templates/partials/mobile_nav.html:27 app/templates/search/index.html:89
-#: app/templates/trips/index.html:4 app/templates/trips/index.html:20
-#: app/templates/trips/index.html:66 app/templates/trips/index.html:73
-msgid "Trips"
-msgstr ""
-
 #: app/templates/base.html:538 app/templates/partials/mobile_nav.html:29
 #: app/templates/reminders/_reminder_row.html:24
 msgid "Recurring"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:7
-#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:539
-#: app/templates/documents/index.html:4 app/templates/documents/index.html:11
-#: app/templates/partials/mobile_nav.html:30 app/templates/search/index.html:73
-msgid "Documents"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:7
-#: app/templates/auth/settings/_menu.html:11 app/templates/base.html:540
-#: app/templates/partials/mobile_nav.html:31
-#: app/templates/stations/index.html:4 app/templates/stations/index.html:9
-#: app/templates/stations/index.html:20
-msgid "Fuel Stations"
-msgstr ""
-
-#: app/templates/allowance/index.html:3 app/templates/allowance/index.html:11
-#: app/templates/allowance/index.html:45 app/templates/allowance/index.html:75
-#: app/templates/auth/settings/_menu.html:8
-#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:541
-#: app/templates/dashboard.html:288 app/templates/partials/mobile_nav.html:32
-#: app/templates/vehicles/view.html:221
-msgid "Mileage Allowance"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:542
-#: app/templates/partials/mobile_nav.html:33 app/templates/tires/index.html:4
-#: app/templates/tires/index.html:10
-msgid "Tires"
-msgstr ""
-
-#: app/templates/auth/settings/_menu.html:8
-#: app/templates/auth/settings/_menu.html:12 app/templates/base.html:543
-#: app/templates/charging/form.html:125 app/templates/dashboard.html:256
-#: app/templates/expenses/form.html:166 app/templates/fuel/form.html:234
-#: app/templates/notes/index.html:4 app/templates/notes/index.html:11
-#: app/templates/notes/index.html:28 app/templates/partials/mobile_nav.html:34
-#: app/templates/search/index.html:81 app/templates/stations/form.html:54
-#: app/templates/tires/form.html:71 app/templates/trips/form.html:129
-#: app/templates/trips/template_form.html:58
-#: app/templates/vehicles/form.html:192
-#: app/templates/vehicles/part_form.html:66
-#: app/templates/vehicles/view.html:611
-msgid "Notes"
 msgstr ""
 
 #: app/templates/base.html:568 app/templates/base.html:600
@@ -3389,13 +3437,6 @@ msgstr ""
 msgid "Save UK Fuel Price Settings"
 msgstr ""
 
-#: app/templates/auth/settings/_menu.html:6
-#: app/templates/auth/settings/_menu.html:10
-#: app/templates/recurring/index.html:4 app/templates/recurring/index.html:11
-#: app/templates/recurring/index.html:16
-msgid "Recurring Expenses"
-msgstr ""
-
 #: app/templates/auth/settings/_menu.html:18
 msgid "Customize which menu items to show and your start page"
 msgstr ""
@@ -3924,11 +3965,6 @@ msgstr ""
 
 #: app/templates/charging/form.html:121
 msgid "e.g., ChargePoint, Electrify America"
-msgstr ""
-
-#: app/templates/charging/index.html:3 app/templates/charging/index.html:13
-#: app/templates/import/csv_upload.html:19 app/templates/search/index.html:98
-msgid "Charging Sessions"
 msgstr ""
 
 #: app/templates/charging/index.html:13
@@ -4766,12 +4802,6 @@ msgstr ""
 msgid "Delete this maintenance schedule?"
 msgstr ""
 
-#: app/templates/maintenance/history.html:3
-#: app/templates/maintenance/history.html:10
-#: app/templates/maintenance/index.html:11 app/templates/vehicles/view.html:255
-msgid "Maintenance History"
-msgstr ""
-
 #: app/templates/maintenance/history.html:66
 msgid "No maintenance history yet."
 msgstr ""
@@ -4780,12 +4810,6 @@ msgstr ""
 msgid ""
 "History includes recorded completions and the latest saved service "
 "details. Earlier overwritten details cannot be recovered."
-msgstr ""
-
-#: app/templates/maintenance/index.html:4
-#: app/templates/maintenance/index.html:10
-#: app/templates/maintenance/index.html:16
-msgid "Maintenance Schedules"
 msgstr ""
 
 #: app/templates/maintenance/index.html:10
@@ -5278,11 +5302,6 @@ msgstr ""
 msgid "Used %(count)dx"
 msgstr ""
 
-#: app/templates/stations/index.html:37 app/templates/stations/prices.html:3
-#: app/templates/stations/prices.html:25 app/templates/stations/prices.html:31
-msgid "Price History"
-msgstr ""
-
 #: app/templates/stations/index.html:48
 msgid "No fuel stations"
 msgstr ""
@@ -5637,12 +5656,6 @@ msgstr ""
 
 #: app/templates/trips/template_form.html:63
 msgid "Save Template"
-msgstr ""
-
-#: app/templates/trips/templates_index.html:4
-#: app/templates/trips/templates_index.html:15
-#: app/templates/trips/templates_index.html:20
-msgid "Trip Templates"
 msgstr ""
 
 #: app/templates/trips/templates_index.html:15

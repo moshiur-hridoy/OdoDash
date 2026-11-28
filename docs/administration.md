@@ -13,6 +13,14 @@ Administrators can configure:
 - **Scheduled Backups**: how often every account's full backup is made, and how many copies are kept (see [Scheduled Backups](usage.md#scheduled-backups))
 - **User Management**: Create, edit, and manage user accounts, including each account's role
 
+## Deleting a User
+
+An account can be deleted once no records belong to it. While it still owns a
+vehicle or a fuel station, or has entries such as fill-ups or expenses on a
+vehicle shared with it, **Delete** keeps the account and lists what is left.
+Access to other people's vehicles does not count and is removed with the account.
+Deleting an account also removes its scheduled backups.
+
 ## User Roles
 
 Every account has a role, set by an administrator when the account is created

@@ -14,6 +14,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 - Scheduled backups. An administrator can have the full backup made daily or weekly under Settings > Import / Export and choose how many copies to keep (7 by default, up to 30). Every account with a vehicle or fuel station of its own gets its own copies, which only that account can list, download or delete. They are stored in the `backups` folder inside the data folder, or in `BACKUP_FOLDER`. It is off until an administrator turns it on (#29).
 
+### Fixed
+
+- Deleting a user who still had records, such as a vehicle, a fuel station or a fill-up on a shared vehicle, ended in a server error. The account is now kept, and the message lists what it still has. An account whose only record was maintenance history was deleted and left that history behind for the next new account; it is now kept too.
+
 ## [0.53.0] - 2026-11-27
 
 ### Security
