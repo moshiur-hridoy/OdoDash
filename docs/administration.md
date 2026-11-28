@@ -10,6 +10,7 @@ Administrators can configure:
 - **DVLA API**: API key for UK vehicle lookups ([get one here](https://developer-portal.driver-vehicle-licensing.api.gov.uk/))
 - **UK Fuel Prices**: live forecourt prices for saved stations (see below)
 - **Branding**: Custom logo, app name, tagline, and primary color
+- **Scheduled Backups**: how often every account's full backup is made, and how many copies are kept (see [Scheduled Backups](usage.md#scheduled-backups))
 - **User Management**: Create, edit, and manage user accounts, including each account's role
 
 ## User Roles

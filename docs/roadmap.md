@@ -106,9 +106,9 @@ Targets set 2026-11-25 (milestones on GitHub): **0.53.0** is the small items and
 maintainer needs; **0.54.0** follows; items with no target are open for contributors
 (`help wanted`) or need a design first.
 
-- [ ] **Scheduled auto-backup** (#29, 0.53.0). Today a backup is a manual export. Run the
-      full backup on a schedule and keep the last N copies in the data
-      folder; later, email it or send it to S3/Paperless (LubeLogger,
+- [x] **Scheduled auto-backup** (#29, 0.54.0). Daily or weekly full backups, one per
+      account, the newest N kept in the data folder, listed in Settings. Still
+      open for later: email them or send them to S3/Paperless (LubeLogger,
       MotoMate do this).
 - [ ] **Fuelio and Drivvo import** (#27, 0.54.0). The big import sources still
       missing (Drivvo shows "Soon" in Settings). Needs a real export file of

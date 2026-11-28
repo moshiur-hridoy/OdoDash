@@ -12,6 +12,7 @@ from app.security import (
     validate_webhook_url, admin_required, login_throttle
 )
 from app.services.notifications import NotificationService
+from app.services import scheduled_backup
 from app.services.uploads import remove_unused_upload
 from config import APP_VERSION, DISPLAY_VERSION, RELEASE_CHANNEL, GITHUB_REPO
 
@@ -360,6 +361,11 @@ def settings():
 
     return render_template('auth/settings.html',
                            users=User.query.all() if current_user.is_admin else [],
+                           backups=scheduled_backup.list_backups(current_user),
+                           backup_frequency=scheduled_backup.get_frequency(),
+                           backup_keep=scheduled_backup.get_keep(),
+                           backup_max_keep=scheduled_backup.MAX_KEEP,
+                           backup_has_data=scheduled_backup.has_own_data(current_user),
                            telegram=telegram,
                            branding=branding,
                            smtp_settings=smtp_settings,
@@ -637,8 +643,10 @@ def toggle_admin(user_id):
 def delete_user(user_id):
     user = db.get_or_404(User, user_id)
     if user.id != current_user.id:
+        backups = scheduled_backup.user_folder(user)
         db.session.delete(user)
         db.session.commit()
+        scheduled_backup.remove_all_backups(backups)
         flash(_('User %(username)s deleted') % {'username': user.username}, 'success')
 
     return redirect(url_for('auth.settings') + '#users')

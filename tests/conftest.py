@@ -30,6 +30,7 @@ class TestConfig:
     SECRET_KEY = 'test-secret'
     # Prevent file uploads from failing
     UPLOAD_FOLDER = '/tmp/may_test_uploads'
+    BACKUP_FOLDER = '/tmp/may_test_backups'
 
 
 @pytest.fixture(autouse=True)

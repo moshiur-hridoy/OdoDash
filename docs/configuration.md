@@ -47,6 +47,7 @@ in `.env` has no effect — edit `docker-compose.yml` instead.
 | `SECRET_KEY` | Session encryption key | Generated on first start and saved to `data/.secret_key` |
 | `DATABASE_URL` | Database connection string (SQLite or PostgreSQL) | SQLite at `data/may.db` inside the application directory (`/app/data/may.db` in Docker) |
 | `UPLOAD_FOLDER` | Path for file uploads | `data/uploads` inside the application directory (`/app/data/uploads` in Docker) |
+| `BACKUP_FOLDER` | Path for [scheduled backups](usage.md#scheduled-backups) | `data/backups` inside the application directory (`/app/data/backups` in Docker) |
 | `PUID` | User ID the container runs as (linuxserver.io convention) | `1000` |
 | `PGID` | Group ID the container runs as (linuxserver.io convention) | `1000` |
 | `CHECK_FOR_UPDATES` | Let the sidebar ask GitHub for a newer release and show admins an update notice. Set to `false` to stop that request | `true` |

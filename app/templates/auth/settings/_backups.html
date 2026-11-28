@@ -1,0 +1,46 @@
+{#- Scheduled backups (#29): the admin's schedule, and the signed-in account's
+    own copies. Included from the Import / Export section. -#}
+{% from 'auth/settings/_ui.html' import card %}
+{% from 'components/ui.html' import button %}
+{% call card(_('Scheduled Backups'), _('Full backups made automatically and kept on this server'), id='scheduled-backups') %}
+    {% if current_user.is_admin %}
+    <form method="POST" action="{{ url_for('backups.schedule') }}" class="settings-form" data-busy-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-grid">
+            <div class="ds-field">
+                <label class="ds-field__label" for="backup_frequency">{{ _('Frequency') }}</label>
+                <select name="backup_frequency" id="backup_frequency" class="ds-control">
+                    {% for value, label in [('off', _('Off')), ('daily', _('Daily')), ('weekly', _('Weekly'))] %}<option value="{{ value }}"{% if backup_frequency == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="ds-field">
+                <label class="ds-field__label" for="backup_keep">{{ _('Copies to keep') }}</label>
+                <input type="number" name="backup_keep" id="backup_keep" class="ds-control" min="1" max="{{ backup_max_keep }}" step="1" required value="{{ backup_keep }}">
+            </div>
+        </div>
+        <p class="form-hint">{{ _('Applies to every account. Each copy includes all uploaded files, so keeping more copies uses more disk space.') }}</p>
+        <div class="settings-actions">{{ button(_('Save Schedule'), type='submit', icon_name='check') }}</div>
+    </form>
+    {% endif %}
+
+    {% for backup in backups %}
+    <div class="settings-row" data-backup="{{ backup.filename }}">
+        <div class="settings-row__text">
+            <h3 class="settings-row__title ds-mono">{{ backup.created|format_date('datetime') }} UTC</h3>
+            <p class="settings-row__hint">{{ backup.size|filesizeformat }}</p>
+        </div>
+        <div class="settings-row__control">
+            {{ button(_('Download'), href=url_for('backups.download', filename=backup.filename), variant='secondary', size='sm', icon_name='download') }}
+            {{ button(_('Delete'), variant='ghost', size='sm', icon_name='trash',
+                      attrs={'data-post-url': url_for('backups.delete', filename=backup.filename), 'data-confirm': _('Delete this backup?')}) }}
+        </div>
+    </div>
+    {% else %}
+    <p class="settings-row__hint">
+        {%- if backup_frequency == 'off' %}{{ _('Scheduled backups are off.') }}
+        {%- elif backup_has_data %}{{ _('No backups yet. The first one is made within an hour.') }}
+        {%- else %}{{ _('Your account has no vehicles or fuel stations of its own to back up.') }}{% endif -%}
+    </p>
+    {% endfor %}
+    <p class="form-hint">{{ _('A copy on this server does not protect against a failed disk. Download one now and then and keep it somewhere else.') }}</p>
+{% endcall %}

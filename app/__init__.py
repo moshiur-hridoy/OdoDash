@@ -550,7 +550,7 @@ def create_app(config_class=Config):
         fmt = formats.get(style, formats['default'])
         return value.strftime(fmt)
 
-    from app.routes import main, auth, vehicles, fuel, expenses, api, reminders, maintenance, documents, stations, recurring, homeassistant, calendar, trips, charging, notes, allowance, search, tires, design
+    from app.routes import main, auth, vehicles, fuel, expenses, api, reminders, maintenance, documents, stations, recurring, homeassistant, calendar, trips, charging, notes, allowance, search, tires, design, backups
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(vehicles.bp)
@@ -571,6 +571,7 @@ def create_app(config_class=Config):
     app.register_blueprint(search.bp)
     app.register_blueprint(tires.bp)
     app.register_blueprint(design.bp)
+    app.register_blueprint(backups.bp)
 
     # Per-user permissions (#285) — refuse writes the account's role does not
     # cover, and expose can_write() to templates.
@@ -754,6 +755,18 @@ def _start_reminder_scheduler(app):
                         )
             except Exception as e:
                 logger.error(f"Error in UK fuel price scheduler: {e}")
+
+            try:
+                with app.app_context():
+                    from app.services.scheduled_backup import run_scheduled_backups
+                    backup_stats = run_scheduled_backups()
+                    if backup_stats['created'] or backup_stats['failed']:
+                        logger.info(
+                            f"Scheduled backup: {backup_stats['created']} created, "
+                            f"{backup_stats['failed']} failed"
+                        )
+            except Exception as e:
+                logger.error(f"Error in backup scheduler: {e}")
 
             # Check every hour
             time.sleep(3600)

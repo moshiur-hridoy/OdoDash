@@ -209,6 +209,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or str(basedir / 'data' / 'uploads')
     MAX_CONTENT_LENGTH = 300 * 1024 * 1024  # 300MB max upload
+    # Scheduled backups (#29). No route serves this folder directly.
+    BACKUP_FOLDER = os.environ.get('BACKUP_FOLDER') or str(basedir / 'data' / 'backups')
 
     # Session and "remember me" cookies: never readable from JavaScript, and
     # not sent on cross-site subrequests (form posts, images, iframes), which

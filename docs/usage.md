@@ -146,6 +146,24 @@ Configure your preferred notification method:
 - **Pushover**: iOS/Android push notifications
 - **Webhook**: HTTP POST for Home Assistant, Discord, Slack, etc.
 
+## Scheduled Backups
+An administrator can have backups made automatically under **Settings → Import /
+Export → Scheduled Backups**: daily or weekly, keeping the newest 1 to 30 copies
+(7 by default). It is off until someone turns it on.
+
+- Each copy is the same ZIP as **Download ZIP**: one account's records and
+  uploaded files. Every account with a vehicle or fuel station of its own gets
+  its own copies.
+- An account sees, downloads and deletes only its own copies. Restore one with
+  **Restore May Backup**, below.
+- The first copy is made within an hour of turning the schedule on.
+- Copies are stored in `data/backups` (see `BACKUP_FOLDER` in
+  [Configuration](configuration.md)). Each holds every file again, so allow for
+  the disk space.
+- A copy on the same server does not survive a failed disk, and it does not hold
+  user accounts or app settings. Keep a copy of the data folder, or download a
+  backup now and then and store it elsewhere.
+
 ## Import & Restore
 **Settings → Integrations → Import Data** holds the import options, including
 **Restore May Backup** for moving data from another May or OdoDash instance:

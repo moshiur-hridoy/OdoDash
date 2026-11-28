@@ -94,6 +94,8 @@ ACCOUNT_ENDPOINTS = {
     'api.generate_ha_token',
     'api.revoke_ha_token',
     'api.test_notification',
+    # An account's own scheduled backups (#29).
+    'backups.delete',
 }
 
 

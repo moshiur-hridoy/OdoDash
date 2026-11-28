@@ -46,6 +46,8 @@ BLOCKED_ENDPOINTS = {
     'api.generate_ha_token',
     'api.revoke_ha_token',
     'api.backup_restore_execute',
+    'backups.schedule',
+    'backups.delete',
     # App-wide settings and outbound integrations.
     'auth.notifications',
     'auth.smtp_settings',

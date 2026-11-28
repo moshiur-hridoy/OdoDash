@@ -38,6 +38,8 @@
     </div>
     {% endcall %}
 
+    {% include 'auth/settings/_backups.html' %}
+
     {% call card(_('Import Data'), _('Restore a May backup, or import your data from other fuel tracking applications').replace('May', APP_NAME)) %}
     <div class="settings-row">
         <div class="settings-row__text">

@@ -4,7 +4,7 @@ from datetime import date
 import pytest
 
 from app import create_app, db as _db_ext
-from app.models import Expense, FuelLog, Trip, User, Vehicle
+from app.models import AppSettings, Expense, FuelLog, Trip, User, Vehicle
 from tests.conftest import TestConfig
 
 
@@ -82,6 +82,11 @@ def test_api_refusal_is_json(demo_client):
     response = demo_client.post('/api/notifications/test')
     assert response.status_code == 403
     assert response.get_json()['code'] == 'demo_mode'
+
+
+def test_backup_schedule_is_refused(demo_client):
+    demo_client.post('/backups/schedule', data={'backup_frequency': 'daily', 'backup_keep': '7'})
+    assert AppSettings.get('backup_frequency') is None
 
 
 def test_vehicle_data_stays_editable(demo_client):

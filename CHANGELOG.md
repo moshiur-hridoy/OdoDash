@@ -10,6 +10,10 @@ This file starts at 0.28.0. Notes for earlier releases are on the
 
 ## [Unreleased]
 
+### Added
+
+- Scheduled backups. An administrator can have the full backup made daily or weekly under Settings > Import / Export and choose how many copies to keep (7 by default, up to 30). Every account with a vehicle or fuel station of its own gets its own copies, which only that account can list, download or delete. They are stored in the `backups` folder inside the data folder, or in `BACKUP_FOLDER`. It is off until an administrator turns it on (#29).
+
 ## [0.53.0] - 2026-11-27
 
 ### Security
